@@ -1,0 +1,4 @@
+﻿10 PRINT "Hello"
+20 INPUT "Keep going"; LINE
+30 IF LINE = "y" THEN GOTO 20
+40 PRINT "Finished!"
