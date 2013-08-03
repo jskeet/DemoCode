@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionHelper", "VersionHel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatTheHeck2", "WhatTheHeck2\WhatTheHeck2.csproj", "{2CED56D7-028F-474C-ABC3-6F332A61D32A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperatorAbuse", "OperatorAbuse\OperatorAbuse.csproj", "{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{2CED56D7-028F-474C-ABC3-6F332A61D32A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CED56D7-028F-474C-ABC3-6F332A61D32A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CED56D7-028F-474C-ABC3-6F332A61D32A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
