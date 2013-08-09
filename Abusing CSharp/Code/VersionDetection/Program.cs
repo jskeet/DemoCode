@@ -8,21 +8,17 @@ namespace VersionDetection
 {
     class Program
     {
+        #region Entry point (gives away answers)
         private static void Main(string[] args)
         {
-            bool disposingForEach = DetectDisposingForEach();
-            bool methodGroupVariance = DetectMethodGroupVariance();
-            bool smartTypeInference = DetectSmartTypeInference();
-            bool defaulting = new VersionHelper.T2().DetectDefaulting();
-            bool saneForEachCapture = DetectSaneForEachCapture();
-
             Console.WriteLine("Results...");
-            Console.WriteLine("Disposing foreach loop? (v1.2 vs v1.0) - {0}", disposingForEach);
-            Console.WriteLine("Method group variance? (v2.0 vs 1.2) - {0}", methodGroupVariance);
-            Console.WriteLine("Smart type inference? (v3.0 vs v2.0) - {0}", smartTypeInference);
-            Console.WriteLine("Handling of default parameters? (v4.0 vs 3.0) - {0}", defaulting);
-            Console.WriteLine("Sane capture of foreach iteration variable? (v5.0 vs v4.0) - {0}", saneForEachCapture);
+            Console.WriteLine("Disposing foreach loop? (v1.2 vs v1.0) - {0}", DetectDisposingForEach());
+            Console.WriteLine("Method group variance? (v2.0 vs 1.2) - {0}", DetectMethodGroupVariance());
+            Console.WriteLine("Smart type inference? (v3.0 vs v2.0) - {0}", DetectSmartTypeInference());
+            Console.WriteLine("Handling of optional parameters? (v4.0 vs 3.0) - {0}", DetectOptionalParameters());
+            Console.WriteLine("Sane capture of foreach iteration variable? (v5.0 vs v4.0) - {0}", DetectSaneForEachCapture());
         }
+        #endregion
 
         #region C# 1.2 / C# 1.0
         // Note: this *isn't* a specification change, which I had originally thought.
@@ -87,6 +83,13 @@ namespace VersionDetection
         private static bool DetectSmartTypeInference()
         {
             return new TypeInferenceDerived().Foo(new object(), "");
+        }
+        #endregion
+
+        #region C# 4.0 / C# 3.0
+        private static bool DetectOptionalParameters()
+        {
+            return new VersionHelper.T2().DetectDefaulting();
         }
         #endregion
 
