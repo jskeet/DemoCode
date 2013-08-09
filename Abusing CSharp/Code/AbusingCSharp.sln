@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatTheHeck2", "WhatTheHeck
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperatorAbuse", "OperatorAbuse\OperatorAbuse.csproj", "{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsAndEnds", "OddsAndEnds\OddsAndEnds.csproj", "{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{633A7C59-06B0-44B1-94F7-877EE5E7D3B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
