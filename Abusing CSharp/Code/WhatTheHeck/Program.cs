@@ -12,7 +12,7 @@ namespace WhatTheHeck
             for (var x = 0; x < limit; x++)
             {
                 Console.WriteLine(x);
-                Console.WriteLine("The current value of x is {0}: ", x);
+                Console.WriteLine("The current value of x is: {0}", x);
             }
         }
     }
