@@ -7,31 +7,10 @@ namespace WrappingAsync
 {
     public static class TupleExtensions
     {
-        public static Task<Tuple<T1, T2, T3>> Transpose<T1, T2, T3>(
+        public static async Task<Tuple<T1, T2, T3>> Transpose<T1, T2, T3>(
             this Tuple<Task<T1>, Task<T2>, Task<T3>> input)
         {
-            var tcs = new TaskCompletionSource<Tuple<T1, T2, T3>>();
-            Task.WhenAll(input.Item1, input.Item2, input.Item3)
-                .ContinueWith(task =>
-                {
-                    switch (task.Status)
-                    {
-                        case TaskStatus.RanToCompletion:
-                            var result = Tuple.Create(
-                                input.Item1.Result,
-                                input.Item2.Result,
-                                input.Item3.Result);
-                            tcs.SetResult(result);
-                            break;
-                        case TaskStatus.Faulted:
-                            tcs.SetException(task.Exception.InnerExceptions);
-                            break;
-                        case TaskStatus.Canceled:
-                            tcs.SetCanceled();
-                            break;
-                    }
-                }, TaskContinuationOptions.ExecuteSynchronously);
-            return tcs.Task;
+            return Tuple.Create(await input.Item1, await input.Item2, await input.Item3);
         }
 
         public static TaskAwaiter<Tuple<T1, T2, T3>> GetAwaiter<T1, T2, T3>(
