@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWaitAwaiters", "FunWithAwaiters\FunWaitAwaiters.csproj", "{3C95E21E-8080-4007-BD07-62ACDB4F02FE}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWithAwaiters", "FunWithAwaiters\FunWithAwaiters.csproj", "{3C95E21E-8080-4007-BD07-62ACDB4F02FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToOperators", "LinqToOperators\LinqToOperators.csproj", "{3B6E7F7F-852F-4686-AFCC-1801E1AA614B}"
 EndProject
