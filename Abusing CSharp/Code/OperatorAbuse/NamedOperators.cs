@@ -10,6 +10,11 @@ namespace OperatorAbuse
     {
         static void Main()
         {
+            var plus = new Operator<int, int, int>((lhs, rhs) => lhs + rhs);
+
+            var sum = 2 <plus> 4;
+            Console.WriteLine(sum);
+
             var repeat = Operators.Repeat<string>();
             var join = Operators.Join<string>();
             var result = "Hello" <repeat> 3 <join> ",";
