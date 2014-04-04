@@ -41,6 +41,9 @@ local.properties
 *.user
 *.sln.docstates
 
+# Roslyn (?) files
+*.sln.ide
+
 # Build results
 
 [Dd]ebug/

@@ -127,6 +127,47 @@ namespace LinqToOperators
             return new OperatorEnumerable(left.Except(right).Union(right.Except(left)));
         }
 
+        public static OperatorEnumerable operator ^(OperatorEnumerable lhs, uint rhs)
+        {
+            if (rhs == 0)
+            {
+                return Enumerable.Empty<object>().Evil();
+            }
+            OperatorEnumerable result = lhs;
+            for (int i = 1; i < rhs; i++)
+            {
+                result = result * lhs;
+            }
+            return result | FlattenTuples;
+        }
+
+        private static object FlattenTuples(object item)
+        {
+            // Avoid converting x => {x}, even if we possibly should...
+            if (!item.GetType().Name.StartsWith("Tuple`"))
+            {
+                return item;
+            }
+            object[] items = ExtractTupleElements(item).ToArray();
+            Type openType = Type.GetType("System.Tuple`" + items.Length);
+            Type constructedType = openType.MakeGenericType(items.Select(x => x.GetType()).ToArray());
+            return constructedType.GetConstructors()[0].Invoke(items);
+        }
+
+        private static IEnumerable<object> ExtractTupleElements(object item)
+        {
+            Type type = item.GetType();
+            if (!type.Name.StartsWith("Tuple`"))
+            {
+                return new[] { item };
+            }
+            int arity = int.Parse(type.Name.Substring(6));
+            // First
+            return Enumerable.Range(1, arity).Select(index => type.GetProperty("Item" + index)
+                                                                  .GetValue(item))
+                                             .SelectMany(ExtractTupleElements);
+        }
+
         public static OperatorEnumerable operator ~(OperatorEnumerable operand)
         {
             return new OperatorEnumerable(Shuffle(operand.source));

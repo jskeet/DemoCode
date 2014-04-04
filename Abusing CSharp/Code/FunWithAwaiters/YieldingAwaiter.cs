@@ -4,7 +4,7 @@ using System;
 
 namespace FunWithAwaiters
 {
-    public sealed class YieldingAwaiter : IAwaiter
+    public struct YieldingAwaiter : IAwaiter
     {
         private readonly Action<Action> onCompletedHandler;
 
@@ -17,6 +17,45 @@ namespace FunWithAwaiters
 
         public void GetResult()
         {            
+        }
+
+        public void OnCompleted(Action continuation)
+        {
+            onCompletedHandler(continuation);
+        }
+    }
+
+    public class YieldingAwaitable<T>
+    {
+        private readonly YieldingAwaiter<T> awaiter;
+
+        internal YieldingAwaitable(YieldingAwaiter<T> awaiter)
+        {
+            this.awaiter = awaiter;
+        }
+
+        public YieldingAwaiter<T> GetAwaiter()
+        {
+            return awaiter;
+        }
+    }
+
+    public struct YieldingAwaiter<T> : IAwaiter<T>
+    {
+        private readonly Action<Action> onCompletedHandler;
+        private readonly T result;
+
+        public YieldingAwaiter(Action<Action> onCompletedHandler, T result)
+        {
+            this.onCompletedHandler = onCompletedHandler;
+            this.result = result;
+        }
+
+        public bool IsCompleted { get { return false; } }
+
+        public T GetResult()
+        {
+            return result;
         }
 
         public void OnCompleted(Action continuation)

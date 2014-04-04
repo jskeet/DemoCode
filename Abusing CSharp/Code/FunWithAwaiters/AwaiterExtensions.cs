@@ -43,6 +43,5 @@ namespace FunWithAwaiters
         {
             return new Awaitable<T>(awaiter);
         }
-
     }
 }

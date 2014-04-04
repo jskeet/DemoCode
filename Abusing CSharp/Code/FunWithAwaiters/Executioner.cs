@@ -12,15 +12,22 @@ namespace FunWithAwaiters
     /// </summary>
     public class Executioner : ITransient
     {
+        private readonly Action<Executioner> entryPoint;
         private Action nextAction;
 
         public Executioner(Action<Executioner> entryPoint)
         {
-            nextAction = () => entryPoint(this);
+            this.entryPoint = entryPoint;
         }
 
         public void Start()
         {
+            Execute(entryPoint);
+        }
+
+        protected void Execute(Action<Executioner> action)
+        {
+            nextAction = () => action(this);
             while (nextAction != null)
             {
                 Action next = nextAction;
@@ -48,6 +55,27 @@ namespace FunWithAwaiters
                 nextAction = stateMachineHandler(machine);
             });
             return awaiter.NewAwaitable();
+        }
+
+        public YieldingAwaitable<T> CreateYieldingAwaitable<T>(Action<IAsyncStateMachine> stateMachineHandler, T result)
+        {
+            var awaiter = new YieldingAwaiter<T>(continuation =>
+            {
+                var machine = AsyncUtil.GetStateMachine(continuation);
+                stateMachineHandler(machine);
+                nextAction = continuation;
+            }, result);
+            return new YieldingAwaitable<T>(awaiter);
+        }
+
+        public YieldingAwaitable<T> CreateYieldingAwaitable<T>(Func<IAsyncStateMachine, Action> stateMachineHandler, T value)
+        {
+            var awaiter = new YieldingAwaiter<T>(continuation =>
+            {
+                var machine = AsyncUtil.GetStateMachine(continuation);
+                nextAction = stateMachineHandler(machine);
+            }, value);
+            return new YieldingAwaitable<T>(awaiter);
         }
     }
 }

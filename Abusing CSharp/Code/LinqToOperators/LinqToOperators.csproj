@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicDemo.cs" />
+    <Compile Include="Power.cs" />
     <Compile Include="Comparisons.cs" />
     <Compile Include="CrossMultiply.cs" />
     <Compile Include="DarkEnumerable.cs" />

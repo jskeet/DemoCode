@@ -12,8 +12,9 @@ namespace LinqToOperators
             Console.WriteLine("Original: {0}", sequence);
             Console.WriteLine("Reversed: {0}", -sequence);
             Console.WriteLine("Negated: {0}", -+sequence);
+            Console.WriteLine("Mixture: {0}", -+-sequence);
             Console.WriteLine("Pop:");
-            var popping = +(+sequence);
+            var popping = + +sequence;
             Console.WriteLine(-popping);
             Console.WriteLine(-popping);
             Console.WriteLine(-popping);
