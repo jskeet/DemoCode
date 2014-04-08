@@ -12,7 +12,7 @@ namespace LinqToOperators
             this.source = source;
         }
 
-        internal IEnumerable<object> Source { get { return source; } }
+        internal IEnumerable<dynamic> Source { get { return source; } }
 
         public static OperatorEnumerable operator -(DarkEnumerable operand)
         {

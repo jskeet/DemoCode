@@ -17,15 +17,15 @@ namespace LinqToOperators
 
         private UnaryMinusBehaviour unaryMinusBehaviour;
 
-        private IEnumerable<object> source;
+        private IEnumerable<dynamic> source;
 
-        private OperatorEnumerable(IEnumerable<object> source, UnaryMinusBehaviour unaryMinusBehaviour)
+        private OperatorEnumerable(IEnumerable<dynamic> source, UnaryMinusBehaviour unaryMinusBehaviour)
         {
             this.source = source;
             this.unaryMinusBehaviour = unaryMinusBehaviour;
         }
 
-        internal OperatorEnumerable(IEnumerable<object> source) : this(source, UnaryMinusBehaviour.Reverse)
+        internal OperatorEnumerable(IEnumerable<dynamic> source) : this(source, UnaryMinusBehaviour.Reverse)
         {
         }
 
@@ -49,7 +49,7 @@ namespace LinqToOperators
 
         public static OperatorEnumerable operator +(OperatorEnumerable lhs, object rhs)
         {
-            return new OperatorEnumerable(lhs.source.Concat(new object[] { rhs }));
+            return new OperatorEnumerable(lhs.source.Concat(new dynamic[] { rhs }));
         }
 
         public static OperatorEnumerable operator +(OperatorEnumerable lhs, DarkEnumerable rhs)
@@ -64,7 +64,7 @@ namespace LinqToOperators
 
         public static OperatorEnumerable operator -(OperatorEnumerable lhs, object rhs)
         {
-            return new OperatorEnumerable(lhs.source.Except(new object[] { rhs }));
+            return new OperatorEnumerable(lhs.source.Except(new dynamic[] { rhs }));
         }
 
         public static OperatorEnumerable operator --(OperatorEnumerable lhs)
@@ -196,7 +196,7 @@ namespace LinqToOperators
 
         public static bool operator ==(OperatorEnumerable lhs, IEnumerable rhs)
         {
-            return lhs.source.SequenceEqual(rhs.Cast<object>());
+            return lhs.source.SequenceEqual(rhs.Cast<dynamic>());
         }
 
         public static bool operator !=(OperatorEnumerable lhs, IEnumerable rhs)
