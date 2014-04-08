@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperatorAbuse", "OperatorAb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsAndEnds", "OddsAndEnds\OddsAndEnds.csproj", "{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp6", "CSharp6\CSharp6.csproj", "{AF44B75E-B202-499E-AF4C-D9CCAC338733}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
