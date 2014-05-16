@@ -51,7 +51,14 @@ namespace CSharp6
 
         static void GoBang()
         {
-            throw new IOException("This is the exception");
+            try
+            {
+                throw new IOException("This is the exception");
+            }
+            finally
+            {
+                Console.WriteLine("Finally block!");
+            }
         }
     }
 
@@ -89,8 +96,8 @@ namespace CSharp6
     }
 
     sealed class LogContextEntry([CallerFilePath] string file = null,
-                            [CallerMemberName] string member = null,
-                            [CallerLineNumber] int line = 0)
+                                 [CallerMemberName] string member = null,
+                                 [CallerLineNumber] int line = 0)
     {
         public string File { get; } = Path.GetFileName(file);
         public string Member { get; } = member;

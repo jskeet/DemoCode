@@ -28,6 +28,14 @@ namespace OddsAndEnds
             }
         }
 
+        static void ShowIfStringWithCSharp6(object x)
+        {
+            if ((string text = x as string) != null)
+            {
+                Console.WriteLine("It's a string! {0}", text);
+            }
+        }
+
         static void ShowIfStringWithEvil(object x)
         {
             for (string text = x as string; x != null; x = null)

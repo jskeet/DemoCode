@@ -20,7 +20,7 @@ namespace LinqToOperators
             Console.WriteLine(-popping);
             Console.WriteLine("After popping: {0}", popping);
 
-            Console.WriteLine("Reversed original via cycle: {0}", -+(+(+sequence)));
+            Console.WriteLine("Reversed original via cycle: {0}", -+ + +sequence);
         }
     }
 }
