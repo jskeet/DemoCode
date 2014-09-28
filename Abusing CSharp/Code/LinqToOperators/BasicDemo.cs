@@ -8,7 +8,9 @@ namespace LinqToOperators
         static void Main(string[] args)
         {
             var funky = new[] { "hello", "world", "how", "are", "you" };
-            var query = funky.Evil() - "world" + "today" & (x => x.Length == 5) | (x => x.ToUpper());
+            var query = funky.Evil() - "world" + "today" 
+                        & (x => x.Length == 5)
+                        | (x => x.ToUpper());
 
             Console.WriteLine(query * 3);
 
