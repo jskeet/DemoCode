@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWithAwaiters", "FunWithAwaiters\FunWithAwaiters.csproj", "{3C95E21E-8080-4007-BD07-62ACDB4F02FE}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsAndEnds", "OddsAndEnds\OddsAndEnds.csproj", "{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp6", "CSharp6\CSharp6.csproj", "{AF44B75E-B202-499E-AF4C-D9CCAC338733}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance", "Performance\Performance.csproj", "{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
