@@ -51,14 +51,19 @@ namespace TimeZoneInfoExplorer
         private void AdjustOffsets(object sender, EventArgs e)
         {
             var zone = (TimeZoneInfo) timeZones.SelectedValue;
-            var offsetList = new[] { new { Utc = "", Offset = TimeSpan.Zero } }.ToList();
+            var offsetList = new[] { new { Utc = "", Offset = TimeSpan.Zero, Local = "" } }.ToList();
             offsetList.Clear();
             var start = DateTime.SpecifyKind(offsetsFrom.Value, DateTimeKind.Utc);
             var end = DateTime.SpecifyKind(offsetsTo.Value, DateTimeKind.Utc);
             // Limit it to 100 values... it could be very large temporarily while changing from/to
             for (DateTime utc = start; utc <= end && offsetList.Count < 100; utc = utc.AddHours(1))
             {
-                offsetList.Add(new { Utc = utc.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), Offset = zone.GetUtcOffset(utc) });
+                var local = TimeZoneInfo.ConvertTimeFromUtc(utc, zone);
+                offsetList.Add(new {
+                    Utc = utc.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                    Offset = zone.GetUtcOffset(utc),
+                    Local = local.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
+                });
             }
 
             utcOffsets.DataSource = offsetList;
