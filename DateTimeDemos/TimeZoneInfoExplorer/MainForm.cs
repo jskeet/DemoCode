@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TimeZoneInfoExplorer
@@ -32,9 +28,9 @@ namespace TimeZoneInfoExplorer
 
             adjustmentRules.DataSource = zone.GetAdjustmentRules().Select(rule => new
             {
-                Delta = rule.DaylightDelta,
-                Start = rule.DateStart,
-                End = rule.DateEnd,
+                Delta = FormatOffset(rule.DaylightDelta),
+                Start = rule.DateStart.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                End = rule.DateEnd.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 DstStart = FormatTransition(rule.DaylightTransitionStart),
                 DstEnd = FormatTransition(rule.DaylightTransitionEnd),
             }).ToList();
@@ -42,7 +38,6 @@ namespace TimeZoneInfoExplorer
 
             // Not sure of the best way to handle this, basically... could definitely
             // do with some work.
-            layoutPanel.ColumnStyles[0].SizeType = SizeType.Absolute;
             layoutPanel.ColumnStyles[0].Width = adjustmentRules.PreferredSize.Width;
 
             AdjustOffsets(sender, e);
@@ -51,7 +46,7 @@ namespace TimeZoneInfoExplorer
         private void AdjustOffsets(object sender, EventArgs e)
         {
             var zone = (TimeZoneInfo) timeZones.SelectedValue;
-            var offsetList = new[] { new { Utc = "", Offset = TimeSpan.Zero, Local = "" } }.ToList();
+            var offsetList = new[] { new { Utc = "", Offset = "", Local = "" } }.ToList();
             offsetList.Clear();
             var start = DateTime.SpecifyKind(offsetsFrom.Value, DateTimeKind.Utc);
             var end = DateTime.SpecifyKind(offsetsTo.Value, DateTimeKind.Utc);
@@ -61,13 +56,27 @@ namespace TimeZoneInfoExplorer
                 var local = TimeZoneInfo.ConvertTimeFromUtc(utc, zone);
                 offsetList.Add(new {
                     Utc = utc.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
-                    Offset = zone.GetUtcOffset(utc),
+                    Offset = FormatOffset(zone.GetUtcOffset(utc)),
                     Local = local.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
                 });
             }
 
             utcOffsets.DataSource = offsetList;
             utcOffsets.ClearSelection();
+        }
+
+        private static string FormatOffset(TimeSpan offset)
+        {
+            string prefix = "+";
+            if (offset < TimeSpan.Zero)
+            {
+                prefix = "-";
+                offset = -offset;
+            }
+            string value = offset.Seconds > 0 ? offset.ToString("hh':'mm':'ss", CultureInfo.InvariantCulture)
+                : offset.Minutes > 0 ? offset.ToString("hh':'mm", CultureInfo.InvariantCulture)
+                : offset.ToString("hh", CultureInfo.InvariantCulture);
+            return prefix + value;
         }
 
         private void PopulateTimeZones(object sender, EventArgs e)
@@ -84,7 +93,7 @@ namespace TimeZoneInfoExplorer
         {
             return transition.IsFixedDateRule ?
                 string.Format("{0:MMMM dd} at {1:HH:mm}", new DateTime(2000, transition.Month, transition.Day), transition.TimeOfDay) :
-                string.Format("{0} {1} of {2:MMMM} at {3:HH:mm}", OrdinalWeeks[transition.Week], transition.DayOfWeek, new DateTime(2000, transition.Month, 1), transition.TimeOfDay);
+                string.Format("{0} {1} of {2:MMMM}; {3:HH:mm}", OrdinalWeeks[transition.Week], transition.DayOfWeek, new DateTime(2000, transition.Month, 1), transition.TimeOfDay);
         }
     }
 }
