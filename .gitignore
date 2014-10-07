@@ -44,6 +44,9 @@ local.properties
 # Roslyn (?) files
 *.sln.ide
 
+# Nuget
+/*/packages/*/
+
 # Build results
 
 [Dd]ebug/
