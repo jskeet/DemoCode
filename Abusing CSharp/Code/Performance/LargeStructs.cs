@@ -9,7 +9,6 @@ namespace Performance
         private readonly long bits1;
         private readonly long bits2;
         private readonly long bits3;
-        private int mutable;
 
         public Int256(long bits0, long bits1, long bits2, long bits3)
         {
@@ -17,11 +16,6 @@ namespace Performance
             this.bits1 = bits1;
             this.bits2 = bits2;
             this.bits3 = bits3;
-        }
-
-        public int Mutate()
-        {
-            return mutable++;
         }
 
         public long Bits0 { get { return bits0; } }
