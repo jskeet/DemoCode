@@ -1,5 +1,6 @@
 ﻿// Copyright 2014 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace CSharp6
                 {
                     InnerMethod(i);
                 }
-                catch (Exception e) if (new LogContextEntry { $n = n, $i = i }.AddTo(e))
+                catch (Exception e) if (new LogContextEntry {[nameof(n)] = n,[nameof(i)] = i }.AddTo(e))
                 { /* Never get here... */ }
             }
         }
@@ -45,7 +46,7 @@ namespace CSharp6
                     GoBang();
                 }
             }
-            catch (Exception e) if (new LogContextEntry { $x = x, $now = DateTime.Now }.AddTo(e))
+            catch (Exception e) if (new LogContextEntry {[nameof(x)] = x,["now"] = DateTime.Now }.AddTo(e))
             { /* Never get here... */ }
         }
 
@@ -66,7 +67,7 @@ namespace CSharp6
     {
         internal static List<LogContextEntry> GetContext(this Exception e)
         {
-            return (List<LogContextEntry>) e.Data.$context;
+            return (List<LogContextEntry>)e.Data["context"];
         }
 
         internal static void DumpContext(this Exception e)
@@ -89,22 +90,30 @@ namespace CSharp6
             if (list == null)
             {
                 list = new List<LogContextEntry>();
-                e.Data.$context = list;
+                e.Data["context"] = list;
             }
             list.Add(entry);
         }
     }
 
-    sealed class LogContextEntry([CallerFilePath] string file = null,
-                                 [CallerMemberName] string member = null,
-                                 [CallerLineNumber] int line = 0)
+    sealed class LogContextEntry : IEnumerable
     {
-        public string File { get; } = Path.GetFileName(file);
-        public string Member { get; } = member;
-        public int Line { get; } = line;
+        public string File { get; }
+        public string Member { get; }
+        public int Line { get; }
 
         private readonly List<string> keyOrder = new List<string>();
         private readonly Dictionary<string, object> values = new Dictionary<string, object>();
+
+
+        internal LogContextEntry([CallerFilePath] string file = null,
+                                 [CallerMemberName] string member = null,
+                                 [CallerLineNumber] int line = 0)
+        {
+            File = Path.GetFileName(file);
+            Member = member;
+            Line = line;
+        }
 
         public object this[string key]
         {
@@ -129,6 +138,11 @@ namespace CSharp6
         {
             string valueText = string.Join(", ", keyOrder.Select(key => string.Format("${0} = {1}", key, values[key])));
             return string.Format("{0}:{1} ({2}) - {3}", File, Line, Member, valueText);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException("Only implementing IEnumerable for collection initializers...");
         }
     }
 }
