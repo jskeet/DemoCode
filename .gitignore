@@ -219,3 +219,7 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#Nuget packages
+RabbitHole/Code/packages/
+!RabbitHole/Code/packages/repositories.config
