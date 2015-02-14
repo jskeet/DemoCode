@@ -31,6 +31,7 @@ namespace TimeZoneInfoExplorer
                 Delta = FormatOffset(rule.DaylightDelta),
                 Start = rule.DateStart.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 End = rule.DateEnd.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                StdOff = FormatOffset(DetectStandardOffset(zone, rule)),
                 DstStart = FormatTransition(rule.DaylightTransitionStart),
                 DstEnd = FormatTransition(rule.DaylightTransitionEnd),
             }).ToList();
@@ -43,10 +44,20 @@ namespace TimeZoneInfoExplorer
             AdjustOffsets(sender, e);
         }
 
+        private static TimeSpan DetectStandardOffset(TimeZoneInfo zone, TimeZoneInfo.AdjustmentRule rule)
+        {
+            var offset = zone.GetUtcOffset(rule.DateStart);
+            if (zone.IsDaylightSavingTime(rule.DateStart))
+            {
+                offset -= rule.DaylightDelta;
+            }
+            return offset;
+        }
+
         private void AdjustOffsets(object sender, EventArgs e)
         {
             var zone = (TimeZoneInfo) timeZones.SelectedValue;
-            var offsetList = new[] { new { Utc = "", Offset = "", Local = "" } }.ToList();
+            var offsetList = new[] { new { Utc = "", Offset = "", Local = "", IsDST = "" } }.ToList();
             offsetList.Clear();
             var start = DateTime.SpecifyKind(offsetsFrom.Value, DateTimeKind.Utc);
             var end = DateTime.SpecifyKind(offsetsTo.Value, DateTimeKind.Utc);
@@ -57,7 +68,8 @@ namespace TimeZoneInfoExplorer
                 offsetList.Add(new {
                     Utc = utc.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                     Offset = FormatOffset(zone.GetUtcOffset(utc)),
-                    Local = local.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
+                    Local = local.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                    IsDST = zone.IsDaylightSavingTime(utc) ? "Yes" : "No"
                 });
             }
 
