@@ -1,0 +1,7 @@
+﻿So why do we want immutability?
+
+- Java programmers: worst bits of the standard library?
+- Thread safety - more later
+- Efficiency (potentially) - no defensive copying
+- Easier to reason about code
+- Mutable structs behave plain weirdly

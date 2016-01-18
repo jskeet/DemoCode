@@ -1,0 +1,3 @@
+﻿- Now the "main" type is the mutable type...
+- And the ToImmutable needs to go through and make everything immutable
+- Unlikely that many things would use it

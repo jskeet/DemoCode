@@ -1,0 +1,18 @@
+Basic data model:
+
+Person
+- Name
+- Address
+- Phone numbers
+- Friends (stretch goal)
+
+Address
+- Street
+- City
+
+Phone number:
+- Number
+- Type (enum)
+
+Number type:
+- Home, Mobile, Work

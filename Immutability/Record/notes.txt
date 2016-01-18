@@ -1,0 +1,5 @@
+﻿- Wow, that's neat!
+- "with" syntax allows multiple properties to be set at once (clean and efficient)
+- Oh, and generates equality and ToString checks, like anonymous classes
+- Unclear whether it's possible to restrict construction
+  (e.g. private constructor, public type)

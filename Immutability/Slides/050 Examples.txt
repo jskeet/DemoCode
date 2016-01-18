@@ -1,0 +1,24 @@
+﻿Basic data model:
+
+Person
+- Name
+- Address
+- Phone numbers
+- Friends (stretch goal - not implemented)
+
+Address
+- Street
+- City
+
+Phone number:
+- Number
+- Type (enum)
+
+Number type:
+- Home, Mobile, Work
+
+
+Examples of:
+- Builder pattern
+  - Discuss pros and cons of multiple types
+- Withers

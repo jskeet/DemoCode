@@ -1,0 +1,11 @@
+﻿- Can end up with pretty unreadable client code
+- Can end up creating a lot of objects
+- Half as many types!
+- Constructors can use optional parameters to avoid being too hairy
+- Potentially need to have With methods with multiple parameters
+  if they are constrained with respect to each other
+- Not a common paradigm at the moment
+- Constructors can be an ugly way of initializing, unless you use
+  named arguments (name those parameters clearly!)
+- If you're autogenerating: consider the constructor parameter order...
+  ... breaking changes!

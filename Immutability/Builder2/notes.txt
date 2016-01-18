@@ -1,0 +1,5 @@
+﻿- Still no public constructor in immutable class
+- Builder has a reference to the "immutable" class; only exposes it when frozen
+- Collection is frozen on publication too
+- More efficient when there are lots of properties
+- Feels significantly less robust in terms of threading

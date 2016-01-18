@@ -1,0 +1,19 @@
+﻿Future
+
+- C# 7
+  - Record types
+  - "With" for record types
+  - "With" for other types?
+  - Check out more details with Bill Wagner later
+
+- Static analysis
+  - Part of the language
+  - Something separate?
+
+- More in the BCL?
+  - .NET Core means "BCL" may have less meaning moving forward
+  - Line between "released" and "mainstream" blurs
+
+- More memory model details?
+  - Could make it sane
+  - Could give guidance about best practices

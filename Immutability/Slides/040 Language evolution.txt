@@ -1,0 +1,37 @@
+﻿How has C# evolved over time, in terms of immutability?
+
+C# 1
+
+- Value types (yay!)
+- Immutable string type (yay!) and StringBuilder (yay!)
+- Unsealed by default (boo!)
+- Property get/set with single access (boo!)
+
+
+C# 2
+
+- public string Name { get; private set; }
+
+
+C# 3
+
+- Anonymous types (compare and contrast with VB)
+- LINQ (encourage no-side-effects thinking)
+- Object and collection initializers (hmm...)
+
+
+C# 4
+
+- Optional parameters and named arguments (yes, but...)
+
+
+C# 5
+
+- <tumbleweed>
+
+
+C# 6 (cheers!)
+
+- Read-only autoprops (finally!)
+- Default values for autoprops
+- Expression-bodied members encourage *feeling* of immutability

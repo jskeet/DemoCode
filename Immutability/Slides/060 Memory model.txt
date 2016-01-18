@@ -1,0 +1,7 @@
+﻿Memory model in C#
+- Doesn't really have one...
+- Bits of it are specified...
+- ECMA-335 has a weak memory model
+- Blog posts have more details
+- But even so, too weak to reason about
+- ... except that reality is actually okay, I think

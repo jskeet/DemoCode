@@ -1,0 +1,5 @@
+﻿- No public constructors in immutable class; private constructor accepts builder
+- Builder properties all take immutable classes
+- Builder uses List<T>, pre-initialized
+- New object created each time
+

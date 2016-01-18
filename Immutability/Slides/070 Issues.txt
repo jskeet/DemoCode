@@ -1,0 +1,30 @@
+﻿Why aren't we good at this?
+- Sometimes (local) mutability is just easier
+- Language encourages mutability with things like object/collection initializers
+  - Few features designed with immutability in mind
+  - Static analysis of immutability would require language/library/runtime support
+- Lack of framework support is discouraging (immutable collections)
+- Serialization frameworks often don't support immutability well
+  - IXmlSerializable, I'm looking at you...
+- Even immutable structs aren't really - lack of atomicity is a pain
+- Anti-patterns
+  - IReadOnlyCollection<T> isn't
+  - Freezing feels good, but introduces complexity: reasoning is hard
+  - Joda Time type hierarchy (simplified):
+
+               ReadableInstant
+			 /                 \
+        Instant             MutableInstant
+
+- Cycles are hard to initialize (let rec in F#...)
+- Fundamentally, our type systems are about allowing rather than prohibiting
+  - Immutability inverts things, e.g. return IImmutableList<T> rather than IList<T>
+  - Even *accepting* an IReadOnlyCollection<T>, I can't keep a reference to it
+
+
+More musings
+- Reminiscent of nullity checking: constant vigilance required
+- We have "initialize, use, dispose" lifecycle already in the language
+- Initialize is restricted to constructor
+  - Don't leak "this"!
+  - Overly restrictive; want to be able to do more
