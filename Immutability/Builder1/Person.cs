@@ -14,7 +14,7 @@ public sealed class Person
     {
         Name = builder.Name;
         Address = builder.Address;
-        Phones = Phones.ToImmutableList();
+        Phones = builder.Phones.ToImmutableList();
     }
 
     public sealed class Builder
