@@ -1,7 +1,0 @@
-- What is immutability?
-- Why do we like immutability?
-- C# evolution in immutability
-- Opposing forces and anti-patterns
-- Interlude: memory models
-- Immutability in the standard libraries
-- The future
