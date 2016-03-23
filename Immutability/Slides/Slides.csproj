@@ -41,12 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="023 Popsicle.cs" />
-    <Compile Include="022 ShallowMutable.cs" />
+    <Compile Include="022 ShallowImmutable.cs" />
     <Compile Include="021 Mutable.cs" />
     <Compile Include="024 ObservablyImmutable.cs" />
     <Compile Include="025 UnsealedSemiImmutable.cs" />
     <Compile Include="027 ReallyObviouslyImmutable.cs" />
     <Compile Include="026 Unsealed private constructor.cs" />
+    <Compile Include="LongRunningLoop.cs" />
     <Compile Include="Scratchpad.cs" />
     <Content Include="050 Examples.txt" />
     <Compile Include="062 MemoryModelInsanity2.cs" />
