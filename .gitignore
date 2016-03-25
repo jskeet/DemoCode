@@ -223,3 +223,7 @@ pip-log.txt
 #Nuget packages
 RabbitHole/Code/packages/
 !RabbitHole/Code/packages/repositories.config
+
+# More Visual Studio...
+.vs
+project.lock.json

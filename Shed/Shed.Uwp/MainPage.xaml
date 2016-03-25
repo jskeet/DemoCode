@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="Shed.Uwp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Shed.Uwp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="RegisterVoiceActivation">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Button x:Name="onButton" Content="On" HorizontalAlignment="Left" Margin="33,36,0,0" VerticalAlignment="Top" Click="TurnOnLights"/>
+
+        <Button x:Name="ofButton" Content="Off" HorizontalAlignment="Left" Margin="33,80,0,0" VerticalAlignment="Top" Click="TurnOffLights"/>
+        <TextBlock x:Name="lastText" Text="(Text)" HorizontalAlignment="Left" Height="32" Margin="98,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="369"/>
+        <TextBlock x:Name="lastConfidence" Text="(Confidence)" HorizontalAlignment="Left" Height="32" Margin="98,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="369"/>
+        <TextBlock x:Name="lastState" Text="(State)" HorizontalAlignment="Left" Height="32" Margin="33,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="171"/>
+    </Grid>
+</Page>

@@ -1,0 +1,32 @@
+﻿{
+  "version": "0.1.5",
+  "description": "Guts of shed automation project",
+
+  "dependencies": {
+    "System.Collections.Immutable": "1.1.37",
+    "System.Net.Http": "4.0.0",
+    "MiLight.Net.Commands": "1.0.2-CI00029",
+  },
+
+  "frameworks": {
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Runtime": "",
+        "System": "",
+        "System.Xml.Linq": "",
+      }
+    },
+    "dotnet5.4": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.0",
+        "System.Collections": "4.0.10",
+        "System.Linq": "4.0.0",
+        "System.Runtime": "4.0.20",
+        "System.Threading": "4.0.10",
+        "System.Net.Sockets": "4.0.0",
+        "System.Text.Encoding": "4.0.10",
+        "System.Xml.XDocument": "4.0.10"
+      }
+    }
+  }
+}
