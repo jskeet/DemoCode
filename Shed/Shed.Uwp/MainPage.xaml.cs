@@ -1,7 +1,6 @@
 ﻿// Copyright 2016 Jon Skeet.
 // Licensed under the Apache License Version 2.0.
 
-using Shed.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,8 @@ using System.Threading.Tasks;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+
+using static Shed.Controllers.Factory;
 
 namespace Shed.Uwp
 {
@@ -28,28 +29,31 @@ namespace Shed.Uwp
 
         private static readonly Dictionary<string, Action> handlers = new Dictionary<string, Action>
         {
-            { "lights on", Factory.Lighting.On },
-            { "lights off", Factory.Lighting.Off },
-            { "music play", Factory.Sonos.Play },
-            { "music pause", Factory.Sonos.Pause },
-            { "music mute", () => Factory.Sonos.SetVolume(0) },
-            { "music quiet", () => Factory.Sonos.SetVolume(30) },
-            { "music medium", () => Factory.Sonos.SetVolume(60) },
-            { "music loud", () => Factory.Sonos.SetVolume(90) },
-            { "music next", Factory.Sonos.Next },
-            { "music previous", Factory.Sonos.Previous },
-            { "music restart", Factory.Sonos.Restart },
-            { "amplifier on", Factory.Amplifier.On },
-            { "amplifier off", Factory.Amplifier.Off },
-            { "amplifier mute", () => Factory.Amplifier.SetVolume(0) },
-            { "amplifier quiet", () => Factory.Amplifier.SetVolume(30) },
-            { "amplifier medium", () => Factory.Amplifier.SetVolume(50) },
-            { "amplifier loud", () => Factory.Amplifier.SetVolume(60) },
-            { "amplifier source pie", () => Factory.Amplifier.Source("pi") },
-            { "amplifier source sonos", () => Factory.Amplifier.Source("sonos") },
-            { "amplifier source playstation", () => Factory.Amplifier.Source("ps4") }
+            { "lights on", Lighting.On },
+            { "lights off", Lighting.Off },
+            { "music play", Sonos.Play },
+            { "music pause", Sonos.Pause },
+            { "music mute", () => Sonos.SetVolume(0) },
+            { "music quiet", () => Sonos.SetVolume(30) },
+            { "music medium", () => Sonos.SetVolume(60) },
+            { "music loud", () => Sonos.SetVolume(90) },
+            { "music next", Sonos.Next },
+            { "music previous", Sonos.Previous },
+            { "music restart", Sonos.Restart },
+            { "amplifier on", Amplifier.On },
+            { "amplifier off", Amplifier.Off },
+            { "amplifier mute", () => Amplifier.SetVolume(0) },
+            { "amplifier quiet", () => Amplifier.SetVolume(30) },
+            { "amplifier medium", () => Amplifier.SetVolume(50) },
+            { "amplifier loud", () => Amplifier.SetVolume(60) },
+            { "amplifier source pie", () => Amplifier.Source("pi") },
+            { "amplifier source sonos", () => Amplifier.Source("sonos") },
+            { "amplifier source playstation", () => Amplifier.Source("ps4") }
         }.WithKeyPrefix(Prefix);
 
+        // Unclear whether we really need an instance variable here. If we just
+        // used a local variable in RegisterVoiceActivation, would the instance be
+        // garbage collected?
         private SpeechRecognizer recognizer;
 
         public MainPage()
@@ -59,12 +63,12 @@ namespace Shed.Uwp
         
         private void TurnOnLights(object sender, RoutedEventArgs e)
         {
-            Factory.Lighting.On();
+            Lighting.On();
         }
 
         private void TurnOffLights(object sender, RoutedEventArgs e)
         {
-            Factory.Lighting.Off();
+            Lighting.Off();
         }
 
         private async void RegisterVoiceActivation(object sender, RoutedEventArgs e)
@@ -76,16 +80,14 @@ namespace Shed.Uwp
             recognizer.ContinuousRecognitionSession.ResultGenerated += HandleVoiceCommand;
             recognizer.StateChanged += HandleStateChange;
 
-            // Compile grammar
             SpeechRecognitionCompilationResult compilationResult = await recognizer.CompileConstraintsAsync();
-
             if (compilationResult.Status == SpeechRecognitionResultStatus.Success)
             {
                 await recognizer.ContinuousRecognitionSession.StartAsync();
             }
             else
             {
-                await Dispatcher.RunIdleAsync(_ => lastState.Text = $"Compilation failed: $compilationResult.Status");
+                await Dispatcher.RunIdleAsync(_ => lastState.Text = $"Compilation failed: {compilationResult.Status}");
             }
         }
 
