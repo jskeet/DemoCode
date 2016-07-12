@@ -26,9 +26,7 @@ namespace Shed.Controllers.Reflection
 
         private static string GetDescription(MemberInfo info)
         {
-            return info
-                .GetCustomAttributes()
-                .OfType<DescriptionAttribute>()
+            return info.GetCustomAttributes<DescriptionAttribute>()
                 .SingleOrDefault()
                 ?.Description;
         }

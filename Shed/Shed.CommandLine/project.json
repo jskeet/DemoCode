@@ -1,20 +1,26 @@
 ﻿{
   "description": "CLI for shed automation",
-  "dependencies": {
-    "Shed.Controllers": ""
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true
   },
-  "commands": {
-    "Shed.CommandLine": "Shed.CommandLine"
+  "dependencies": {
+    "Shed.Controllers": { "target": "project" }
   },
   "frameworks": {
-    "dnx451": {},
-    "dnxcore50": {
+    "net45": {},
+    "netcoreapp1.0": {
+      "imports": [ "portable-net45+win8+wp8+wpa81", "dotnet" ],
       "dependencies": {
-        "Microsoft.CSharp": "4.0.1-beta-23516",
-        "System.Collections": "4.0.11-beta-23516",
-        "System.Console": "4.0.0-beta-23516",
-        "System.Linq": "4.0.1-beta-23516",
-        "System.Threading": "4.0.11-beta-23516"
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        },
+        "Microsoft.CSharp": "4.0.1",
+        "System.Collections": "4.0.11",
+        "System.Console": "4.0.0",
+        "System.Linq": "4.1.0",
+        "System.Threading": "4.0.11"
       }
     }
   }
