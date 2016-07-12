@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.1",
-    "Shed.Controllers": { "target": "project" }
+    "Shed.Controllers": "0.2.0"
   },
   "frameworks": {
     "uap10.0": {

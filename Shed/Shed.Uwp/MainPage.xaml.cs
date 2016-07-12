@@ -78,6 +78,7 @@ namespace Shed.Uwp
                 Constraints = { new SpeechRecognitionListConstraint(handlers.Keys) }
             };
             recognizer.ContinuousRecognitionSession.ResultGenerated += HandleVoiceCommand;
+            recognizer.ContinuousRecognitionSession.AutoStopSilenceTimeout = TimeSpan.FromDays(1000);
             recognizer.StateChanged += HandleStateChange;
 
             SpeechRecognitionCompilationResult compilationResult = await recognizer.CompileConstraintsAsync();
