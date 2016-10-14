@@ -46,6 +46,7 @@ local.properties
 
 # Nuget
 /*/packages/*/
+/*/*/packages/*/
 
 # Build results
 

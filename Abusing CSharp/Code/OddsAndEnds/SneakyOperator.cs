@@ -1,6 +1,7 @@
 ﻿// Copyright 2014 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
 using System;
 
+/* Fails to compile with C# 6 compiler. Good riddance... sort of.
 namespace OddsAndEnds
 {
     class SneakyOperator : ArithmeticOperator
@@ -41,3 +42,4 @@ namespace OddsAndEnds
         }
     }
 }
+*/

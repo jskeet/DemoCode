@@ -32,7 +32,7 @@ namespace CSharp6
                 {
                     InnerMethod(i);
                 }
-                catch (Exception e) if (new LogContextEntry {[nameof(n)] = n,[nameof(i)] = i }.AddTo(e))
+                catch (Exception e) when (new LogContextEntry {[nameof(n)] = n,[nameof(i)] = i }.AddTo(e))
                 { /* Never get here... */ }
             }
         }
@@ -46,7 +46,7 @@ namespace CSharp6
                     GoBang();
                 }
             }
-            catch (Exception e) if (new LogContextEntry {[nameof(x)] = x,["now"] = DateTime.Now }.AddTo(e))
+            catch (Exception e) when (new LogContextEntry {[nameof(x)] = x,["now"] = DateTime.Now }.AddTo(e))
             { /* Never get here... */ }
         }
 
