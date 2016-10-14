@@ -227,3 +227,6 @@ RabbitHole/Code/packages/
 # More Visual Studio...
 .vs
 project.lock.json
+
+# Coderush
+.cr
