@@ -1,4 +1,7 @@
-﻿// Variation: abstract class with internal abstract member, can only be derived
+﻿// Copyright 2016 Jon Skeet. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+// Variation: abstract class with internal abstract member, can only be derived
 // from within the same assembly.
 
 public class UnsealedPrivateConstructor

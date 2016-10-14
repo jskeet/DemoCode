@@ -1,4 +1,7 @@
-﻿public sealed class ObservablyImmutable
+﻿// Copyright 2016 Jon Skeet. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+public sealed class ObservablyImmutable
 {
     private int cachedHash;
 

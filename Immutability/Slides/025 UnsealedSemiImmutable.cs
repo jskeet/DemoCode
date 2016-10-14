@@ -1,4 +1,7 @@
-﻿public class UnsealedSemiImmutable
+﻿// Copyright 2016 Jon Skeet. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+public class UnsealedSemiImmutable
 {
     public int Value { get; }
 

@@ -1,6 +1,6 @@
 ﻿Future
 
-- C# 7
+- C# 8 (maybe)
   - Record types
   - "With" for record types
   - "With" for other types?
