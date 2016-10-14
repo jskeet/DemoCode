@@ -46,9 +46,10 @@ namespace Shed.Uwp
             { "amplifier quiet", () => Amplifier.SetVolume(30) },
             { "amplifier medium", () => Amplifier.SetVolume(50) },
             { "amplifier loud", () => Amplifier.SetVolume(60) },
-            { "amplifier source pie", () => Amplifier.Source("pi") },
-            { "amplifier source sonos", () => Amplifier.Source("sonos") },
-            { "amplifier source playstation", () => Amplifier.Source("ps4") }
+            { "amplifier input dock", () => Amplifier.Source("dock") },
+            { "amplifier input pie", () => Amplifier.Source("pi") },
+            { "amplifier input sonos", () => Amplifier.Source("sonos") },
+            { "amplifier input playstation", () => Amplifier.Source("ps4") }
         }.WithKeyPrefix(Prefix);
 
         // Unclear whether we really need an instance variable here. If we just

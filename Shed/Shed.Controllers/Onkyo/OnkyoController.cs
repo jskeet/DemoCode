@@ -12,11 +12,13 @@ using System.Threading;
 
 namespace Shed.Controllers.Onkyo
 {
+    // See http://simon.aldrich.eu/download/onkyo-iscp/ISCP-V1.21_2011.xls
     [Description("Amp")]
     public sealed class OnkyoController
     {
         private static readonly ImmutableDictionary<string, string> Sources = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase)
         {
+            { "dock", "01" },
             { "ps4", "02" },
             { "sonos", "23" },
             { "pi", "05" }
