@@ -47,6 +47,7 @@
     <Compile Include="025 UnsealedSemiImmutable.cs" />
     <Compile Include="027 ReallyObviouslyImmutable.cs" />
     <Compile Include="026 Unsealed private constructor.cs" />
+    <Compile Include="028 NotQuiteImmutableReally.cs" />
     <Compile Include="LongRunningLoop.cs" />
     <Compile Include="Scratchpad.cs" />
     <Content Include="050 Examples.txt" />
@@ -60,6 +61,8 @@
     <Content Include="030 Benefits.txt" />
     <Content Include="040 Language evolution.txt" />
     <Content Include="060 Memory model.txt" />
+    <Content Include="072 Issues - More thoughts.txt" />
+    <Content Include="071 Issues - Antipatterns.txt" />
     <Content Include="070 Issues.txt" />
     <Content Include="080 Future.txt" />
   </ItemGroup>

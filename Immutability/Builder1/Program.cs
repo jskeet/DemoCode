@@ -9,7 +9,10 @@ class Program
         {
             Name = "Jon",
             Address = new Address.Builder { City = "Reading", Street = "..." }.Build(),
-            Phones = { }
+            Phones = {
+                new PhoneNumber.Builder { Type = PhoneNumberType.Home, Number = "1234" }.Build(),
+                new PhoneNumber.Builder { Type = PhoneNumberType.Mobile, Number = "5678" }.Build(),
+            }
         }.Build();
     }
 }

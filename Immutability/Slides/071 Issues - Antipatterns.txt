@@ -1,0 +1,13 @@
+﻿Naming:
+- IReadOnlyCollection<T> isn't
+
+Freezing:
+- Feels good, but introduces complexity: reasoning is hard
+
+Mutable/immutable variants:
+- Joda Time type hierarchy (simplified):
+
+               ReadableInstant
+			 /                 \
+        Instant             MutableInstant
+- What do you accept as a method parameter? What do you return?

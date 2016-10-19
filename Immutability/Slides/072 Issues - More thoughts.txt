@@ -1,0 +1,9 @@
+﻿- Cycles are hard to initialize (let rec in F#...)
+- Fundamentally, our type systems are about allowing rather than prohibiting
+  - Immutability inverts things, e.g. return IImmutableList<T> rather than IList<T>
+  - Even *accepting* an IReadOnlyCollection<T>, I can't keep a reference to it
+- Reminiscent of nullity checking: constant vigilance required
+- We have "initialize, use, dispose" lifecycle already in the language
+- Initialize is restricted to constructor
+  - Don't leak "this"!
+  - Overly restrictive; want to be able to do more

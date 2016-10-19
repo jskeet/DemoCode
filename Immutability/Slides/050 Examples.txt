@@ -11,7 +11,7 @@ Address
 - City
 
 Phone number:
-- Number
+- Number (string, currently; should be E164)
 - Type (enum)
 
 Number type:

@@ -12,5 +12,9 @@ namespace Slides
     class Scratchpad
     {
         // Code to mess with during the talk goes here
+
+        static void Main()
+        {
+        }
     }
 }
