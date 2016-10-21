@@ -17,6 +17,13 @@ namespace CSharp6
             Console.WriteLine($"{((Func<string>)(() => {Console.WriteLine("hello"); return "y";}))()}");
             // Simplified with a method call to avoid the cast...
             Console.WriteLine($"{F(() => { Console.WriteLine("hello"); return "y"; })}");
+
+            // Whole program in a string...
+            Console.WriteLine($@"Hello {((Func<string>)(() =>
+            {
+                Console.Write("What's your name? ");
+                return Console.ReadLine();
+            }))()}!");
         }
 
         static string F(Func<string> func)
