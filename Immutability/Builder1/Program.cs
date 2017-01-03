@@ -8,10 +8,19 @@ class Program
         var jon = new Person.Builder
         {
             Name = "Jon",
-            Address = new Address.Builder { City = "Reading", Street = "..." }.Build(),
+            Address = new Address.Builder {
+                City = "Reading",
+                Street = "..."
+            }.Build(),
             Phones = {
-                new PhoneNumber.Builder { Type = PhoneNumberType.Home, Number = "1234" }.Build(),
-                new PhoneNumber.Builder { Type = PhoneNumberType.Mobile, Number = "5678" }.Build(),
+                new PhoneNumber.Builder {
+                    Type = PhoneNumberType.Home,
+                    Number = "1234"
+                }.Build(),
+                new PhoneNumber.Builder {
+                    Type = PhoneNumberType.Mobile,
+                    Number = "5678"
+                }.Build(),
             }
         }.Build();
     }

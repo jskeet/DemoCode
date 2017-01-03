@@ -7,10 +7,8 @@ using System.Threading;
 public class MemoryModelInsanity1
 {
     // How can this throw a NullReferenceException?
-    public static int Foo(string x)
-    {
-        return x == null ? -1 : x.Length * 2;
-    }
+    public static int Foo(string x) =>
+        x == null ? -1 : x.Length * 2;
 }
 
 // In theory... (but not reality)

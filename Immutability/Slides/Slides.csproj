@@ -45,9 +45,9 @@
     <Compile Include="021 Mutable.cs" />
     <Compile Include="024 ObservablyImmutable.cs" />
     <Compile Include="025 UnsealedSemiImmutable.cs" />
+    <Compile Include="026 NotQuiteImmutableReally.cs" />
     <Compile Include="027 ReallyObviouslyImmutable.cs" />
-    <Compile Include="026 Unsealed private constructor.cs" />
-    <Compile Include="028 NotQuiteImmutableReally.cs" />
+    <Compile Include="028 Unsealed private constructor.cs" />
     <Compile Include="LongRunningLoop.cs" />
     <Compile Include="Scratchpad.cs" />
     <Content Include="050 Examples.txt" />

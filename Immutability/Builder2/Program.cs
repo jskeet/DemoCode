@@ -10,6 +10,6 @@ class Program
             Name = "Jon",
             Address = new Address.Builder { City = "Reading", Street = "..." }.Build(),
             Phones = { }
-        };
+        }.Build();
     }
 }

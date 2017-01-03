@@ -26,6 +26,7 @@ public class UsageOfShallowMutable
         StringBuilder x = new StringBuilder();
         var m = new ShallowImmutable(10, x);
         x.Append("foo");
+        Console.WriteLine(m.NameBuilder); // foo
         m.NameBuilder.Append("bar");
         Console.WriteLine(m.NameBuilder); // foobar
     }

@@ -1,6 +1,8 @@
 ﻿// Copyright 2016 Jon Skeet. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using System;
+
 public class UnsealedSemiImmutable
 {
     public int Value { get; }
@@ -18,21 +20,19 @@ public class DerivedMutable : UnsealedSemiImmutable
     public DerivedMutable(int value) : base(value)
     {
     }
+
+    public override string ToString() => OtherValue.ToString();
 }
 
 public class ExampleOfUnsealedImmutable
 {
-    private readonly UnsealedSemiImmutable foo;
-
-    public ExampleOfUnsealedImmutable(UnsealedSemiImmutable foo)
-    {
-        this.foo = foo;
-    }
-
     public static void Main()
     {
         var naughty = new DerivedMutable(1);
-        var example = new ExampleOfUnsealedImmutable(naughty);
+
+        UnsealedSemiImmutable isThisImmutable = naughty;
+        Console.WriteLine(isThisImmutable); // 0
         naughty.OtherValue = 10;
+        Console.WriteLine(isThisImmutable); // 10! State has changed.
     }
 }

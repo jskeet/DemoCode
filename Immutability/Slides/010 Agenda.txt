@@ -1,3 +1,5 @@
+Code at https://github.com/jskeet/DemoCode/Immutability
+
 - What is immutability?
 - Why do we like immutability?
 - C# evolution in immutability

@@ -33,7 +33,9 @@ public class UsageOfPopsicle
     {
         var popsicle = new Popsicle();
         popsicle.Value = 10;
+        popsicle.Value = 15;
         popsicle.Freeze();
+        Console.WriteLine(popsicle.Value); // 15? Memory model madness
         popsicle.Value = 20; // Bang!
     }
 }

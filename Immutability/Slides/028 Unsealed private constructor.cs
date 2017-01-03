@@ -4,7 +4,7 @@
 // Variation: abstract class with internal abstract member, can only be derived
 // from within the same assembly.
 
-public class UnsealedPrivateConstructor
+public abstract class UnsealedPrivateConstructor
 {
     public static UnsealedPrivateConstructor Foo { get; } = new Derived1();
     public static UnsealedPrivateConstructor Bar { get; } = new Derived2(1);
