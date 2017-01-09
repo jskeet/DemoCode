@@ -11,7 +11,7 @@ namespace OddsAndEnds
         {
             DateTime today = DateTime.Today;
             var (x, y, z) = today;
-            Console.WriteLine(today);
+            Console.WriteLine($"{x}/{y}/{z}");
         }
     }
 }

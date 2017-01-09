@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Copyright 2016 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+using System;
 
 namespace WorkingInPreview3
 {
@@ -18,9 +19,8 @@ namespace WorkingInPreview3
 
         static (bool success, int value) TryParse(string x)
         {
-            int value;
             // Somewhat confusing implementation, I'll admit...
-            return (int.TryParse(x, out value), value);
+            return (int.TryParse(x, out int value), value);
         }
     }
 }

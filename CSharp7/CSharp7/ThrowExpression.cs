@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright 2016 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+using System;
 
 namespace CSharp7
 {
@@ -14,7 +11,7 @@ namespace CSharp7
             string bar = CheckNotNull(foo, nameof(foo));
         }
 
-        static T CheckNotNull<T>(T value, string name)
-            => value == null ? value : throw new ArgumentNullException(name);
+        static T CheckNotNull<T>(T value, string name) where T : class
+            => value ?? throw new ArgumentNullException(name);
     }
 }

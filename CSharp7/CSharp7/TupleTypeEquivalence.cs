@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright 2016 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+using System;
 
 namespace CSharp7
 {
     public static class ValueTupleExtensions
     {
         public static ValueTuple<T1, T2, T3> With<T1, T2, T3>(
-            this ValueTuple<T1, T2> tuple, T3 other)
-            => (tuple.Item1, tuple.Item2, other);
+            this ValueTuple<T1, T2> tuple, T3 other) =>
+            (tuple.Item1, tuple.Item2, other);
     }
 
     class TupleTypeEquivalence

@@ -1,7 +1,8 @@
-﻿using System;
+﻿// Copyright 2016 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
+/*
 namespace CSharp7
 {
     class AsyncReturn
@@ -55,3 +56,4 @@ namespace CSharp7
         }
     }
 }
+*/
