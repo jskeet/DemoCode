@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSharp7
+namespace WorkingInPreview3
 {
     class TryParseRevisited
     {
