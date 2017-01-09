@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright 2017 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+using System;
 
-namespace CSharp6
+namespace StringInterpolation
 {
-    class StringInterpolation
+    class LambdaExpressions
     {
         static void Main()
         {
@@ -14,21 +11,18 @@ namespace CSharp6
             // Console.WriteLine("\{{Console.WriteLine("hello"); return "y";}}");
 
             // But lambda expressions are!
-            Console.WriteLine($"{((Func<string>)(() => {Console.WriteLine("hello"); return "y";}))()}");
+            Console.WriteLine($"{((Func<string>) (() => { Console.WriteLine("hello"); return "y"; }))()}");
             // Simplified with a method call to avoid the cast...
             Console.WriteLine($"{F(() => { Console.WriteLine("hello"); return "y"; })}");
 
             // Whole program in a string...
-            Console.WriteLine($@"Hello {((Func<string>)(() =>
+            Console.WriteLine($@"Hello {((Func<string>) (() =>
             {
                 Console.Write("What's your name? ");
                 return Console.ReadLine();
             }))()}!");
         }
 
-        static string F(Func<string> func)
-        {
-            return func();
-        }
+        static string F(Func<string> func) => func();
     }
 }

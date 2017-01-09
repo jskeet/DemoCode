@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26009.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWithAwaiters", "FunWithAwaiters\FunWithAwaiters.csproj", "{3C95E21E-8080-4007-BD07-62ACDB4F02FE}"
 EndProject
@@ -21,16 +21,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperatorAbuse", "OperatorAb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsAndEnds", "OddsAndEnds\OddsAndEnds.csproj", "{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp6", "CSharp6\CSharp6.csproj", "{AF44B75E-B202-499E-AF4C-D9CCAC338733}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance", "Performance\Performance.csproj", "{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{348D1E8A-3E03-4998-99CE-222EA4E3B9D9}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringInterpolation", "StringInterpolation\StringInterpolation.csproj", "{F66F5289-FCDF-41E9-AA8A-7D44BA122E5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionFilters", "ExceptionFilters\ExceptionFilters.csproj", "{52F1308B-8861-40F1-8FDD-2FCA4AD29E38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullConditional", "NullConditional\NullConditional.csproj", "{E510ED31-7960-424E-90DB-B0C9B0C9B497}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,14 +71,22 @@ Global
 		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7585BEF9-0348-4CC3-AA9E-C77DF3C5DE11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF44B75E-B202-499E-AF4C-D9CCAC338733}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B6AECB5-CCD7-4F91-9D8A-5CAF92B9EDA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F66F5289-FCDF-41E9-AA8A-7D44BA122E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F66F5289-FCDF-41E9-AA8A-7D44BA122E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F66F5289-FCDF-41E9-AA8A-7D44BA122E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F66F5289-FCDF-41E9-AA8A-7D44BA122E5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52F1308B-8861-40F1-8FDD-2FCA4AD29E38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52F1308B-8861-40F1-8FDD-2FCA4AD29E38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52F1308B-8861-40F1-8FDD-2FCA4AD29E38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52F1308B-8861-40F1-8FDD-2FCA4AD29E38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

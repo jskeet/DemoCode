@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace CSharp6
+namespace ExceptionFilters
 {
     class ExceptionContext
     {
