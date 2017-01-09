@@ -61,14 +61,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncReturn.cs" />
-    <Compile Include="ExplicitTupleDecomposition.cs" />
     <Compile Include="ExtensionEverything.cs" />
-    <Compile Include="OutVar.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyMatch.cs" />
-    <Compile Include="ThrowExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
