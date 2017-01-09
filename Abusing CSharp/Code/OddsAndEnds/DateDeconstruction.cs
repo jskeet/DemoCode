@@ -3,6 +3,8 @@ using System;
 
 namespace OddsAndEnds
 {
+    using static OddsAndEnds.DateFormatting.DateTimeExtensions;
+
     class DateDeconstruction
     {
         static void Main()
