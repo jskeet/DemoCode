@@ -1,5 +1,6 @@
 ﻿// Copyright 2017 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
 using System;
+using System.Threading;
 using static StringInterpolation.Capture;
 
 namespace StringInterpolation
@@ -14,6 +15,13 @@ namespace StringInterpolation
 
             value = "After";
             Console.WriteLine(formattable);
+
+            formattable = $"Current time: {_(() => DateTime.UtcNow):HH:mm:ss.fff}";
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine(formattable);
+                Thread.Sleep(1000);
+            }
         }
     }
 

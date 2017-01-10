@@ -49,7 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveLogger.cs" />
     <Compile Include="LazyDetailedExceptions.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="LoggingDemo.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
