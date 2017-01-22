@@ -1,11 +1,9 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.1",
-    "Shed.Controllers": "0.2.1"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2"
   },
   "frameworks": {
-    "uap10.0": {
-    }
+    "uap10.0": {}
   },
   "runtimes": {
     "win10-arm": {},

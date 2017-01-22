@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="Shed.Uwp" Publisher="CN=Jon" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="5efb0820-935c-41c4-831a-296d35b0e26d" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="4ad61df3-0c44-4c5e-9fac-ec424700892b" Publisher="CN=skeet" Version="1.0.0.0" />
+  <mp:PhoneIdentity PhoneProductId="4ad61df3-0c44-4c5e-9fac-ec424700892b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Shed.Uwp</DisplayName>
-    <PublisherDisplayName>Jon</PublisherDisplayName>
+    <PublisherDisplayName>skeet</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -17,9 +17,6 @@
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Shed.Uwp.App">
       <uap:VisualElements DisplayName="Shed.Uwp" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Shed.Uwp" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
-          <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="square150x150Logo" />
-          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
