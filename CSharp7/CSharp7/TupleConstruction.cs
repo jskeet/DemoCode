@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSharp7
 {
@@ -18,9 +14,15 @@ namespace CSharp7
             Console.WriteLine(tuple2.Item1);
             Console.WriteLine(tuple2.Item2);
 
-            var tuple4 = (a: 1, b: 2);
-            Console.WriteLine(tuple4.a);
-            Console.WriteLine(tuple4.b);
+            var tuple3 = (a: 1, b: 2);
+            Console.WriteLine(tuple3.a);
+            Console.WriteLine(tuple3.b);
+
+            // Names specified by declaration
+            (long a, int b) tuple4 = (1, 2);
+
+            // No names in declaration, so names in construction are irrelevant
+            (long, int) tuple5 = (a: 1, b: 2);
         }
     }
 }

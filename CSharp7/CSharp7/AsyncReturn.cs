@@ -2,58 +2,102 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-/*
+
+namespace System.Runtime.CompilerServices
+{
+    class AsyncMethodBuilderAttribute : Attribute
+    {
+        public AsyncMethodBuilderAttribute(Type t) { }
+    }
+}
+
 namespace CSharp7
 {
     class AsyncReturn
     {
-        static async CustomTask<int> FooAsync()
+        static async CustomTask<int> CustomAsync()
         {
             Console.WriteLine("Before await");
             await Task.Delay(5000);
             Console.WriteLine("After await");
             return 10;
         }
+
+        static async Task RegularAsync()
+        {
+            int result = await CustomAsync();
+            Console.WriteLine(result);
+        }
+
+        static void Main()
+        {
+            RegularAsync().Wait();
+        }
     }
 
-    public class CustomTask<T>
+    [AsyncMethodBuilder(typeof(CustomTaskMethodBuilder<>))]
+    struct CustomTask<T>
     {
-        public static CustomTaskBuilder CreateAsyncMethodBuilder() =>
-            new CustomTaskBuilder();
-
-        public CustomTaskAwaiter GetAwaiter() =>
-            new CustomTaskAwaiter();
-
-        public class CustomTaskBuilder
+        internal T _result;
+        public T Result => _result;
+        internal Awaiter GetAwaiter() => new Awaiter(this);
+        internal class Awaiter : INotifyCompletion
         {
-            public void SetStateMachine(IAsyncStateMachine stateMachine) { }
+            private readonly CustomTask<T> _task;
+            internal Awaiter(CustomTask<T> task) { _task = task; }
+            public void OnCompleted(Action a) { }
+            internal bool IsCompleted => true;
+            internal T GetResult() => _task.Result;
+        }
+    }
 
-            public void Start<TSM>(ref TSM stateMachine) where TSM : IAsyncStateMachine
-            { }
-
-            public void AwaitOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
-                where TA : INotifyCompletion where TSM : IAsyncStateMachine
-            { }
-
-            public void AwaitUnsafeOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
-                where TA : ICriticalNotifyCompletion where TSM : IAsyncStateMachine
-            { }
-
-            public void SetResult(T result) { }
-            public void SetException(Exception ex) { }
-            public CustomTask<T> Task { get; }
+    struct CustomTaskMethodBuilder<T>
+    {
+        private CustomTask<T> _task;
+        public static CustomTaskMethodBuilder<T> Create() =>
+            new CustomTaskMethodBuilder<T>(new CustomTask<T>());
+        internal CustomTaskMethodBuilder(CustomTask<T> task)
+        {
+            _task = task;
         }
 
-        public class CustomTaskAwaiter : INotifyCompletion
+        public void SetStateMachine(IAsyncStateMachine stateMachine)
         {
-            public void OnCompleted(Action continuation)
-            {                
-            }
-
-            public bool IsCompleted { get; }
-
-            public T GetResult() => default(T);            
+            Console.WriteLine("SetStateMachineCalled");
         }
+
+        public void Start<TStateMachine>(ref TStateMachine stateMachine)
+            where TStateMachine : IAsyncStateMachine
+        {
+            Console.WriteLine("Start called");
+            stateMachine.MoveNext();
+        }
+
+        public void SetException(Exception e)
+        {
+            Console.WriteLine("SetException called");
+        }
+
+        public void SetResult(T t)
+        {
+            Console.WriteLine("SetResult called");
+            _task._result = t;
+        }
+
+        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : INotifyCompletion
+            where TStateMachine : IAsyncStateMachine
+        {
+            Console.WriteLine("AwaitOnCompleted called");
+        }
+
+        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
+            where TAwaiter : ICriticalNotifyCompletion
+            where TStateMachine : IAsyncStateMachine
+        {
+            Console.WriteLine("AwaitUnsafeOnCompleted called");
+        }
+
+        public CustomTask<T> Task => _task;
     }
 }
-*/

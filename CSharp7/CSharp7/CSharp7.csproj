@@ -41,10 +41,14 @@
       <HintPath>..\packages\JonSkeet.MiscUtil.0.1\lib\net35-Client\MiscUtil.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NodaTime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NodaTime.2.0.0-beta20170123\lib\net45\NodaTime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ValueTuple, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.0.0-rc3-24212-01\lib\netstandard1.1\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -56,8 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncReturn.cs" />
-    <Compile Include="EvilDeconstruction.cs" />
-    <Compile Include="ExplicitTupleDecomposition.cs" />
+    <Compile Include="ExtensionMethodDeconstruction.cs" />
+    <Compile Include="TupleDeconstruction.cs" />
     <Compile Include="LocalFunctions1.cs" />
     <Compile Include="LocalFunctions2.cs" />
     <Compile Include="NamedTuple2.cs" />

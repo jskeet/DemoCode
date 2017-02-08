@@ -3,7 +3,7 @@ using System;
 
 namespace CSharp7
 {
-    class ExplicitTupleDecomposition
+    class TupleDeconstruction
     {
         static void Main()
         {

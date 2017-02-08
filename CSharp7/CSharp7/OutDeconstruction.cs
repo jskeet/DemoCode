@@ -7,15 +7,16 @@ namespace CSharp7
     {
         public static void Main()
         {
+            int code = 20;
+            string message = "Before";
+            // Deconstruct any object with a proper Deconstruct method into existing variables
+            // (or properties)
+            (code, message) = new Deconstructable { X = 10, Message = "Hi" };
+            Console.Write(message); // "Hi"
 
-            
-            var (code, message) = new Deconstructable { X = 10, Message = "Hi" }; // deconstruct any object with a proper Deconstruct method into existing variables
-            Console.Write(message); // world
-
+            // Deconstruct into new var variables
             var (code2, message2, exception) = new Deconstructable();
-            var (code3, message3) = new Deconstructable(); // deconstruct into new 'var' variables
-
-            var (c, m, error) = new Deconstructable();
+            var (code3, message3) = new Deconstructable();
         }
     }
 
