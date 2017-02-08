@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="AsyncReturn.cs" />
     <Compile Include="ExtensionMethodDeconstruction.cs" />
-    <Compile Include="ReturningTuple.cs" />
     <Compile Include="Scratchpad.cs" />
     <Compile Include="TupleConversion.cs" />
     <Compile Include="TupleDeconstruction.cs" />
