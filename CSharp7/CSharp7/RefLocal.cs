@@ -20,6 +20,11 @@ namespace CSharp7
             Console.WriteLine(array[1].a); // 0
             for (int i = 0; i < array.Length; i++)
             {
+                // Creates a copy - not what we want
+                BigStruct local = array[i];
+                local.b++; // Doesn't affect array
+                array[i] = local; // Copy back into array
+
                 ref BigStruct refLocal = ref array[i];
                 if (refLocal.x < i)
                 {

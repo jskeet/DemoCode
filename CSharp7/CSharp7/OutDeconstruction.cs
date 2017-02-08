@@ -26,11 +26,9 @@ namespace CSharp7
         public string Message { get; set; }
         public Exception Error { get; set; }
 
-        public void Deconstruct(out int x, out string message)
-        {
-            x = X;
-            message = Message;
-        }
+        // Nifty trick: use tuple deconstruction for the body
+        // Performance implications?
+        public void Deconstruct(out int x, out string message) => (x, message) = (X, Message);
 
         internal void Deconstruct(out int x, out string message, out Exception e)
         {
@@ -38,5 +36,7 @@ namespace CSharp7
             message = Message;
             e = Error;
         }
+
+        internal void CopyTo(Deconstructable other) => (other.X, other.Message, other.Error) = this;
     }
 }

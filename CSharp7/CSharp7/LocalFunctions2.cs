@@ -9,9 +9,11 @@ namespace CSharp7
     {
         static void Main()
         {
+            int[] source = null;
+            // Doesn't go bang!
+            SelectBroken(source, x => x * 2);
             try
             {
-                int[] source = null;
                 Select1(source, x => x * 2);
             }
             catch (ArgumentNullException)
@@ -34,6 +36,33 @@ namespace CSharp7
             {
                 throw new ArgumentNullException(nameof(selector));
             }
+            foreach (var item in source)
+            {
+                yield return selector(item);
+            }
+        }
+
+        // Not iterator method (eagerly evaluated)
+        static IEnumerable<TResult> SelectOldSchool<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult> selector)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+            return SelectOldSchoolImpl(source, selector);
+        }
+
+        // Iterator method (lazily evaluated)
+        static IEnumerable<TResult> SelectOldSchoolImpl<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult> selector)
+        {
             foreach (var item in source)
             {
                 yield return selector(item);

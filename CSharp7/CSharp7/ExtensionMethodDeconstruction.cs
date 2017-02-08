@@ -10,7 +10,7 @@ namespace CSharp7
         static void Main()
         {
             var clock = SystemClock.Instance.InUtc();
-            var today = clock.GetCurrentDate();
+            LocalDate today = clock.GetCurrentDate();
 
             // Different names just for clarity...
             var (y, m, d) = today;

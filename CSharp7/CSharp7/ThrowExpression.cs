@@ -13,5 +13,12 @@ namespace CSharp7
 
         static T CheckNotNull<T>(T value, string name) where T : class
             => value ?? throw new ArgumentNullException(name);
+
+        // Could use switch/case with pattern matching now
+        static int DoSomething(string x) =>
+            x == "foo" ? 10
+            : x == "bar" ? 20
+            : x.Length > 5 ? 30
+            : throw new ArgumentException("x must be foo or bar, or longer than 5");
     }
 }

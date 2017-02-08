@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 
 namespace CSharp7
 {
@@ -13,7 +14,7 @@ namespace CSharp7
             var tuple2 = new ValueTuple<int, long>(1, 2);
             Console.WriteLine(tuple2.Item1);
             Console.WriteLine(tuple2.Item2);
-
+            
             var tuple3 = (a: 1, b: 2);
             Console.WriteLine(tuple3.a);
             Console.WriteLine(tuple3.b);
@@ -22,7 +23,7 @@ namespace CSharp7
             (long a, int b) tuple4 = (1, 2);
 
             // No names in declaration, so names in construction are irrelevant
-            (long, int) tuple5 = (a: 1, b: 2);
+            var tuple5 = (a: 1, b: 2);
         }
     }
 }

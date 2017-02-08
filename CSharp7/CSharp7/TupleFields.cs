@@ -28,7 +28,7 @@ namespace CSharp7
 
         void IncrementY()
         {
-            counters.x++;
+            counters.y++;
         }
     }
 }
