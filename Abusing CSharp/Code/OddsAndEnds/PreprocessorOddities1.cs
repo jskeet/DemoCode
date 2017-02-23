@@ -2,7 +2,6 @@
 
 #define FOO
 using System;
-using System.ComponentModel;
 
 namespace OddsAndEnds
 {

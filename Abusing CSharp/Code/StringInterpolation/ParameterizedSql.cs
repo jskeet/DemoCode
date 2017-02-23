@@ -31,6 +31,9 @@ namespace StringInterpolation
         public static SqlCommand NewSqlCommand(
             this SqlConnection conn, FormattableString formattableString)
         {
+            // formattableString.Format will be
+            // "SELECT * FROM SomeTable WHERE name={0:nvarchar} AND id={1}"
+            // formattableString.GetArguments() will return { "Cori", 10 }
             SqlParameter[] sqlParameters = formattableString.GetArguments()
                 .Select((value, position) =>
                     new SqlParameter(Invariant($"@p{position}"), value))
@@ -55,6 +58,7 @@ namespace StringInterpolation
 
             public string ToString(string format, IFormatProvider formatProvider)
             {
+                // format will be "nvarchar" for p0, and null (or "") for p1
                 if (!string.IsNullOrEmpty(format))
                 {
                     parameter.SqlDbType =

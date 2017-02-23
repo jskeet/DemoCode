@@ -28,11 +28,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;US_DATE_FORMAT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>OddsAndEnds.Program</StartupObject>
@@ -57,9 +58,12 @@
     <Compile Include="ArithmeticOperator.cs" />
     <Compile Include="AsciiArtProperty.cs" />
     <Compile Include="DateDeconstruction.cs" />
+    <Compile Include="DateDeconstruction2.cs" />
     <Compile Include="DateTimeExtensions.cs" />
+    <Compile Include="EmptyEnumerables.cs" />
     <Compile Include="MongolianVowelSeparator.cs" />
     <Compile Include="NameOfAnything.cs" />
+    <Compile Include="NameofIntro.cs" />
     <Compile Include="PreprocessorOddities1.cs" />
     <Compile Include="PreprocessorOddities2.cs" />
     <Compile Include="Program.cs" />
@@ -67,6 +71,7 @@
     <Compile Include="ShowMongolianVowelSeparator.cs" />
     <Compile Include="SneakyOperator.cs" />
     <Compile Include="SneakyOperatorDemo.cs" />
+    <Compile Include="TypeParameterAttributes.cs" />
     <Compile Include="WhereAsEnumerable.cs" />
   </ItemGroup>
   <ItemGroup>

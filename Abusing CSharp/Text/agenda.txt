@@ -1,0 +1,22 @@
+(Odds and Ends)
+Mongolian Vowel Separator
+nameof anything
+Date deconstruction
+ASCII art separators
+Preprocessor oddities
+
+(String interpolation)
+Lambda expressions
+Regular then lazy evaluation
+Parameterized SQL
+
+(Performance)
+Large structs
+
+(Null conditional)
+Preconditions
+Logging
+
+(Exception filters)
+Direct vs reflection
+Exception context

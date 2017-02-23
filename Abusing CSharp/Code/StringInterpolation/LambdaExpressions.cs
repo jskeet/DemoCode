@@ -8,10 +8,15 @@ namespace StringInterpolation
         static void Main()
         {
             // Braces for multiple statements aren't allowed...
-            // Console.WriteLine("\{{Console.WriteLine("hello"); return "y";}}");
+            // Console.WriteLine($"{{Console.WriteLine("hello"); return "y";}}");            
 
-            // But lambda expressions are!
-            Console.WriteLine($"{((Func<string>) (() => { Console.WriteLine("hello"); return "y"; }))()}");
+            // Lambda expressions don't have a type...
+            // Console.WriteLine($"{() => "won't work"}");
+            
+            // ... but you can cast lambda expressions to specific
+            // delegate types.
+            Console.WriteLine($"{((Func<string>) (() => { Console.WriteLine("hello"); return "y"; })).Invoke()}");
+
             // Simplified with a method call to avoid the cast...
             Console.WriteLine($"{F(() => { Console.WriteLine("hello"); return "y"; })}");
 

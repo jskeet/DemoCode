@@ -18,6 +18,7 @@ namespace NullConditional
         static void Foo(int start, int end)
         {
             Preconditions.CheckArgument(start <= end, nameof(start))?.Report($"Start must be <= end; start={start}; end={end}");
+            // Do useful stuff here.
         }
     }
 }

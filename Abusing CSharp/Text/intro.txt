@@ -1,0 +1,16 @@
+                   
+				   Abusing C# (more)
+				       Jon Skeet
+
+
+Welcome!
+
+Code is all at https://github.com/jskeet/democode
+(under Abusing CSharp)
+
+Do not use any of this code in production!
+
+Me:
+Twitter: @jonskeet
+Code blog: https://codeblog.jonskeet.uk
+Non-code blog: https://blog.jonskeet.uk
