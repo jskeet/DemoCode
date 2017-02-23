@@ -5,28 +5,23 @@ namespace Performance
 {
     public struct Int256
     {
-        private readonly long bits0;
-        private readonly long bits1;
-        private readonly long bits2;
-        private readonly long bits3;
+        public long Bits0 { get; }
+        public long Bits1 { get; }
+        public long Bits2 { get; }
+        public long Bits3 { get; }
 
         public Int256(long bits0, long bits1, long bits2, long bits3)
         {
-            this.bits0 = bits0;
-            this.bits1 = bits1;
-            this.bits2 = bits2;
-            this.bits3 = bits3;
+            Bits0 = bits0;
+            Bits1 = bits1;
+            Bits2 = bits2;
+            Bits3 = bits3;
         }
-
-        public long Bits0 { get { return bits0; } }
-        public long Bits1 { get { return bits1; } }
-        public long Bits2 { get { return bits2; } }
-        public long Bits3 { get { return bits3; } }
     }
 
     class LargeStructs
     {
-        private readonly Int256 value;
+        private Int256 value;
 
         public LargeStructs()
         {
@@ -55,9 +50,6 @@ namespace Performance
             Console.WriteLine("Total time: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        static void Main()
-        {
-            new LargeStructs().RunTest();
-        }
+        static void Main() => new LargeStructs().RunTest();
     }
 }

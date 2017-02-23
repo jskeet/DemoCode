@@ -8,7 +8,7 @@ namespace OddsAndEnds
         static void Main()
         {
             dynamic d = null;
-            Console.WriteLine(nameof(d.Anything));
+            Console.WriteLine(nameof(d.HelloWorld));
             Console.WriteLine(nameof(d.Mongolian᠎Vowel᠎Separator));
             Console.WriteLine(nameof(d.Mongolian᠎Vowel᠎Separator).Length);
             Console.WriteLine("Mongolian᠎Vowel᠎Separator".Length);

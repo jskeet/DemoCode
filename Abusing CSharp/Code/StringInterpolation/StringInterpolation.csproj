@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LambdaExpressions.cs" />
+    <Compile Include="LazyLinq.cs" />
+    <Compile Include="RegularEvaluation.cs" />
     <Compile Include="ParameterizedSql.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

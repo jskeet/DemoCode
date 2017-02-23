@@ -27,7 +27,7 @@ namespace StringInterpolation
 
     class Capture : IFormattable
     {
-        private readonly Func<object> provider;
+        private readonly Func<object> valueProvider;
 
         public static Capture _(Func<object> provider)
         {
@@ -36,7 +36,7 @@ namespace StringInterpolation
 
         public Capture(Func<object> provider)
         {
-            this.provider = provider;
+            this.valueProvider = provider;
         }
 
         public override string ToString()
@@ -46,7 +46,7 @@ namespace StringInterpolation
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            object value = provider();
+            object value = valueProvider();
             if (value == null)
             {
                 return "";

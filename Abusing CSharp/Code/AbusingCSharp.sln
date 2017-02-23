@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26009.0
+VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWithAwaiters", "FunWithAwaiters\FunWithAwaiters.csproj", "{3C95E21E-8080-4007-BD07-62ACDB4F02FE}"
 EndProject
@@ -28,6 +28,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionFilters", "ExceptionFilters\ExceptionFilters.csproj", "{52F1308B-8861-40F1-8FDD-2FCA4AD29E38}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NullConditional", "NullConditional\NullConditional.csproj", "{E510ED31-7960-424E-90DB-B0C9B0C9B497}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Text", "Text", "{55FA2DC3-0C28-4722-9CEE-F450B1E3B310}"
+	ProjectSection(SolutionItems) = preProject
+		..\Text\agenda.txt = ..\Text\agenda.txt
+		..\Text\intro.txt = ..\Text\intro.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
