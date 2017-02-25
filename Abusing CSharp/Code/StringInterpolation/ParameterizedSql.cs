@@ -33,7 +33,7 @@ namespace StringInterpolation
         {
             // formattableString.Format will be
             // "SELECT * FROM SomeTable WHERE name={0:nvarchar} AND id={1}"
-            // formattableString.GetArguments() will return { "Cori", 10 }
+            // formattableString.GetArguments() will return { "Jon", 10 }
             SqlParameter[] sqlParameters = formattableString.GetArguments()
                 .Select((value, position) =>
                     new SqlParameter(Invariant($"@p{position}"), value))

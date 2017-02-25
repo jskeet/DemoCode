@@ -60,6 +60,7 @@
     <Compile Include="DateDeconstruction.cs" />
     <Compile Include="DateDeconstruction2.cs" />
     <Compile Include="DateTimeExtensions.cs" />
+    <Compile Include="DelegateEquality.cs" />
     <Compile Include="EmptyEnumerables.cs" />
     <Compile Include="MongolianVowelSeparator.cs" />
     <Compile Include="NameOfAnything.cs" />
