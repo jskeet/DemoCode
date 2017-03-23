@@ -17,6 +17,10 @@ namespace CSharp7
             // Deconstruct into new var variables
             var (code2, message2, exception) = new Deconstructable();
             var (code3, message3) = new Deconstructable();
+
+            // Deconstruct from existing instance
+            var instance = new Deconstructable { X = 10, Message = "Hi" };
+            var (code4, message4) = instance;
         }
     }
 

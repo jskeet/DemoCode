@@ -8,6 +8,11 @@ namespace CSharp7
         static void Main()
         {
             var (a, b, c) = CreateTuple();
+            // Equivalent to:
+            // var tuple = CreateTuple();
+            // var a = tuple.x;
+            // var b = tuple.y;
+            // var c = tuple.z;
             Console.WriteLine(a);
             Console.WriteLine(b);
             Console.WriteLine(c);
