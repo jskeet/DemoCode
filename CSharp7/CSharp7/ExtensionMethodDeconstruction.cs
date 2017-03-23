@@ -14,7 +14,7 @@ namespace CSharp7
 
             // Different names just for clarity...
             var (y, m, d) = today;
-            Console.WriteLine($"Year: {y}; Month: {m}; Day: {d}");
+            Console.WriteLine($"Year: {y}; Month: {m}; Day: {d}");            
         }
     }
 

@@ -24,7 +24,7 @@ namespace CSharp7
             if (x is int i)
             {
                 Console.WriteLine($"Got an Int32: {i}");
-            }            
+            }
         }
 
         static void PointlessConstantMatch(int x)

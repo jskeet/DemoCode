@@ -8,7 +8,9 @@ namespace CSharp7
     {
         static void Main()
         {
-            Console.WriteLine(SumAndCount(new[] { 5, 3, 1 }));
+            var result = SumAndCount(new[] { 5, 3, 1 });
+            Console.WriteLine($"Sum: {result.sum}");
+            Console.WriteLine($"Sum: {result.count}");
         }
 
         static (int sum, int count) SumAndCount(IEnumerable<int> values)

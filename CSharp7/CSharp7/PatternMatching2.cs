@@ -8,11 +8,13 @@ namespace CSharp7
         static void Main()
         {
             Console.WriteLine(DoesItBlend(1L));
+            Console.WriteLine(DoesItBlend(5L));
             Console.WriteLine(DoesItBlend("short"));
             Console.WriteLine(DoesItBlend("Long text"));
             Console.WriteLine(DoesItBlend(5));
             Console.WriteLine(DoesItBlend(6));
             Console.WriteLine(DoesItBlend(7));
+            Console.WriteLine(DoesItBlend(null));
         }
 
         static string DoesItBlend(object x)
