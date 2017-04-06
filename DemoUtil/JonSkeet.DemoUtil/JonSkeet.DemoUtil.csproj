@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.5</TargetFramework>
+    <PackageId>JonSkeet.DemoUtil</PackageId>
+    <Authors>Jon Skeet</Authors>
+    <Company />
+    <Product />
+    <Description>Utilities that are useful when demonstrating code.
+(e.g. for books, articles, conferences)</Description>
+    <PackageProjectUrl>https://github.com/jskeet/democode</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <PackageTags>demo utility</PackageTags>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <Copyright>Jon Skeet</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
