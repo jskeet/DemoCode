@@ -74,7 +74,7 @@ namespace JonSkeet.DemoUtil
                 do
                 {
                     Console.Out.Flush();
-                    char key = Console.ReadKey().KeyChar;
+                    char key = char.ToUpperInvariant(Console.ReadKey().KeyChar);
                     Console.WriteLine();
 
                     if (key == '\r' || key == '\n')
