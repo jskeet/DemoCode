@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JonSkeet.DemoUtil", "JonSkeet.DemoUtil\JonSkeet.DemoUtil.csproj", "{DA9AC72B-325D-4922-93B1-22B363CC1173}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JonSkeet.DemoUtil.Test", "JonSkeet.DemoUtil.Test\JonSkeet.DemoUtil.Test.csproj", "{ECC3E7F7-1540-4A67-89DA-923FF7A11276}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA9AC72B-325D-4922-93B1-22B363CC1173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA9AC72B-325D-4922-93B1-22B363CC1173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA9AC72B-325D-4922-93B1-22B363CC1173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA9AC72B-325D-4922-93B1-22B363CC1173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECC3E7F7-1540-4A67-89DA-923FF7A11276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECC3E7F7-1540-4A67-89DA-923FF7A11276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECC3E7F7-1540-4A67-89DA-923FF7A11276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECC3E7F7-1540-4A67-89DA-923FF7A11276}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <StartupObject>JonSkeet.DemoUtil.Test.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JonSkeet.DemoUtil\JonSkeet.DemoUtil.csproj" />
+  </ItemGroup>
+
+</Project>
