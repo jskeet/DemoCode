@@ -9,7 +9,7 @@ public sealed class ObservablyImmutable
 
     public ObservablyImmutable(string name)
     {
-        this.Name = Name;
+        this.Name = name;
     }
 
     public override bool Equals(object obj)
