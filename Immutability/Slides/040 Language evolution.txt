@@ -12,7 +12,6 @@ C# 2
 
 - public string Name { get; private set; }
 
-
 C# 3
 
 - Anonymous types (compare and contrast with VB)
@@ -38,3 +37,8 @@ C# 6 (cheers!)
 - Read-only autoprops (finally!)
 - Default values for autoprops
 - Expression-bodied members encourage *feeling* of immutability
+
+C# 7
+
+- ValueTuple (mutable struct with public fields!
+              Aargh... oh, all right then)

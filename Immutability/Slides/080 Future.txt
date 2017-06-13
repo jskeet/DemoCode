@@ -10,9 +10,10 @@
   - Part of the language
   - Something separate?
 
-- More in the BCL?
-  - .NET Core means "BCL" may have less meaning moving forward
-  - Line between "released" and "mainstream" blurs
+- More in the framework?
+  - System.Collections.Immutable is in .NET Core, but not .NET Standard (yet)
+  - Line between "released" and "mainstream" blurs as official NuGet packages
+    are common
 
 - More memory model details?
   - Could make it sane
