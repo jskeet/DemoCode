@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Text", "Text", "{55FA2DC3-0
 		..\Text\intro.txt = ..\Text\intro.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerAbuse", "CompilerAbuse\CompilerAbuse.csproj", "{E383DF7A-9EE6-4544-8418-D06419B722CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E510ED31-7960-424E-90DB-B0C9B0C9B497}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E383DF7A-9EE6-4544-8418-D06419B722CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E383DF7A-9EE6-4544-8418-D06419B722CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E383DF7A-9EE6-4544-8418-D06419B722CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E383DF7A-9EE6-4544-8418-D06419B722CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
