@@ -286,34 +286,16 @@ namespace LinqToOperators
 
         private static IEnumerable<object> RepeatSequence(IEnumerable<object> source, int times)
         {
-            for (int i = 0; i < times; i++)
-            {
-                foreach (var item in source)
-                {
-                    yield return item;
-                }
-            }
+            return Enumerable.Range(1,times)
+                .SelectMany(x => source);
         }
 
         private static IEnumerable<object> Shuffle(IEnumerable<object> source)
         {
             // Never do this!
-            Random rng = new Random();
-            var array = source.ToArray();
-            // Note i > 0 to avoid final pointless iteration
-            for (int i = array.Length - 1; i > 0; i--)
-            {
-                // Swap element "i" with a random earlier element it (or itself)
-                int swapIndex = rng.Next(i + 1);
-                object tmp = array[i];
-                array[i] = array[swapIndex];
-                array[swapIndex] = tmp;
-            }
-            // Lazily yield (avoiding aliasing issues etc)
-            foreach (object element in array)
-            {
-                yield return element;
-            }
+            var rng = new Random();
+            return source
+                .OrderBy(x => rng.Next());
         }
 
         public static OperatorEnumerable operator &(OperatorEnumerable lhs, Func<dynamic, bool> rhs)
