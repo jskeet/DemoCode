@@ -5,10 +5,10 @@ namespace Performance
 {
     public struct Int256
     {
-        public long Bits0 { get; }
-        public long Bits1 { get; }
-        public long Bits2 { get; }
-        public long Bits3 { get; }
+        public long Bits0 { get; set; }
+        public long Bits1 { get; set; }
+        public long Bits2 { get; set; }
+        public long Bits3 { get; set; }
 
         public Int256(long bits0, long bits1, long bits2, long bits3)
         {
@@ -42,7 +42,7 @@ namespace Performance
             var sample = TotalValue;
             Stopwatch sw = Stopwatch.StartNew();
             long total = 0;
-            for (int i = 0; i < 1000000000; i++)
+            for (int i = 0; i < 1_000_000_000; i++)
             {
                 total += TotalValue;
             }
