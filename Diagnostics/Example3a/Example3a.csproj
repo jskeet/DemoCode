@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <PackageTargetFallback>$(PackageTargetFallback);dotnet</PackageTargetFallback>
+    <AssemblyName>NodaTime.Test</AssemblyName>
+    <AssemblyOriginatorKeyFile>NodaTime Release.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NodaTime" Version="2.2.0" />
+    <PackageReference Include="NUnit" Version="3.2.1" />
+    <PackageReference Include="NUnitLite" Version="3.2.1" />
+  </ItemGroup>
+
+</Project>
