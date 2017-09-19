@@ -26,7 +26,7 @@ namespace UnhelpfulDebugger
             Console.WriteLine($"Length: {text.Length}");
             for (int i = 0; i < text.Length; i++)
             {
-                Console.WriteLine($"{i,2} U+{((int)text[i]):0000} '{text[i]}'");
+                Console.WriteLine($"{i,2} U+{(int) text[i]:x4} '{text[i]}'");
             }
         }
 
