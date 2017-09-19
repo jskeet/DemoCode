@@ -8,7 +8,7 @@ namespace UnhelpfulDebugger
         {
             string awkward1 = "Foo\\Bar";
             string awkward2 = "FindEle‌​ment";
-            float awkward3 = 4.9999995f;
+            double awkward3 = 4.9999999999999995d;
 
             Console.WriteLine(awkward1);
             PrintString(awkward1);
