@@ -1,20 +1,35 @@
-C# 7
-----
+C# 7.0
+------
 
 Jon Skeet: @jonskeet on Twitter
 
 Code is all available at https://github.com/jskeet/democode
+(Some changes you see here may not be merged yet though...)
 
 
 Agenda
 ------
 
 - Tuples
+  - Demo/motivation first (TupleConstruction)
+  - Tuple conversions
+  - Tuple fields
+  - Tuple types - language vs CLR
+  - ToString
+  - Element names and when they matter
 - Deconstruction
+  - Tuples
+  - Methods: extension and instance methods
 - Pattern matching
-- Out parameters
+  - Constant, type, var
+  - Use in if
+  - Use in switch/case
 - Local functions
-- Ref local and ref return
+  - Simple
+  - Validation
+  - Capturing
+- Out parameters
+- Ref local / ref return
+- Custom async return types
 - Throw expressions
 - Numeric literals
-- Custom async return types

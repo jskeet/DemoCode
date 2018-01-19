@@ -8,7 +8,6 @@ namespace CSharp7
         static void Main()
         {
             (int foo, int bar) result = Add((5, 3), (6, 4));
-            (int asd, int fgh) other = (5, 3);
             Console.WriteLine(result.foo);
             Console.WriteLine(result.bar);
             Console.WriteLine(result);

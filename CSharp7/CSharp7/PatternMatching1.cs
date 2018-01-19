@@ -16,7 +16,8 @@ namespace CSharp7
             LessPointlessConstantMatch(10);
             LessPointlessConstantMatch(5);
             LessPointlessConstantMatch(5L);
-            LessPointlessConstantMatch("foo");          
+            LessPointlessConstantMatch("foo");
+            LessPointlessConstantMatch("5");
         }
         
         static void PrintInt32s(object x)
@@ -40,6 +41,10 @@ namespace CSharp7
             if (x is 5)
             {
                 Console.WriteLine("Yes, x is 5");
+            }
+            else
+            {
+                Console.WriteLine($"No, x isn't 5 - it's {x}");
             }
         }
     }

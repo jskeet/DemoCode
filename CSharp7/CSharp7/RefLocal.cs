@@ -22,8 +22,11 @@ namespace CSharp7
             {
                 // Creates a copy - not what we want
                 BigStruct local = array[i];
-                local.b++; // Doesn't affect array
-                array[i] = local; // Copy back into array
+                if (local.x < i)
+                {
+                    local.b++; // Doesn't affect array
+                    array[i] = local; // Copy back into array
+                }
 
                 ref BigStruct refLocal = ref array[i];
                 if (refLocal.x < i)

@@ -10,6 +10,7 @@ namespace CSharp7
         {
             // See http://stackoverflow.com/questions/39386251
             var list = new List<string> { "a", "b" };
+            // In C# 7.1 the element name would be inferred: (value, index) => (value, index)
             var dictionary = list.Select((value, index) => (value: value, index: index))
                                  .ToDictionary(pair => pair.index, pair => pair.value);
         }

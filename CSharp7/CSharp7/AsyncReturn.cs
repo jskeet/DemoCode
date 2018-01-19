@@ -3,14 +3,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace System.Runtime.CompilerServices
-{
-    class AsyncMethodBuilderAttribute : Attribute
-    {
-        public AsyncMethodBuilderAttribute(Type t) { }
-    }
-}
-
 namespace CSharp7
 {
     class AsyncReturn

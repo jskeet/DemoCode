@@ -81,14 +81,15 @@ namespace CSharp7
             {
                 throw new ArgumentNullException(nameof(selector));
             }
-            IEnumerable<TResult> impl()
+            return SelectImpl();
+
+            IEnumerable<TResult> SelectImpl()
             {
                 foreach (var item in source)
                 {
                     yield return selector(item);
                 }
             }
-            return impl();
         }
 
         static IEnumerable<TResult> Select2<TSource, TResult>(
@@ -103,7 +104,9 @@ namespace CSharp7
             {
                 throw new ArgumentNullException(nameof(selector));
             }
-            IEnumerable<TResult> impl(
+            return SelectImpl(source, selector);
+
+            IEnumerable<TResult> SelectImpl(
                 IEnumerable<TSource> realSource,
                 Func<TSource, TResult> realSelector)
             {
@@ -112,7 +115,6 @@ namespace CSharp7
                     yield return realSelector(item);
                 }
             }
-            return impl(source, selector);
         }
     }
 }

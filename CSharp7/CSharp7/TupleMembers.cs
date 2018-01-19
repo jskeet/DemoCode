@@ -1,4 +1,5 @@
 ﻿// Copyright 2016 Jon Skeet. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
 using System;
 
 namespace CSharp7

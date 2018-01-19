@@ -9,12 +9,14 @@ namespace CSharp7
         {
             string foo = null;
             string bar = CheckNotNull(foo, nameof(foo));
+            DoSomething("");
         }
 
         static T CheckNotNull<T>(T value, string name) where T : class
             => value ?? throw new ArgumentNullException(name);
 
-        // Could use switch/case with pattern matching now
+        // Could use switch/case with pattern matching now.
+        // Wouldn't it be nice to have an expression-bodied switch/case?
         static int DoSomething(string x) =>
             x == "foo" ? 10
             : x == "bar" ? 20

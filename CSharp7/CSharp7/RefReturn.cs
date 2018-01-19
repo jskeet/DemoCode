@@ -20,15 +20,20 @@ namespace CSharp7
                 var x = GetRandomVariable(rng, ref a, ref b);
                 x++;
 
+                // This *does* have an effect, like the first call.
+                ref var y = ref GetRandomVariable(rng, ref a, ref b);
+                y++;
+
                 Console.WriteLine($"a={a}, b={b}");
             }
         }
-
+        
         static ref int GetRandomVariable(Random rng, ref int x, ref int y)
         {
-            // Doesn't compile: conditional operator and ref local don't go together
-            // return rng.NextDouble() >= 0.5 ? ref x : ref y;
-
+            // Wouldn't compile in a genuine 7.0 compiler: conditional operator and ref local don't go together.
+            // Fixed in C# 7.2. See also: 
+            // return ref (rng.NextDouble() >= 0.5 ? ref x : ref y);
+            
             if (rng.NextDouble() >= 0.5)
             {
                 return ref x;
@@ -36,7 +41,7 @@ namespace CSharp7
             else
             {
                 return ref y;
-            }            
+            }
         }
     }
 }
