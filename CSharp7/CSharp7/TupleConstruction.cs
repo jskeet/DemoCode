@@ -24,7 +24,7 @@ namespace CSharp7
             (long a, int b) tuple4 = (1, 2);
 
             // No names in declaration, so names in construction are irrelevant
-            var tuple5 = (a: 1, b: 2);
+            (int, int) tuple5 = (a: 1, b: 2);
         }
     }
 }
