@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace JonSkeet.DemoUtil
 {
@@ -95,7 +96,11 @@ namespace JonSkeet.DemoUtil
                 try
                 {
                     MethodBase main = entryPoint;
-                    main.Invoke(null, main.GetParameters().Length == 0 ? null : new object[] { args });
+                    Task task = main.Invoke(null, main.GetParameters().Length == 0 ? null : new object[] { args }) as Task;
+                    if (task != null)
+                    {
+                        task.GetAwaiter().GetResult();
+                    }
                 }
                 catch (Exception e)
                 {
