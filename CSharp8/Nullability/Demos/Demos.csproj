@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Demos.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="JonSkeet.DemoUtil, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\JonSkeet.DemoUtil.1.1.0\lib\netstandard1.5\JonSkeet.DemoUtil.dll</HintPath>
@@ -103,6 +106,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SneakyInParameter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
