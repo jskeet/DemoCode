@@ -104,8 +104,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwkwardInterface.cs" />
+    <Compile Include="ConditionalReturn.cs" />
+    <Compile Include="NullPropagation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceEquality.cs" />
+    <Compile Include="SneakyCustomEquality.cs" />
     <Compile Include="SneakyInParameter.cs" />
   </ItemGroup>
   <ItemGroup>
