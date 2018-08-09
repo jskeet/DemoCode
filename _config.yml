@@ -1,8 +1,8 @@
-github: [metadata]
-highlighter: rouge
+name: democode pages
+description: Published pages for democode
+theme: jekyll-theme-primer
 kramdown:
-  input: GFM
-  hard_wrap: false
-gems:
-  - jekyll-coffeescript
-  - jekyll-paginate
+    input: GFM
+    syntax_highlighter: rouge
+    syntax_highlighter_opts:
+        css_class: 'highlight'

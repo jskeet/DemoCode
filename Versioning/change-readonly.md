@@ -1,8 +1,13 @@
+---
+title: Changing a read-only static field
+---
 # Changing a read-only static field
 
 Unlike a change to a `const` field, a change to a `static readonly`
 field will be detected without recompilation.
-----Library code before:
+
+----
+Library code before:
 ```csharp
 using System;
 

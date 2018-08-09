@@ -1,3 +1,7 @@
+---
+title: Index of versioning examples
+---
+
 This area of the democode site contains examples of breaking and
 non-breaking changes.
 

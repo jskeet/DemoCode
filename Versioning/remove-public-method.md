@@ -1,8 +1,13 @@
+---
+title: Removing a public method
+---
 # Removing a public method
 
 Removing a public method is a simple breaking change for both source
 and binary compatibility.
-----Library code before:
+
+----
+Library code before:
 ```csharp
 using System;
 

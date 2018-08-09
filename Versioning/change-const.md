@@ -1,3 +1,6 @@
+---
+title: Changing a public constant
+---
 # Changing a public constant
 
 Any change to a public constant value will only be visible to
@@ -6,8 +9,10 @@ breaking change, and a subtle one at that. However, it's reasonable
 to *document* a constant as a default value that may change in
 future releases, and that such a change will only be visible after
 recompilation.
-----Library code before:
-```csharp
+
+----
+Library code before:
+```cs
 using System;
 
 namespace Library

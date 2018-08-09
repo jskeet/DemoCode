@@ -1,8 +1,13 @@
+---
+title: Removing a private method
+---
 # Removing a private method
 
 Removing a private method is not a breaking change, so long as
 anything calling it before is changed to have the same result.
-----Library code before:
+
+----
+Library code before:
 ```csharp
 using System;
 
