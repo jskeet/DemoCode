@@ -51,17 +51,17 @@ namespace Client
 ```
 ----
 Initial results:
-```csharp
+```text
 Static read-only field before
 ```
 ----
 Results of running Client.exe before recompiling:
-```csharp
+```text
 Static read-only field after
 ```
 ----
 Results of running Client.exe after recompiling:
-```csharp
+```text
 Static read-only field after
 ```
 ----

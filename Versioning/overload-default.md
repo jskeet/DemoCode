@@ -21,7 +21,6 @@ namespace Library
     public class LibraryClass
     {
         public static void Method(string x) => Console.WriteLine("Overload with string");
-
     }
 }
 ```
@@ -59,17 +58,17 @@ namespace Client
 ```
 ----
 Initial results:
-```csharp
+```text
 Overload with string
 ```
 ----
 Results of running Client.exe before recompiling:
-```csharp
+```text
 Overload with string
 ```
 ----
 Results of running Client.exe after recompiling:
-```csharp
+```text
 Client.cs(10,26): error CS0121: The call is ambiguous between the following methods or properties: 'LibraryClass.Method(string)' and 'LibraryClass.Method(int)'
 ```
 ----

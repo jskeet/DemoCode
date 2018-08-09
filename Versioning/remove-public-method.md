@@ -50,19 +50,19 @@ namespace Client
 ```
 ----
 Initial results:
-```csharp
+```text
 Output
 ```
 ----
 Results of running Client.exe before recompiling:
-```csharp
+```text
 
 Unhandled Exception: System.MissingMethodException: Method not found: 'Void Library.LibraryClass.Method()'.
    at Client.Program.Main()
 ```
 ----
 Results of running Client.exe after recompiling:
-```csharp
+```text
 Client.cs(10,26): error CS0117: 'LibraryClass' does not contain a definition for 'Method'
 ```
 ----

@@ -53,17 +53,17 @@ namespace Client
 ```
 ----
 Initial results:
-```csharp
+```text
 Output
 ```
 ----
 Results of running Client.exe before recompiling:
-```csharp
+```text
 Output
 ```
 ----
 Results of running Client.exe after recompiling:
-```csharp
+```text
 Output
 ```
 ----

@@ -55,17 +55,17 @@ namespace Client
 ```
 ----
 Initial results:
-```csharp
+```text
 Constant before
 ```
 ----
 Results of running Client.exe before recompiling:
-```csharp
+```text
 Constant before
 ```
 ----
 Results of running Client.exe after recompiling:
-```csharp
+```text
 Constant after
 ```
 ----
