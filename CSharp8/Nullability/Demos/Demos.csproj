@@ -105,7 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AwkwardInterface.cs" />
+    <Compile Include="BasicDemo.cs" />
+    <Compile Include="ChangingField.cs" />
+    <Compile Include="ChangingProperty.cs" />
     <Compile Include="ConditionalReturn.cs" />
+    <Compile Include="GenericType.cs" />
     <Compile Include="NullPropagation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

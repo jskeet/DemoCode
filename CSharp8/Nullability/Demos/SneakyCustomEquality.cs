@@ -8,8 +8,10 @@ namespace Demos
 
         public SneakyCustomEquality(int value) => Value = value;
 
-        public static bool operator ==(SneakyCustomEquality? lhs, SneakyCustomEquality? rhs) => false;
-        public static bool operator !=(SneakyCustomEquality? lhs, SneakyCustomEquality? rhs) => true;
+        public static bool operator
+            ==(SneakyCustomEquality? lhs, SneakyCustomEquality? rhs) => false;
+        public static bool operator
+            !=(SneakyCustomEquality? lhs, SneakyCustomEquality? rhs) => true;
         public override int GetHashCode() => 0;
         public override bool Equals(object obj) => false;
 

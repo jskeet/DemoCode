@@ -9,7 +9,7 @@ namespace Demos
             string? text = "Not null";
             Action action = () => text = null;
             // Boom!
-            int length = LengthIfPossible(text, action);
+            int length = LengthIfPossible(in text, action);
         }
 
         static int LengthIfPossible(in string? text, Action action)
