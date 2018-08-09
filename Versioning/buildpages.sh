@@ -2,8 +2,14 @@
 
 set -e
 
+if [[ ! -d "output" ]]
+then
+  echo "No output directory. Run runall.sh?"
+  exit
+fi
+
 rm -rf pages
-git clone https://github.com/jskeet/DemoCode.git -b gh-pages pages
+git clone https://github.com/jskeet/DemoCode.git -q -b gh-pages pages
 rm -rf pages/Versioning
 mkdir pages/Versioning
 
@@ -13,9 +19,11 @@ for i in output/*; do
   pagename=$(basename $i)
   page=pages/Versioning/$pagename.md
   title=$(grep -e "^# " $i/notes.md | sed "s/# //g")
+  echo "Building $pagename"
   echo -e "- [$title]($pagename.md)\n" >> pages/Versioning/index.md
-  cp $i/notes.md $page
-  echo -e "----Library code before:\n\`\`\`csharp" >> $page
+  echo -e "---\ntitle: $title\n---" >> $page
+  cat $i/notes.md >> $page
+  echo -e "\n----\nLibrary code before:\n\`\`\`csharp" >> $page
   cat $i/Before.cs >> $page
   echo -e "\`\`\`\n----\nLibrary code after:\n\`\`\`csharp" >> $page
   cat $i/After.cs >> $page
