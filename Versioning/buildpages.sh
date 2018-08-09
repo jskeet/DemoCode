@@ -29,11 +29,11 @@ for i in output/*; do
   cat $i/After.cs >> $page
   echo -e "\`\`\`\n----\nClient code:\n\`\`\`csharp" >> $page
   cat $i/Client.cs >> $page
-  echo -e "\`\`\`\n----\nInitial results:\n\`\`\`csharp" >> $page
+  echo -e "\`\`\`\n----\nInitial results:\n\`\`\`text" >> $page
   cat $i/before-result.txt >> $page
-  echo -e "\`\`\`\n----\nResults of running Client.exe before recompiling:\n\`\`\`csharp" >> $page
+  echo -e "\`\`\`\n----\nResults of running Client.exe before recompiling:\n\`\`\`text" >> $page
   cat $i/after-result-1.txt >> $page
-  echo -e "\`\`\`\n----\nResults of running Client.exe after recompiling:\n\`\`\`csharp" >> $page
+  echo -e "\`\`\`\n----\nResults of running Client.exe after recompiling:\n\`\`\`text" >> $page
   cat $i/after-result-2.txt >> $page
   echo -e "\`\`\`\n----\n[Back to index](index.md)" >> $page
 done
