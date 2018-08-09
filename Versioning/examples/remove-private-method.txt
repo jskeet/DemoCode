@@ -1,0 +1,15 @@
+#class
+public static void PublicMethod() => PrivateMethod();
+
+private static void PrivateMethod() => Console.WriteLine("Output");
+----
+#class
+public static void PublicMethod() => Console.WriteLine("Output");
+----
+#main
+LibraryClass.PublicMethod();
+----
+# Removing a private method
+
+Removing a private method is not a breaking change, so long as
+anything calling it before is changed to have the same result.

@@ -1,0 +1,13 @@
+#class
+public static readonly string StaticReadOnlyField = "Static read-only field before";
+----
+#class
+public static readonly string StaticReadOnlyField = "Static read-only field after";
+----
+#main
+Console.WriteLine(LibraryClass.StaticReadOnlyField);
+----
+# Changing a read-only static field
+
+Unlike a change to a `const` field, a change to a `static readonly`
+field will be detected without recompilation.

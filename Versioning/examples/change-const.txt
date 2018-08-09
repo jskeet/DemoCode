@@ -1,0 +1,17 @@
+#class
+public const string Constant = "Constant before";
+----
+#class
+public const string Constant = "Constant after";
+----
+#main
+Console.WriteLine(LibraryClass.Constant);
+----
+# Changing a public constant
+
+Any change to a public constant value will only be visible to
+clients after they recompile. In most cases this is effectively a
+breaking change, and a subtle one at that. However, it's reasonable
+to *document* a constant as a default value that may change in
+future releases, and that such a change will only be visible after
+recompilation.
