@@ -1,4 +1,5 @@
 github: [metadata]
+highlighter: rouge
 kramdown:
   input: GFM
   hard_wrap: false
