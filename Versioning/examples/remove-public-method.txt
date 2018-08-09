@@ -1,0 +1,12 @@
+#class
+public static void Method() => Console.WriteLine("Output");
+----
+#class
+----
+#main
+LibraryClass.Method();
+----
+# Removing a public method
+
+Removing a public method is a simple breaking change for both source
+and binary compatibility.
