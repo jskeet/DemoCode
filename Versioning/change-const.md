@@ -12,7 +12,7 @@ recompilation.
 
 ----
 Library code before:
-```cs
+```csharp
 using System;
 
 namespace Library
