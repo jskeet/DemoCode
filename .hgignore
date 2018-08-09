@@ -1,0 +1,23 @@
+syntax: glob
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Roslyn (?) files
+*.sln.ide
+
+syntax:regexp
+
+# Nuget
+packages/.*/
+
+# Build results
+
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+[Bb]in/
+[Oo]bj/
