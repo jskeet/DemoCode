@@ -10,6 +10,8 @@ to *document* a constant as a default value that may change in
 future releases, and that such a change will only be visible after
 recompilation.
 
+This applies to the default values for optional parameters as well.
+
 ----
 Library code before:
 ```csharp

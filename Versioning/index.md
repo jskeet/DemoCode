@@ -14,11 +14,21 @@ List of pages:
 
 - [Changing a read-only static field](change-readonly.md)
 
+- [Implementing an interface](interface-implementation.md)
+
+- [Adding a method that hides an extension method](method-hiding-extension-method.md)
+
+- [Overloading: adding a parameter](overload-arity.md)
+
 - [Overloading: issues with conversions](overload-conversion.md)
 
 - [Overloading: issues with default](overload-default.md)
 
 - [Overloading: issues with null](overload-null.md)
+
+- [Renaming a public method parameter](parameter-renaming.md)
+
+- [Reordering public method parameters](parameter-reordering.md)
 
 - [Removing a private method](remove-private-method.md)
 
