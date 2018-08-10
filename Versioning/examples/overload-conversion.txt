@@ -1,0 +1,27 @@
+#class
+public static void Method(string x) => Console.WriteLine("Overload with string");
+----
+#class
+public static void Method(string x) => Console.WriteLine("Overload with string");
+
+public static void Method(int x) => Console.WriteLine("Overload with int");
+----
+class Awkward
+{
+    public static implicit operator int(Awkward input) => 0;
+    public static implicit operator string(Awkward input) => "";
+}
+
+class Program
+{
+    static void Main()
+    {
+        LibraryClass.Method(new Awkward());
+    }
+}
+----
+# Overloading: issues with conversions
+
+Adding an overload sounds okay when the types are unrelated, but if
+there's an "equally-good" implicit conversion between both target
+types, the change can break backward source compatibility.

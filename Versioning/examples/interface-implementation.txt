@@ -1,0 +1,36 @@
+public class LibraryClass
+{
+    public void Dispose() {}
+}
+----
+public class LibraryClass : IDisposable
+{
+    public void Dispose() {}
+}
+----
+#class
+static void Main()
+{
+    ClientMethod(new LibraryClass());
+}
+
+static void ClientMethod(object obj) => Console.WriteLine("Method with obj parameter");
+static void ClientMethod(IDisposable obj) => Console.WriteLine("Method with IDisposable parameter");
+----
+# Implementing an interface
+
+When a public class implements an interface that it didn't before,
+that can affect overload resolution and a host of other binding
+issues.
+
+In this example, we don't change which methods are present on
+`LibraryClass` - we just make it implement `IDisposable`. This
+changes which overload of `ClientMethod` is called. In this
+particular case the code still compiles; in other cases we could
+have introduced ambiguity in overload resolution. Likewise, in this
+particular case, it could well be that the client code is fine using
+the different overload - it could change behaviour in terms of which
+method is being called, but not in terms of overall result.
+Unfortunately, we rarely get to know that.
+
+

@@ -1,0 +1,18 @@
+#class
+public static void Method(int x, int y) => Console.WriteLine(x / y);
+----
+#class
+public static void Method(int y, int x) => Console.WriteLine(y / x);
+----
+#main
+LibraryClass.Method(x: 20, y: 10);
+LibraryClass.Method(20, 10);
+----
+# Reordering public method parameters
+
+Changing the order of method parameters is in some ways worse than
+simply renaming them. Client code using named arguments will still
+compile, but the meaning of the call will change - unless the
+reordered parameters have retained their meaning "by name", in which
+case any client code using *position* arguments will change meaning.
+
