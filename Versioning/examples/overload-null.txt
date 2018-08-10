@@ -1,0 +1,19 @@
+#class
+public static void Method(string x) => Console.WriteLine("Overload with string");
+----
+#class
+public static void Method(string x) => Console.WriteLine("Overload with string");
+
+public static void Method(Type x) => Console.WriteLine("Overload with Type");
+----
+#main
+LibraryClass.Method(null);
+----
+# Overloading: issues with null
+
+Adding an overload accepting `Type` to a method accepting `string`
+sounds like it should be okay, as no value can be both a `Type`
+reference and a `string` reference.
+
+Unfortunately the `null` literal can be converted to both, so a
+call to `Method(null)` becomes ambiguous.

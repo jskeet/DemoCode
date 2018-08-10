@@ -1,0 +1,14 @@
+#class
+public static void Method(int x) => Console.WriteLine(x);
+----
+#class
+public static void Method(int y) => Console.WriteLine(y);
+----
+#main
+LibraryClass.Method(x: 20);
+----
+# Renaming a public method parameter
+
+Parameters are effectively part of the API in C#, due to named
+arguments. Changing the name of a parameter doesn't break binary
+compatibility, but it does break source compatibility.

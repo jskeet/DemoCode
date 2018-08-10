@@ -1,0 +1,29 @@
+#class
+public static void Method() => Console.WriteLine("Parameterless overload");
+----
+#class
+public static void Method() => Console.WriteLine("Parameterless overload");
+
+public static void Method(int x) => Console.WriteLine("Overload with int");
+----
+#class
+static void Main()
+{
+    CallAction(LibraryClass.Method);
+}
+    
+static void CallAction(Action action) => action();
+static void CallAction(Action<int> action) => action(10);
+----
+# Overloading: adding a parameter
+
+Adding a method overload with a different number of parameters to
+all the existing signatures is *unlikely* to break client code, but
+it's still possible. (It becomes far more complicated if generics,
+inheritance, optional parameters or parameter arrays get involved.)
+
+In this example, we use a method group conversion which is valid in
+the first version of the library, but ambiguous in the second
+version: the new `Method` overload can be converted to
+`Action<int>`, making the overload to `CallAction` accepting an
+`Action<int>` applicable.

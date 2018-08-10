@@ -1,0 +1,21 @@
+#class
+public static void Method(string x) => Console.WriteLine("Overload with string");
+----
+#class
+public static void Method(string x) => Console.WriteLine("Overload with string");
+
+public static void Method(int x) => Console.WriteLine("Overload with int");
+----
+#main
+LibraryClass.Method(default);
+----
+# Overloading: issues with default
+
+Adding an overload accepting `int` to a method accepting `string`
+sounds like it should be fine: no argument could match both `int`
+and `string`, right?
+
+Even without conversions, the `default` literal syntax added in C#
+7.1 makes this awkward. The client code here calls `Method(default)`
+which will convert to both `string` and `int` with no problems -
+causing ambiguity after the overload has been added.
