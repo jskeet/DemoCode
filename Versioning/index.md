@@ -18,6 +18,10 @@ List of pages:
 
 - [Adding a method that hides an extension method](method-hiding-extension-method.md)
 
+- [Making a parameter more permissive](more-permissive.md)
+
+- [Making a parameter more restrictive](more-restrictive.md)
+
 - [Overloading: adding a parameter](overload-arity.md)
 
 - [Overloading: issues with conversions](overload-conversion.md)
