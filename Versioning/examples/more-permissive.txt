@@ -1,0 +1,36 @@
+#class
+public static int GetLength(string text)
+{
+    if (text == null)
+    {
+        throw new ArgumentNullException(nameof(text));
+    }
+    return text.Length;
+}
+----
+#class
+public static int GetLength(string text) =>
+    // Treat a null reference like an empty string
+    text?.Length ?? 0;
+----
+#class
+static void Main()
+{
+    // We expect this to throw
+    SaveText(null);
+}
+
+// Note: text should not be null
+static void SaveText(string text)
+{
+    int length = LibraryClass.GetLength(text);
+    // Imagine this output was going to a file...
+    Console.WriteLine($"Saving text length: {length}");
+    Console.WriteLine(text);
+}
+----
+# Making a parameter more permissive
+
+The example here changes a parameter from rejecting null values
+to accepting null values. That sounds fine, except callers may be
+relying on that aspect of behavior to validate their own parameters.

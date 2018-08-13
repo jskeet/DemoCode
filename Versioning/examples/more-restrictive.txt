@@ -1,0 +1,35 @@
+#class
+public static int GetLength(string text) =>
+    // Treat a null reference like an empty string
+    text?.Length ?? 0;
+----
+#class
+public static int GetLength(string text)
+{
+    if (text == null)
+    {
+        throw new ArgumentNullException(nameof(text));
+    }
+    return text.Length;
+}
+----
+#class
+static void Main()
+{
+    SaveText(null);
+}
+
+// Note: text may be null
+static void SaveText(string text)
+{
+    int length = LibraryClass.GetLength(text);
+    // Imagine this output was going to a file...
+    Console.WriteLine($"Saving text length: {length}");
+    Console.WriteLine(text ?? "(Null text)");
+}
+----
+# Making a parameter more restrictive
+
+Reducing the set of values that are acceptable for a parameter (e.g.
+disallowing null values that were previously allowed) will break any
+code which assumes that value *is* acceptable.
