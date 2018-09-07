@@ -1,0 +1,35 @@
+public class LibraryClass
+{
+    protected LibraryClass()
+    {
+        Console.WriteLine("LibraryClass constructor called");
+    }
+}
+----
+public sealed class LibraryClass
+{
+    protected LibraryClass()
+    {
+        Console.WriteLine("LibraryClass constructor called");
+    }
+}
+----
+public class DerivedClass : LibraryClass
+{
+}
+
+public class Program
+{
+    static void Main()
+    {
+        new DerivedClass();
+    }
+}
+----
+# Sealing a class with a public or protected constructor
+
+Adding the sealed modifier to a class with a public or protected constructor
+is a simple breaking change for both source and binary compatibility. Note
+that in the absence of any constructors, a default, public constructor will
+be available, so sealing a class without a constructor will also be a
+breaking change.
