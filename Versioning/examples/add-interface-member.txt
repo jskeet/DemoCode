@@ -1,0 +1,31 @@
+public interface ILibraryInterface
+{
+    void Method1();
+}
+----
+public interface ILibraryInterface
+{
+    void Method1();
+    void Method2();
+}
+----
+public class ClientClass : ILibraryInterface
+{
+    public void Method1()
+    {
+        Console.WriteLine("Method1 called");
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        new ClientClass().Method1();
+    }
+}
+----
+# Adding an interface member
+
+Adding a member to an interface definition is a simple breaking change for
+both source and binary compatibility.
