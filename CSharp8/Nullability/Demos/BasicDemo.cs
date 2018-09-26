@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Demos
 {
@@ -10,9 +6,9 @@ namespace Demos
     {
         public string FirstName { get; }
         public string LastName { get; }
-        public string? MiddleName { get; }
+        public string MiddleName { get; }
 
-        public Person(string firstName, string lastName, string? middleName) =>
+        public Person(string firstName, string lastName, string middleName) =>
             (FirstName, LastName, MiddleName) = (firstName, lastName, middleName);
     }
 
@@ -29,14 +25,8 @@ namespace Demos
         static void PrintNameLengths(Person person)
         {
             string first = person.FirstName;
-            string? middle = person.MiddleName;
+            string middle = person.MiddleName;
             string last = person.LastName;
-
-            if (middle == null)
-            {
-                Console.WriteLine("Blegh!");
-                return;
-            }
 
             Console.WriteLine("First={0}; Last={1}; Middle={2}",
                 first.Length,
