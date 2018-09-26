@@ -17,7 +17,6 @@
         // Null input leads to null output; non-null input leads to non-null output.
         // Reasonably common, but can't be expressed as far as I'm aware.
         static string? NullOrDouble(string? input) =>
-            input == null ? null : input + input;
-    
+            input == null ? null : input + input;    
     }
 }

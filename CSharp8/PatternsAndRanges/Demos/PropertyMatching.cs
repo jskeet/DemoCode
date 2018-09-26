@@ -55,5 +55,14 @@ namespace Demos
             Artwork { CreationDate: var (year, _, _) } => $"Created in {year}",
             _ => "Nothing interesting"
         };
+
+        // No type name in the patterns, because we assume it's a Weapon
+        static string GetWeaponFact(Weapon weapon) => weapon switch
+        {
+            { Damage: 0 } => "Harmless",
+            { Damage: var d } w when d > 500 => $"Ooh, heavy! {w}",
+            { Damage: var d } => $"Lightweight: only does {d} damage",
+            null => throw new ArgumentNullException(nameof(weapon))
+        };
     }
 }
