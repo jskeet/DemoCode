@@ -31,36 +31,19 @@ namespace DialogflowDemo.Controllers
         [HttpGet, HttpPost]
         public async Task<ContentResult> FulfilRequest([FromBody] JObject rawRequest)
         {
-            var queryResult = (JObject) rawRequest["queryResult"];
-            queryResult.Remove("fulfillmentMessages");
-
-            if (queryResult.TryGetValue("sentimentAnalysisResult", out var sentimentToken) && sentimentToken is JObject sentimentObject &&
-                sentimentObject.TryGetValue("queryTextSentiment", out var querySentimentToken) && querySentimentToken is JObject querySentimentObject &&
-                querySentimentObject.TryGetValue("score", out var scoreToken) &&
-                querySentimentObject.TryGetValue("magnitude", out var magnitudeToken))
-            {
-                double score = (double) scoreToken;
-                double magnitude = (double) magnitudeToken;
-                if (score < 0 && magnitude > 0.5)
-                {
-                    var transfer = CreateResponse("Transferring you to a friendly human");
-                    transfer.FollowupEventInput = new EventInput { Name = "telephone-event" };
-                    return Content(transfer.ToString(), "application/json");
-                }
-            }
-
-            // Parse the body of the request using the Protobuf JSON parser,
-            // *not* Json.NET.
-            WebhookRequest request;
-            using (var reader = new StringReader(rawRequest.ToString()))
-            {
-                request = jsonParser.Parse<WebhookRequest>(reader);
-            }
-
             // TODO: Authenticate the request
 
+            var queryResult = (JObject) rawRequest["queryResult"];
 
-            WebhookResponse response = await GetResponseAsync(request);
+            // We're using the beta API, which ends up with an enum value that isn't recognized
+            // by the protobuf JSON parser. We're ignoring unknown *fields*, but we can't ignore unknown
+            // enum values. We don't use this part of the request, so we'll just remove it.
+            queryResult.Remove("fulfillmentMessages");
+
+            // Sentiment analysis is also a beta feature, so we need to use the request as parsed
+            // by Json.NET, before we get to the "regular" processing.
+            var response = MaybeRespondFromSentiment(queryResult) ?? await GetResponseAsync(rawRequest);
+        
             // Ask Protobuf to format the JSON to return.
             // Again, we don't want to use Json.NET - it doesn't know how to handle Struct
             // values etc.
@@ -68,9 +51,38 @@ namespace DialogflowDemo.Controllers
             return Content(responseJson, "application/json");
         }
 
-        private async Task<WebhookResponse> GetResponseAsync(WebhookRequest request)
+        private WebhookResponse MaybeRespondFromSentiment(JObject queryResult)
         {
-            
+            if (queryResult.TryGetValue("sentimentAnalysisResult", out var sentimentToken) && sentimentToken is JObject sentimentObject &&
+                sentimentObject.TryGetValue("queryTextSentiment", out var querySentimentToken) && querySentimentToken is JObject querySentimentObject &&
+                querySentimentObject.TryGetValue("score", out var scoreToken) &&
+                querySentimentObject.TryGetValue("magnitude", out var magnitudeToken))
+            {
+                double score = (double)scoreToken;
+                double magnitude = (double)magnitudeToken;
+                if (score < 0 && magnitude > 0.5)
+                {
+                    var transfer = CreateResponse("Transferring you to a friendly human");
+                    transfer.FollowupEventInput = new EventInput { Name = "telephone-event" };
+                    return transfer;
+                }
+            }
+            return null;
+        }
+
+        private async Task<WebhookResponse> GetResponseAsync(JObject rawRequest)
+        {
+            // Reparse the body of the request using the Protobuf JSON parser,
+            // *not* Json.NET. If we didn't need to do the extra work earlier than this,
+            // we could do without Json.NET entirely.
+            // (See https://googleapis.github.io/google-cloud-dotnet/docs/Google.Cloud.Dialogflow.V2/
+            // for an example.)
+            WebhookRequest request;
+            using (var reader = new StringReader(rawRequest.ToString()))
+            {
+                request = jsonParser.Parse<WebhookRequest>(reader);
+            }
+
             switch (request.QueryResult.Intent.DisplayName)
             {
                 case "Default Welcome Intent":
