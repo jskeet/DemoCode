@@ -3,6 +3,7 @@ using Google.Cloud.Firestore;
 using Google.Protobuf;
 using MentorSearchModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
@@ -16,6 +17,8 @@ namespace DialogflowDemo.Controllers
     [ApiController]
     public class MentorSearchController : ControllerBase
     {
+        private const string TransferNumber = "+12097484428";
+
         // A Protobuf JSON parser configured to ignore unknown fields. This makes
         // the action robust against new fields being introduced by Dialogflow.
         private static readonly JsonParser jsonParser =
@@ -51,7 +54,7 @@ namespace DialogflowDemo.Controllers
             return Content(responseJson, "application/json");
         }
 
-        private WebhookResponse MaybeRespondFromSentiment(JObject queryResult)
+        private object MaybeRespondFromSentiment(JObject queryResult)
         {
             if (queryResult.TryGetValue("sentimentAnalysisResult", out var sentimentToken) && sentimentToken is JObject sentimentObject &&
                 sentimentObject.TryGetValue("queryTextSentiment", out var querySentimentToken) && querySentimentToken is JObject querySentimentObject &&
@@ -62,9 +65,27 @@ namespace DialogflowDemo.Controllers
                 double magnitude = (double)magnitudeToken;
                 if (score < 0 && magnitude > 0.5)
                 {
-                    var transfer = CreateResponse("Transferring you to a friendly human");
-                    transfer.FollowupEventInput = new EventInput { Name = "telephone-event" };
-                    return transfer;
+                    // We can't create the exact response we want with WebhookResponse as it requires beta features.
+                    // Create an anonymous type and convert it to JSON instead. Ick.
+                    object response = new
+                    {
+                        fulfillmentMessages = new object[]
+                        {
+                            new { text = new { text = new[] { "Transferring you now" } } },
+                            new
+                            {
+                                platform = "TELEPHONY",
+                                telephonySynthesizeSpeech = new { text = "Transferring you now" }
+                            },
+                            new
+                            {
+                                platform = "TELEPHONY",
+                                telephonyTransferCall = new { phoneNumber = TransferNumber }
+                            }
+                        }
+                    };
+                    var json = JsonConvert.SerializeObject(response);
+                    return json;
                 }
             }
             return null;
