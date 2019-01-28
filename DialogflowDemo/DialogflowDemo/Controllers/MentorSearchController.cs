@@ -43,7 +43,8 @@ namespace DialogflowDemo.Controllers
                 double magnitude = (double) magnitudeToken;
                 if (score < 0 && magnitude > 0.5)
                 {
-                    var transfer = new WebhookResponse { FollowupEventInput = new EventInput { Name = "telephone-event" } };
+                    var transfer = CreateResponse("Transferring you to a friendly human");
+                    transfer.FollowupEventInput = new EventInput { Name = "telephone-event" };
                     return Content(transfer.ToString(), "application/json");
                 }
             }
@@ -88,7 +89,7 @@ namespace DialogflowDemo.Controllers
         }
 
         private static WebhookResponse GetWelcomeResponse(WebhookRequest request) =>
-            CreateResponse("Greetings! What mentor are you looking for?");
+            CreateResponse("Greetings! What mentor are you looking for? You can search by name, city or topic.");
 
         private static WebhookResponse GetFallbackResponse(WebhookRequest request) =>
             CreateResponse("I didn't understand. I'm sorry, can you try again?");
@@ -124,7 +125,9 @@ namespace DialogflowDemo.Controllers
             // Ordering here rather than in the query reduces the number of indexes we need.
             var mentors = results.Select(doc => doc.ConvertTo<Mentor>()).OrderBy(m => m.Name).ToList();
 
-            return CreateResponse($"I found {mentors.Count} mentors: {string.Join(", ", mentors.Select(m => m.Name))}");
+            string mentorNames = string.Join(", ", mentors.Select(m => m.Name));
+            return CreateResponse(
+                $"I found {mentors.Count} {(mentors.Count == 1 ? "mentor" : "mentors")}: {mentorNames}");
         }
 
         private static WebhookResponse GetTransferCallResponse(WebhookRequest request) =>
