@@ -112,8 +112,6 @@ namespace DialogflowDemo.Controllers
                     return GetFallbackResponse(request);
                 case "Mentor Search":
                     return await GetMentorSearchResponse(request);
-                case "Transfer Call Escalation to Human":
-                    return GetTransferCallResponse(request);
                 case "Goodbye":
                     return GetGoodbyeResponse(request);
                 default:
@@ -162,9 +160,6 @@ namespace DialogflowDemo.Controllers
             return CreateResponse(
                 $"I found {mentors.Count} {(mentors.Count == 1 ? "mentor" : "mentors")}: {mentorNames}");
         }
-
-        private static WebhookResponse GetTransferCallResponse(WebhookRequest request) =>
-            CreateResponse("Transfering you now!");
 
         private static WebhookResponse GetGoodbyeResponse(WebhookRequest request) =>
             CreateResponse("Goodbye");
