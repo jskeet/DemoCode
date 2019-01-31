@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Example1a.Configuration;
+using Example1a.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Example1a.Configuration;
-using Example1a.Models;
 
 namespace Example1a
 {
@@ -23,7 +21,15 @@ namespace Example1a
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.Configure<ReportDbConfig>(Configuration.GetSection("ReportDb"));
             services.AddSingleton<IReportRepository, ReportRepository>();
         }
@@ -34,14 +40,16 @@ namespace Example1a
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
