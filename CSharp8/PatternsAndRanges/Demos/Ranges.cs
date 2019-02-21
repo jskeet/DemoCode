@@ -17,9 +17,7 @@ namespace Demos
             Console.WriteLine(stringSlice);
 
             ReadOnlySpan<char> span = text.AsSpan();
-            // Note: should be able to use span[6..] but it doesn't
-            // compile, despite the extra extension method :(
-            ReadOnlySpan<char> spanSlice = span.Slice(6..);
+            ReadOnlySpan<char> spanSlice = span[6..];
             Console.WriteLine(spanSlice.ToString());
         }
     }
