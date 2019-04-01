@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PatternsAndRanges
 {
@@ -14,9 +10,8 @@ namespace PatternsAndRanges
             int value = input switch
             {
                 0 => 1,
-                1 => 2
-                // Remove this to show the problem
-                //_ => 0
+                1 => 2,
+                _ => 0
             };
 
             Console.WriteLine(value);

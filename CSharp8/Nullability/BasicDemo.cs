@@ -1,4 +1,7 @@
 ﻿#nullable disable
+// All code is available at:
+// https://github.com/jskeet/DemoCode
+
 using System;
 
 namespace Nullability
@@ -11,6 +14,7 @@ namespace Nullability
 
         public Person(string firstName, string lastName, string middleName)
         {
+            // TODO: Validate arguments
             FirstName = firstName;
             LastName = lastName;
             MiddleName = middleName;

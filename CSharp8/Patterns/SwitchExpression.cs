@@ -50,7 +50,8 @@ namespace PatternsAndRanges
             {
                 case 0: return 0;
                 case 1: return 1;
-                default: return n >= 0 ? Fib3(n - 1) + Fib3(n - 2) : throw new ArgumentOutOfRangeException();
+                default: return n >= 0 ? Fib3(n - 1) + Fib3(n - 2)
+                        : throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -58,7 +59,8 @@ namespace PatternsAndRanges
         {
             0 => 0,
             1 => 1,
-            _ => n >= 0 ? Fib4(n - 1) + Fib4(n - 2) : throw new ArgumentOutOfRangeException()
+            _ => n >= 0 ? Fib4(n - 1) + Fib4(n - 2)
+              : throw new ArgumentOutOfRangeException()
         };
 
         static int Fib5(int n)
