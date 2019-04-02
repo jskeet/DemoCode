@@ -34,8 +34,8 @@ namespace Nullability
         static void PrintNameLengths(Person person)
         {
             string first = person.FirstName;
-            string middle = person.MiddleName;
             string last = person.LastName;
+            string middle = person.MiddleName;
 
             Console.WriteLine("First={0}; Last={1}; Middle={2}",
                 first.Length,
