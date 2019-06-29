@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lib1\Lib1.csproj" />
+    <PackageReference Include="NodaTime" Version="2.0" />
+  </ItemGroup>
+
+</Project>
