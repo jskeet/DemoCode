@@ -1,0 +1,46 @@
+﻿{
+  "description": "Kit description and some volume settings",
+  "kitOffset": "0x00",
+  "size": "0x2b",
+  "fields": [
+    {
+      "name": "Kit name",
+      "address": "0x00",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "name": "Kit Sub name",
+      "address": "0x0c",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Kit volume",
+      "address": "0x1c",
+      "type": "volume32"
+    },
+    {
+      "name": "Pedal HH volume",
+      "address": "0x20",
+      "type": "volume32"
+    },
+    {
+      "name": "XStick volume",
+      "address": "0x24",
+      "type": "volume32"
+    },
+    {
+      "name": "XStick on/off",
+      "address": "0x28",
+      "type": "boolean"
+    },
+    {
+      "name": "HH Open/Close balance",
+      "address": "0x29",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    }
+  ]
+}
