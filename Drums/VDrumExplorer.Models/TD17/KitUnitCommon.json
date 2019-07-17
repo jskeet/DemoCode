@@ -1,0 +1,36 @@
+﻿{
+  "size": "0x18",
+  "fields": [
+    {
+      "name": "Pan",
+      "address": "0x00",
+      "type": "range16",
+      "min": -30,
+      "max": 30
+    },
+    {
+      "name": "Sub instrument on/off",
+      "address": "0x02",
+      "type": "boolean"
+    },
+    {
+      "name": "Layer type",
+      "address": "0x03",
+      "type": "enum",
+      "values": [
+        "Mix",
+        "Fade1",
+        "Fade2",
+        "Switch"
+      ]
+    },
+    {
+      "name": "Fade point",
+      "address": "0x04",
+      "type": "range8",
+      "min": 1,
+      "max": 127
+    }
+    // TODO: More fields!
+  ]
+}

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <EmbeddedResource Include="TD17/*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="TD17\Current.json" />
+    <None Remove="TD17\KitMfx.json" />
+    <None Remove="TD17\Setup.json" />
+    <None Remove="TD17\TD17.json" />
+    <None Remove="TD17\Trigger.json" />
+  </ItemGroup>
+</Project>

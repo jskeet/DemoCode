@@ -1,0 +1,25 @@
+﻿{
+  "size": "0x9",
+  "fields": [
+    {
+      "name": "Instrument",
+      "address": "0x00",
+      "type": "range32",
+      "min": 0
+    },
+    {
+      "name": "Volume",
+      "address": "0x04",
+      "type": "volume32"
+    },
+    {
+      "name": "Instrument bank",
+      "address": "0x08",
+      "type": "enum",
+      "values": [
+        "Preset",
+        "User"
+      ]
+    }
+  ]
+}
