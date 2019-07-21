@@ -6,7 +6,7 @@ namespace VDrumExplorer.Models.Fields
     {
         public IReadOnlyList<string> Values { get; }
 
-        public EnumField(string description, string path, int address, int size, IReadOnlyList<string> values)
+        public EnumField(string description, string path, ModuleAddress address, int size, IReadOnlyList<string> values)
             : base(description, path, address, size) =>
             Values = values;
 

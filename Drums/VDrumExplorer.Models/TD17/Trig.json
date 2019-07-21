@@ -88,7 +88,7 @@
       "max": 64
     },
     {
-      "offset": "0x0a",
+      "offset": "0x09",
       "description": "Retrig cancel",
       "type": "range8",
       "min": 0,

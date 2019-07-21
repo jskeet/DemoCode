@@ -2,8 +2,8 @@
 
 namespace VDrumExplorer.Models.Fields
 {
-    public interface IContainerField
+    public interface IContainerField : IField
     {
-        IEnumerable<FieldBase> GetFields(ModuleData data);
+        IEnumerable<IField> GetFields(ModuleData data);
     }
 }

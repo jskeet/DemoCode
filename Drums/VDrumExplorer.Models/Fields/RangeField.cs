@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using static System.FormattableString;
 
 namespace VDrumExplorer.Models.Fields
 {
@@ -13,7 +14,7 @@ namespace VDrumExplorer.Models.Fields
         public int? ValueOffset { get; }
         public string Suffix { get; }
 
-        public RangeField(string description, string path, int address, int size,
+        public RangeField(string description, string path, ModuleAddress address, int size,
             int? min, int? max, int? off, int? divisor, int? multiplier, int? valueOffset, string suffix)
             : base(description, path, address, size) =>
             (Min, Max, Off, Divisor, Multiplier, ValueOffset, Suffix) = (min, max, off, divisor, multiplier, valueOffset, suffix);
@@ -30,7 +31,10 @@ namespace VDrumExplorer.Models.Fields
             {
                 return "Off";
             }
-            return value.ToString(CultureInfo.InvariantCulture);
+            value += ValueOffset ?? 0;
+            value *= Multiplier ?? 1;
+            decimal scaled = value / (Divisor ?? 1m);
+            return Invariant($"{scaled}{Suffix}");
         }
     }
 }

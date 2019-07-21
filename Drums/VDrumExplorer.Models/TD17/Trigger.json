@@ -9,7 +9,9 @@
     {
       "offset": "0x01_00",
       "description": "Trigger",
-      "type": "container:Trig"
+      "type": "container:Trig",
+      "repeat": "$triggers",
+      "gap": "0x1_00"
     }
   ]
 }

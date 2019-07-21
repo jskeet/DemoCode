@@ -46,7 +46,7 @@ namespace VDrumExplorer.Models
             {
                 throw new ArgumentException($"No Root container defined");
             }
-            Root = converter.ToContainer(rootJson, "Root", "", 0);
+            Root = converter.ToContainer(rootJson, "Root", "", new ModuleAddress(0));
             InstrumentGroups = moduleJson.InstrumentGroups
                 .Select(igj => new InstrumentGroup(igj.Description, igj.Instruments))
                 .ToList()
@@ -78,20 +78,20 @@ namespace VDrumExplorer.Models
                 ContainersByName = moduleJson.Containers.ToDictionary(c => c.Name);
             }
 
-            internal Container ToContainer(ContainerJson containerJson, string description, string path, int address)
+            internal Container ToContainer(ContainerJson containerJson, string description, string path, ModuleAddress address)
             {
-                List<FieldBase> fields = containerJson.Fields
+                List<Fields.IField> fields = containerJson.Fields
                     .SelectMany(fieldJson => ToFields(fieldJson, path, address))
                     .ToList();
-                int size = containerJson.Size?.Value ?? (fields.Last().Address + fields.Last().Size);
+                int size = containerJson.Size?.Value ?? ((fields.Last().Address + fields.Last().Size) - address);
 
                 return new Container(containerJson.Name, description, path, address, size, fields.AsReadOnly());
             }
 
-            internal IEnumerable<FieldBase> ToFields(FieldJson fieldJson, string parentPath, int parentAddress)
+            internal IEnumerable<Fields.IField> ToFields(FieldJson fieldJson, string parentPath, ModuleAddress parentAddress)
             {
                 int? repeat = fieldJson.GetRepeat(ModuleJson);
-                int address = parentAddress + fieldJson.Offset.Value;
+                ModuleAddress address = parentAddress + fieldJson.Offset.Value;
                 if (repeat == null)
                 {
                     string path = $"{parentPath}/{fieldJson.Description}";
@@ -104,29 +104,16 @@ namespace VDrumExplorer.Models
                         string path = Invariant($"{parentPath}/{fieldJson.Description} ({i + 1})");
                         yield return ToField(fieldJson, path, address);
                         address += fieldJson.Gap.Value;
-                        // Handle the compressed address space.
-                        if ((address & 0x80) != 0)
-                        {
-                            address += 0x80;
-                        }
-                        if ((address & 0x80_00) != 0)
-                        {
-                            address += 0x80_00;
-                        }
-                        if ((address & 0x80_00_00) != 0)
-                        {
-                            address += 0x80_00_00;
-                        }
                     }
                 }
             }
 
-            private FieldBase ToField(FieldJson fieldJson, string path, int address)
+            private IField ToField(FieldJson fieldJson, string path, ModuleAddress address)
             {
                 string description = fieldJson.Description;
                 return fieldJson.Type switch
                 {
-                    "boolean" => (FieldBase) new BooleanField(description, path, address, 1),
+                    "boolean" => (Fields.IField) new BooleanField(description, path, address, 1),
                     "range8" => BuildRangeField(1),
                     "range16" => BuildRangeField(2),
                     "range32" => BuildRangeField(4),
@@ -144,7 +131,7 @@ namespace VDrumExplorer.Models
                 DynamicOverlay BuildDynamicOverlay()
                 {
                     var overlayJson = fieldJson.DynamicOverlay;
-                    int switchAddress = address + overlayJson.SwitchOffset.Value;
+                    ModuleAddress switchAddress = address + overlayJson.SwitchOffset.Value;
                     var containers = overlayJson.Containers
                         // Offsets within each container are relative to the parent container of this field,
                         // not relative to this field itself.

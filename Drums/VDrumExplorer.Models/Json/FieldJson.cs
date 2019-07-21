@@ -91,6 +91,7 @@ namespace VDrumExplorer.Models.Json
                 case null: return null;
                 case "$kits": return moduleJson.Kits;
                 case "$instruments": return moduleJson.InstrumentsPerKit;
+                case "$triggers": return moduleJson.Triggers;
                 default:
                     if (!int.TryParse(Repeat, NumberStyles.None, CultureInfo.InvariantCulture, out var result))
                     {

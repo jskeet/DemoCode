@@ -3,7 +3,6 @@
   "midiId": "0x4b",
   "kits": 100,
   "instrumentsPerKit": 20,
-  // FIXME: Use this, maybe?
   "triggers": 10,
   "instrumentGroups": "$resource:InstrumentGroups.json",
 

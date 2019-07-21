@@ -16,32 +16,48 @@ namespace VDrumExplorer.ConsoleDemo
     {
         static async Task Main(string[] args)
         {
+            // Just so we can write synchronous code when we want to
+            await Task.Yield();
             try
             {
-                int inputId = FindId(InputDevice.DeviceCount, i => InputDevice.GetDeviceCapabilities(i).name, "3- TD-17");
-                int outputId = FindId(OutputDeviceBase.DeviceCount, i => OutputDeviceBase.GetDeviceCapabilities(i).name, "3- TD-17");
-                using (var client = new SysExClient(inputId, outputId, modelId: 0x4b, deviceId: 17))
-                {
-                    var td17 = ModuleFields.FromAssemblyResources(typeof(ModuleFields).Assembly, "VDrumExplorer.Models.TD17", "TD17.json");
-                    var visitor = new LoadingVisitor();
-                    visitor.Visit(td17.Root);
-                    using (var output = new BinaryWriter(File.Create("td17.dat")))
-                    {
-                        foreach (var container in visitor.Containers)
-                        {
-                            Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss} Loading {container.Path}");
-                            var data = await client.RequestDataAsync(container.Address, container.Size, new CancellationTokenSource(5000).Token);
-                            output.Write(container.Address);
-                            output.Write(container.Size);
-                            output.Write(data);
-                        }
-                    }
-                }
-
+                var data = LoadDataFromFile(@"c:\users\jon\test\projects\td17.dat");
+                var visitor = new DumpingVisitor(data);
+                visitor.Visit(data.ModuleFields.Root);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+            }
+        }
+
+        public class DumpingVisitor : FieldVisitor
+        {
+            private readonly ModuleData data;
+
+            public DumpingVisitor(ModuleData data) => this.data = data;
+
+            public override void VisitIPrimitiveField(IPrimitiveField field)
+            {
+                if (data.HasData(field.Address))
+                {
+                    Console.WriteLine($"{field.Address}: {field.Path}: {field.GetText(data)}");
+                }
+                else
+                {
+                    Console.WriteLine($"No data for {field.Address}: {field.Path} - bad config?");
+                }
+            }
+
+            public override void VisitContainer(Container container)
+            {
+                if (data.HasData(container.Address) || !container.Loadable)
+                {
+                    base.VisitContainer(container);
+                }
+                else
+                {
+                    Console.WriteLine($"No data for {container.Path}");
+                }
             }
         }
 
@@ -57,6 +73,60 @@ namespace VDrumExplorer.ConsoleDemo
                     //Console.WriteLine($"Would load container {container.Name} at address {container.Address:x}");
                 }
             }
+        }
+
+        private static ModuleData LoadDataFromFile(string path)
+        {
+            var td17 = LoadTd17ModuleFields();
+            var data = new ModuleData(td17);
+            using (var reader = new BinaryReader(File.OpenRead(path)))
+            {
+                // Note: this may not be reliable due to buffering. Use it for now...
+                while (reader.BaseStream.Position != reader.BaseStream.Length)
+                {
+                    int address = reader.ReadInt32();
+                    int size = reader.ReadInt32();
+                    // FIXME: Dump without the wrong size.
+                    if (size >= 0x100)
+                    {
+                        size -= 0x80;
+                    }
+                    byte[] bytes = reader.ReadBytes(size);
+                    data.Populate(new ModuleAddress(address), bytes);
+                }
+            }
+            return data;
+        }
+
+        public static async Task CopyFromKitToFile()
+        {
+            using (var client = CreateClientForTd17())
+            {
+                var td17 = LoadTd17ModuleFields();
+                var visitor = new LoadingVisitor();
+                visitor.Visit(td17.Root);
+                using (var output = new BinaryWriter(File.Create("td17.dat")))
+                {
+                    foreach (var container in visitor.Containers)
+                    {
+                        Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss} Loading {container.Path}");
+                        var data = await client.RequestDataAsync(container.Address.Value, container.Size, new CancellationTokenSource(5000).Token);
+                        output.Write(container.Address.Value);
+                        output.Write(data.Length);
+                        output.Write(data);
+                    }
+                }
+            }
+        }
+
+        private static ModuleFields LoadTd17ModuleFields() =>
+            ModuleFields.FromAssemblyResources(typeof(ModuleFields).Assembly, "VDrumExplorer.Models.TD17", "TD17.json");
+
+        private static SysExClient CreateClientForTd17()
+        {
+            int inputId = FindId(InputDevice.DeviceCount, i => InputDevice.GetDeviceCapabilities(i).name, "3- TD-17");
+            int outputId = FindId(OutputDeviceBase.DeviceCount, i => OutputDeviceBase.GetDeviceCapabilities(i).name, "3- TD-17");
+            return new SysExClient(inputId, outputId, modelId: 0x4b, deviceId: 17);
         }
 
         /*
