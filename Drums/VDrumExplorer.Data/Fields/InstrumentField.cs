@@ -1,4 +1,4 @@
-﻿namespace VDrumExplorer.Models.Fields
+﻿namespace VDrumExplorer.Data.Fields
 {
     // TODO: Make this a range field? Or an enum?
     public class InstrumentField : FieldBase, IPrimitiveField

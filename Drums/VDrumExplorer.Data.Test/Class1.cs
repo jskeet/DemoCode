@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VDrumExplorer.Models.Test
+namespace VDrumExplorer.Data.Test
 {
     public class Class1
     {

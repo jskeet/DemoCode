@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     public sealed class EnumField : FieldBase, IPrimitiveField
     {

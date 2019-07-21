@@ -1,7 +1,7 @@
 ﻿using System;
 using static System.FormattableString;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     /// <summary>
     /// A volume value between -60DB and +6DB, or "-inf".

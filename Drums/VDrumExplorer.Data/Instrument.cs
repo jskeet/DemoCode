@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VDrumExplorer.Models
+namespace VDrumExplorer.Data
 {
     /// <summary>
     /// An instrument supported within a module. This has no settings applied, and isn't necessarily

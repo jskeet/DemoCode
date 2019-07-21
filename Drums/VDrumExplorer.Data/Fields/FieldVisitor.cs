@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     public abstract class FieldVisitor
     {
