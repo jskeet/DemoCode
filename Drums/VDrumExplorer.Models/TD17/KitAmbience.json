@@ -1,14 +1,15 @@
 ﻿{
+  "name": "KitAmbience",
   "size": "0x0a",
   "fields": [
     {
-      "name": "On/off",
-      "address": "0x00",
+      "offset": "0x00",
+      "description": "On/off",
       "type": "boolean"
     },
     {
-      "name": "Type",
-      "address": "0x01",
+      "offset": "0x01",
+      "description": "Type",
       "type": "enum",
       "values": [
         "Beach",
@@ -39,8 +40,8 @@
       ]
     },
     {
-      "name": "Room size",
-      "address": "0x02",
+      "offset": "0x02",
+      "description": "Room size",
       "type": "enum",
       "values": [
         "Tiny",
@@ -51,15 +52,15 @@
       ]
     },
     {
-      "name": "Room shape",
-      "address": "0x03",
+      "offset": "0x03",
+      "description": "Room shape",
       "type": "range8",
       "min": 0,
       "max": 100
     },
     {
-      "name": "Wall type",
-      "address": "0x04",
+      "description": "Wall type",
+      "offset": "0x04",
       "type": "enum",
       "values": [
         "Curtain",
@@ -71,8 +72,8 @@
       ]
     },
     {
-      "name": "Mic position",
-      "address": "0x05",
+      "offset": "0x05",
+      "description": "Mic position",
       "type": "enum",
       "values": [
         "Next door",
@@ -87,8 +88,8 @@
       ]
     },
     {
-      "name": "Level",
-      "address": "0x06",
+      "offset": "0x06",
+      "description": "Level",
       "type": "volume32"
     }
   ]

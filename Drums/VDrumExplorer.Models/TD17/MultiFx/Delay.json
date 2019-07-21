@@ -1,0 +1,132 @@
+﻿{
+  "size": "0x01_06",
+  "fields": [
+    {
+      "offset": "0x09",
+      "description": "Tempo sync left",
+      "type": "boolean",
+      "comment": "Notionally a range32, but effectively boolean for the last byte"
+    },
+    {
+      "offset": "0x0a",
+      "description": "Delay left time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "comment": "Only relevant if tempo sync left is off"
+    },
+    {
+      "offset": "0x0a",
+      "description": "Delay left time (note)",
+      "type": "musicalNote",
+      "comment": "Only relevant if tempo sync left is on"
+    },
+    {
+      "offset": "0x15",
+      "description": "Tempo sync right",
+      "type": "boolean",
+      "comment": "Notionally a range32, but effectively boolean for the last byte"
+    },
+    {
+      "offset": "0x16",
+      "description": "Delay right time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "comment": "Only relevant if tempo sync right is off"
+    },
+    {
+      "offset": "0x1a",
+      "description": "Delay right time (note)",
+      "type": "musicalNote",
+      "comment": "Only relevant if tempo sync right is on"
+    },
+    {
+      "offset": "0x21",
+      "description": "Phase left",
+      "type": "enum",
+      "values": [
+        "Normal",
+        "Inverse"
+      ]
+    },
+    {
+      "offset": "0x25",
+      "description": "Phase right",
+      "type": "enum",
+      "values": [
+        "Normal",
+        "Inverse"
+      ]
+    },
+    {
+      "offset": "0x29",
+      "description": "Feedback mode",
+      "type": "enum",
+      "values": [
+        "Normal",
+        "Cross"
+      ]
+    },
+    {
+      "offset": "0x2a",
+      "description": "Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "offset": "0x31",
+      "description": "High frequency damp",
+      "type": "enum",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "offset": "0x32",
+      "description": "Low gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15
+    },
+    {
+      "offset": "0x36",
+      "description": "High gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15
+    },
+    {
+      "offset": "0x3e",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

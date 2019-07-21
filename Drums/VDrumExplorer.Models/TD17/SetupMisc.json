@@ -1,0 +1,22 @@
+﻿{
+  "name": "SetupMisc",
+  "size": "0x04",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "USB Input Gain",
+      "type": "range16",
+      "min": -36,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x02",
+      "description": "USB Output Gain",
+      "type": "range16",
+      "min": -24,
+      "max": 24,
+      "suffix": "dB"
+    }
+  ]
+}

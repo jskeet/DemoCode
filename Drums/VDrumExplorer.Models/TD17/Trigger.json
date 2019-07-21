@@ -1,5 +1,15 @@
 ﻿{
-  "size": "0x0",
+  "name": "Trigger",
   "fields": [
+    {
+      "offset": "0x00",
+      "description": "Trigger Misc",
+      "type": "container:TrigMisc"
+    },
+    {
+      "offset": "0x01_00",
+      "description": "Trigger",
+      "type": "container:Trig"
+    }
   ]
 }

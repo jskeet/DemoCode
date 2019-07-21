@@ -80,13 +80,26 @@ namespace VDrumExplorer.Midi
             }
         }
 
+        /// <summary>
+        /// Requests data at a given address.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="size">The number of bytes to receive. Must be in the range 0x1 to 0x17f inclusive.
+        /// If this is in the range 0x100-0x17f, it is assumed that the actual number of bytes will be 0x80 smaller,
+        /// due to the address range compression.</param>
+        /// <param name="cancellationToken">The cancellation token for the asynchronous operation.</param>
+        /// <returns></returns>
         public Task<byte[]> RequestDataAsync(int address, int size, CancellationToken cancellationToken)
         {
-            if (size < 1 || size > 255)
+            if (size < 1 || size > 0x17f)
             {
                 // While we could reassemble the messages, it's relatively painful to do so.
-                // TODO: See if Sandford MIDI can do this itself.
-                throw new ArgumentOutOfRangeException("Size must be in the range 1-255, to avoid fragmentation");
+                // TODO: See if Sanford MIDI can do this itself.
+                throw new ArgumentOutOfRangeException("Size must be in the range 0x1-0x17f, to avoid fragmentation");
+            }
+            if (size > 0x100)
+            {
+                size -= 0x80;
             }
             
             var consumer = new Consumer(address, size);

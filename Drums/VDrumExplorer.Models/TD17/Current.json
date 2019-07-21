@@ -1,9 +1,10 @@
 ﻿{
+  "name": "Current",
   "size": "0x1",
   "fields": [
     {
-      "name": "Current kit",
-      "address": "0x00",
+      "offset": "0x00",
+      "description": "Current kit",
       "type": "range8"
     }
   ]

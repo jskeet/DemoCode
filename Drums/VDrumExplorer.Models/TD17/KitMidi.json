@@ -1,193 +1,194 @@
 ﻿{
+  "name": "KitMidi",
   "size": "0x60",
   "fields": [
     {
-      "name": "Kick note",
-      "address": "0x00",
+      "offset": "0x00",
+      "description": "Kick note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Snare head note",
-      "address": "0x04",
+      "offset": "0x04",
+      "description": "Snare head note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Snare rim note",
-      "address": "0x08",
+      "offset": "0x08",
+      "description": "Snare rim note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Snare xstick note",
-      "address": "0x0c",
+      "offset": "0x0c",
+      "description": "Snare xstick note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Tom 1 head note",
-      "address": "0x10",
+      "offset": "0x10",
+      "description": "Tom 1 head note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Tom 1 rim note",
-      "address": "0x14",
+      "offset": "0x14",
+      "description": "Tom 1 rim note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Tom 2 head note",
-      "address": "0x18",
+      "offset": "0x18",
+      "description": "Tom 2 head note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Tom 2 rim note",
-      "address": "0x1c",
+      "offset": "0x1c",
+      "description": "Tom 2 rim note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Tom 3 head note",
-      "address": "0x20",
+      "offset": "0x20",
+      "description": "Tom 3 head note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Tom 3 rim note",
-      "address": "0x24",
+      "offset": "0x24",
+      "description": "Tom 3 rim note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Hi-hat open bow note",
-      "address": "0x28",
+      "offset": "0x28",
+      "description": "Hi-hat open bow note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Hi-hat open edge note",
-      "address": "0x2c",
+      "offset": "0x2c",
+      "description": "Hi-hat open edge note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Hi-hat close bow note",
-      "address": "0x30",
+      "offset": "0x30",
+      "description": "Hi-hat close bow note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Hi-hat close edge note",
-      "address": "0x34",
+      "offset": "0x34",
+      "description": "Hi-hat close edge note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Hi-hat pedal note",
-      "address": "0x38",
+      "offset": "0x38",
+      "description": "Hi-hat pedal note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Crash 1 bow note",
-      "address": "0x3c",
+      "offset": "0x3c",
+      "description": "Crash 1 bow note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Crash 1 edge note",
-      "address": "0x40",
+      "offset": "0x40",
+      "description": "Crash 1 edge note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Crash 2 bow note",
-      "address": "0x44",
+      "offset": "0x44",
+      "description": "Crash 2 bow note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Crash 2 edge note",
-      "address": "0x48",
+      "offset": "0x48",
+      "description": "Crash 2 edge note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Ride bow note",
-      "address": "0x4c",
+      "offset": "0x4c",
+      "description": "Ride bow note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Ride edge note",
-      "address": "0x50",
+      "offset": "0x50",
+      "description": "Ride edge note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Ride bell note",
-      "address": "0x54",
+      "offset": "0x54",
+      "description": "Ride bell note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Aux head note",
-      "address": "0x58",
+      "offset": "0x58",
+      "description": "Aux head note",
       "type": "range32",
       "min": 0,
       "max": 127,
       "off": 128
     },
     {
-      "name": "Aux rim note",
-      "address": "0x5c",
+      "offset": "0x5c",
+      "description": "Aux rim note",
       "type": "range32",
       "min": 0,
       "max": 127,

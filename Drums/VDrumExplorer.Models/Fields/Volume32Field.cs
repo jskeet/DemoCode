@@ -6,15 +6,19 @@ namespace VDrumExplorer.Models.Fields
     /// <summary>
     /// A volume value between -60DB and +6DB, or "-inf".
     /// </summary>
-    public class Volume32Field : FieldBase
+    public class Volume32Field : FieldBase, IPrimitiveField
     {
-        public override FieldValue ParseSysExData(byte[] data)
+        public Volume32Field(string description, string path, int address) : base(description, path, address, 4)
         {
-            int rawValue = GetInt32Value(data);
+        }
+
+        public string GetText(ModuleData data)
+        {
+            int rawValue = GetRawValue(data);
             string text = rawValue == -601 ? "-INF"
                 : rawValue >= -600 && rawValue <= 60 ? Invariant($"{rawValue / 10m}dB")
                 : throw new InvalidOperationException($"Invalid volume value: {rawValue}");
-            return new FieldValue(text);
+            return text;
         }
     }
 }

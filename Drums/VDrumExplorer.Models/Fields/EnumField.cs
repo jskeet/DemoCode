@@ -2,11 +2,14 @@
 
 namespace VDrumExplorer.Models.Fields
 {
-    public class EnumField : FieldBase
+    public sealed class EnumField : FieldBase, IPrimitiveField
     {
-        public List<string> Values { get; set; }
+        public IReadOnlyList<string> Values { get; }
 
-        public override FieldValue ParseSysExData(byte[] data) =>
-            new FieldValue(Values[data[Address]]);
+        public EnumField(string description, string path, int address, int size, IReadOnlyList<string> values)
+            : base(description, path, address, size) =>
+            Values = values;
+
+        public string GetText(ModuleData data) => Values[GetRawValue(data)];
     }
 }

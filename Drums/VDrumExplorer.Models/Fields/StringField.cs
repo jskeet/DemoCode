@@ -2,14 +2,15 @@
 
 namespace VDrumExplorer.Models.Fields
 {
-    public class StringField : FieldBase
+    public class StringField : FieldBase, IPrimitiveField
     {
-        public int Length { get; set; }
-
-        public override FieldValue ParseSysExData(byte[] data)
+        public StringField(string description, string path, int address, int size) : base(description, path, address, size)
         {
-            string text = Encoding.ASCII.GetString(data, Address, Length);
-            return new FieldValue(text);
+        }
+
+        public string GetText(ModuleData data)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
