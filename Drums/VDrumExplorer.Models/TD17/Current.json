@@ -5,7 +5,8 @@
     {
       "offset": "0x00",
       "description": "Current kit",
-      "type": "range8"
+      "type": "range8",
+      "valueOffset": 1
     }
   ]
 }

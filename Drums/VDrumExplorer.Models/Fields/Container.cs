@@ -9,13 +9,13 @@ namespace VDrumExplorer.Models.Fields
     /// </summary>
     public sealed class Container : FieldBase, IContainerField
     {
-        public IReadOnlyList<FieldBase> Fields { get; }
+        public IReadOnlyList<IField> Fields { get; }
         public bool Loadable { get; }
         
         // FIXME: Do we want this? 
         public string Name { get; }
 
-        internal Container(string name, string description, string path, int address, int size, IReadOnlyList<FieldBase> fields)
+        internal Container(string name, string description, string path, ModuleAddress address, int size, IReadOnlyList<IField> fields)
             : base(description, path, address, size)
         {
             Name = name;
@@ -23,6 +23,6 @@ namespace VDrumExplorer.Models.Fields
             Loadable = !Fields.Any(f => f is Container);
         }
 
-        public IEnumerable<FieldBase> GetFields(ModuleData data) => Fields;
+        public IEnumerable<IField> GetFields(ModuleData data) => Fields;
     }
 }

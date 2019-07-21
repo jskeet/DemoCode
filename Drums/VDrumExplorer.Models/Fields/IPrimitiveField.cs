@@ -1,6 +1,6 @@
 ﻿namespace VDrumExplorer.Models.Fields
 {
-    public interface IPrimitiveField
+    public interface IPrimitiveField : IField
     {
         string GetText(ModuleData data);
     }

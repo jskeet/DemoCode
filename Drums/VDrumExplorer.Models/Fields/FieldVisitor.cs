@@ -4,7 +4,7 @@ namespace VDrumExplorer.Models.Fields
 {
     public abstract class FieldVisitor
     {
-        public virtual void Visit(FieldBase field)
+        public virtual void Visit(IField field)
         {
             if (field is IContainerField container)
             {
@@ -29,15 +29,10 @@ namespace VDrumExplorer.Models.Fields
             if (containerField is Container container)
             {
                 VisitContainer(container);
-                foreach (var field in container.Fields)
-                {
-                    Visit(field);
-                }
             }
             else if (containerField is DynamicOverlay overlay)
             {
                 VisitDynamicOverlay(overlay);
-                // TODO: Recurse over the overlaid containers?
             }
             else
             {
@@ -47,10 +42,15 @@ namespace VDrumExplorer.Models.Fields
 
         public virtual void VisitDynamicOverlay(DynamicOverlay overlay)
         {
+            // TODO: Recurse over the overlaid containers?
         }
 
         public virtual void VisitContainer(Container container)
         {
+            foreach (var field in container.Fields)
+            {
+                Visit(field);
+            }
         }
     }
 }

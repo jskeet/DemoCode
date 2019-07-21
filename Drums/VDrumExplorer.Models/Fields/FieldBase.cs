@@ -2,17 +2,28 @@
 
 namespace VDrumExplorer.Models.Fields
 {
-    public abstract class FieldBase
+    public abstract class FieldBase : IField
     {
         public string Description { get; }
         public string Path { get; }
-        public int Address { get; }
+        public ModuleAddress Address { get; }
         public int Size { get; }
 
-        protected FieldBase(string description, string path, int address, int size) =>
+        protected FieldBase(string description, string path, ModuleAddress address, int size) =>
             (Description, Path, Address, Size) = (description, path, address, size);
 
-        // Note: we need to handle overflow from 0x7f to 0x100.
-        protected int GetRawValue(ModuleData data) => throw new NotImplementedException();
+        internal virtual int GetRawValue(ModuleData data) =>
+            Size switch
+            {
+                1 => data.GetAddressValue(Address),
+                2 => (int) (sbyte) ((data.GetAddressValue(Address) << 4) | data.GetAddressValue(Address + 1)),
+                // TODO: Just fetch a byte array? Stackalloc it?
+                4 => (short) (
+                    (data.GetAddressValue(Address) << 12) |
+                    (data.GetAddressValue(Address + 1) << 8) |
+                    (data.GetAddressValue(Address + 2) << 4) |
+                    data.GetAddressValue(Address + 3)),
+                _ => throw new InvalidOperationException($"Cannot get value with size {Size}")
+            };
     }
 }
