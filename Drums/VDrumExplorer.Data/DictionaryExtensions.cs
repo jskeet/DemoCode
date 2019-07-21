@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace VDrumExplorer.Models
+namespace VDrumExplorer.Data
 {
     internal static class DictionaryExtensions
     {

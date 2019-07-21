@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VDrumExplorer.Models.Json
+namespace VDrumExplorer.Data.Json
 {
     /// <summary>
     /// The JSON representation of information about the dynamic overlay 

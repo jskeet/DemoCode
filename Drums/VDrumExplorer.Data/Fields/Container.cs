@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using VDrumExplorer.Models.Fields;
+using VDrumExplorer.Data.Fields;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     /// <summary>
     /// A data container representing a portion of memory.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     /// <summary>
     /// An address in the compressed address sapace, which doesn't allow

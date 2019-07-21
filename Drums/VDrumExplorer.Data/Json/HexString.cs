@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace VDrumExplorer.Models.Json
+namespace VDrumExplorer.Data.Json
 {
     /// <summary>
     /// A wrapper for integer values written in hex.

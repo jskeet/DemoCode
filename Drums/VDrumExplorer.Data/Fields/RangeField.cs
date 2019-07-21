@@ -2,7 +2,7 @@
 using System.Globalization;
 using static System.FormattableString;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     public class RangeField : FieldBase, IPrimitiveField
     {

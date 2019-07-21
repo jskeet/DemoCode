@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     public class StringField : FieldBase, IPrimitiveField
     {

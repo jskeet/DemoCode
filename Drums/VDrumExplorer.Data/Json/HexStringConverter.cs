@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace VDrumExplorer.Models.Json
+namespace VDrumExplorer.Data.Json
 {
     internal class HexStringConverter : JsonConverter<HexString>
     {

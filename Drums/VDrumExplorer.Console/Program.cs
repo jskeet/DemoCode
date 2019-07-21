@@ -7,8 +7,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Midi;
-using VDrumExplorer.Models;
-using VDrumExplorer.Models.Fields;
+using VDrumExplorer.Data;
+using VDrumExplorer.Data.Fields;
 
 namespace VDrumExplorer.ConsoleDemo
 {
@@ -149,7 +149,7 @@ namespace VDrumExplorer.ConsoleDemo
         }
 
         private static ModuleFields LoadTd17ModuleFields() =>
-            ModuleFields.FromAssemblyResources(typeof(ModuleFields).Assembly, "VDrumExplorer.Models.TD17", "TD17.json");
+            ModuleFields.FromAssemblyResources(typeof(ModuleFields).Assembly, "VDrumExplorer.Data.TD17", "TD17.json");
 
         private static SysExClient CreateClientForTd17()
         {

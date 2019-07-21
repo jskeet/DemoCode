@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using VDrumExplorer.Models.Fields;
-using VDrumExplorer.Models.Json;
+using VDrumExplorer.Data.Fields;
+using VDrumExplorer.Data.Json;
 using static System.FormattableString;
 
-namespace VDrumExplorer.Models
+namespace VDrumExplorer.Data
 {
     // TODO: Rename this.
 

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace VDrumExplorer.Models.Json
+namespace VDrumExplorer.Data.Json
 {
     internal class FieldJson
     {

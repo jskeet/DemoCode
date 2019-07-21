@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VDrumExplorer.Models.Json
+namespace VDrumExplorer.Data.Json
 {
     /// <summary>
     /// JSON representation of module data. This is the root document, effectively.

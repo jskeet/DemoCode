@@ -1,4 +1,4 @@
-﻿namespace VDrumExplorer.Models.Fields
+﻿namespace VDrumExplorer.Data.Fields
 {
     public interface IPrimitiveField : IField
     {

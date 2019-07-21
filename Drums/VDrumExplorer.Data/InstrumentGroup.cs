@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDrumExplorer.Models
+namespace VDrumExplorer.Data
 {
     /// <summary>
     /// A group of supported instruments within a module.

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using VDrumExplorer.Models.Fields;
+using VDrumExplorer.Data.Fields;
 
-namespace VDrumExplorer.Models
+namespace VDrumExplorer.Data
 {
     public class ModuleData
     {

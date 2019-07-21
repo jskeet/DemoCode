@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VDrumExplorer.Models.Json
+namespace VDrumExplorer.Data.Json
 {
     internal sealed class InstrumentGroupJson
     {

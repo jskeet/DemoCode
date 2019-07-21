@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VDrumExplorer.Models.Fields
+namespace VDrumExplorer.Data.Fields
 {
     // TODO: Make this a range field? Or an enum?
     public class MusicalNoteField : FieldBase, IPrimitiveField
