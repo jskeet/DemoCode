@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
-    <ProjectReference Include="..\VDrumExplorer.Models\VDrumExplorer.Models.csproj" />
+    <ProjectReference Include="..\VDrumExplorer.Data\VDrumExplorer.Data.csproj" />
   </ItemGroup>
 
 </Project>
