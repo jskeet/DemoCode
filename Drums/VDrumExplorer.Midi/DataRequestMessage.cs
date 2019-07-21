@@ -1,10 +1,7 @@
 ﻿using MiscUtil.Conversion;
 using MiscUtil.IO;
 using Sanford.Multimedia.Midi;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace VDrumExplorer.Midi
 {
@@ -45,5 +42,4 @@ namespace VDrumExplorer.Midi
             writer.Write((byte) ((value & 0x7f)));
         }
     }
-
 }

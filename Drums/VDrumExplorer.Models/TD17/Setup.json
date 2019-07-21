@@ -1,5 +1,15 @@
 ﻿{
-  "size": "0x0",
+  "name": "Setup",
   "fields": [
+    {
+      "offset": "0x02_00",
+      "description": "Click",
+      "type": "container:Click"
+    },
+    {
+      "offset": "0x03_00",
+      "description": "Misc",
+      "type": "container:SetupMisc"
+    }
   ]
 }

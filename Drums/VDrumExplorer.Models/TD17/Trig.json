@@ -1,0 +1,99 @@
+{
+  "name": "Trig",
+  "size": "0xa",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Pad type",
+      "type": "enum",
+      "values": [
+        "KDA22",
+        "KD140",
+        "KD120",
+        "KD85",
+        "KD10",
+        "KD9",
+        "KD8",
+        "KD7",
+        "KT10",
+        "KT9"
+      ]
+    },
+    {
+      "offset": "0x01",
+      "description": "Sensitivity",
+      "type": "range8",
+      "valueOffset": 1,
+      "min": 0,
+      "max": 31
+    },
+    {
+      "offset": "0x02",
+      "description": "Rim gain",
+      "type": "range8",
+      "divisor": 10,
+      "min": 0,
+      "max": 32
+    },
+    {
+      "offset": "0x03",
+      "description": "Threshold",
+      "type": "range8",
+      "min": 0,
+      "max": 31
+    },
+    {
+      "offset": "0x04",
+      "description": "Curve",
+      "type": "enum",
+      "values": [
+        "Linear",
+        "Exponential 1",
+        "Exponential 2",
+        "Log 1",
+        "Log 2",
+        "Spline",
+        "Loud 1",
+        "Loud 2"
+      ]
+    },
+    {
+      "offset": "0x05",
+      "description": "External noise cancellation",
+      "type": "range8",
+      "min": 0,
+      "max": 5,
+      "off": 0
+    },
+    {
+      "offset": "0x06",
+      "description": "Head/rim adjustment",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x07",
+      "description": "Scan time",
+      "type": "range8",
+      "min": 0,
+      "max": 40,
+      "divisor": 10
+    },
+    {
+      "offset": "0x08",
+      "description": "Mask time",
+      "type": "range8",
+      "min": 0,
+      "max": 64
+    },
+    {
+      "offset": "0x0a",
+      "description": "Retrig cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 15,
+      "valueOffset": 1
+    }
+  ]
+}

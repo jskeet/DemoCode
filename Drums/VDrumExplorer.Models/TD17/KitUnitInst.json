@@ -1,20 +1,20 @@
 ﻿{
+  "name": "KitUnitInst",
   "size": "0x9",
   "fields": [
     {
-      "name": "Instrument",
-      "address": "0x00",
-      "type": "range32",
-      "min": 0
+      "offset": "0x00",
+      "description": "Instrument",
+      "type": "instrument"
     },
     {
-      "name": "Volume",
-      "address": "0x04",
+      "offset": "0x04",
+      "description": "Volume",
       "type": "volume32"
     },
     {
-      "name": "Instrument bank",
-      "address": "0x08",
+      "offset": "0x08",
+      "description": "Instrument bank",
       "type": "enum",
       "values": [
         "Preset",

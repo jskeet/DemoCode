@@ -1,0 +1,60 @@
+﻿{
+  "name": "Kit",
+  "fields": [
+    {
+      "offset": "0x00_00",
+      "description": "Kit Common",
+      "type": "container:KitCommon"
+    },
+    {
+      "offset": "0x01_00",
+      "description": "Kit MIDI",
+      "type": "container:KitMidi"
+    },
+    {
+      "offset": "0x03_00",
+      "description": "Kit Ambience",
+      "type": "container:KitAmbience"
+    },
+    {
+      "offset": "0x10_00",
+      "description": "Kit Multi FX",
+      "type": "container:KitMfx"
+    },
+    {
+      "offset": "0x20_00",
+      "description": "Kit Unit Common",
+      "type": "container:KitUnitCommon",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "offset": "0x40_00",
+      "description": "Kit Unit Main",
+      "type": "container:KitUnitInst",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "offset": "0x60_00",
+      "description": "Kit Unit Sub",
+      "type": "container:KitUnitInst",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "offset": "0x01_00_00",
+      "description": "Kit Unit VEdit Main",
+      "type": "container:KitUnitVEdit",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "offset": "0x01_20_00",
+      "description": "Kit Unit VEdit Sub",
+      "type": "container:KitUnitVEdit",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    }
+  ]
+}
