@@ -35,6 +35,7 @@ namespace VDrumExplorer.Models
         public IReadOnlyDictionary<int, Instrument> InstrumentsById { get; }
         public IReadOnlyList<Instrument> Instruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
+        public IReadOnlyDictionary<ModuleAddress, IPrimitiveField> PrimitiveFieldsByAddress { get; }
 
         private ModuleFields(ModuleJson moduleJson)
         {
@@ -48,14 +49,15 @@ namespace VDrumExplorer.Models
             }
             Root = converter.ToContainer(rootJson, "Root", "", new ModuleAddress(0));
             InstrumentGroups = moduleJson.InstrumentGroups
-                .Select(igj => new InstrumentGroup(igj.Description, igj.Instruments))
+                .Select((igj, index) => new InstrumentGroup(igj.Description, index, igj.Instruments))
                 .ToList()
                 .AsReadOnly();
             Instruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
                 .ToList()
                 .AsReadOnly();
-            InstrumentsById = new ReadOnlyDictionary<int, Instrument>(Instruments.ToDictionary(i => i.Id));
+            InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
+            PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>().ToDictionary(f => f.Address).AsReadOnly();
         }
 
         public static ModuleFields FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
@@ -88,32 +90,33 @@ namespace VDrumExplorer.Models
                 return new Container(containerJson.Name, description, path, address, size, fields.AsReadOnly());
             }
 
-            internal IEnumerable<Fields.IField> ToFields(FieldJson fieldJson, string parentPath, ModuleAddress parentAddress)
+            internal IEnumerable<IField> ToFields(FieldJson fieldJson, string parentPath, ModuleAddress parentAddress)
             {
                 int? repeat = fieldJson.GetRepeat(ModuleJson);
                 ModuleAddress address = parentAddress + fieldJson.Offset.Value;
                 if (repeat == null)
                 {
                     string path = $"{parentPath}/{fieldJson.Description}";
-                    yield return ToField(fieldJson, path, address);
+                    yield return ToField(fieldJson, path, fieldJson.Description, address);
                 }
                 else
                 {
                     for (int i = 0; i < repeat; i++)
                     {
-                        string path = Invariant($"{parentPath}/{fieldJson.Description} ({i + 1})");
-                        yield return ToField(fieldJson, path, address);
+                        string description = Invariant($"{fieldJson.Description} ({i + 1})");
+                        string path = Invariant($"{parentPath}/{description}");
+                        yield return ToField(fieldJson, path, description, address);
                         address += fieldJson.Gap.Value;
                     }
                 }
             }
 
-            private IField ToField(FieldJson fieldJson, string path, ModuleAddress address)
+            private IField ToField(FieldJson fieldJson, string path, string description, ModuleAddress address)
             {
-                string description = fieldJson.Description;
                 return fieldJson.Type switch
                 {
                     "boolean" => (Fields.IField) new BooleanField(description, path, address, 1),
+                    "boolean32" => (Fields.IField) new BooleanField(description, path, address, 4),
                     "range8" => BuildRangeField(1),
                     "range16" => BuildRangeField(2),
                     "range32" => BuildRangeField(4),
@@ -130,13 +133,13 @@ namespace VDrumExplorer.Models
 
                 DynamicOverlay BuildDynamicOverlay()
                 {
+                    // Offsets within each container are relative to the parent container of this field,
+                    // not relative to this field itself.
+                    ModuleAddress parentAddress = address - fieldJson.Offset.Value;
                     var overlayJson = fieldJson.DynamicOverlay;
-                    ModuleAddress switchAddress = address + overlayJson.SwitchOffset.Value;
+                    ModuleAddress switchAddress = parentAddress + overlayJson.SwitchOffset.Value;
                     var containers = overlayJson.Containers
-                        // Offsets within each container are relative to the parent container of this field,
-                        // not relative to this field itself.
-                        // TODO: If we ever have repeated dynamic overlays, this could cause a problem...
-                        .Select(json => ToContainer(json, description, path, address - fieldJson.Offset.Value))
+                        .Select(json => ToContainer(json, description, path, parentAddress))
                         .ToList()
                         .AsReadOnly();
                     return new DynamicOverlay(description, path, address, overlayJson.Size.Value, switchAddress, overlayJson.SwitchTransform, containers);

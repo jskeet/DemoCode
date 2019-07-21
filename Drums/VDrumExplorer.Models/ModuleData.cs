@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using VDrumExplorer.Models.Fields;
 
 namespace VDrumExplorer.Models
@@ -20,14 +23,6 @@ namespace VDrumExplorer.Models
             {
                 throw new ArgumentException("Data size must be less than 0x100");
             }
-            // Expand the data if necessary, to fit the compressed address space more simply.
-            if (data.Length > 0x7f)
-            {
-                byte[] newData = new byte[data.Length + 0x80];
-                Buffer.BlockCopy(data, 0, newData, 0, 0x7f);
-                Buffer.BlockCopy(data, 0x80, newData, 0x100, data.Length - 0x80);
-                data = newData;
-            }
             var segment = new Segment(address, data);
 
             lock (sync)
@@ -38,6 +33,57 @@ namespace VDrumExplorer.Models
                     throw new ArgumentException("Segment already exists");
                 }
                 segments.Insert(~index, segment);
+            }
+        }
+
+        /// <summary>
+        /// Loads memory data from the given stream. Any existing data is cleared, if this operation is successful.
+        /// </summary>
+        public void Load(Stream stream)
+        {
+            List<Segment> localSegments = new List<Segment>();
+            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            {
+                var name = reader.ReadString();
+                var midiId = reader.ReadInt32();
+                if (name != ModuleFields.Name)
+                {
+                    throw new InvalidOperationException($"Expected data for module name '{ModuleFields.Name}'; received '{name}'");
+                }
+                if (midiId != ModuleFields.MidiId)
+                {
+                    throw new InvalidOperationException($"Expected data for module with Midi ID '{ModuleFields.MidiId}; received '{midiId}'");
+                }
+                var count = reader.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    localSegments.Add(Segment.Load(reader));
+                }
+            }
+            lock (sync)
+            {
+                segments.Clear();
+                segments.AddRange(localSegments);
+            }
+        }
+
+        public void Save(Stream stream)
+        {
+            List<Segment> localSegments;
+            lock (sync)
+            {
+                localSegments = segments.ToList();
+            }
+            
+            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            {
+                writer.Write(ModuleFields.Name);
+                writer.Write(ModuleFields.MidiId);
+                writer.Write(localSegments.Count);
+                foreach (var segment in localSegments)
+                {
+                    segment.Save(writer);
+                }                
             }
         }
 
@@ -104,7 +150,7 @@ namespace VDrumExplorer.Models
         private class Segment
         {
             public ModuleAddress Start { get; }
-            public byte[] Data { get; }
+            private byte[] Data { get; }
             public ModuleAddress End { get; }
 
             public Segment(ModuleAddress start, byte[] data) =>
@@ -113,7 +159,33 @@ namespace VDrumExplorer.Models
             public bool Contains(ModuleAddress other) =>
                 other.CompareTo(Start) >= 0 && other.CompareTo(End) < 0;
 
-            public byte this[ModuleAddress address] => Data[address - Start];
+            public byte this[ModuleAddress address]
+            {
+                get
+                {
+                    int offset = address - Start;
+                    if (offset >= 0x100)
+                    {
+                        offset -= 0x80;
+                    }
+                    return Data[offset];
+                }
+            }
+
+            public void Save(BinaryWriter writer)
+            {
+                writer.Write(Start.Value);
+                writer.Write(Data.Length);
+                writer.Write(Data);
+            }
+
+            public static Segment Load(BinaryReader reader)
+            {
+                var address = new ModuleAddress(reader.ReadInt32());
+                var length = reader.ReadInt32();
+                var data = reader.ReadBytes(length);
+                return new Segment(address, data);
+            }
         }
 
         private class SegmentAddressComparer : IComparer<Segment>

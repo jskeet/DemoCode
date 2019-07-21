@@ -2,10 +2,9 @@
   "size": "0x01_06",
   "fields": [
     {
-      "offset": "0x09",
+      "offset": "0x06",
       "description": "Tempo sync left",
-      "type": "boolean",
-      "comment": "Notionally a range32, but effectively boolean for the last byte"
+      "type": "boolean32"
     },
     {
       "offset": "0x0a",
@@ -17,16 +16,15 @@
       "comment": "Only relevant if tempo sync left is off"
     },
     {
-      "offset": "0x0a",
+      "offset": "0x0e",
       "description": "Delay left time (note)",
       "type": "musicalNote",
       "comment": "Only relevant if tempo sync left is on"
     },
     {
-      "offset": "0x15",
+      "offset": "0x12",
       "description": "Tempo sync right",
-      "type": "boolean",
-      "comment": "Notionally a range32, but effectively boolean for the last byte"
+      "type": "boolean32"
     },
     {
       "offset": "0x16",

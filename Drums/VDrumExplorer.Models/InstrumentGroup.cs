@@ -11,11 +11,16 @@ namespace VDrumExplorer.Models
     public class InstrumentGroup
     {
         public string Description { get; }
+        /// <summary>
+        /// Index into <see cref="ModuleFields.InstrumentGroups"/>.
+        /// </summary>
+        public int Index { get; }
         public IReadOnlyList<Instrument> Instruments { get; }
 
-        internal InstrumentGroup(string description, Dictionary<int, string> instruments)
+        internal InstrumentGroup(string description, int index, Dictionary<int, string> instruments)
         {
             Description = description;
+            Index = index;
             Instruments = instruments
                 .Select(pair => new Instrument(pair.Key, pair.Value, this))
                 .OrderBy(i => i.Id)
