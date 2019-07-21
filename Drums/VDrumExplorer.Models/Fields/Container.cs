@@ -23,6 +23,25 @@ namespace VDrumExplorer.Models.Fields
             Loadable = !Fields.Any(f => f is Container);
         }
 
-        public IEnumerable<IField> GetFields(ModuleData data) => Fields;
+        public IEnumerable<IField> Children(ModuleData data) => Fields;
+
+        public IEnumerable<IField> DescendantsAndSelf()
+        {
+            yield return this;
+            foreach (var field in Fields)
+            {
+                if (field is Container container)
+                {
+                    foreach (var descendant in container.DescendantsAndSelf())
+                    {
+                        yield return descendant;
+                    }
+                }
+                else
+                {
+                    yield return field;
+                }
+            }
+        }
     }
 }

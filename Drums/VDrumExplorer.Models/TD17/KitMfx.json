@@ -58,7 +58,35 @@
         "switchOffset": "0x00",
         "containers": [
           "$resource:MultiFx/Delay.json",
-          "$resource:MultiFx/TapeEcho.json"
+          "$resource:MultiFx/TapeEcho.json",
+          "$resource:MultiFx/ReverseDelay.json",
+          "$resource:MultiFx/3TapPan.json",
+          "$resource:MultiFx/OverdriveToDelay.json",
+          "$resource:MultiFx/DistortionToDelay.json",
+          "$resource:MultiFx/Chorus.json",
+          "$resource:MultiFx/SpaceD.json",
+          "$resource:MultiFx/OverdriveToChorus.json",
+          "$resource:MultiFx/DistortionToChorus.json",
+          "$resource:MultiFx/PhaserA.json",
+          "$resource:MultiFx/PhaserB.json",
+          "$resource:MultiFx/StepPhaser.json",
+          "$resource:MultiFx/Flanger.json",
+          "$resource:MultiFx/Reverb.json",
+          "$resource:MultiFx/LongReverb.json",
+          "$resource:MultiFx/SuperFilter.json",
+          "$resource:MultiFx/FilterAndDrive.json",
+          "$resource:MultiFx/AutoWah.json",
+          "$resource:MultiFx/OverdriveDisortionToTwah.json",
+          "$resource:MultiFx/LoFiCompress.json",
+          "$resource:MultiFx/Distortion.json",
+          "$resource:MultiFx/Overdrive.json",
+          "$resource:MultiFx/Saturator.json",
+          "$resource:MultiFx/TScream.json",
+          "$resource:MultiFx/BitCrusher.json",
+          "$resource:MultiFx/Isolator.json",
+          "$resource:MultiFx/RingModulator.json",
+          "$resource:MultiFx/PitchShifter.json",
+          "$resource:MultiFx/AutoPan.json"
         ]
       }
     }

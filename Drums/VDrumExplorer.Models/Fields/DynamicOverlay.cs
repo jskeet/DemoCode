@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace VDrumExplorer.Models.Fields
 {
@@ -13,9 +14,16 @@ namespace VDrumExplorer.Models.Fields
             : base(description, path, address, size) =>
             (this.switchAddress, this.switchTransform, this.containers) = (switchAddress, switchTransform, containers);
 
-        public IEnumerable<IField> GetFields(ModuleData data)
+        public IEnumerable<IField> Children(ModuleData data)
         {
-            throw new System.NotImplementedException();
+            var field = data.ModuleFields.PrimitiveFieldsByAddress[switchAddress];
+            int index = switchTransform switch
+            {
+                null => ((FieldBase) field).GetRawValue(data),
+                "instrumentGroup" => ((InstrumentField) field).GetInstrument(data).Group.Index,
+                _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
+            };
+            return containers[index].Fields;
         }
     }
 }

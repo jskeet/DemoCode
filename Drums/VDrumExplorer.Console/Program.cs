@@ -1,9 +1,9 @@
 ﻿using Sanford.Multimedia.Midi;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Midi;
@@ -20,9 +20,7 @@ namespace VDrumExplorer.ConsoleDemo
             await Task.Yield();
             try
             {
-                var data = LoadDataFromFile(@"c:\users\jon\test\projects\td17.dat");
-                var visitor = new DumpingVisitor(data);
-                visitor.Visit(data.ModuleFields.Root);
+                await CopyFromKitToFile(args[0]);
             }
             catch (Exception e)
             {
@@ -72,6 +70,7 @@ namespace VDrumExplorer.ConsoleDemo
                     Containers.Add(container);
                     //Console.WriteLine($"Would load container {container.Name} at address {container.Address:x}");
                 }
+                base.VisitContainer(container);
             }
         }
 
@@ -98,25 +97,55 @@ namespace VDrumExplorer.ConsoleDemo
             return data;
         }
 
-        public static async Task CopyFromKitToFile()
+        public static async Task CopyFromKitToFile(string path)
         {
             using (var client = CreateClientForTd17())
             {
                 var td17 = LoadTd17ModuleFields();
                 var visitor = new LoadingVisitor();
                 visitor.Visit(td17.Root);
-                using (var output = new BinaryWriter(File.Create("td17.dat")))
+                var moduleData = new ModuleData(td17);
+                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss} Loading {visitor.Containers.Count} containers");
+                await LoadContainersParallel(client, visitor.Containers, moduleData);
+                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss} Loaded");
+                using (var output = File.Create(path))
                 {
-                    foreach (var container in visitor.Containers)
-                    {
-                        Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss} Loading {container.Path}");
-                        var data = await client.RequestDataAsync(container.Address.Value, container.Size, new CancellationTokenSource(5000).Token);
-                        output.Write(container.Address.Value);
-                        output.Write(data.Length);
-                        output.Write(data);
-                    }
+                    moduleData.Save(output);
                 }
             }
+        }
+
+        private static async Task LoadContainersSerial(SysExClient client, List<Container> containers, ModuleData moduleData)
+        {
+            foreach (var container in containers)
+            {
+                var data = await client.RequestDataAsync(container.Address.Value, container.Size, new CancellationTokenSource(5000).Token);
+                moduleData.Populate(container.Address, data);
+            }
+        }
+
+        private static Task LoadContainersParallel(SysExClient client, List<Container> containers, ModuleData moduleData)
+        {
+            return ForEachAsync(containers, 5, async container =>
+            {
+                var data = await client.RequestDataAsync(container.Address.Value, container.Size, new CancellationTokenSource(5000).Token);
+                moduleData.Populate(container.Address, data);
+            });
+        }
+
+        private static Task ForEachAsync<T>(IEnumerable<T> source, int dop, Func<T, Task> body)
+        {
+            return Task.WhenAll(
+                from partition in Partitioner.Create(source).GetPartitions(dop)
+                select Task.Run(async delegate {
+                    using (partition)
+                    {
+                        while (partition.MoveNext())
+                        {
+                            await body(partition.Current);
+                        }
+                    }
+                }));
         }
 
         private static ModuleFields LoadTd17ModuleFields() =>
@@ -128,17 +157,6 @@ namespace VDrumExplorer.ConsoleDemo
             int outputId = FindId(OutputDeviceBase.DeviceCount, i => OutputDeviceBase.GetDeviceCapabilities(i).name, "3- TD-17");
             return new SysExClient(inputId, outputId, modelId: 0x4b, deviceId: 17);
         }
-
-        /*
-        private static async Task PrintFieldSetAsync(SysExClient client, FieldSet fieldSet)
-        {
-            Console.WriteLine($"{fieldSet.Description}:");
-            var data = await client.RequestDataAsync(fieldSet.StartAddress, fieldSet.Size, new CancellationTokenSource(5000).Token);
-            foreach (var field in fieldSet.Fields)
-            {
-                Console.WriteLine($"{field.Name}: {field.ParseSysExData(data)}");
-            }
-        }*/
 
         private static int FindId(int count, Func<int, string> nameFetcher, string name)
         {

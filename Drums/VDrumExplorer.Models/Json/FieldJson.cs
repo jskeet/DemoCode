@@ -45,17 +45,17 @@ namespace VDrumExplorer.Models.Json
         /// <summary>
         /// Amount to divide the value by, for ranges (e.g. 10 for a 0, 0.1, 0.2 etc value).
         /// </summary>
-        public int? Divisor { get; }
+        public int? Divisor { get; set; }
 
         /// <summary>
         /// Amount to multiply the value by, for ranges (e.g. 2 for a 0, 2, 4 etc value).
         /// </summary>
-        public int? Multiplier { get; }
+        public int? Multiplier { get; set; }
 
         /// <summary>
         /// The suffix to apply, usually a unit e.g. "dB".
         /// </summary>
-        public string Suffix { get; }
+        public string Suffix { get; set; }
 
         /// <summary>
         /// The amount to add to the stored value to get the displayed value. This is applied
