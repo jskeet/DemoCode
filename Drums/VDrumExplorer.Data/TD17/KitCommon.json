@@ -3,12 +3,14 @@
   "size": "0x2b",
   "fields": [
     {
+      "name": "KitName",
       "offset": "0x00",
       "description": "Kit name",
       "type": "string",
       "length": 12
     },
     {
+      "name": "KitSubName",
       "offset": "0x0c",
       "description": "Kit Sub name",
       "type": "string",

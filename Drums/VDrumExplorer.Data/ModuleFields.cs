@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using VDrumExplorer.Data.Fields;
@@ -36,6 +37,8 @@ namespace VDrumExplorer.Data
         public IReadOnlyList<Instrument> Instruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
         public IReadOnlyDictionary<ModuleAddress, IPrimitiveField> PrimitiveFieldsByAddress { get; }
+        public IReadOnlyDictionary<string, IField> FieldsByPath { get; }
+        public VisualTreeNode VisualRoot { get; }
 
         private ModuleFields(ModuleJson moduleJson)
         {
@@ -58,6 +61,9 @@ namespace VDrumExplorer.Data
                 .AsReadOnly();
             InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
             PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>().ToDictionary(f => f.Address).AsReadOnly();
+            FieldsByPath = Root.DescendantsAndSelf().ToDictionary(f => f.Path);
+            var visualTreeConverter = new VisualTreeConverter(moduleJson, FieldsByPath);
+            VisualRoot = visualTreeConverter.ConvertVisualNodes(moduleJson.VisualTree, "", new Dictionary<string, string>()).Single();
         }
 
         public static ModuleFields FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
@@ -68,6 +74,114 @@ namespace VDrumExplorer.Data
 
         private static ModuleFields FromJson(JObject json) =>
             new ModuleFields(ModuleJson.FromJson(json));
+
+        private static string CombinePaths(string currentPath, string suffix)
+        {
+            if (suffix == ".")
+            {
+                return currentPath;
+            }
+            if (currentPath == "")
+            {
+                return suffix;
+            }
+            return $"{currentPath}/{suffix}";
+        }
+        
+        private static int? GetRepeat(ModuleJson moduleJson, string repeat)
+        {
+            switch (repeat)
+            {
+                case null: return null;
+                case "$kits": return moduleJson.Kits;
+                case "$instruments": return moduleJson.InstrumentsPerKit;
+                case "$triggers": return moduleJson.Triggers;
+                default:
+                    if (!int.TryParse(repeat, NumberStyles.None, CultureInfo.InvariantCulture, out var result))
+                    {
+                        throw new InvalidOperationException($"Invalid repeat value: '{repeat}'");
+                    }
+                    return result;
+            }
+        }
+
+        private sealed class VisualTreeConverter
+        {
+            private readonly ModuleJson moduleJson;
+            private readonly IReadOnlyDictionary<string, IField> fieldsByPath;
+
+            internal VisualTreeConverter(ModuleJson moduleJson, IReadOnlyDictionary<string, IField> fieldsByPath) =>
+                (this.moduleJson, this.fieldsByPath) = (moduleJson, fieldsByPath);
+
+            internal IEnumerable<VisualTreeNode> ConvertVisualNodes(VisualTreeNodeJson treeJson, string parentPath, IDictionary<string, string> indexes)
+            {
+                int? repeat = GetRepeat(moduleJson, treeJson.Repeat);
+                if (repeat == null)
+                {
+                    string nodePath = CombinePaths(parentPath, ReplaceIndexes(treeJson.Path, indexes));
+                    yield return ToVisualTreeNode(treeJson, nodePath, indexes, treeJson.Description, null);
+                }
+                else
+                {
+                    for (int i = 1; i <= repeat; i++)
+                    {
+                        Dictionary<string, string> newIndexes = new Dictionary<string, string>(indexes) { { treeJson.Index, i.ToString(CultureInfo.InvariantCulture) } };
+                        string nodePath = CombinePaths(parentPath, ReplaceIndexes(treeJson.Path, newIndexes));
+
+                        yield return ToVisualTreeNode(treeJson, nodePath, newIndexes, null, BuildFormatElement(treeJson.Format, parentPath, treeJson.FormatPaths, newIndexes));
+                    }
+                }
+            }
+
+            private VisualTreeDetail.FormatElement BuildFormatElement(string formatString, string parentPath, IEnumerable<string> formatPaths, IDictionary<string, string> indexes)
+            {
+                formatString = ReplaceIndexes(formatString, indexes);
+                var formatFields = formatPaths
+                    .Select(p => CombinePaths(parentPath, ReplaceIndexes(p, indexes)))
+                    .Select(p => fieldsByPath[p])
+                    .ToList()
+                    .AsReadOnly();
+                return new VisualTreeDetail.FormatElement(formatString, formatFields);
+            }
+
+            private VisualTreeNode ToVisualTreeNode(VisualTreeNodeJson treeJson, string nodePath, IDictionary<string, string> indexes, string description, VisualTreeDetail.FormatElement formatElement)
+            {
+                var children = treeJson.Children.SelectMany(child => ConvertVisualNodes(child, nodePath, indexes)).ToList().AsReadOnly();
+                var details = treeJson.Details.Select(detail => ToVisualTreeDetail(detail, nodePath, indexes)).ToList().AsReadOnly();
+                return new VisualTreeNode(children, details, description, formatElement);
+            }
+
+            private VisualTreeDetail ToVisualTreeDetail(VisualTreeDetailJson detailJson, string parentPath, IDictionary<string, string> indexes)
+            {
+                int? repeat = GetRepeat(moduleJson, detailJson.Repeat);
+                if (repeat == null)
+                {
+                    string containerPath = CombinePaths(parentPath, ReplaceIndexes(detailJson.Path, indexes));
+                    var container = (Container) fieldsByPath[containerPath];
+                    return new VisualTreeDetail(detailJson.Description, container, null);
+                }
+                else
+                {
+                    List<VisualTreeDetail.FormatElement> formatElements = new List<VisualTreeDetail.FormatElement>();
+                    for (int i = 1; i <= repeat; i++)
+                    {
+                        Dictionary<string, string> newIndexes = new Dictionary<string, string>(indexes) { { detailJson.Index, i.ToString(CultureInfo.InvariantCulture) } };
+                        var formatElement = BuildFormatElement(detailJson.Format, parentPath, detailJson.FormatPaths, newIndexes);
+                        formatElements.Add(formatElement);
+                    }
+                    return new VisualTreeDetail(detailJson.Description, null, formatElements);
+                }
+            }
+
+            private static string ReplaceIndexes(string text, IDictionary<string, string> indexes)
+            {
+                foreach (var pair in indexes)
+                {
+                    text = text.Replace("$" + pair.Key, pair.Value);
+                }
+                return text;
+            }
+        }
 
         private sealed class ModuleConverter
         {
@@ -92,19 +206,20 @@ namespace VDrumExplorer.Data
 
             internal IEnumerable<IField> ToFields(FieldJson fieldJson, string parentPath, ModuleAddress parentAddress)
             {
-                int? repeat = fieldJson.GetRepeat(ModuleJson);
+                string name = fieldJson.Name ?? fieldJson.Description;
+                int? repeat = GetRepeat(ModuleJson, fieldJson.Repeat);
                 ModuleAddress address = parentAddress + fieldJson.Offset.Value;
                 if (repeat == null)
                 {
-                    string path = $"{parentPath}/{fieldJson.Description}";
+                    string path = CombinePaths(parentPath, name);
                     yield return ToField(fieldJson, path, fieldJson.Description, address);
                 }
                 else
                 {
-                    for (int i = 0; i < repeat; i++)
+                    for (int i = 1; i <= repeat; i++)
                     {
-                        string description = Invariant($"{fieldJson.Description} ({i + 1})");
-                        string path = Invariant($"{parentPath}/{description}");
+                        string description = Invariant($"{fieldJson.Description} ({i})");
+                        string path = CombinePaths(parentPath,  Invariant($"{name}[{i}]"));
                         yield return ToField(fieldJson, path, description, address);
                         address += fieldJson.Gap.Value;
                     }

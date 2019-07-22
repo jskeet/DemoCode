@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VDrumExplorer.Data.Fields
+﻿namespace VDrumExplorer.Data.Fields
 {
     public interface IField
     {

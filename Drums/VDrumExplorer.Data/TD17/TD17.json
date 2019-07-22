@@ -23,5 +23,7 @@
     "$resource:SetupMisc.json",
     "$resource:KitMfx.json",
     "$resource:KitUnitVEdit.json"
-  ]
+  ],
+
+  "visualTree": "$resource:VisualTree.json"
 }

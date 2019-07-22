@@ -12,7 +12,15 @@ namespace VDrumExplorer.Data.Json
         /// </summary>
         public string Comment { get; set; }
         
+        /// <summary>
+        /// Description to display.
+        /// </summary>
         public string Description { get; set; }
+        
+        /// <summary>
+        /// Name of the field in the path; defaults to <see cref="Description"/>.
+        /// </summary>
+        public string Name { get; set; }
 
         public HexString Offset { get; set; }
 
@@ -83,23 +91,6 @@ namespace VDrumExplorer.Data.Json
         /// The details for a DynamicOverlay field.
         /// </summary>
         public DynamicOverlayJson DynamicOverlay { get; set; }
-
-        public int? GetRepeat(ModuleJson moduleJson)
-        {
-            switch (Repeat)
-            {
-                case null: return null;
-                case "$kits": return moduleJson.Kits;
-                case "$instruments": return moduleJson.InstrumentsPerKit;
-                case "$triggers": return moduleJson.Triggers;
-                default:
-                    if (!int.TryParse(Repeat, NumberStyles.None, CultureInfo.InvariantCulture, out var result))
-                    {
-                        throw new InvalidOperationException($"Invalid repeat value: '{Repeat}'");
-                    }
-                    return result;
-            }
-        }
 
         public override string ToString() => Description;
     }
