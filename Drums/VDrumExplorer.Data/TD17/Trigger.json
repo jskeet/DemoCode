@@ -2,6 +2,7 @@
   "name": "Trigger",
   "fields": [
     {
+      "name": "TrigMisc",
       "offset": "0x00",
       "description": "Trigger Misc",
       "type": "container:TrigMisc"

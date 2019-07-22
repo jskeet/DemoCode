@@ -1,0 +1,146 @@
+{
+  "description": "Root",
+  "path": ".",
+  "details": [
+    {
+      "description": "Current kit",
+      "path": "Current"
+    },
+    {
+      "description": "Click",
+      "path": "Setup/Click"
+    },
+    {
+      "description": "Misc",
+      "path": "Setup/Misc"
+    }
+  ],
+  "children": [
+    {
+      "description": "Kits",
+      "path": ".",
+      "details": [
+        {
+          "description": "Kits",
+          "repeat": "$kits",
+          "index": "kit",
+          "formatPaths": [
+            "Kit[$kit]/KitCommon/KitName",
+            "Kit[$kit]/KitCommon/KitSubName"
+          ],
+          "format": "Kit $kit: {0} / {1}"
+        }
+      ],
+      "children": [
+        {
+          "repeat": "$kits",
+          "index": "kit",
+          "formatPaths": [
+            "Kit[$kit]/KitCommon/KitName",
+            "Kit[$kit]/KitCommon/KitSubName"
+          ],
+          "format": "Kit $kit: {0}",
+          "path": "Kit[$kit]",
+          "details": [
+            {
+              "description": "Kit common",
+              "path": "KitCommon"
+            },
+            {
+              "description": "Instruments",
+              "repeat": "$instruments",
+              "index": "instrument",
+              "formatPaths": [
+                "KitUnitMain[$instrument]/Instrument",
+                "KitUnitSub[$instrument]/Instrument"
+              ],
+              "format": "Instrument $instrument: {0} ({1})"
+            },
+            {
+              "description": "Kit Midi",
+              "path": "KitMidi"
+            },
+            {
+              "description": "Kit ambience",
+              "path": "KitAmbience"
+            },
+            {
+              "description": "Kit MultiFx",
+              "path": "KitMfx"
+            }
+          ],
+          "children": [
+            {
+              "repeat": "$instruments",
+              "index": "instrument",
+              "formatPaths": [
+                "KitUnitMain[$instrument]/Instrument"
+              ],
+              "path": ".",
+              "format": "Instrument $instrument: {0}",
+              "details": [
+                {
+                  "description": "Common",
+                  "path": "KitUnitCommon[$instrument]"
+                },
+                {
+                  "description": "Main instrument",
+                  "path": "KitUnitMain[$instrument]"
+                },
+                {
+                  "description": "Main VEdit",
+                  "path": "KitUnitVEditMain[$instrument]"
+                },
+                {
+                  "description": "Sub instrument",
+                  "path": "KitUnitSub[$instrument]"
+                },
+                {
+                  "description": "Sub VEdit",
+                  "path": "KitUnitVEditSub[$instrument]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Triggers",
+      "path": "Trigger",
+      "details": [
+        {
+          "description": "Trigger misc",
+          "path": "TrigMisc"
+        },
+        {
+          "description": "Triggers",
+          "repeat": "$triggers",
+          "index": "trigger",
+          "formatPaths": [
+            "Trigger[$trigger]/PadType"
+          ],
+          "format": "Trigger $trigger: {0}"
+        }
+      ],
+      "children": [
+        {
+          "description": "Triggers",
+          "repeat": "$triggers",
+          "index": "trigger",
+          "formatPaths": [
+            "Trigger[$trigger]/PadType"
+          ],
+          "format": "Trigger $trigger",
+          "path": "Trigger[$trigger]",
+          "details": [
+            {
+              "description": "Trigger",
+              "path": "."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

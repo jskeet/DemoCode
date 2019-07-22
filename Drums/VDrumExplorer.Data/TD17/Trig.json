@@ -3,6 +3,7 @@
   "size": "0xa",
   "fields": [
     {
+      "name": "PadType",
       "offset": "0x00",
       "description": "Pad type",
       "type": "enum",

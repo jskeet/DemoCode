@@ -24,6 +24,7 @@ namespace VDrumExplorer.Data.Json
         public int Triggers { get; set; }
         public List<InstrumentGroupJson> InstrumentGroups { get; set; }        
         public List<ContainerJson> Containers { get; set; }
+        public VisualTreeNodeJson VisualTree { get; set; }
 
         internal static ModuleJson FromJson(JObject json)
         {
