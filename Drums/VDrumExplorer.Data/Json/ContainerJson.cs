@@ -18,7 +18,7 @@ namespace VDrumExplorer.Data.Json
         /// Must be absent for all containers which reference other containers.
         /// Must be present for all containers with just primitive fields.
         /// </summary>
-        public HexString Size { get; set; }
+        public HexInt32 Size { get; set; }
         public List<FieldJson> Fields { get; set; }
 
         public void Validate()

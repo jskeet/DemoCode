@@ -6,12 +6,12 @@ namespace VDrumExplorer.Data.Json
     /// <summary>
     /// A wrapper for integer values written in hex.
     /// </summary>
-    internal sealed class HexString : IEquatable<HexString>
+    internal sealed class HexInt32 : IEquatable<HexInt32>
     {
         private readonly string text;
         public int Value { get; }
 
-        public HexString(string text)
+        public HexInt32(string text)
         {
             this.text = text;
             int value;
@@ -40,8 +40,8 @@ namespace VDrumExplorer.Data.Json
         }
 
         public override string ToString() => text;
-        public bool Equals(HexString other) => other != null && other.text == text;
-        public override bool Equals(object obj) => Equals(obj as HexString);
+        public bool Equals(HexInt32 other) => other != null && other.text == text;
+        public override bool Equals(object obj) => Equals(obj as HexInt32);
         public override int GetHashCode() => text.GetHashCode();
     }
 }
