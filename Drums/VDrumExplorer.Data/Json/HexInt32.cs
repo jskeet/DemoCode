@@ -4,17 +4,28 @@ using System.Globalization;
 namespace VDrumExplorer.Data.Json
 {
     /// <summary>
-    /// A wrapper for integer values written in hex.
+    /// <para>
+    /// A wrapper for integer values written in hex. The format requires "0x" (or "-0x")
+    /// at the start of the string, and can include any number of "_" characters (anywhere after the x).
+    /// Both the text and the value are retained, to simplify debugging JSON.
+    /// Note that this class doesn't support Int32.MinValue at the moment, because doing so
+    /// would complicate the code and we're unlikely to need it.
+    /// </para>
+    /// <para>
+    /// Equality is checked numerically, so "0x100" and "0x1_00" are considered equal.
+    /// </para>
     /// </summary>
     internal sealed class HexInt32 : IEquatable<HexInt32>
     {
-        private readonly string text;
+        public string Text { get; }
         public int Value { get; }
 
-        public HexInt32(string text)
+        private HexInt32(string text, int value) =>
+            (Text, Value) = (text, value);
+
+        public static HexInt32 Parse(string text)
         {
-            this.text = text;
-            int value;
+            Preconditions.CheckNotNull(text, nameof(text));
             string reducedText;
             int multiplier = 1;
             if (text.StartsWith("0x"))
@@ -28,20 +39,20 @@ namespace VDrumExplorer.Data.Json
             }
             else
             {
-                throw new ArgumentException($"Invalid hex string: '{text}'");
+                throw new FormatException($"Invalid hex string: '{text}'");
             }
             reducedText = reducedText.Replace("_", "");
-            if (!int.TryParse(reducedText, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value))
+            if (!int.TryParse(reducedText, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var value) ||
+                value < 0) // Overflow (as we know the text we've just parsed is not negative)
             {
-                throw new ArgumentException($"Invalid hex string: '{text}'");
+                throw new FormatException($"Invalid hex string: '{text}'");
             }
-
-            Value = value * multiplier;
+            return new HexInt32(text, value * multiplier);
         }
 
-        public override string ToString() => text;
-        public bool Equals(HexInt32 other) => other != null && other.text == text;
+        public override string ToString() => Text;
+        public bool Equals(HexInt32 other) => other != null && other.Value == Value;
         public override bool Equals(object obj) => Equals(obj as HexInt32);
-        public override int GetHashCode() => text.GetHashCode();
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

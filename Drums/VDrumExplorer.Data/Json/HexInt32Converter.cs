@@ -9,6 +9,6 @@ namespace VDrumExplorer.Data.Json
             writer.WriteValue(value.ToString());
 
         public override HexInt32 ReadJson(JsonReader reader, Type objectType, HexInt32 existingValue, bool hasExistingValue, JsonSerializer serializer) =>
-            new HexInt32((string) reader.Value);
+            HexInt32.Parse((string) reader.Value);
     }
 }
