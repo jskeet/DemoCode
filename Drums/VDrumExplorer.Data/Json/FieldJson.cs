@@ -22,7 +22,7 @@ namespace VDrumExplorer.Data.Json
         /// </summary>
         public string Name { get; set; }
 
-        public HexString Offset { get; set; }
+        public HexInt32 Offset { get; set; }
 
         /// <summary>
         /// The type of the field. If this begins with "container:" then the
@@ -85,7 +85,7 @@ namespace VDrumExplorer.Data.Json
         /// <summary>
         /// The gap between repeated fields (from start to start).
         /// </summary>
-        public HexString Gap { get; set; }
+        public HexInt32 Gap { get; set; }
 
         /// <summary>
         /// The details for a DynamicOverlay field.

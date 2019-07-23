@@ -20,14 +20,14 @@ namespace VDrumExplorer.Data.Json
         /// Each container is expected to have a size of this value plus the offset of the parent field,
         /// and every offset should be greater than or equal to the offset of the parent field.
         /// </summary>
-        public HexString Size { get; set; }
+        public HexInt32 Size { get; set; }
 
         /// <summary>
         /// The offset relative to the start of the parent container, at which
         /// to find the value to switch between dynamic overlays. This may be an offset into a different
         /// container.
         /// </summary>
-        public HexString SwitchOffset { get; set; }
+        public HexInt32 SwitchOffset { get; set; }
 
         /// <summary>
         /// Any transform to apply. Currently supported value "instrumentGroup", which expects

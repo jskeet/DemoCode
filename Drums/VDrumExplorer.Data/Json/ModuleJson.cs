@@ -17,7 +17,7 @@ namespace VDrumExplorer.Data.Json
         public string Comment { get; set; }
 
         public string Name { get; set; }
-        public HexString MidiId { get; set; }
+        public HexInt32 MidiId { get; set; }
         public int Kits { get; set; }
         public int InstrumentsPerKit { get; set; }
         
@@ -28,7 +28,7 @@ namespace VDrumExplorer.Data.Json
 
         internal static ModuleJson FromJson(JObject json)
         {
-            var serializer = new JsonSerializer { Converters = { new HexStringConverter() }, MissingMemberHandling = MissingMemberHandling.Error };
+            var serializer = new JsonSerializer { Converters = { new HexInt32Converter() }, MissingMemberHandling = MissingMemberHandling.Error };
             return json.ToObject<ModuleJson>(serializer);
         }
     }
