@@ -1,0 +1,7 @@
+{
+  "array": [
+    "$resource:ArrayValues1.json",
+    "$resource:ArrayValues2.json",
+    "value3"
+  ]
+}

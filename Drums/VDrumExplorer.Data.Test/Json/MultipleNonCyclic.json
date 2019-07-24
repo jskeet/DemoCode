@@ -1,0 +1,5 @@
+{
+  "value1": "$resource:MultipleNonCyclic1.json",
+  "value2": "$resource:MultipleNonCyclic1.json",
+  "value3": "$resource:MultipleNonCyclic2a.json",
+}
