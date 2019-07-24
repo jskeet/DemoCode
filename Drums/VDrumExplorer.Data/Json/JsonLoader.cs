@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace VDrumExplorer.Data.Json
 {
+    /// <summary>
+    /// A class to load JSON files which can include other files.
+    /// </summary>
     public sealed class JsonLoader
     {
         private const string ResourcePrefix = "$resource:";
@@ -14,12 +17,27 @@ namespace VDrumExplorer.Data.Json
         private JsonLoader(Func<string, Stream> resourceLoader) =>
             this.resourceLoader = resourceLoader;
 
-        public static JsonLoader FromAssemblyResources(Assembly assembly, string resourceBase) =>
-            new JsonLoader(resourceName =>
+        /// <summary>
+        /// Creates a JsonLoader which loads resources from an assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly to load resources from.</param>
+        /// <param name="resourceBase">The base of the resources names. May be empty, for resources
+        /// at the "root" of the assembly. Otherwise, a dot is appended to this name before appending
+        /// the individual resource names.</param>
+        /// <returns>The JsonLoader loading resources from an assembly.</returns>
+        public static JsonLoader FromAssemblyResources(Assembly assembly, string resourceBase)
+        {
+            if (resourceBase != "")
+            {
+                resourceBase += ".";
+            }
+            Preconditions.CheckNotNull(assembly, nameof(assembly));
+            Preconditions.CheckNotNull(resourceBase, nameof(resourceBase));
+            return new JsonLoader(resourceName =>
             {
                 // Allow / and \ in resource names to work as on a file system.
                 resourceName = resourceName.Replace('\\', '.').Replace('/', '.');
-                string fullResourceName = $"{resourceBase}.{resourceName}";
+                string fullResourceName = resourceBase + resourceName;
                 var stream = assembly.GetManifestResourceStream(fullResourceName);
                 if (stream == null)
                 {
@@ -27,12 +45,27 @@ namespace VDrumExplorer.Data.Json
                 }
                 return stream;
             });
+        }
 
-        public static JsonLoader FromDirectory(string path) =>
-            new JsonLoader(resourceName => File.OpenRead(Path.Combine(path, resourceName)));
+        /// <summary>
+        /// Creates a JsonLoader which loads resources from the file system.
+        /// </summary>
+        /// <param name="path">The path to the directory from which the JSON files should be loaded.</param>
+        /// <returns>A JsonLoader which loads from the given directory.</returns>
+        public static JsonLoader FromDirectory(string path)
+        {
+            Preconditions.CheckNotNull(path, nameof(path));
+            return new JsonLoader(resourceName => File.OpenRead(Path.Combine(path, resourceName)));
+        }
 
+        /// <summary>
+        /// Loads the given resource name as a JObject.
+        /// </summary>
+        /// <param name="resourceName">The name of the resource to load.</param>
+        /// <returns>The parsed JObject.</returns>
         public JObject LoadResource(string resourceName)
         {
+            Preconditions.CheckNotNull(resourceName, nameof(resourceName));
             JToken token = LoadResourceToken(resourceName, new Stack<string>());
             if (token.Type != JTokenType.Object)
             {
