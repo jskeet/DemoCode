@@ -9,13 +9,13 @@ namespace VDrumExplorer.Data
 {
     public class ModuleData
     {
-        public ModuleFields ModuleFields { get; }
+        public ModuleSchema Schema { get; }
 
         private readonly object sync = new object();
         private readonly List<Segment> segments = new List<Segment>();
 
-        public ModuleData(ModuleFields moduleFields) =>
-            ModuleFields = moduleFields;
+        public ModuleData(ModuleSchema schema) =>
+            Schema = schema;
 
         public void Populate(ModuleAddress address, byte[] data)
         {
@@ -46,13 +46,13 @@ namespace VDrumExplorer.Data
             {
                 var name = reader.ReadString();
                 var midiId = reader.ReadInt32();
-                if (name != ModuleFields.Name)
+                if (name != Schema.Name)
                 {
-                    throw new InvalidOperationException($"Expected data for module name '{ModuleFields.Name}'; received '{name}'");
+                    throw new InvalidOperationException($"Expected data for module name '{Schema.Name}'; received '{name}'");
                 }
-                if (midiId != ModuleFields.MidiId)
+                if (midiId != Schema.MidiId)
                 {
-                    throw new InvalidOperationException($"Expected data for module with Midi ID '{ModuleFields.MidiId}; received '{midiId}'");
+                    throw new InvalidOperationException($"Expected data for module with Midi ID '{Schema.MidiId}; received '{midiId}'");
                 }
                 var count = reader.ReadInt32();
                 for (int i = 0; i < count; i++)
@@ -77,8 +77,8 @@ namespace VDrumExplorer.Data
             
             using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
             {
-                writer.Write(ModuleFields.Name);
-                writer.Write(ModuleFields.MidiId);
+                writer.Write(Schema.Name);
+                writer.Write(Schema.MidiId);
                 writer.Write(localSegments.Count);
                 foreach (var segment in localSegments)
                 {
@@ -92,7 +92,7 @@ namespace VDrumExplorer.Data
         private Segment GetSegment(ModuleAddress address) =>
             GetSegmentOrNull(address) ?? throw new ArgumentException($"No data found for {address}");
 
-        private Segment GetSegmentOrNull(ModuleAddress address)
+        private Segment? GetSegmentOrNull(ModuleAddress address)
         {
             lock (sync)
             {

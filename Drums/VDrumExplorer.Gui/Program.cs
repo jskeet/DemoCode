@@ -28,7 +28,7 @@ namespace VDrumExplorer.Gui
 
         private static ModuleData LoadDataFromFile(string path)
         {
-            var td17 = LoadTd17ModuleFields();
+            var td17 = LoadTd17Schema();
             var data = new ModuleData(td17);
             using (var stream = File.OpenRead(path))
             {
@@ -37,8 +37,8 @@ namespace VDrumExplorer.Gui
             return data;
         }
 
-        private static ModuleFields LoadTd17ModuleFields() =>
-            ModuleFields.FromAssemblyResources(typeof(ModuleFields).Assembly, "VDrumExplorer.Data.TD17", "TD17.json");
+        private static ModuleSchema LoadTd17Schema() =>
+            ModuleSchema.FromAssemblyResources(typeof(ModuleSchema).Assembly, "VDrumExplorer.Data.TD17", "TD17.json");
 
         private static SysExClient CreateClientForTd17()
         {

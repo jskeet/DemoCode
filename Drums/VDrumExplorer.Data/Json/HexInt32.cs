@@ -15,7 +15,7 @@ namespace VDrumExplorer.Data.Json
     /// Equality is checked numerically, so "0x100" and "0x1_00" are considered equal.
     /// </para>
     /// </summary>
-    internal sealed class HexInt32 : IEquatable<HexInt32>
+    internal sealed class HexInt32 : IEquatable<HexInt32?>
     {
         public string Text { get; }
         public int Value { get; }
@@ -51,8 +51,8 @@ namespace VDrumExplorer.Data.Json
         }
 
         public override string ToString() => Text;
-        public bool Equals(HexInt32 other) => other != null && other.Value == Value;
-        public override bool Equals(object obj) => Equals(obj as HexInt32);
+        public bool Equals(HexInt32? other) => other is object && other.Value == Value;
+        public override bool Equals(object? obj) => Equals(obj as HexInt32);
         public override int GetHashCode() => Value.GetHashCode();
     }
 }

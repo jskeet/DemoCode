@@ -69,6 +69,6 @@ namespace VDrumExplorer.Data.Fields
 
         public override int GetHashCode() => Value;
 
-        public override bool Equals(object obj) => obj is ModuleAddress other && Equals(other);
+        public override bool Equals(object? obj) => obj is ModuleAddress other && Equals(other);
     }
 }

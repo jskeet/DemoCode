@@ -3,7 +3,7 @@
     public interface IField
     {
         string Description { get; }
-        string Path { get; }
+        FieldPath Path { get; }
         ModuleAddress Address { get; }
         int Size { get; }
     }

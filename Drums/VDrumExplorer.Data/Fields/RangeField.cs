@@ -12,11 +12,11 @@ namespace VDrumExplorer.Data.Fields
         public int? Divisor { get; }
         public int? Multiplier { get; }
         public int? ValueOffset { get; }
-        public string Suffix { get; }
+        public string? Suffix { get; }
 
-        public RangeField(string description, string path, ModuleAddress address, int size,
-            int? min, int? max, int? off, int? divisor, int? multiplier, int? valueOffset, string suffix)
-            : base(description, path, address, size) =>
+        public RangeField(FieldPath path, ModuleAddress address, int size, string description,
+            int? min, int? max, int? off, int? divisor, int? multiplier, int? valueOffset, string? suffix)
+            : base(path, address, size, description) =>
             (Min, Max, Off, Divisor, Multiplier, ValueOffset, Suffix) = (min, max, off, divisor, multiplier, valueOffset, suffix);
 
         public string GetText(ModuleData data)
