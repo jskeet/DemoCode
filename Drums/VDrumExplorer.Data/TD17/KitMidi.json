@@ -7,7 +7,7 @@
       "description": "Kick note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -15,7 +15,7 @@
       "description": "Snare head note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -23,7 +23,7 @@
       "description": "Snare rim note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -31,7 +31,7 @@
       "description": "Snare xstick note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -39,7 +39,7 @@
       "description": "Tom 1 head note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -47,7 +47,7 @@
       "description": "Tom 1 rim note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -55,7 +55,7 @@
       "description": "Tom 2 head note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -63,7 +63,7 @@
       "description": "Tom 2 rim note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -71,7 +71,7 @@
       "description": "Tom 3 head note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -79,7 +79,7 @@
       "description": "Tom 3 rim note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -87,7 +87,7 @@
       "description": "Hi-hat open bow note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -95,7 +95,7 @@
       "description": "Hi-hat open edge note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -103,7 +103,7 @@
       "description": "Hi-hat close bow note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -111,7 +111,7 @@
       "description": "Hi-hat close edge note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -119,7 +119,7 @@
       "description": "Hi-hat pedal note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -127,7 +127,7 @@
       "description": "Crash 1 bow note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -135,7 +135,7 @@
       "description": "Crash 1 edge note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -143,7 +143,7 @@
       "description": "Crash 2 bow note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -151,7 +151,7 @@
       "description": "Crash 2 edge note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -159,7 +159,7 @@
       "description": "Ride bow note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -167,7 +167,7 @@
       "description": "Ride edge note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -175,7 +175,7 @@
       "description": "Ride bell note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -183,7 +183,7 @@
       "description": "Aux head note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     },
     {
@@ -191,7 +191,7 @@
       "description": "Aux rim note",
       "type": "range32",
       "min": 0,
-      "max": 127,
+      "max": 128,
       "off": 128
     }
   ]
