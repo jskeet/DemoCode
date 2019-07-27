@@ -27,5 +27,7 @@ namespace VDrumExplorer.Data
                 .ToList()
                 .AsReadOnly();
         }
+
+        public override string ToString() => Description;
     }
 }
