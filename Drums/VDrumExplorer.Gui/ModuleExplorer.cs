@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
+using VDrumExplorer.Data.Layout;
 
 namespace VDrumExplorer.Gui
 {
@@ -72,7 +73,7 @@ namespace VDrumExplorer.Gui
                 }
                 else
                 {
-                    foreach (var formatElement in detail.FormatElements)
+                    foreach (var formatElement in detail.DetailDescriptions)
                     {
                         var value = new Label { Text = formatElement.Format(data), AutoSize = true };
                         nestedFlow.Controls.Add(value);

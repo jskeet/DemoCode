@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Json;
+using VDrumExplorer.Data.Layout;
 
 namespace VDrumExplorer.Data
 {
@@ -44,7 +45,6 @@ namespace VDrumExplorer.Data
             InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
             PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>().ToDictionary(f => f.Address).AsReadOnly();
             VisualRoot = visualRoot;
-            //FieldsByPath = Root.DescendantsAndSelf().ToDictionary(f => f.Path).AsReadOnly();
         }
 
         public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
