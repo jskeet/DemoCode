@@ -11,6 +11,31 @@ namespace VDrumExplorer.Data.Json
     internal class FieldJson
     {
         private const string ContainerPrefix = "container:";
+        private static readonly IReadOnlyList<string> MusicalNoteValues = new List<string>
+        {
+            "Hemidemisemiquaver triplet",
+            "Hemidemisemiquaver",
+            "Demisemiquaver triplet",
+            "Demisemiquaver",
+            "Semiquaver triplet",
+            "Dotted demisemiquaver",
+            "Semiquaver",
+            "Quaver triplet",
+            "Dotted semiquaver",
+            "Quaver",
+            "Crotchet triplet",
+            "Dotted quaver",
+            "Crotchet",
+            "Minim triplet",
+            "Dotted crotchet",
+            "Minim",
+            "Semibreve triplet",
+            "Dotted minim",
+            "Semibreve",
+            "Breve triplet",
+            "Dotted semibreve",
+            "Breve",
+        }.AsReadOnly();
 
         /// <summary>
         /// Developer-oriented comment. Has no effect.
@@ -137,7 +162,7 @@ namespace VDrumExplorer.Data.Json
                 "enum32" => new EnumField(path, address, 4, description, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
                 "dynamicOverlay" => BuildDynamicOverlay(),
                 "instrument" => new InstrumentField(path, address, 4, description),
-                "musicalNote" => new MusicalNoteField(path, address, 4, description),
+                "musicalNote" => new EnumField(path, address, 4, description, MusicalNoteValues),
                 "volume32" => new NumericField(path, address, 4, description, -601, 60, 10, null, 0, "dB", (-601, "INF")),
                 "string" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), description),
                 string text when text.StartsWith(ContainerPrefix) => BuildContainer(),
