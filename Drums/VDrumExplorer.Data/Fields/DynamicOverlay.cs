@@ -19,7 +19,7 @@ namespace VDrumExplorer.Data.Fields
             var field = data.Schema.PrimitiveFieldsByAddress[switchAddress];
             int index = switchTransform switch
             {
-                null => ((FieldBase) field).GetRawValue(data),
+                null => ((NumericFieldBase) field).GetRawValue(data),
                 "instrumentGroup" => ((InstrumentField) field).GetInstrument(data).Group.Index,
                 _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
             };

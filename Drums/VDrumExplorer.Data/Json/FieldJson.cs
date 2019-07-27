@@ -128,17 +128,17 @@ namespace VDrumExplorer.Data.Json
             // TODO: Validate that we don't have "extra" parameters?
             return Type switch
             {
-                "boolean" => (IField)new BooleanField(path, address, 1, description),
+                "boolean" => (IField) new BooleanField(path, address, 1, description),
                 "boolean32" => new BooleanField(path, address, 4, description),
-                "range8" => BuildRangeField(1),
-                "range16" => BuildRangeField(2),
-                "range32" => BuildRangeField(4),
+                "range8" => BuildNumericField(1),
+                "range16" => BuildNumericField(2),
+                "range32" => BuildNumericField(4),
                 "enum" => new EnumField(path, address, 1, description, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
                 "enum32" => new EnumField(path, address, 4, description, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
                 "dynamicOverlay" => BuildDynamicOverlay(),
                 "instrument" => new InstrumentField(path, address, 4, description),
                 "musicalNote" => new MusicalNoteField(path, address, 4, description),
-                "volume32" => new Volume32Field(path, address, description),
+                "volume32" => new NumericField(path, address, 4, description, -601, 60, 10, null, 0, "dB", (-601, "INF")),
                 "string" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), description),
                 string text when text.StartsWith(ContainerPrefix) => BuildContainer(),
                 _ => throw new InvalidOperationException($"Unknown field type: {Type}")
@@ -168,9 +168,15 @@ namespace VDrumExplorer.Data.Json
                 return containerJson.ToContainer(module, path, address, description);
             }
 
-            RangeField BuildRangeField(int size) =>
-                new RangeField(path, address, size, description,
-                    Min, Max, Off, Divisor, Multiplier, ValueOffset, Suffix);
+            NumericField BuildNumericField(int size)
+            {
+                var min = ValidateNotNull(path, Min, nameof(Min));
+                var max = ValidateNotNull(path, Max, nameof(Max));
+                return new NumericField(
+                    path, address, size, description, min, max,
+                    Divisor, Multiplier, ValueOffset, Suffix,
+                    Off == null ? default((int, string)?) : (Off.Value, "Off"));
+            }
         }
     }
 }
