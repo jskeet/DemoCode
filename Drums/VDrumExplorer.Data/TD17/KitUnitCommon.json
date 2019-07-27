@@ -66,7 +66,9 @@
       "offset": "0x07",
       "description": "Eq Low Gain",
       "type": "range16",
-      "suffix": "dB"
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
     },
     {
       "offset": "0x09",
@@ -121,7 +123,9 @@
       "offset": "0x0b",
       "description": "Eq Mid Gain",
       "type": "range16",
-      "suffix": "dB"
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
     },
     {
       "offset": "0x0d",
@@ -147,7 +151,9 @@
       "offset": "0x0e",
       "description": "Eq High Gain",
       "type": "range16",
-      "suffix": "dB"
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
     },
     {
       "offset": "0x10",
