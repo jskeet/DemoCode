@@ -25,5 +25,6 @@ namespace VDrumExplorer.Data.Fields
                     data.GetAddressValue(Address + 3)),
                 _ => throw new InvalidOperationException($"Cannot get value with size {Size}")
             };
+        public override string ToString() => Description;
     }
 }

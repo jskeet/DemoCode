@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VDrumExplorer.Data
+﻿namespace VDrumExplorer.Data
 {
     /// <summary>
     /// An instrument supported within a module. This has no settings applied, and isn't necessarily
@@ -27,5 +23,7 @@ namespace VDrumExplorer.Data
 
         internal Instrument(int id, string name, InstrumentGroup group) =>
             (Id, Name, Group) = (id, name, group);
+
+        public override string ToString() => $"{Id}: {Name} ({Group.Description})";
     }
 }
