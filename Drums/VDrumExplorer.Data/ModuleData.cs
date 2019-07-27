@@ -87,6 +87,30 @@ namespace VDrumExplorer.Data
             }
         }
 
+        /// <summary>
+        /// Validates that every field in the schema has a valid value.
+        /// This will fail if only partial data has been loaded.
+        /// </summary>
+        public void Validate()
+        {
+            List<Exception> exceptions = new List<Exception>();
+            foreach (var field in Schema.Root.DescendantsAndSelf(this).OfType<IPrimitiveField>())
+            {
+                try
+                {
+                    field.GetText(this);
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(new InvalidOperationException($"Field {field.Path} failed validation: {e.Message}"));
+                }
+            }
+            if (exceptions.Count != 0)
+            {
+                throw new AggregateException("Validation failed", exceptions.ToArray());
+            }
+        }
+
         public bool HasData(ModuleAddress address) => GetSegmentOrNull(address) != null;
 
         private Segment GetSegment(ModuleAddress address) =>
