@@ -144,7 +144,7 @@
       ]
     },
     {
-      "offset": "0x0f",
+      "offset": "0x0e",
       "description": "Eq High Gain",
       "type": "range16",
       "suffix": "dB"
