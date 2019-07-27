@@ -35,12 +35,12 @@
         {
           "repeat": "$kits",
           "index": "kit",
+          "path": "Kit[$kit]",
           "formatPaths": [
-            "Kit[$kit]/KitCommon/KitName",
-            "Kit[$kit]/KitCommon/KitSubName"
+            "KitCommon/KitName",
+            "KitCommon/KitSubName"
           ],
           "format": "Kit $kit: {0}",
-          "path": "Kit[$kit]",
           "details": [
             {
               "description": "Kit common",
@@ -127,11 +127,11 @@
         {
           "repeat": "$triggers",
           "index": "trigger",
+          "path": "Trigger[$trigger]",
           "formatPaths": [
-            "Trigger[$trigger]/PadType"
+            "PadType"
           ],
           "format": "Trigger $trigger",
-          "path": "Trigger[$trigger]",
           "details": [
             {
               "description": "Trigger",

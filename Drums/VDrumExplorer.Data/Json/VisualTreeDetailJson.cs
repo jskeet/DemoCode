@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using VDrumExplorer.Data.Fields;
+using VDrumExplorer.Data.Layout;
 
 namespace VDrumExplorer.Data.Json
 {
@@ -16,39 +17,34 @@ namespace VDrumExplorer.Data.Json
         public string? Format { get; set; }
         public string? Index { get; set; }
 
-
-        internal VisualTreeDetail ToVisualTreeDetail(ModuleJson moduleJson, IReadOnlyDictionary<FieldPath, IField> fieldsByPath, FieldPath parentPath, IDictionary<string, string> indexes)
+        internal VisualTreeDetail ToVisualTreeDetail(VisualTreeConversionContext context)
         {
-            var description = ValidateNotNull(parentPath + "???", Description, nameof(Description));
+            var description = ValidateNotNull(context.Path, Description, nameof(Description));
             
-            int? repeat = moduleJson.GetRepeat(Repeat);
+            int? repeat = context.GetRepeat(Repeat);
             if (repeat == null)
             {
-                string relativePath = ValidateNotNull(parentPath, Path, nameof(Path));
-                var rawPath = parentPath + relativePath;
-                ValidateNull(rawPath, Format, nameof(Format), nameof(Repeat));
-                ValidateNull(rawPath, FormatPaths, nameof(FormatPaths), nameof(Repeat));
+                string relativePath = ValidateNotNull(context.Path, Path, nameof(Path));
+                ValidateNull(context.Path, Format, nameof(Format), nameof(Repeat));
+                ValidateNull(context.Path, FormatPaths, nameof(FormatPaths), nameof(Repeat));
 
-                FieldPath containerPath = parentPath + VisualTreeNodeJson.ReplaceIndexes(relativePath, indexes);
-                Validate(rawPath, fieldsByPath.TryGetValue(containerPath, out var field), "Container not found");
-                var container = field as Container;
-                Validate(container is object, "Field is not a container");
-                return new VisualTreeDetail(description, container!);
+                var container = context.GetContainer(relativePath);                
+                return new VisualTreeDetail(description, container);
             }
             else
             {                
-                var format = ValidateNotNull(parentPath, Format, nameof(Format));
-                var formatPaths = ValidateNotNull(parentPath, FormatPaths, nameof(FormatPaths));
-                var index = ValidateNotNull(parentPath, Index, nameof(Index));
-                ValidateNull(parentPath + "???", Path, nameof(Path), nameof(Repeat));
-                List<VisualTreeDetail.FormatElement> formatElements = new List<VisualTreeDetail.FormatElement>();
+                var format = ValidateNotNull(context.Path, Format, nameof(Format));
+                var formatPaths = ValidateNotNull(context.Path, FormatPaths, nameof(FormatPaths));
+                var index = ValidateNotNull(context.Path, Index, nameof(Index));
+                ValidateNull(context.Path, Path, nameof(Path), nameof(Repeat));
+                
+                List<FormattableDescription> detailDescriptions = new List<FormattableDescription>();
                 for (int i = 1; i <= repeat; i++)
                 {
-                    Dictionary<string, string> newIndexes = new Dictionary<string, string>(indexes) { { index, i.ToString(CultureInfo.InvariantCulture) } };
-                    var formatElement = VisualTreeNodeJson.BuildFormatElement(fieldsByPath, format, parentPath, formatPaths, newIndexes);
-                    formatElements.Add(formatElement);
+                    var formatElement = context.WithIndex(index, i).BuildDescription(format, formatPaths);
+                    detailDescriptions.Add(formatElement);
                 }
-                return new VisualTreeDetail(description, formatElements);
+                return new VisualTreeDetail(description, detailDescriptions);
             }
         }
 

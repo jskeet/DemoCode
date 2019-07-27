@@ -62,9 +62,11 @@ namespace VDrumExplorer.Data.Json
                 .Select((igj, index) => igj.ToInstrumentGroup(index))
                 .ToList()
                 .AsReadOnly();
+
             var fieldsByPath = rootContainer.DescendantsAndSelf().ToDictionary(f => f.Path).AsReadOnly();
+            var context = VisualTreeConversionContext.Create(this, fieldsByPath);
             var visualRoot = ValidateNotNull(root, VisualTree, nameof(VisualTree))
-                .ConvertVisualNodes(this, fieldsByPath, root, new Dictionary<string, string>()).Single();
+                .ConvertVisualNodes(context).Single();
 
             return new ModuleSchema(name, midiId.Value, rootContainer, instrumentGroups, visualRoot);
         }

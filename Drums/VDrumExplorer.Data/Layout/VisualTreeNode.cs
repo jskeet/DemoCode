@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using VDrumExplorer.Data.Fields;
 
-namespace VDrumExplorer.Data
+namespace VDrumExplorer.Data.Layout
 {
     /// <summary>
     /// A node in the visual tree. This has (potentially) child nodes,
@@ -14,10 +14,12 @@ namespace VDrumExplorer.Data
         public IReadOnlyList<VisualTreeNode> Children { get; }
         public IReadOnlyList<VisualTreeDetail> Details { get; }
 
-        public VisualTreeDetail.FormatElement Description { get; }
+        public FormattableDescription Description { get; }
 
-        public VisualTreeNode(IReadOnlyList<VisualTreeNode> children, IReadOnlyList<VisualTreeDetail> details,
-            VisualTreeDetail.FormatElement description) =>
+        public VisualTreeNode(
+            IReadOnlyList<VisualTreeNode> children,
+            IReadOnlyList<VisualTreeDetail> details,
+            FormattableDescription description) =>
             (Children, Details, Description) = (children, details, description);
     }
 }
