@@ -27,6 +27,8 @@ namespace VDrumExplorer.Data.Json
         /// <returns>The JsonLoader loading resources from an assembly.</returns>
         public static JsonLoader FromAssemblyResources(Assembly assembly, string resourceBase)
         {
+            Preconditions.CheckNotNull(assembly, nameof(assembly));
+            Preconditions.CheckNotNull(resourceBase, nameof(resourceBase));
             if (resourceBase != "")
             {
                 resourceBase += ".";

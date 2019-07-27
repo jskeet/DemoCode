@@ -13,31 +13,31 @@ namespace VDrumExplorer.Data.Json
         /// <summary>
         /// Developer-oriented comment. Has no effect.
         /// </summary>
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// The size of the overlay, in bytes.
         /// Each container is expected to have a size of this value plus the offset of the parent field,
         /// and every offset should be greater than or equal to the offset of the parent field.
         /// </summary>
-        public HexInt32 Size { get; set; }
+        public HexInt32? Size { get; set; }
 
         /// <summary>
         /// The offset relative to the start of the parent container, at which
         /// to find the value to switch between dynamic overlays. This may be an offset into a different
         /// container.
         /// </summary>
-        public HexInt32 SwitchOffset { get; set; }
+        public HexInt32? SwitchOffset { get; set; }
 
         /// <summary>
         /// Any transform to apply. Currently supported value "instrumentGroup", which expects
         /// the target of the offset to be an instrument number, then converted into an instrument group.
         /// </summary>
-        public string SwitchTransform { get; set; }
+        public string? SwitchTransform { get; set; }
 
         /// <summary>
         /// The containers to switch between.
         /// </summary>
-        public List<ContainerJson> Containers { get; set; }
+        public List<ContainerJson>? Containers { get; set; }
     }
 }

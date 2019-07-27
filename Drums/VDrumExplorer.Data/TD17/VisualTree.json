@@ -125,7 +125,6 @@
       ],
       "children": [
         {
-          "description": "Triggers",
           "repeat": "$triggers",
           "index": "trigger",
           "formatPaths": [

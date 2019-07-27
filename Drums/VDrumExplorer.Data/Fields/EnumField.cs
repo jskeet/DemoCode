@@ -6,8 +6,8 @@ namespace VDrumExplorer.Data.Fields
     {
         public IReadOnlyList<string> Values { get; }
 
-        public EnumField(string description, string path, ModuleAddress address, int size, IReadOnlyList<string> values)
-            : base(description, path, address, size) =>
+        public EnumField(FieldPath path, ModuleAddress address, int size, string description, IReadOnlyList<string> values)
+            : base(path, address, size, description) =>
             Values = values;
 
         public string GetText(ModuleData data) => Values[GetRawValue(data)];

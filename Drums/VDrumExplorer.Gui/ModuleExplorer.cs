@@ -17,13 +17,11 @@ namespace VDrumExplorer.Gui
             this.data = data;
             Width = 600;
             Height = 800;
-            Text = $"Module explorer: {data.ModuleFields.Name}";
+            Text = $"Module explorer: {data.Schema.Name}";
 
-            var splitContainer = new SplitContainer();
-            splitContainer.Dock = DockStyle.Fill;
-            treeView = new TreeView();
+            var splitContainer = new SplitContainer() { Dock = DockStyle.Fill };
+            treeView = new TreeView { Dock = DockStyle.Fill };
             treeView.AfterSelect += HandleTreeViewSelection;
-            treeView.Dock = DockStyle.Fill;
             detailsPanel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -36,14 +34,14 @@ namespace VDrumExplorer.Gui
             Controls.Add(splitContainer);
 
             var root = new TreeNode();
-            PopulateNode(root, data, data.ModuleFields.VisualRoot);
+            PopulateNode(root, data, data.Schema.VisualRoot);
             treeView.Nodes.Add(root);
         }
 
         private static void PopulateNode(TreeNode node, ModuleData data, VisualTreeNode vnode)
         {
             node.Tag = vnode;
-            node.Text = vnode.Description ?? vnode.FormatElement.Format(data);
+            node.Text = vnode.Description.Format(data);
             foreach (var vchild in vnode.Children)
             {
                 var childNode = new TreeNode();

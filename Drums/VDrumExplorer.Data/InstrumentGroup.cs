@@ -12,7 +12,7 @@ namespace VDrumExplorer.Data
     {
         public string Description { get; }
         /// <summary>
-        /// Index into <see cref="ModuleFields.InstrumentGroups"/>.
+        /// Index into <see cref="ModuleSchema.InstrumentGroups"/>.
         /// </summary>
         public int Index { get; }
         public IReadOnlyList<Instrument> Instruments { get; }

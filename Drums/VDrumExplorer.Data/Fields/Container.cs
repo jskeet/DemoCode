@@ -13,10 +13,10 @@ namespace VDrumExplorer.Data.Fields
         public bool Loadable { get; }
         
         // FIXME: Do we want this? 
-        public string Name { get; }
+        public string? Name { get; }
 
-        internal Container(string name, string description, string path, ModuleAddress address, int size, IReadOnlyList<IField> fields)
-            : base(description, path, address, size)
+        internal Container(FieldPath path, ModuleAddress address, int size, string description, string? name, IReadOnlyList<IField> fields)
+            : base(path, address, size, description)
         {
             Name = name;
             Fields = fields;

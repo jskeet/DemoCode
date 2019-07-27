@@ -8,7 +8,8 @@ namespace VDrumExplorer.Data.Fields
     /// </summary>
     public class Volume32Field : FieldBase, IPrimitiveField
     {
-        public Volume32Field(string description, string path, ModuleAddress address) : base(description, path, address, 4)
+        public Volume32Field(FieldPath path, ModuleAddress address, string description)
+            : base(path, address, 4, description)
         {
         }
 

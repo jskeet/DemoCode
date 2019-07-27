@@ -3,8 +3,8 @@
     // TODO: Make this a range field? Or an enum?
     public class InstrumentField : FieldBase, IPrimitiveField
     {
-        public InstrumentField(string description, string path, ModuleAddress address, int size)
-            : base(description, path, address, size)
+        public InstrumentField(FieldPath path, ModuleAddress address, int size, string description)
+            : base(path, address, size, description)
         {
         }
 
@@ -15,6 +15,6 @@
         }
 
         public Instrument GetInstrument(ModuleData data) =>
-            data.ModuleFields.InstrumentsById[GetRawValue(data)];
+            data.Schema.InstrumentsById[GetRawValue(data)];
     }
 }

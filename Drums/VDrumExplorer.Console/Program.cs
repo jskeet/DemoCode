@@ -76,7 +76,7 @@ namespace VDrumExplorer.ConsoleDemo
 
         private static ModuleData LoadDataFromFile(string path)
         {
-            var td17 = LoadTd17ModuleFields();
+            var td17 = LoadTd17ModuleSchema();
             var data = new ModuleData(td17);
             using (var reader = new BinaryReader(File.OpenRead(path)))
             {
@@ -101,7 +101,7 @@ namespace VDrumExplorer.ConsoleDemo
         {
             using (var client = CreateClientForTd17())
             {
-                var td17 = LoadTd17ModuleFields();
+                var td17 = LoadTd17ModuleSchema();
                 var visitor = new LoadingVisitor();
                 visitor.Visit(td17.Root);
                 var moduleData = new ModuleData(td17);
@@ -148,8 +148,8 @@ namespace VDrumExplorer.ConsoleDemo
                 }));
         }
 
-        private static ModuleFields LoadTd17ModuleFields() =>
-            ModuleFields.FromAssemblyResources(typeof(ModuleFields).Assembly, "VDrumExplorer.Data.TD17", "TD17.json");
+        private static ModuleSchema LoadTd17ModuleSchema() =>
+            ModuleSchema.FromAssemblyResources(typeof(ModuleSchema).Assembly, "VDrumExplorer.Data.TD17", "TD17.json");
 
         private static SysExClient CreateClientForTd17()
         {

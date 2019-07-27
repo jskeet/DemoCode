@@ -14,11 +14,10 @@ namespace VDrumExplorer.Data
         public IReadOnlyList<VisualTreeNode> Children { get; }
         public IReadOnlyList<VisualTreeDetail> Details { get; }
 
-        public string Description { get; }
-        public VisualTreeDetail.FormatElement FormatElement { get; }
+        public VisualTreeDetail.FormatElement Description { get; }
 
         public VisualTreeNode(IReadOnlyList<VisualTreeNode> children, IReadOnlyList<VisualTreeDetail> details,
-            string description, VisualTreeDetail.FormatElement formatElement) =>
-            (Children, Details, Description, FormatElement) = (children, details, description, formatElement);
+            VisualTreeDetail.FormatElement description) =>
+            (Children, Details, Description) = (children, details, description);
     }
 }
