@@ -15,8 +15,5 @@ namespace VDrumExplorer.Data.Fields
             byte[] bytes = data.GetData(Address, Size);
             return Encoding.ASCII.GetString(bytes);
         }
-
-        internal override int GetRawValue(ModuleData data) =>
-            throw new InvalidOperationException($"String fields do not have a raw numeric value");
     }
 }
