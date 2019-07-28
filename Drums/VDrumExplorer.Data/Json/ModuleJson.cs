@@ -57,7 +57,7 @@ namespace VDrumExplorer.Data.Json
             var name = ValidateNotNull(root, Name, nameof(Name));
             var midiId = ValidateNotNull(root, MidiId, nameof(MidiId));
 
-            var rootContainer = FindContainer(root, "Root").ToContainer(this, root, new ModuleAddress(0), "Root");
+            var rootContainer = FindContainer(root, "Root").ToContainer(this, root, new ModuleAddress(0), "Root", condition: null);
             var instrumentGroups = InstrumentGroups
                 .Select((igj, index) => igj.ToInstrumentGroup(index))
                 .ToList()

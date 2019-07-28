@@ -9,16 +9,18 @@ namespace VDrumExplorer.Data.Fields
     public sealed class Container : FieldBase, IContainerField
     {
         public IReadOnlyList<IField> Fields { get; }
+        internal IReadOnlyDictionary<ModuleAddress, IField> FieldsByAddress { get; }
         public bool Loadable { get; }
         
         public string? Name { get; }
 
-        internal Container(FieldPath path, ModuleAddress address, int size, string description, string? name, IReadOnlyList<IField> fields)
-            : base(path, address, size, description)
+        internal Container(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition, string? name, IReadOnlyList<IField> fields)
+            : base(path, address, size, description, condition)
         {
             Name = name;
             Fields = fields;
             Loadable = !Fields.Any(f => f is Container);
+            FieldsByAddress = Fields.ToDictionary(f => f.Address).AsReadOnly();
         }
 
         public IEnumerable<IField> Children(ModuleData data) => Fields;

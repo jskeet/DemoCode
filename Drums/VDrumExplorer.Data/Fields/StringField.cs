@@ -5,8 +5,8 @@ namespace VDrumExplorer.Data.Fields
 {
     public class StringField : FieldBase, IPrimitiveField
     {
-        public StringField(FieldPath path, ModuleAddress address, int size, string description)
-            : base(path, address, size, description)
+        public StringField(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition)
+            : base(path, address, size, description, condition)
         {
         }
 

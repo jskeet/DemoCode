@@ -41,12 +41,12 @@ namespace VDrumExplorer.Data.Json
         /// Developer-oriented comment. Has no effect.
         /// </summary>
         public string? Comment { get; set; }
-        
+
         /// <summary>
         /// Description to display.
         /// </summary>
         public string? Description { get; set; }
-        
+
         /// <summary>
         /// Name of the field in the path; defaults to <see cref="Description"/>.
         /// </summary>
@@ -122,6 +122,11 @@ namespace VDrumExplorer.Data.Json
         /// </summary>
         public DynamicOverlayJson? DynamicOverlay { get; set; }
 
+        /// <summary>
+        /// If set, the condition for the field to be enabled.
+        /// </summary>
+        public FieldConditionJson? Condition { get; set; }
+
         public override string ToString() => Description ?? "(No description)";
 
         internal IEnumerable<IField> ToFields(ModuleJson module, FieldPath parentPath, ModuleAddress parentAddress)
@@ -132,9 +137,10 @@ namespace VDrumExplorer.Data.Json
             int? repeat = module.GetRepeat(Repeat);
             var offset = ValidateNotNull(path, Offset, nameof(Offset));
             ModuleAddress address = parentAddress + offset.Value;
+            FieldCondition? condition = GetCondition();
             if (repeat == null)
             {
-                yield return ToField(module, path, description, address);
+                yield return ToField(module, path, description, condition, address);
             }
             else
             {
@@ -142,29 +148,40 @@ namespace VDrumExplorer.Data.Json
                 for (int i = 1; i <= repeat; i++)
                 {
                     string fullDescription = Invariant($"{description} ({i})");
-                    yield return ToField(module, path.WithIndex(i), fullDescription, address);
+                    yield return ToField(module, path.WithIndex(i), fullDescription, condition, address);
                     address += gap;
                 }
             }
+
+            FieldCondition? GetCondition()
+            {
+                if (Condition is null)
+                {
+                    return null;
+                }
+                int offset = ValidateNotNull(path, Condition.Offset, nameof(Condition.Offset)).Value;
+                int requiredValue = ValidateNotNull(path, Condition.RequiredValue, nameof(Condition.RequiredValue));
+                return new FieldCondition(parentAddress + offset, requiredValue);
+            }
         }
 
-        private IField ToField(ModuleJson module, FieldPath path, string description, ModuleAddress address)
+        private IField ToField(ModuleJson module, FieldPath path, string description, FieldCondition? condition, ModuleAddress address)
         {
             // TODO: Validate that we don't have "extra" parameters?
             return Type switch
             {
-                "boolean" => (IField) new BooleanField(path, address, 1, description),
-                "boolean32" => new BooleanField(path, address, 4, description),
+                "boolean" => (IField) new BooleanField(path, address, 1, description, condition),
+                "boolean32" => new BooleanField(path, address, 4, description, condition),
                 "range8" => BuildNumericField(1),
                 "range16" => BuildNumericField(2),
                 "range32" => BuildNumericField(4),
-                "enum" => new EnumField(path, address, 1, description, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
-                "enum32" => new EnumField(path, address, 4, description, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
+                "enum" => new EnumField(path, address, 1, description, condition, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
+                "enum32" => new EnumField(path, address, 4, description, condition, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
                 "dynamicOverlay" => BuildDynamicOverlay(),
-                "instrument" => new InstrumentField(path, address, 4, description),
-                "musicalNote" => new EnumField(path, address, 4, description, MusicalNoteValues),
-                "volume32" => new NumericField(path, address, 4, description, -601, 60, 10, null, 0, "dB", (-601, "INF")),
-                "string" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), description),
+                "instrument" => new InstrumentField(path, address, 4, description, condition),
+                "musicalNote" => new EnumField(path, address, 4, description, condition, MusicalNoteValues),
+                "volume32" => new NumericField(path, address, 4, description, condition, -601, 60, 10, null, 0, "dB", (-601, "INF")),
+                "string" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), description, condition),
                 string text when text.StartsWith(ContainerPrefix) => BuildContainer(),
                 _ => throw new InvalidOperationException($"Unknown field type: {Type}")
             };
@@ -178,7 +195,7 @@ namespace VDrumExplorer.Data.Json
                 var switchOffset = ValidateNotNull(path, overlay.SwitchOffset, nameof(overlay.SwitchOffset));
                 ModuleAddress switchAddress = parentAddress + switchOffset.Value;
                 var containers = ValidateNotNull(path, overlay.Containers, nameof(overlay.Containers))
-                    .Select(json => json.ToContainer(module, path, parentAddress, description))
+                    .Select(json => json.ToContainer(module, path, parentAddress, description, condition: null))
                     .ToList()
                     .AsReadOnly();
                 return new DynamicOverlay(
@@ -190,7 +207,7 @@ namespace VDrumExplorer.Data.Json
             {
                 string containerName = Type!.Substring(ContainerPrefix.Length);
                 var containerJson = module.FindContainer(path, containerName);
-                return containerJson.ToContainer(module, path, address, description);
+                return containerJson.ToContainer(module, path, address, description, condition);
             }
 
             NumericField BuildNumericField(int size)
@@ -198,7 +215,7 @@ namespace VDrumExplorer.Data.Json
                 var min = ValidateNotNull(path, Min, nameof(Min));
                 var max = ValidateNotNull(path, Max, nameof(Max));
                 return new NumericField(
-                    path, address, size, description, min, max,
+                    path, address, size, description, condition, min, max,
                     Divisor, Multiplier, ValueOffset, Suffix,
                     Off == null ? default((int, string)?) : (Off.Value, "Off"));
             }
