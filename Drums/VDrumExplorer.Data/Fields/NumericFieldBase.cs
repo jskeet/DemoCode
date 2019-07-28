@@ -11,8 +11,8 @@ namespace VDrumExplorer.Data.Fields
         public int? Min { get; }
         public int? Max { get; }
 
-        public NumericFieldBase(FieldPath path, ModuleAddress address, int size, string description, int min, int max)
-            : base(path, address, size, description) =>
+        public NumericFieldBase(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition, int min, int max)
+            : base(path, address, size, description, condition) =>
             (Min, Max) = (min, max);
 
         public abstract string GetText(ModuleData data);

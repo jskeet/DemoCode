@@ -23,21 +23,17 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? Size { get; set; }
         public List<FieldJson>? Fields { get; set; }
 
-        public void Validate()
-        {
-            // TODO: Check that all fields are either primitive or container, check the size etc.
-        }
-
         public override string ToString() => Name ?? "(Unnamed)";
 
-        internal Container ToContainer(ModuleJson module, FieldPath path, ModuleAddress address, string description)
+        internal Container ToContainer(ModuleJson module, FieldPath path, ModuleAddress address, string description, FieldCondition? condition)
         {
+            // TODO: Check that all fields are either primitive or container, check the size etc.
             List<Fields.IField> fields = Fields
                 .SelectMany(fieldJson => fieldJson.ToFields(module, path, address))
                 .ToList();
             int size = Size?.Value ?? ((fields.Last().Address + fields.Last().Size) - address);
 
-            return new Container(path, address, size, description, Name, fields.AsReadOnly());
+            return new Container(path, address, size, description, condition, Name, fields.AsReadOnly());
         }
     }
 }

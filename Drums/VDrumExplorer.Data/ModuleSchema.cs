@@ -29,7 +29,21 @@ namespace VDrumExplorer.Data
         public IReadOnlyDictionary<int, Instrument> InstrumentsById { get; }
         public IReadOnlyList<Instrument> Instruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
+        
+        /// <summary>
+        /// Mapping from ModuleAddress to primitive fields. Only non-overlaid fields are included.
+        /// </summary>
         public IReadOnlyDictionary<ModuleAddress, IPrimitiveField> PrimitiveFieldsByAddress { get; }
+        
+        /// <summary>
+        /// Backlinks from each field to its parent container, including the fields within overlaid containers.
+        /// The overlaid container themselves do not (currently) link back to the DynamicOverlay they're part of.
+        /// </summary>
+        public IReadOnlyDictionary<IField, Container> ParentsByField { get; }
+        
+        /// <summary>
+        /// The root of the visual layout for the module.
+        /// </summary>
         public VisualTreeNode VisualRoot { get; }
 
         internal ModuleSchema(string name, int midiId, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
@@ -43,8 +57,11 @@ namespace VDrumExplorer.Data
                 .ToList()
                 .AsReadOnly();
             InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
-            PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>().ToDictionary(f => f.Address).AsReadOnly();
+            PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>()
+                .ToDictionary(f => f.Address)
+                .AsReadOnly();
             VisualRoot = visualRoot;
+            ParentsByField = BuildParentsByField(Root);
         }
 
         public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
@@ -55,5 +72,38 @@ namespace VDrumExplorer.Data
 
         private static ModuleSchema FromJson(JObject json) =>
             ModuleJson.FromJson(json).ToModuleSchema();
+
+        private static IReadOnlyDictionary<IField, Container> BuildParentsByField(Container root)
+        {
+            var dictionary = new Dictionary<IField, Container>();
+            new ParentBuildingVisitor(dictionary).Visit(root);
+            return dictionary.AsReadOnly();
+        }
+
+        private class ParentBuildingVisitor : FieldVisitor
+        {
+            private readonly IDictionary<IField, Container> dictionary;
+
+            internal ParentBuildingVisitor(IDictionary<IField, Container> dictionary) =>
+                this.dictionary = dictionary;
+
+            public override void VisitContainer(Container container)
+            {
+                base.VisitContainer(container);
+                foreach (var field in container.Fields)
+                {
+                    dictionary[field] = container;
+                }
+            }
+
+            public override void VisitDynamicOverlay(DynamicOverlay overlay)
+            {
+                base.VisitDynamicOverlay(overlay);
+                foreach (var container in overlay.OverlaidContainers)
+                {
+                    Visit(container);
+                }
+            }
+        }
     }
 }

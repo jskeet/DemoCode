@@ -63,7 +63,7 @@ namespace VDrumExplorer.Gui
                 groupBox.Controls.Add(nestedFlow);
                 if (detail.Container != null)
                 {
-                    foreach (var primitive in detail.Container.Fields.SelectMany(GetFields))
+                    foreach (var primitive in detail.Container.Fields.SelectMany(GetFields).Where(p => p.IsEnabled(data)))
                     {
                         nestedFlow.Controls.Add(new Label { Text = primitive.Description, AutoSize = true });
                         var value = new Label { Text = primitive.GetText(data), AutoSize = true };
