@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <!-- FIXME: We should be able to use netstandard2.1... -->
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>preview</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>

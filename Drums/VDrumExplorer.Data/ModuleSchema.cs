@@ -23,6 +23,16 @@ namespace VDrumExplorer.Data
         /// The ID of the module.
         /// </summary>
         public int MidiId { get; }
+        
+        /// <summary>
+        /// The family code as reported by a Midi identity response.
+        /// </summary>
+        public int FamilyCode { get; }
+
+        /// <summary>
+        /// The family number code as reported by a Midi identity response.
+        /// </summary>
+        public int FamilyNumberCode { get; }
 
         public Container Root { get; set; }
 
@@ -46,16 +56,19 @@ namespace VDrumExplorer.Data
         /// </summary>
         public VisualTreeNode VisualRoot { get; }
 
-        internal ModuleSchema(string name, int midiId, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
+        internal ModuleSchema(string name, int midiId, int familyCode, int familyNumberCode, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
         {
             Name = name;
             MidiId = midiId;
             Root = root;
+            FamilyCode = familyCode;
+            FamilyNumberCode = familyNumberCode;
             InstrumentGroups = instrumentGroups;
             Instruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
                 .ToList()
                 .AsReadOnly();
+            // FIXME: Won't this be the same as instruments?
             InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
             PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>()
                 .ToDictionary(f => f.Address)
