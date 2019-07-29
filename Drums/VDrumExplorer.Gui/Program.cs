@@ -21,9 +21,10 @@ namespace VDrumExplorer.Gui
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var data = LoadDataFromFile(@"c:\users\jon\test\projects\democode\drums\td17.dat");
-            data.Validate();
-            Application.Run(new ModuleExplorer(data));
+            //var data = LoadDataFromFile(@"c:\users\jon\test\projects\democode\drums\td17.dat");
+            //data.Validate();
+            //Application.Run(new ModuleExplorer(data));
+            Application.Run(new ModuleLoader());
         }
 
 
