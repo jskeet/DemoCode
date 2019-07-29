@@ -18,7 +18,7 @@ namespace VDrumExplorer.Midi
         public int Length => data.Length;
         public byte this[int index] => data[index];
 
-        internal DataResponseMessage(byte deviceId, int modelId, int address, byte[] data) =>
+        internal DataResponseMessage(int deviceId, int modelId, int address, byte[] data) =>
             (DeviceId, ModelId, Address, this.data) = (deviceId, modelId, address, data);
 
         internal static bool TryParse(SysExMessage message, out DataResponseMessage result)
