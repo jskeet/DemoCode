@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Layout;
+using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Gui
 {
@@ -12,10 +13,12 @@ namespace VDrumExplorer.Gui
         private readonly TreeView treeView;
         private readonly TableLayoutPanel detailsPanel;
         private readonly ModuleData data;
+        private readonly SysExClient midiClient;
 
-        public ModuleExplorer(ModuleData data)
+        public ModuleExplorer(ModuleData data, SysExClient midiClient)
         {
             this.data = data;
+            this.midiClient = midiClient;
             Width = 600;
             Height = 800;
             Text = $"Module explorer: {data.Schema.Name}";
@@ -37,6 +40,40 @@ namespace VDrumExplorer.Gui
             var root = new TreeNode();
             PopulateNode(root, data, data.Schema.VisualRoot);
             treeView.Nodes.Add(root);
+
+            var menu = new MenuStrip
+            {
+                Items =
+                {
+                    new ToolStripMenuItem("File")
+                    {
+                        DropDownItems =
+                        {
+                            new ToolStripMenuItem("Save", null, SaveFile)
+                        }
+                    }
+                }
+            };
+            MainMenuStrip = menu;
+            Controls.Add(menu);
+        }
+
+        private void SaveFile(object sender, EventArgs e)
+        {
+            string fileName;
+            using (var dialog = new SaveFileDialog())
+            {
+                var result = dialog.ShowDialog();
+                if (result != DialogResult.OK)
+                {
+                    return;
+                }
+                fileName = dialog.FileName;
+            }
+            using (var stream = File.OpenWrite(fileName))
+            {
+                data.Save(stream);
+            }
         }
 
         private static void PopulateNode(TreeNode node, ModuleData data, VisualTreeNode vnode)
