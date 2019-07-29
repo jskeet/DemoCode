@@ -1,4 +1,8 @@
-﻿namespace VDrumExplorer.Data
+﻿// Copyright 2019 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+namespace VDrumExplorer.Data
 {
     /// <summary>
     /// An instrument supported within a module. This has no settings applied, and isn't necessarily
