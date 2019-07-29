@@ -37,33 +37,56 @@ namespace VDrumExplorer.Data
         }
 
         /// <summary>
-        /// Loads memory data from the given stream. Any existing data is cleared, if this operation is successful.
+        /// Loads module data, autodetecting the schema.
         /// </summary>
-        public void Load(Stream stream)
+        public static ModuleData FromStream(Stream stream)
         {
-            List<Segment> localSegments = new List<Segment>();
+            Header header;
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
             {
-                var name = reader.ReadString();
-                var midiId = reader.ReadInt32();
-                if (name != Schema.Name)
+                header = Header.Load(reader);
+                foreach (var schema in SchemaRegistry.GetSchemas())
                 {
-                    throw new InvalidOperationException($"Expected data for module name '{Schema.Name}'; received '{name}'");
+                    if (header.Equals(Header.FromSchema(schema)))
+                    {
+                        var ret = new ModuleData(schema);
+                        ret.LoadData(reader);
+                        return ret;
+                    }
                 }
-                if (midiId != Schema.MidiId)
-                {
-                    throw new InvalidOperationException($"Expected data for module with Midi ID '{Schema.MidiId}; received '{midiId}'");
-                }
-                var count = reader.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    localSegments.Add(Segment.Load(reader));
-                }
+            }
+            throw new InvalidOperationException($"No built-in schemas match the file's header ({header})");
+        }
+
+        private void LoadData(BinaryReader reader)
+        {
+            List<Segment> localSegments = new List<Segment>();
+            var count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                localSegments.Add(Segment.Load(reader));
             }
             lock (sync)
             {
                 segments.Clear();
                 segments.AddRange(localSegments);
+            }
+        }
+
+        /// <summary>
+        /// Loads memory data from the given stream. Any existing data is cleared, if this operation is successful.
+        /// </summary>
+        public void Load(Stream stream)
+        {
+            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            {
+                var streamHeader = Header.Load(reader);
+                var schemaHeader = Header.FromSchema(Schema);
+                if (!streamHeader.Equals(schemaHeader))
+                {
+                    throw new InvalidOperationException($"Stream data does not match schema. Stream header: {streamHeader}. Schema header: {schemaHeader}");
+                }
+                LoadData(reader);
             }
         }
 
@@ -77,8 +100,8 @@ namespace VDrumExplorer.Data
             
             using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
             {
-                writer.Write(Schema.Name);
-                writer.Write(Schema.MidiId);
+                var header = Header.FromSchema(Schema);
+                header.Save(writer);
                 writer.Write(localSegments.Count);
                 foreach (var segment in localSegments)
                 {
@@ -171,6 +194,24 @@ namespace VDrumExplorer.Data
             return ret;
         }
 
+        /// <summary>
+        /// Writes data into an existing (single) segment.
+        /// </summary>
+        /// <param name="address">The address to write to.</param>
+        /// <param name="bytes">The bytes to write.</param>
+        internal void SetData(ModuleAddress address, byte[] bytes)
+        {
+            var segment = GetSegment(address);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                // This handles overflow from 0x7f to 0x100 appropriately.
+                segment[address + i] = bytes[i];
+            }
+        }
+
+        internal void SetAddressValue(ModuleAddress address, byte value) =>
+            GetSegment(address)[address] = value;
+
         private class Segment
         {
             public ModuleAddress Start { get; }
@@ -185,15 +226,18 @@ namespace VDrumExplorer.Data
 
             public byte this[ModuleAddress address]
             {
-                get
+                get => Data[GetOffset(address)];
+                set => Data[GetOffset(address)] = value;
+            }
+
+            private int GetOffset(ModuleAddress address)
+            {
+                int offset = address - Start;
+                if (offset >= 0x100)
                 {
-                    int offset = address - Start;
-                    if (offset >= 0x100)
-                    {
-                        offset -= 0x80;
-                    }
-                    return Data[offset];
+                    offset -= 0x80;
                 }
+                return offset;
             }
 
             public void Save(BinaryWriter writer)
@@ -217,6 +261,61 @@ namespace VDrumExplorer.Data
             public static SegmentAddressComparer Instance = new SegmentAddressComparer();
 
             public int Compare(Segment x, Segment y) => x.Start.CompareTo(y.Start);
+        }
+
+        private sealed class Header : IEquatable<Header?>
+        {
+            public const int CurrentFormatVersion = 1;
+            
+            public int FormatVersion { get; }
+            public int MidiId { get; }
+            public int FamilyCode { get; }
+            public int FamilyNumberCode { get; }
+            public string Name { get; }
+
+            public Header(int formatVersion, int midiId, int familyCode, int familyNumberCode, string name) =>
+                (FormatVersion, MidiId, FamilyCode, FamilyNumberCode, Name) = (formatVersion, midiId, familyCode, familyNumberCode, name);
+
+            public void Save(BinaryWriter writer)
+            {
+                writer.Write(FormatVersion);
+                writer.Write(MidiId);
+                writer.Write(FamilyCode);
+                writer.Write(FamilyNumberCode);
+                writer.Write(Name);
+            }
+
+            public static Header Load(BinaryReader reader)
+            {
+                var version = reader.ReadInt32();
+                if (version != CurrentFormatVersion)
+                {
+                    throw new InvalidOperationException($"Unknown file format version. Expected {CurrentFormatVersion}; was {version}");
+                }
+                var midiId = reader.ReadInt32();
+                var familyCode = reader.ReadInt32();
+                var familyNumberCode = reader.ReadInt32();
+                var name = reader.ReadString();
+                return new Header(version, midiId, familyCode, familyNumberCode, name);
+            }
+
+            public override bool Equals(object? obj) => Equals(obj as Header);
+            
+            public bool Equals(Header? other) =>
+                other != null &&
+                FormatVersion == other.FormatVersion &&
+                Name == other.Name &&
+                MidiId == other.MidiId &&
+                FamilyCode == other.FamilyCode &&
+                FamilyNumberCode == other.FamilyNumberCode;
+
+            public override int GetHashCode() => HashCode.Combine(FormatVersion, MidiId, FamilyCode, FamilyNumberCode, Name.GetHashCode());
+
+            // TODO: Work out how to handle compatibility.
+            public static Header FromSchema(ModuleSchema schema) =>
+                new Header(CurrentFormatVersion, schema.MidiId, schema.FamilyCode, schema.FamilyNumberCode, schema.Name);
+
+            public override string ToString() => $"Name: {Name}; Midi ID: {MidiId}; Family code: {FamilyCode}; Family number code: {FamilyNumberCode}";
         }
     }
 }
