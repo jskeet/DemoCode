@@ -28,13 +28,10 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? ModelId { get; set; }
         public HexInt32? FamilyCode { get; set; }
         public HexInt32? FamilyNumberCode { get; set; }
-        public int? Kits { get; set; }
-        public int? InstrumentsPerKit { get; set; }
-
-        public int? Triggers { get; set; }
         public List<InstrumentGroupJson>? InstrumentGroups { get; set; }
         public List<ContainerJson>? Containers { get; set; }
         public VisualTreeNodeJson? VisualTree { get; set; }
+        public Dictionary<string, int>? Counts { get; set; }
 
         internal static ModuleJson FromJson(JObject json)
         {
@@ -48,13 +45,10 @@ namespace VDrumExplorer.Data.Json
         internal int? GetRepeat(string? repeat) =>
             repeat switch
             {
-                null => (int?)null,
-                "$kits" => Kits ?? throw new ModuleSchemaException($"Repeat value {repeat} invalid when {nameof(Kits)} is not specified"),
-                "$instruments" => InstrumentsPerKit ?? throw new ModuleSchemaException($"Repeat value {repeat} invalid when {nameof(InstrumentsPerKit)} is not specified"),
-                "$triggers" => Triggers ?? throw new ModuleSchemaException($"Repeat value {repeat} invalid when {nameof(Triggers)} is not specified"),
-                _ => int.TryParse(repeat, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
-                    ? result
-                    : throw new InvalidOperationException($"Invalid repeat value: '{repeat}'")
+                null => (int?) null,
+                _ when repeat.StartsWith("$") && Counts != null && Counts.TryGetValue(repeat.Substring(1), out var count) => count,
+                _ when int.TryParse(repeat, NumberStyles.None, CultureInfo.InvariantCulture, out var result) => result,
+                _ => throw new InvalidOperationException($"Invalid repeat value: '{repeat}'")
             };
 
         internal ModuleSchema ToModuleSchema()

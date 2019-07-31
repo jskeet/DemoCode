@@ -3,11 +3,12 @@
   "modelId": "0x4b",
   "familyCode": "0x034b",
   "familyNumberCode": "0x0",
-  "kits": 100,
-  "instrumentsPerKit": 20,
-  "triggers": 10,
   "instrumentGroups": "$resource:InstrumentGroups.json",
-
+  "counts": {
+    "kits": 100,
+    "instruments": 20,
+    "triggers": 10
+  },    
   "containers": [
     "$resource:Root.json",
     "$resource:Kit.json",
