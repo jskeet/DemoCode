@@ -272,18 +272,18 @@ namespace VDrumExplorer.Data
             public const int CurrentFormatVersion = 1;
             
             public int FormatVersion { get; }
-            public int MidiId { get; }
+            public int ModelId { get; }
             public int FamilyCode { get; }
             public int FamilyNumberCode { get; }
             public string Name { get; }
 
-            public Header(int formatVersion, int midiId, int familyCode, int familyNumberCode, string name) =>
-                (FormatVersion, MidiId, FamilyCode, FamilyNumberCode, Name) = (formatVersion, midiId, familyCode, familyNumberCode, name);
+            public Header(int formatVersion, int modelId, int familyCode, int familyNumberCode, string name) =>
+                (FormatVersion, ModelId, FamilyCode, FamilyNumberCode, Name) = (formatVersion, modelId, familyCode, familyNumberCode, name);
 
             public void Save(BinaryWriter writer)
             {
                 writer.Write(FormatVersion);
-                writer.Write(MidiId);
+                writer.Write(ModelId);
                 writer.Write(FamilyCode);
                 writer.Write(FamilyNumberCode);
                 writer.Write(Name);
@@ -296,11 +296,11 @@ namespace VDrumExplorer.Data
                 {
                     throw new InvalidOperationException($"Unknown file format version. Expected {CurrentFormatVersion}; was {version}");
                 }
-                var midiId = reader.ReadInt32();
+                var modelId = reader.ReadInt32();
                 var familyCode = reader.ReadInt32();
                 var familyNumberCode = reader.ReadInt32();
                 var name = reader.ReadString();
-                return new Header(version, midiId, familyCode, familyNumberCode, name);
+                return new Header(version, modelId, familyCode, familyNumberCode, name);
             }
 
             public override bool Equals(object? obj) => Equals(obj as Header);
@@ -309,17 +309,17 @@ namespace VDrumExplorer.Data
                 other != null &&
                 FormatVersion == other.FormatVersion &&
                 Name == other.Name &&
-                MidiId == other.MidiId &&
+                ModelId == other.ModelId &&
                 FamilyCode == other.FamilyCode &&
                 FamilyNumberCode == other.FamilyNumberCode;
 
-            public override int GetHashCode() => HashCode.Combine(FormatVersion, MidiId, FamilyCode, FamilyNumberCode, Name.GetHashCode());
+            public override int GetHashCode() => HashCode.Combine(FormatVersion, ModelId, FamilyCode, FamilyNumberCode, Name.GetHashCode());
 
             // TODO: Work out how to handle compatibility.
             public static Header FromSchema(ModuleSchema schema) =>
-                new Header(CurrentFormatVersion, schema.MidiId, schema.FamilyCode, schema.FamilyNumberCode, schema.Name);
+                new Header(CurrentFormatVersion, schema.ModelId, schema.FamilyCode, schema.FamilyNumberCode, schema.Name);
 
-            public override string ToString() => $"Name: {Name}; Midi ID: {MidiId}; Family code: {FamilyCode}; Family number code: {FamilyNumberCode}";
+            public override string ToString() => $"Name: {Name}; Midi ID: {ModelId}; Family code: {FamilyCode}; Family number code: {FamilyNumberCode}";
         }
     }
 }

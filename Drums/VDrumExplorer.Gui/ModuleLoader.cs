@@ -197,7 +197,7 @@ namespace VDrumExplorer.Gui
                     return null;
                 case 1:
                     Log($"Using device {matchedResponse.DeviceId} with schema {matchedSchema.Name}.");
-                    return (new SysExClient(inputId, outputId, matchedSchema.MidiId, matchedResponse.DeviceId), matchedSchema);
+                    return (new SysExClient(inputId, outputId, matchedSchema.ModelId, matchedResponse.DeviceId), matchedSchema);
                 default:
                     Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
                     return null;
