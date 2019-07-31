@@ -1,6 +1,6 @@
 ﻿{
   "name": "TD-17",
-  "midiId": "0x4b",
+  "modelId": "0x4b",
   "familyCode": "0x034b",
   "familyNumberCode": "0x0",
   "kits": 100,

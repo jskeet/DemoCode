@@ -25,7 +25,7 @@ namespace VDrumExplorer.Data.Json
         public string? Comment { get; set; }
 
         public string? Name { get; set; }
-        public HexInt32? MidiId { get; set; }
+        public HexInt32? ModelId { get; set; }
         public HexInt32? FamilyCode { get; set; }
         public HexInt32? FamilyNumberCode { get; set; }
         public int? Kits { get; set; }
@@ -61,7 +61,7 @@ namespace VDrumExplorer.Data.Json
         {
             var root = FieldPath.Root();
             var name = ValidateNotNull(root, Name, nameof(Name));
-            var midiId = ValidateNotNull(root, MidiId, nameof(MidiId));
+            var modelId = ValidateNotNull(root, ModelId, nameof(ModelId));
             var familyCode = ValidateNotNull(root, FamilyCode, nameof(FamilyCode));
             var familyNumberCode = ValidateNotNull(root, FamilyNumberCode, nameof(FamilyNumberCode));
 
@@ -76,7 +76,7 @@ namespace VDrumExplorer.Data.Json
             var visualRoot = ValidateNotNull(root, VisualTree, nameof(VisualTree))
                 .ConvertVisualNodes(context).Single();
 
-            return new ModuleSchema(name, midiId.Value, familyCode.Value, familyNumberCode.Value, rootContainer, instrumentGroups, visualRoot);
+            return new ModuleSchema(name, modelId.Value, familyCode.Value, familyNumberCode.Value, rootContainer, instrumentGroups, visualRoot);
         }
     }
 }

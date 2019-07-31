@@ -26,7 +26,7 @@ namespace VDrumExplorer.Data
         /// <summary>
         /// The ID of the module.
         /// </summary>
-        public int MidiId { get; }
+        public int ModelId { get; }
         
         /// <summary>
         /// The family code as reported by a Midi identity response.
@@ -63,7 +63,7 @@ namespace VDrumExplorer.Data
         internal ModuleSchema(string name, int midiId, int familyCode, int familyNumberCode, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
         {
             Name = name;
-            MidiId = midiId;
+            ModelId = midiId;
             Root = root;
             FamilyCode = familyCode;
             FamilyNumberCode = familyNumberCode;
