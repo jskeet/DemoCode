@@ -85,6 +85,11 @@ namespace VDrumExplorer.Data.Json
         public int? Off { get; set; }
 
         /// <summary>
+        /// The label for the <see cref="Off"/>; defaults to "off".
+        /// </summary>
+        public string OffLabel { get; set; } = "Off";
+
+        /// <summary>
         /// Amount to divide the value by, for ranges (e.g. 10 for a 0, 0.1, 0.2 etc value).
         /// </summary>
         public int? Divisor { get; set; }
@@ -222,7 +227,7 @@ namespace VDrumExplorer.Data.Json
                 return new NumericField(
                     path, address, size, description, condition, min, max,
                     Divisor, Multiplier, ValueOffset, Suffix,
-                    Off == null ? default((int, string)?) : (Off.Value, "Off"));
+                    Off == null ? default((int, string)?) : (Off.Value, OffLabel));
             }
         }
     }
