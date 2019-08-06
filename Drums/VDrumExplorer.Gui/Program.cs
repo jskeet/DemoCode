@@ -4,6 +4,7 @@
 
 using System;
 using System.Windows.Forms;
+using VDrumExplorer.Data;
 
 namespace VDrumExplorer.Gui
 {
@@ -15,6 +16,9 @@ namespace VDrumExplorer.Gui
         [STAThread]
         static void Main()
         {
+            // Validate nice and early...
+            SchemaRegistry.GetSchemas();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ModuleLoader());
