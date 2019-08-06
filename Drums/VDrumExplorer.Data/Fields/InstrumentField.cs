@@ -6,7 +6,6 @@ using System;
 
 namespace VDrumExplorer.Data.Fields
 {
-    // TODO: Make this a range field? Or an enum?
     public class InstrumentField : NumericFieldBase, IPrimitiveField
     {
         public InstrumentField(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition)
