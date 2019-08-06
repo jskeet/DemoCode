@@ -1,0 +1,33 @@
+﻿{
+  "name": "KitStereoEnhancer",
+  "size": "0x07",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "On/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x01",
+      "description": "Color",
+      "type": "range8",
+      "min": 0,
+      "max": 5,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x02",
+      "description": "Level",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x06",
+      "description": "Width",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "off": 0,
+      "offLabel": "Mono"
+    }
+  ]
+}

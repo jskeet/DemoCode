@@ -1,0 +1,104 @@
+﻿{
+  // Done
+  "name": "Kit",
+  "fields": [
+    {
+      "name": "KitCommon",
+      "offset": "0x00_00",
+      "description": "Kit Common",
+      "type": "container:KitCommon"
+    },
+    {
+      "name": "KitMidi",
+      "offset": "0x01_00",
+      "description": "Kit MIDI",
+      "type": "container:KitMidi"
+    },
+    {
+      "name": "KitRoom",
+      "offset": "0x03_00",
+      "description": "Kit Room",
+      "type": "container:KitRoom"
+    },
+    {
+      "name": "KitReverb",
+      "offset": "0x04_00",
+      "description": "Kit Reverb",
+      "type": "container:KitReverb"
+    },
+    {
+      "name": "KitStereoEnhancer",
+      "offset": "0x05_00",
+      "description": "Kit Stereo Enhancer",
+      "type": "container:KitStereoEnhancer"
+    },
+    {
+      "name": "KitMasterComp",
+      "offset": "0x06_00",
+      "description": "Kit Master Comp",
+      "type": "container:KitMasterComp"
+    },
+    {
+      "name": "KitMasterEQ",
+      "offset": "0x07_00",
+      "description": "Kit Master EQ",
+      "type": "container:KitMasterEQ"
+    },
+    {
+      "name": "KitMfx",
+      "offset": "0x10_00",
+      "description": "Kit Multi FX",
+      "type": "container:KitMfx",
+      "repeat": "$mfx",
+      "gap": "0x02_00"
+    },
+    {
+      "name": "KitPadCommon",
+      "offset": "0x20_00",
+      "description": "Kit Pad Common",
+      "type": "container:KitPadCommon",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "name": "KitPadMain",
+      "offset": "0x40_00",
+      "description": "Kit Pad Main",
+      "type": "container:KitPadInst",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "name": "KitPadSub",
+      "offset": "0x60_00",
+      "description": "Kit Pad Sub",
+      "type": "container:KitPadInst",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "name": "KitPadVEditMain",
+      "offset": "0x01_00_00",
+      "description": "Kit Pad VEdit Main",
+      "type": "container:KitPadVEdit",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "name": "KitPadVEditSub",
+      "offset": "0x01_20_00",
+      "description": "Kit Pad VEdit Sub",
+      "type": "container:KitPadVEdit",
+      "repeat": "$instruments",
+      "gap": "0x01_00"
+    },
+    {
+      "name": "KitPad",
+      "offset": "0x01_40_00",
+      "description": "Kit Pad",
+      "type": "container:KitPad",
+      "repeat": "$kitPads",
+      "gap": "0x01_00"
+    }
+  ]
+}

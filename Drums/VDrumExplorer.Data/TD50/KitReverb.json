@@ -1,0 +1,87 @@
+﻿{
+  "name": "KitReverb",
+  "size": "0x0e",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Reverb on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x01",
+      "description": "Type",
+      "type": "enum",
+      "values": [
+        "Room 1",
+        "Room 2",
+        "Hall 1",
+        "Hall 2",
+        "Plate"
+      ]
+    },
+    {
+      "offset": "0x02",
+      "description": "Pre delay",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x03",
+      "description": "Time",
+      "type": "range8",
+      "min": 1,
+      "max": 100,
+      "divisor": 10,
+      "suffix": "sec"
+    },
+    {
+      "offset": "0x04",
+      "description": "Density",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x05",
+      "description": "Diffusion",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x06",
+      "description": "LF damp",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x07",
+      "description": "HF damp",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x08",
+      "description": "Spread",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x09",
+      "description": "Tone",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Level",
+      "type": "volume32"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+﻿{
+  "size": "0x0",
+  "fields": [
+    {
+      "offset": "0x01",
+      "description": "Size",
+      "type": "range16",
+      "min": 0,
+      "max": 78,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "offset": "0x03",
+      "description": "Fixed",
+      "type": "enum16",
+      "values": [
+        "Normal",
+        "Press",
+        "Close",
+        "Half",
+        "Open"
+      ]
+    },
+    {
+      "offset": "0x05",
+      "description": "Thickness",
+      "type": "range16",
+      "min": -5,
+      "max": 5,
+      "comment":  "This should sort of be an enum, but our enums are assumed to start at 0. We could implement valueOffset in NumericFieldBase instead..."
+    }
+  ]
+}

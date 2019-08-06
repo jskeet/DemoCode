@@ -13,11 +13,14 @@ namespace VDrumExplorer.Data
         // The laziness is primarily to avoid loading data within a type initializer, which causes all kinds of problems.
         private static readonly Lazy<ModuleSchema> td17 =
             new Lazy<ModuleSchema>(() => ModuleSchema.FromAssemblyResources(typeof(SchemaRegistry).Assembly, "VDrumExplorer.Data.TD17", "TD17.json"));
+        private static readonly Lazy<ModuleSchema> td50 =
+            new Lazy<ModuleSchema>(() => ModuleSchema.FromAssemblyResources(typeof(SchemaRegistry).Assembly, "VDrumExplorer.Data.TD50", "TD50.json"));
 
         public static IReadOnlyList<ModuleSchema> GetSchemas() =>
             new List<ModuleSchema>
             {
-                td17.Value
+                td17.Value,
+                td50.Value
             }
             .AsReadOnly();
     }
