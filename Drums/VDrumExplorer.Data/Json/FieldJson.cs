@@ -180,6 +180,7 @@ namespace VDrumExplorer.Data.Json
                 "range16" => BuildNumericField(2),
                 "range32" => BuildNumericField(4),
                 "enum" => new EnumField(path, address, 1, description, condition, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
+                "enum16" => new EnumField(path, address, 2, description, condition, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
                 "enum32" => new EnumField(path, address, 4, description, condition, ValidateNotNull(path, Values, nameof(Values)).AsReadOnly()),
                 "dynamicOverlay" => BuildDynamicOverlay(),
                 "instrument" => new InstrumentField(path, address, 4, description, condition),
