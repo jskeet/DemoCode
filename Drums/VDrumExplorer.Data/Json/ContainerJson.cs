@@ -35,7 +35,8 @@ namespace VDrumExplorer.Data.Json
             List<Fields.IField> fields = Fields
                 .SelectMany(fieldJson => fieldJson.ToFields(module, path, address))
                 .ToList();
-            int size = Size?.Value ?? ((fields.Last().Address + fields.Last().Size) - address);
+            var lastField = Fields.LastOrDefault();
+            int size = Size?.Value ?? lastField?.Offset?.Value ?? 0;
 
             return new Container(path, address, size, description, condition, Name, fields.AsReadOnly());
         }
