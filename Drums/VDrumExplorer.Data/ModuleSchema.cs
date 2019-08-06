@@ -59,6 +59,8 @@ namespace VDrumExplorer.Data
         /// The root of the visual layout for the module.
         /// </summary>
         public VisualTreeNode VisualRoot { get; }
+        
+        public VisualTreeNode PhysicalRoot { get; }
 
         internal ModuleSchema(string name, int midiId, int familyCode, int familyNumberCode, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
         {
@@ -79,6 +81,7 @@ namespace VDrumExplorer.Data
                 .AsReadOnly();
             VisualRoot = visualRoot;
             ParentsByField = BuildParentsByField(Root);
+            PhysicalRoot = VisualTreeNode.FromContainer(Root);
         }
 
         public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>

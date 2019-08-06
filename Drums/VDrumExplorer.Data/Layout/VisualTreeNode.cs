@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VDrumExplorer.Data.Fields;
 
@@ -25,5 +26,12 @@ namespace VDrumExplorer.Data.Layout
             IReadOnlyList<VisualTreeDetail> details,
             FormattableDescription description) =>
             (Children, Details, Description) = (children, details, description);
+
+        internal static VisualTreeNode FromContainer(Container container)
+        {
+            var children = container.Fields.OfType<Container>().Select(FromContainer).ToList().AsReadOnly();
+            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, container) }.AsReadOnly();
+            return new VisualTreeNode(children, details, new FormattableDescription(container.Description, null));
+        }
     }
 }

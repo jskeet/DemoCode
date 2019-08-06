@@ -16,10 +16,15 @@ namespace VDrumExplorer.Gui
 {
     public partial class ModuleExplorer : Form
     {
-        private readonly TreeView treeView;
-        private readonly TableLayoutPanel detailsPanel;
+        // Non-UI elements
         private readonly ModuleData data;
         private readonly SysExClient midiClient;
+
+        // UI elements we need to be able to refer to
+        private readonly TreeView treeView;
+        private readonly TableLayoutPanel detailsPanel;
+        private readonly ToolStripMenuItem physicalViewMenuItem;
+        private readonly ToolStripMenuItem logicalViewMenuItem;
 
         public ModuleExplorer(ModuleData data, SysExClient midiClient)
         {
@@ -29,7 +34,13 @@ namespace VDrumExplorer.Gui
             Height = 800;
             Text = $"Module explorer: {data.Schema.Name}";
 
-            var splitContainer = new SplitContainer() { Dock = DockStyle.Fill };
+            var topPanel = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                Controls = { new Button { AutoSize = true, Text = "Edit mode" } },
+                Dock = DockStyle.Top,
+                Padding = new Padding (5)
+            };
             treeView = new TreeView { Dock = DockStyle.Fill };
             treeView.AfterSelect += HandleTreeViewSelection;
             detailsPanel = new TableLayoutPanel
@@ -38,14 +49,18 @@ namespace VDrumExplorer.Gui
                 ColumnCount = 1,
                 AutoScroll = true
             };
-            splitContainer.Panel1.Controls.Add(treeView);
-            splitContainer.Panel2.Controls.Add(detailsPanel);
+            var splitContainer = new SplitContainer
+            {
+                Panel1 = { Controls = { treeView } },
+                Panel2 = { Controls = { detailsPanel } },
+                Dock = DockStyle.Fill
+            };
 
             Controls.Add(splitContainer);
+            Controls.Add(topPanel);
 
-            var root = new TreeNode();
-            PopulateNode(root, data, data.Schema.VisualRoot);
-            treeView.Nodes.Add(root);
+            logicalViewMenuItem = new ToolStripMenuItem("Logical", null, SetView) { Checked = true };
+            physicalViewMenuItem = new ToolStripMenuItem("Physical", null, SetView);
 
             var menu = new MenuStrip
             {
@@ -57,11 +72,36 @@ namespace VDrumExplorer.Gui
                         {
                             new ToolStripMenuItem("Save", null, SaveFile)
                         }
+                    },
+                    new ToolStripMenuItem("View")
+                    {                        
+                        DropDownItems = { logicalViewMenuItem, physicalViewMenuItem }
                     }
                 }
             };
             MainMenuStrip = menu;
             Controls.Add(menu);
+            LoadView(data.Schema.VisualRoot);
+        }
+
+        private void SetView(object sender, EventArgs e)
+        {
+            var selected = (ToolStripMenuItem) sender;
+            if (selected.Checked)
+            {
+                return;
+            }
+            selected.Checked = true;
+            if (selected == physicalViewMenuItem)
+            {
+                logicalViewMenuItem.Checked = false;
+                LoadView(data.Schema.PhysicalRoot);
+            }
+            else
+            {
+                physicalViewMenuItem.Checked = false;
+                LoadView(data.Schema.VisualRoot);
+            }
         }
 
         private void SaveFile(object sender, EventArgs e)
@@ -80,6 +120,15 @@ namespace VDrumExplorer.Gui
             {
                 data.Save(stream);
             }
+        }
+
+        private void LoadView(VisualTreeNode rootVisualNode)
+        {
+            var root = new TreeNode();
+            PopulateNode(root, data, rootVisualNode);
+            treeView.Nodes.Clear();
+            treeView.Nodes.Add(root);
+            HandleTreeViewSelection(root, new TreeViewEventArgs(root));
         }
 
         private static void PopulateNode(TreeNode node, ModuleData data, VisualTreeNode vnode)
@@ -127,35 +176,6 @@ namespace VDrumExplorer.Gui
             }
         }
 
-        /* Physical mode
-        private void HandleTreeViewSelection(object sender, TreeViewEventArgs e)
-        {
-            var container = (VContainer) e.Node.Tag;
-            detailsPanel.Controls.Clear();
-            foreach (var primitive in container.Fields.SelectMany(GetFields))
-            {
-                detailsPanel.Controls.Add(new Label { Text = primitive.Description, AutoSize = true });
-                var value = new Label { Text = primitive.GetText(data), AutoSize = true };
-                detailsPanel.Controls.Add(value);
-                detailsPanel.SetFlowBreak(value, true);
-            }
-        }
-
-
-        private static void PopulateNodes(TreeNodeCollection nodes, ModuleData data, VContainer container)
-        {
-            foreach (var subcontainer in container.Fields.OfType<VContainer>())
-            {
-                var node = new TreeNode
-                {
-                    Text = subcontainer.Description,
-                    Tag = subcontainer
-                };
-                nodes.Add(node);
-                PopulateNodes(node.Nodes, data, subcontainer);
-            }
-        }*/
-
         private IEnumerable<IPrimitiveField> GetFields(IField field)
         {
             if (field is IPrimitiveField primitive)
@@ -171,6 +191,5 @@ namespace VDrumExplorer.Gui
                 }
             }
         }
-
     }
 }
