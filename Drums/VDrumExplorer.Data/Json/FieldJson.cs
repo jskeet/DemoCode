@@ -191,7 +191,8 @@ namespace VDrumExplorer.Data.Json
                 "instrument" => new InstrumentField(path, address, 4, description, condition),
                 "musicalNote" => new EnumField(path, address, 4, description, condition, MusicalNoteValues),
                 "volume32" => new NumericField(path, address, 4, description, condition, -601, 60, 10, null, 0, "dB", (-601, "INF")),
-                "string" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), description, condition),
+                "string" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), 1, description, condition),
+                "string16" => new StringField(path, address, ValidateNotNull(path, Length, nameof(Length)), 2, description, condition),
                 string text when text.StartsWith(ContainerPrefix) => BuildContainer(),
                 _ => throw new InvalidOperationException($"Unknown field type: {Type}")
             };
