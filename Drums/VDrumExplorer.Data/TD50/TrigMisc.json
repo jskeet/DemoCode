@@ -1,0 +1,178 @@
+{
+  // Done
+  "name": "TrigMisc",
+  "size": "0x40",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Trigger bank name",
+      "type": "string16",
+      "length": 16
+    },
+    {
+      "offset": "0x20",
+      "description": "Hi-hat VH-12 offset",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "offset": "0x24",
+      "description": "Hi-hat VH-13 offset",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "offset": "0x28",
+      "description": "Hi-hat VH-12 foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "offset": "0x2a",
+      "description": "Hi-hat VH-13 foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "offset": "0x2c",
+      "description": "Hi-hat FD foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "offset": "0x2e",
+      "description": "Hi-hat VH-12 noise cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x2f",
+      "description": "Hi-hat VH-13 noise cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x30",
+      "description": "Hi-hat CC max",
+      "type": "range8",
+      "min": 0,
+      "max": 1,
+      "valueOffset": 90,
+      "multiplier": 37
+    },
+    {
+      "offset": "0x31",
+      "description": "Analog XStick threshold",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x32",
+      "description": "XTalk cancel rate 1 (kick)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x33",
+      "description": "XTalk cancel rate 2 (snare)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x34",
+      "description": "XTalk cancel rate 3 (tom 1)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x35",
+      "description": "XTalk cancel rate 4 (tom 2)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x36",
+      "description": "XTalk cancel rate 5 (tom 3)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x37",
+      "description": "XTalk cancel rate 6 (tom 4)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x38",
+      "description": "XTalk cancel rate 7 (hi-hat)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x39",
+      "description": "XTalk cancel rate 8 (crash 1)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x3a",
+      "description": "XTalk cancel rate 9 (crash 2)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x3b",
+      "description": "XTalk cancel rate 10 (ride)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x3c",
+      "description": "XTalk cancel rate 11 (aux 1)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x3d",
+      "description": "XTalk cancel rate 12 (aux 2)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x3e",
+      "description": "XTalk cancel rate 13 (aux 3)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x3f",
+      "description": "XTalk cancel rate 14 (aux 4)",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    }
+  ]
+}

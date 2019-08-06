@@ -1,0 +1,15 @@
+﻿{
+  // Done
+  "name": "Current",
+  "size": "0x1",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Current kit",
+      "type": "range8",
+      "valueOffset": 1,
+      "min": 0,
+      "max": 99
+    }
+  ]
+}

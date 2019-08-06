@@ -1,0 +1,574 @@
+﻿[
+  // Done
+  {
+    "Description": "Off",
+    "Instruments": { "0": "Off" }
+  },
+  {
+    "Description": "Kick A",
+    "Instruments": {
+      "1": "Jarrah Ply K",
+      "2": "MapleWlnutChrryK",
+      "3": "Birch 18\" K",
+      "4": "Bubinga 9Ply K",
+      "5": "60sRoundBdge20\"K",
+      "6": "70s Maple 24\" K",
+      "7": "70sStainless24\"K"
+    }
+  },
+  {
+    "Description": "Kick Proc",
+    "Instruments": {
+      "8": "Tight Kick 1",
+      "9": "Tight Kick 2",
+      "10": "Tight Kick 3",
+      "11": "Impact Kick",
+      "12": "Hybrid Kick",
+      "13": "Tronic Kick",
+      "14": "Electro Knock K",
+      "15": "Minimal House K",
+      "16": "Early House Kick",
+      "17": "BreakBeats Kick1",
+      "18": "BreakBeats Kick2",
+      "19": "DnB Kick 1",
+      "20": "DnB Kick 2",
+      "21": "Nu Hip Kick",
+      "22": "Lo-Fi Kick",
+      "23": "Hi Jumper Kick",
+      "24": "Lo Jumper Kick",
+      "25": "Dance Kick",
+      "26": "Dancer Kick",
+      "27": "Voice Kick 1",
+      "28": "Voice Kick 2"
+    }
+  },
+  {
+    "Description": "Kick Elec",
+    "Instruments": {
+      "29": "Analog Kick 1",
+      "30": "Analog Kick 2",
+      "31": "Analog Kick 3",
+      "32": "CR-78 Kick",
+      "33": "TR-606 Kick",
+      "34": "TR-808 Kick 1",
+      "35": "TR-808 Kick 2",
+      "36": "TR-808 Kick Long",
+      "37": "TR-909 Kick 1",
+      "38": "TR-909 Kick 2",
+      "39": "TR-909 Kick 3",
+      "40": "DR-110 Kick",
+      "41": "R-8 Kick"
+    }
+  },
+  {
+    "Description": "Snare A",
+    "Instruments": {
+      "42": "Jarrah Ply S",
+      "43": "Jarrah Ply SR",
+      "44": "MapleOilFinish S",
+      "45": "MapleOilFinishSR",
+      "46": "80sBeech 12Ply S",
+      "47": "80sBeech12Ply SR",
+      "48": "Steel TubeLugs S",
+      "49": "SteelTubeLugs SR",
+      "50": "WalnutPopper12\"S",
+      "51": "WalnutPoper12\"SR"
+    }
+  },
+  {
+    "Description": "Cross stick",
+    "Instruments": {
+      "52": "Jarrah Ply X",
+      "53": "MapleOilFinish X",
+      "54": "80sBeech 12Ply X",
+      "55": "Steel TubeLugs X",
+      "56": "WalnutPopper12\"X"
+    }
+  },
+  {
+    "Description": "Snare Proc",
+    "Instruments": {
+      "57": "OldSchool Snare",
+      "58": "DnB Snare",
+      "59": "Dub Step Snare",
+      "60": "Disto Slap Snare",
+      "61": "House Low Snare",
+      "62": "Hip Snare",
+      "63": "Garage Snare",
+      "64": "Radio Snare",
+      "65": "Voice Snare",
+      "66": "Voice CrossStick"
+    }
+  },
+  {
+    "Description": "Snare Elec",
+    "Instruments": {
+      "67": "Analog Snare 1",
+      "68": "Analog Snare 2",
+      "69": "CR-78 Snare",
+      "70": "TR-808 Snare 1",
+      "71": "TR-808 Snare 2",
+      "72": "TR-909 Snare",
+      "73": "TR-909 S w/ Clap",
+      "74": "TR-606 Snare",
+      "75": "TR-707 Snare",
+      "76": "DR-110 Snare",
+      "77": "CR-78 Rim",
+      "78": "TR-808 Rim",
+      "79": "TR-909 Rim"
+    }
+  },
+  {
+    "Description": "Tom A",
+    "Instruments": {
+      "80": "Jarrah Ply 8\"",
+      "81": "Jarrah Ply 8\" R",
+      "82": "Jarrah Ply 10\"",
+      "83": "Jarrah Ply 10\" R",
+      "84": "Jarrah Ply 12\"",
+      "85": "Jarrah Ply 12\" R",
+      "86": "Jarrah Ply 14\"",
+      "87": "Jarrah Ply 14\" R",
+      "88": "Jarrah Ply 16\"",
+      "89": "Jarrah Ply 16\" R",
+      "90": "Bubinga 9Ply 10\"",
+      "91": "Bubinga9Ply10\" R",
+      "92": "Bubinga 9Ply 12\"",
+      "93": "Bubinga9Ply12\" R",
+      "94": "Bubinga 9Ply 14\"",
+      "95": "Bubinga9Ply14\" R",
+      "96": "Bubinga 9Ply 16\"",
+      "97": "Bubinga9Ply16\" R",
+      "98": "60sRoundBadge13\"",
+      "99": "60sRoundBdge13\"R",
+      "100": "60sRoundBadge16\"",
+      "101": "60sRoundBdge16\"R",
+      "102": "70sStainless 12\"",
+      "103": "70sStainless12\"R",
+      "104": "70sStainless 13\"",
+      "105": "70sStainless13\"R",
+      "106": "70sStainless 16\"",
+      "107": "70sStainless16\"R",
+      "108": "70sStainless 18\"",
+      "109": "70sStainless18\"R",
+      "110": "Gong Drum 20\""
+    }
+  },
+  {
+    "Description": "Tom Elec",
+    "Instruments": {
+      "111": "Analog Tom1 T1",
+      "112": "Analog Tom1 T2",
+      "113": "Analog Tom1 T3",
+      "114": "Analog Tom1 T4",
+      "115": "Analog Tom2 T1",
+      "116": "Analog Tom2 T2",
+      "117": "Analog Tom2 T3",
+      "118": "Analog Tom2 T4",
+      "119": "TR-808 Tom T1",
+      "120": "TR-808 Tom T2",
+      "121": "TR-808 Tom T3",
+      "122": "TR-808 Tom T4",
+      "123": "TR-909 Tom T1",
+      "124": "TR-909 Tom T2",
+      "125": "TR-909 Tom T3",
+      "126": "TR-909 Tom T4"
+    }
+  },
+  {
+    "Description": "Hi-Hat",
+    "Instruments": {
+      "127": "Trad Lathed HH",
+      "128": "Trad Lathed HHE",
+      "129": "Dark&Warm HH",
+      "130": "Dark&Warm HHE"
+    }
+  },
+  {
+    "Description": "Hi-Hat Proc",
+    "Instruments": {
+      "131": "Club Hi-Hat",
+      "132": "Sharp Hi-Hat",
+      "133": "Hip Hi-Hat",
+      "134": "House Hi-Hat",
+      "135": "DnB Hi-Hat",
+      "136": "LowStep Hi-Hat",
+      "137": "Voice Hi-Hat",
+      "138": "Spoke Hi-Hat"
+    }
+  },
+  {
+    "Description": "Hi-Hat Elec",
+    "Instruments": {
+      "139": "CR-78 Hi-Hat",
+      "140": "TR-808 Hi-Hat",
+      "141": "TR-909 Hi-Hat"
+    }
+  },
+  {
+    "Description": "Ride",
+    "Instruments": {
+      "142": "Trad MedThin Rd",
+      "143": "Trad MedThin RdE",
+      "144": "Trad MedThin RdB",
+      "145": "Dry & Heavy Rd",
+      "146": "Dry & Heavy RdE",
+      "147": "Dry & Heavy RdB"
+    }
+  },
+  {
+    "Description": "Crash",
+    "Instruments": {
+      "148": "Trad Thin Cr",
+      "149": "Trad Thin CrE",
+      "150": "Warm MedThin Cr",
+      "151": "Warm MedThin CrE",
+      "152": "Silvery Cr",
+      "153": "Silvery CrE",
+      "154": "Legacy Thin Cr",
+      "155": "Legacy Thin CrE",
+      "156": "Power Medium Cr",
+      "157": "Power Medium CrE",
+      "158": "Eight-sided Cr",
+      "159": "Eight-sided CrE",
+      "160": "Bright Thin Cr",
+      "161": "Bright Thin CrE"
+    }
+  },
+  {
+    "Description": "China",
+    "Instruments": {
+      "162": "Warm & Dark Ch",
+      "163": "Warm & Dark ChE",
+      "164": "Dark Swish Ch",
+      "165": "Dark Swish ChE",
+      "166": "70s BlackLogo Ch",
+      "167": "70sBlackLogo ChE",
+      "168": "Mini China",
+      "169": "Mini China E",
+      "170": "TinyPrototype Ch",
+      "171": "TinyPrototypeChE"
+    }
+  },
+  {
+    "Description": "Splash",
+    "Instruments": {
+      "172": "Warm MedThin Sp",
+      "173": "Warm MedThin SpE",
+      "174": "BrightMedThin Sp",
+      "175": "BrightMedThinSpE",
+      "176": "NickelCoating Sp",
+      "177": "NickelCoatingSpE",
+      "178": "Chinese Type Sp",
+      "179": "Chinese Type SpE",
+      "180": "CleanSuperThinSp",
+      "181": "CleanSuprThinSpE"
+    }
+  },
+  {
+    "Description": "Stacked Cymbal",
+    "Instruments": {
+      "182": "18\"Ch+18\"Ch St",
+      "183": "18\"Ch+18\"Ch StE",
+      "184": "12\"Ch+12\"Ch St",
+      "185": "12\"Ch+12\"Ch StE",
+      "186": "10\"Ch+8\"Ch St",
+      "187": "10\"Ch+8\"Ch StE",
+      "188": "10\"HH+8\"Ch+Sp St",
+      "189": "10\"HH+8\"Ch+SpStE",
+      "190": "18\"ChCr+12\"ChSt",
+      "191": "18\"ChCr+12\"ChStE",
+      "192": "18\"Ch+12\"Ch St",
+      "193": "18\"Ch+12\"Ch StE",
+      "194": "18\"Cr+12\"Ch St",
+      "195": "18\"Cr+12\"Ch StE",
+      "196": "18\"Ch+11\"TrashSt",
+      "197": "18\"Ch+11\"TrshStE"
+    }
+  },
+  {
+    "Description": "Cymbal Others",
+    "Instruments": {
+      "198": "Accent Cymbal",
+      "199": "Chime Cymbal",
+      "200": "Cross Cymbal 1",
+      "201": "Cross Cymbal 2",
+      "202": "Mini Cymbal",
+      "203": "Metal Crasher",
+      "204": "Pair Cymbal 1",
+      "205": "Pair Cym 1 Smash",
+      "206": "Pair Cymbal 2",
+      "207": "Pair Cym 2 Choke"
+    }
+  },
+  {
+    "Description": "Cymbal Proc",
+    "Instruments": {
+      "208": "Sweep Crash",
+      "209": "Lo-Fi Crash",
+      "210": "Ambient Crash",
+      "211": "Verby Crash",
+      "212": "Trashy Ride",
+      "213": "Phasing Ride",
+      "214": "Cosmo Bell",
+      "215": "Electra Bell",
+      "216": "Reflective Bell",
+      "217": "Voice Crash"
+    }
+  },
+  {
+    "Description": "Cymbal Elec",
+    "Instruments": {
+      "218": "Analog Cymbal",
+      "219": "TR-808 Cymbal",
+      "220": "TR-606 Cymbal"
+    }
+  },
+  {
+    "Description": "Bell/Chime/Gong",
+    "Instruments": {
+      "221": "Finger Cymbal",
+      "222": "Rama Cymbal",
+      "223": "Zil",
+      "224": "Crotale",
+      "225": "Sleigh Bells",
+      "226": "Bell Tree",
+      "227": "Tree Chime",
+      "228": "Pin Chime",
+      "229": "Tam Tam",
+      "230": "Gong",
+      "231": "Bend Gong"
+    }
+  },
+  {
+    "Description": "Block/Cowbell",
+    "Instruments": {
+      "232": "Cowbell 1",
+      "233": "Cowbell 1 Tip",
+      "234": "Cowbell 2",
+      "235": "Cowbell 2 Tip",
+      "236": "Cowbell 3",
+      "237": "Cowbell 4",
+      "238": "Cowbell 5",
+      "239": "Cowbell 6",
+      "240": "Cowbell 7",
+      "241": "Agogo Hi",
+      "242": "Agogo Lo",
+      "243": "Wood Block Hi",
+      "244": "Wood Block Lo",
+      "245": "Plastic Block Hi",
+      "246": "Plastic Block Lo",
+      "247": "Mini Block",
+      "248": "Temple Block Hi",
+      "249": "Temple Block Lo"
+    }
+  },
+  {
+    "Description": "Percussion",
+    "Instruments": {
+      "250": "Bongo Hi Open",
+      "251": "Bongo Hi Slap",
+      "252": "Bongo Lo Open",
+      "253": "Bongo Lo Slap",
+      "254": "Conga Open",
+      "255": "Conga Slap",
+      "256": "Conga Bass",
+      "257": "Conga Gliss",
+      "258": "Tumba Open",
+      "259": "Tumba Slap",
+      "260": "Tumba Bass",
+      "261": "Tumba Gliss",
+      "262": "Timbale Hi Open",
+      "263": "Timbale Hi Rim",
+      "264": "Timbale Hi Paila",
+      "265": "Timbale Mid Open",
+      "266": "Timbale Mid Rim",
+      "267": "Timbale MidPaila",
+      "268": "Timbale Lo Open",
+      "269": "Timbale Lo Rim",
+      "270": "Timbale Lo Paila",
+      "271": "Cajon Open",
+      "272": "Cajon Edge",
+      "273": "Cajon Slap",
+      "274": "Cajon Bass",
+      "275": "Pandeiro Open",
+      "276": "Pandeiro Slap",
+      "277": "Pandeiro Bass",
+      "278": "Pandeiro Jingle",
+      "279": "Djembe Open",
+      "280": "Djembe Slap",
+      "281": "Djembe Bass",
+      "282": "Djembe Ears",
+      "283": "Pot Drum Side",
+      "284": "Pot Drum Bass",
+      "285": "Pot Drum Release",
+      "286": "Pot Drum Side/Mt",
+      "287": "Tabla Na",
+      "288": "Tabla Ti",
+      "289": "Tabla Tin",
+      "290": "Tabla Tun",
+      "291": "Baya Ge",
+      "292": "Baya Ge Slide",
+      "293": "Baya Gin",
+      "294": "Baya Ka",
+      "295": "Darabuka Open",
+      "296": "Darabuka Slap",
+      "297": "Darabuka Bass",
+      "298": "Hira Taiko",
+      "299": "Hira Taiko Rim",
+      "300": "Nagado Taiko",
+      "301": "Nagado Taiko Rim",
+      "302": "Timpani Hi D",
+      "303": "Timpani Lo G",
+      "304": "Doumdoumba",
+      "305": "Doumdoumba Rim",
+      "306": "Repinique",
+      "307": "Repinique Rim",
+      "308": "Tamborim",
+      "309": "Surdo",
+      "310": "Bombo",
+      "311": "Bendir",
+      "312": "Tambourine 1",
+      "313": "Tambourine 2",
+      "314": "Tambourine 3",
+      "315": "Triangle 1",
+      "316": "Triangle 1 Mute",
+      "317": "Triangle 2",
+      "318": "Triangle 2 Mute",
+      "319": "Castanets",
+      "320": "Clapsticks",
+      "321": "Claves 1",
+      "322": "Claves 2",
+      "323": "Afro Claves",
+      "324": "Guiro Slide",
+      "325": "Guiro Shot",
+      "326": "Maracas",
+      "327": "Metal Maracas",
+      "328": "Shaker",
+      "329": "Caxixi",
+      "330": "Ganza",
+      "331": "Chafchas",
+      "332": "Afuche",
+      "333": "African Bracelet",
+      "334": "African Jingle",
+      "335": "Ankle Beads",
+      "336": "Rain Stick",
+      "337": "Vibra-Slap",
+      "338": "Ratchet",
+      "339": "Flex Metal",
+      "340": "FlexMetal BendUp",
+      "341": "Waterphone Hit"
+    }
+  },
+  {
+    "Description": "Perc Elec",
+    "Instruments": {
+      "342": "CR-78 Bongo",
+      "343": "CR-78 Cowbell",
+      "344": "CR-78 Claves",
+      "345": "CR-78 Guiro",
+      "346": "CR-78 Maracas",
+      "347": "CR-78 Tambourine",
+      "348": "CR-78 Metal Beat",
+      "349": "TR-808 Conga Hi",
+      "350": "TR-808 Conga Mid",
+      "351": "TR-808 Conga Lo",
+      "352": "TR-808 Cowbell 1",
+      "353": "TR-808 Cowbell 2",
+      "354": "TR-808 Claves",
+      "355": "TR-808 Maracas",
+      "356": "TR-707 Cowbell",
+      "357": "TR-727 Agogo",
+      "358": "DR-55 Claves"
+    }
+  },
+  {
+    "Description": "Clap",
+    "Instruments": {
+      "359": "Clap",
+      "360": "Claps",
+      "361": "Torio Clap",
+      "362": "Flamenco Clap",
+      "363": "Ambience Clap",
+      "364": "House Clap",
+      "365": "Noise Clap",
+      "366": "TR-808 Clap",
+      "367": "TR-909 Clap",
+      "368": "Finger Snap"
+    }
+  },
+  {
+    "Description": "Sound FX",
+    "Instruments": {
+      "369": "Dense Click",
+      "370": "Pulse",
+      "371": "High Q",
+      "372": "Dyna Filter",
+      "373": "Random Noise 1",
+      "374": "Random Noise 2",
+      "375": "Beep",
+      "376": "Fat Beep",
+      "377": "Disto Beep",
+      "378": "Techno Beef",
+      "379": "Space Beep",
+      "380": "Voice Beep",
+      "381": "Super Low",
+      "382": "Prevision",
+      "383": "Ejector",
+      "384": "Echoic Shot",
+      "385": "Super Shot",
+      "386": "Rusty Iron",
+      "387": "Digi Cup",
+      "388": "Abstract Noise",
+      "389": "Industrial 1",
+      "390": "Industrial 2",
+      "391": "Junk",
+      "392": "Emergency",
+      "393": "Discovery",
+      "394": "Cave",
+      "395": "Stomped Box",
+      "396": "LP Noise"
+    }
+  },
+  {
+    "Description": "Elements",
+    "Instruments": {
+      "397": "Low Frequency 1",
+      "398": "Low Frequency 2",
+      "399": "Low Frequency 3",
+      "400": "Attack 1",
+      "401": "Attack 2",
+      "402": "Attack 3",
+      "403": "Attack 4",
+      "404": "Noise 1",
+      "405": "Noise 2",
+      "406": "Noise 3",
+      "407": "Noise 4",
+      "408": "Noise 5",
+      "409": "Noise 6",
+      "410": "White Noise 1",
+      "411": "White Noise 2",
+      "412": "Sine Wave 1kHz",
+      "413": "Sine Wave C",
+      "414": "Triangle Wave C",
+      "415": "Square Wave C",
+      "416": "Sawtooth Wave1 C",
+      "417": "Sawtooth Wave2 C",
+      "418": "Super Saw C"
+    }
+  },
+  {
+    "Description": "Snare Brush",
+    "Instruments": {
+      "419": "Brush Snare",
+      "420": "Brush Snare Rim"
+    }
+  },
+  {
+    "Description": "Tom Brush",
+    "Instruments": {
+      "421": "Brush Tom 12\"",
+      "422": "Brush Tom 14\""
+    }
+  }
+]

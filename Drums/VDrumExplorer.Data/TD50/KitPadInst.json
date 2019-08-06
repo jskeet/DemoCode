@@ -1,0 +1,124 @@
+﻿{
+  "name": "KitPadInst",
+  "size": "0x28",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Instrument",
+      "type": "instrument"
+    },
+    {
+      "offset": "0x04",
+      "description": "Volume",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x08",
+      "description": "Instrument bank",
+      "type": "enum",
+      "values": [
+        "Preset",
+        "User sample"
+      ]
+    },
+    {
+      "offset": "0x09",
+      "description": "Mic position",
+      "type": "enum",
+      "values": [
+        "Outside 4",
+        "Outside 3",
+        "Outside 2",
+        "Outside 1",
+        "Standard",
+        "Inside 1",
+        "Inside 2",
+        "Inside 3",
+        "Inside 4"
+      ]
+    },
+    {
+      "offset": "0x0a",
+      "description": "Mic element overhead volume",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x0e",
+      "description": "Mic element room volume",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x12",
+      "description": "Ambience stereo enhancer sound level",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x16",
+      "description": "Mic width",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    },
+    {
+      "offset": "0x18",
+      "description": "Transient on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x19",
+      "description": "Transient time",
+      "type": "range8",
+      "min": 1,
+      "max": 10
+    },
+    {
+      "offset": "0x1a",
+      "description": "Transient attack",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "offset": "0x1c",
+      "description": "Transient release",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "offset": "0x1e",
+      "description": "Transient gain",
+      "type": "range16",
+      "min": -120,
+      "max": 60,
+      "divisor": 10,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x20",
+      "description": "Dynamic enhancer on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x21",
+      "description": "Decay",
+      "type": "range8",
+      "min": 1,
+      "max": 100
+    },
+    {
+      "offset": "0x22",
+      "description": "Pitch",
+      "type": "range32",
+      "min": -4800,
+      "max": 4800
+    },
+    {
+      "offset": "0x26",
+      "description": "Pitch sweep",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    }
+  ]
+}

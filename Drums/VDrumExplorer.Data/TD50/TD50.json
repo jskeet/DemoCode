@@ -1,0 +1,44 @@
+{
+  "name": "TD-50",
+  "modelId": "0x24",
+  "familyCode": "0x0324",
+  "familyNumberCode": "0x0",
+  "instrumentGroups": "$resource:InstrumentGroups.json",
+  "counts": {
+    "kits": 100,
+    "instruments": 28,
+    "kitPads": 14,
+    "triggers": 14,
+    "setLists": 32,
+    "mfx":  3
+  },
+  "containers": [
+    "$resource:Root.json",
+    "$resource:Kit.json",
+    "$resource:Setup.json",
+    "$resource:Trigger.json",
+    "$resource:Current.json",
+    "$resource:KitCommon.json",
+    "$resource:KitMidi.json",
+    "$resource:KitRoom.json",
+    "$resource:KitReverb.json",
+    "$resource:KitStereoEnhancer.json",
+    "$resource:KitMasterComp.json",
+    "$resource:KitMasterEQ.json",
+    "$resource:KitPadInst.json",
+    "$resource:KitPadCommon.json",
+    "$resource:KitPad.json",
+    "$resource:SetListParams.json",
+    "$resource:Click.json",
+    "$resource:TrigMisc.json",
+    "$resource:TrigAnalog.json",
+    "$resource:SetupOutput.json",
+    "$resource:SetupControl.json",
+    "$resource:SetupMisc.json",
+    "$resource:KitMfx.json",
+    "$resource:KitPadVEdit.json",
+    "$resource:TrigDigital.json"
+  ],
+
+  "visualTree": "$resource:VisualTree.json"
+}

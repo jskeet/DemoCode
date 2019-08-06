@@ -1,0 +1,50 @@
+﻿{
+  // Done - but check instrument group count
+  "name": "KitPadVEdit",
+  "size": "0x41",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Parameters",
+      "type": "dynamicOverlay",
+      "dynamicOverlay": {
+        "size": "0x21",
+        "comment": "This is an offset into a different container, to get at the instrument and then its group",
+        "switchOffset": "-0xC000",
+        "switchTransform": "instrumentGroup",
+        "containers": [
+          "$resource:VEdit/Off.json",
+          "$resource:VEdit/KickA.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/SnareA.json",
+          "$resource:VEdit/XStick.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/TomA.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/HiHat.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Ride.json",
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json",
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json",
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json",
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
+          "$resource:VEdit/SnareBrush.json",
+          "$resource:VEdit/TomBrush.json"
+        ]
+      }
+    }
+  ]
+}

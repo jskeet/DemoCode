@@ -1,0 +1,779 @@
+﻿{
+  // Done
+  // This will look ugly in the UI, admittedly...
+  "name": "KitMidi",
+  "size": "0x013c",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Kick note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x04",
+      "description": "Snare head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x08",
+      "description": "Snare rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x0c",
+      "description": "Snare brush note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x10",
+      "description": "Snare xstick note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x14",
+      "description": "Tom 1 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x18",
+      "description": "Tom 1 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x1c",
+      "description": "Tom 2 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x20",
+      "description": "Tom 2 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x24",
+      "description": "Tom 3 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x28",
+      "description": "Tom 3 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x2c",
+      "description": "Tom 4 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x30",
+      "description": "Tom 4 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x34",
+      "description": "Hi-hat open bow note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x38",
+      "description": "Hi-hat open edge note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x3c",
+      "description": "Hi-hat close bow note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x40",
+      "description": "Hi-hat close edge note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x44",
+      "description": "Hi-hat pedal note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x48",
+      "description": "Crash 1 bow note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x4c",
+      "description": "Crash 1 edge note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x50",
+      "description": "Crash 2 bow note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x54",
+      "description": "Crash 2 edge note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x58",
+      "description": "Ride bow note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x5c",
+      "description": "Ride edge note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x60",
+      "description": "Ride bell note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x64",
+      "description": "Aux 1 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x68",
+      "description": "Aux 1 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x6c",
+      "description": "Aux 2 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x70",
+      "description": "Aux 2 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x74",
+      "description": "Aux 3 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x78",
+      "description": "Aux 3 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x7c",
+      "description": "Aux 4 head note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x0100",
+      "description": "Aux 4 rim note",
+      "type": "range32",
+      "min": 0,
+      "max": 128,
+      "off": 128
+    },
+    {
+      "offset": "0x0104",
+      "description": "Kick gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0105",
+      "description": "Snare head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0106",
+      "description": "Snare rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0107",
+      "description": "Tom 1 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0108",
+      "description": "Tom 1 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0109",
+      "description": "Tom 2 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x010a",
+      "description": "Tom 2 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x010b",
+      "description": "Tom 3 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x010c",
+      "description": "Tom 3 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x010d",
+      "description": "Tom 4 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x010e",
+      "description": "Tom 4 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x010f",
+      "description": "Hi-hat bow gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0110",
+      "description": "Hi-hat edge gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0111",
+      "description": "Crash 1 bow gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0112",
+      "description": "Crash 1 edge gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0113",
+      "description": "Crash 2 bow gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0114",
+      "description": "Crash 2 edge gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0115",
+      "description": "Ride bow gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0116",
+      "description": "Ride edge gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0117",
+      "description": "Ride bell gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0118",
+      "description": "Aux 1 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x0119",
+      "description": "Aux 1 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x011a",
+      "description": "Aux 2 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x011b",
+      "description": "Aux 2 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x011c",
+      "description": "Aux 3 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x011d",
+      "description": "Aux 3 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x011e",
+      "description": "Aux 4 head gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    {
+      "offset": "0x011f",
+      "description": "Aux 4 rim gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "valueOffset": 1,
+      "divisor": 10
+    },
+    // FIXME: The spec is contradictory here. The raw values are 0-16 (17 values), but the reported values are 1-15 and GLOBAL (16 values).
+    // Need to investigate... I suspect it means channel 1 to channel 16
+    {
+      "offset": "0x0120",
+      "description": "Kick MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16,
+      "offLabel": "Global"
+    },
+    {
+      "offset": "0x0121",
+      "description": "Snare head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0122",
+      "description": "Snare rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0123",
+      "description": "Tom 1 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0124",
+      "description": "Tom 1 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0125",
+      "description": "Tom 2 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0126",
+      "description": "Tom 2 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0127",
+      "description": "Tom 3 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0128",
+      "description": "Tom 3 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0129",
+      "description": "Tom 4 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x012a",
+      "description": "Tom 4 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x012b",
+      "description": "Hi-hat bow MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x012c",
+      "description": "Hi-hat edge MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x012d",
+      "description": "Crash 1 bow MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x012e",
+      "description": "Crash 1 edge MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x012f",
+      "description": "Crash 2 bow MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0130",
+      "description": "Crash 2 edge MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0131",
+      "description": "Ride bow MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0132",
+      "description": "Ride edge MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0133",
+      "description": "Ride bell MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0134",
+      "description": "Aux 1 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0135",
+      "description": "Aux 1 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0136",
+      "description": "Aux 2 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0137",
+      "description": "Aux 2 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0138",
+      "description": "Aux 3 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x0139",
+      "description": "Aux 3 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x013a",
+      "description": "Aux 4 head MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    },
+    {
+      "offset": "0x013b",
+      "description": "Aux 4 rim MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16
+    }
+  ]
+}

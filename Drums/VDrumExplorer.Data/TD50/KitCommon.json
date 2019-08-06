@@ -1,0 +1,79 @@
+﻿{
+  // Done
+  "name": "KitCommon",
+  "size": "0x32",
+  "fields": [
+    {
+      "name": "KitName",
+      "offset": "0x00",
+      "description": "Kit name",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "name": "KitSubName",
+      "offset": "0x0c",
+      "description": "Kit Sub name",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "offset": "0x1c",
+      "description": "Kit volume",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x20",
+      "description": "Pedal HH volume",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x24",
+      "description": "XStick on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x25",
+      "description": "XStick Inst",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x26",
+      "description": "XStick volume",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x2a",
+      "description": "Brush on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x2b",
+      "description": "Color",
+      "type": "range8",
+      "min": 0,
+      "max": 9,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x2c",
+      "description": "Favorite",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x2d",
+      "description": "Kit Tempo",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x2e",
+      "description": "Tempo",
+      "type": "range32",
+      "min": 20,
+      "max": 260
+    }
+  ]
+}

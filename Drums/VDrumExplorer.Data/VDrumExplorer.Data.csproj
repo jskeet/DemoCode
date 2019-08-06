@@ -13,5 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <EmbeddedResource Include="TD17/**/*.json" />
+    <EmbeddedResource Include="TD50/**/*.json" />
   </ItemGroup>
 </Project>

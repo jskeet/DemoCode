@@ -1,0 +1,162 @@
+﻿{
+  "name": "KitMasterComp",
+  "size": "0x16",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Comp on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x01",
+      "description": "Type",
+      "type": "enum",
+      "values": [
+        "Single soft comp",
+        "Single hard comp",
+        "Single limiter",
+        "2 band soft comp",
+        "2 band hard comp",
+        "2 band limiter"
+      ]
+    },
+    {
+      "offset": "0x02",
+      "description": "Split frequency",
+      "type": "range32",
+      "min": 0,
+      "max": 1600,
+      "off": 0,
+      "offLabel": "Single",
+      "multiplier": 10
+    },
+    {
+      "offset": "0x06",
+      "description": "Lo gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x08",
+      "description": "Hi gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0a",
+      "description": "Lo threshold",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0c",
+      "description": "Hi threshold",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0e",
+      "description": "Lo Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "offset": "0x0f",
+      "description": "Hi Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "offset": "0x10",
+      "description": "Lo Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      "offset": "0x11",
+      "description": "Hi Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      "offset": "0x12",
+      "description": "Lo Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x13",
+      "description": "Hi Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x14",
+      "description": "Lo Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x15",
+      "description": "Hi Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    }
+  ]
+}
