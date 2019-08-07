@@ -56,10 +56,13 @@ namespace VDrumExplorer.Data
         public IReadOnlyDictionary<IField, Container> ParentsByField { get; }
         
         /// <summary>
-        /// The root of the visual layout for the module.
+        /// Root of the visual tree for the module using the logical layout.
         /// </summary>
-        public VisualTreeNode VisualRoot { get; }
+        public VisualTreeNode LogicalRoot { get; }
         
+        /// <summary>
+        /// Root of the visual tree for the module using the physical layout.
+        /// </summary>
         public VisualTreeNode PhysicalRoot { get; }
 
         internal ModuleSchema(string name, int midiId, int familyCode, int familyNumberCode, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
@@ -79,7 +82,7 @@ namespace VDrumExplorer.Data
             PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>()
                 .ToDictionary(f => f.Address)
                 .AsReadOnly();
-            VisualRoot = visualRoot;
+            LogicalRoot = visualRoot;
             ParentsByField = BuildParentsByField(Root);
             PhysicalRoot = VisualTreeNode.FromContainer(Root);
         }
