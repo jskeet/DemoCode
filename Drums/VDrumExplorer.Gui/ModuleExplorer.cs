@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -150,10 +151,7 @@ namespace VDrumExplorer.Gui
             detailsPanel.Controls.Clear();
             foreach (var detail in node.Details)
             {
-                var groupBox = new GroupBox { Text = detail.Description, Dock = DockStyle.Fill, AutoSize = true };
-                groupBox.AutoSize = true;
-                var nestedFlow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
-                groupBox.Controls.Add(nestedFlow);
+                var table = new TableLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, ColumnCount = 2 };
                 if (detail.Container != null)
                 {
                     var fields = detail.Container.Fields
@@ -161,21 +159,28 @@ namespace VDrumExplorer.Gui
                         .Where(ShouldDisplayField);
                     foreach (var primitive in fields)
                     {
-                        nestedFlow.Controls.Add(new Label { Text = primitive.Description, AutoSize = true });
-                        var value = new Label { Text = primitive.GetText(module), AutoSize = true };
-                        nestedFlow.Controls.Add(value);
-                        nestedFlow.SetFlowBreak(value, true);
+                        table.Controls.Add(new Label { Font = DefaultFont, Text = primitive.Description, AutoSize = true });
+                        var value = new Label { Font = DefaultFont, Text = primitive.GetText(module), AutoSize = true };
+                        table.Controls.Add(value);
                     }
                 }
                 else
                 {
                     foreach (var formatElement in detail.DetailDescriptions)
                     {
-                        var value = new Label { Text = formatElement.Format(module), AutoSize = true };
-                        nestedFlow.Controls.Add(value);
-                        nestedFlow.SetFlowBreak(value, true);
+                        var value = new Label { Font = DefaultFont, Text = formatElement.Format(module), AutoSize = true };
+                        table.Controls.Add(value);
+                        table.SetColumnSpan(value, 2);
                     }
                 }
+                var groupBox = new GroupBox
+                {
+                    Font = new Font(DefaultFont, FontStyle.Bold),
+                    Text = detail.Description,
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    Controls = { table }
+                };
                 detailsPanel.Controls.Add(groupBox);
             }
         }
