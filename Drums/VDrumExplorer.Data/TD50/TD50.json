@@ -40,5 +40,5 @@
     "$resource:TrigDigital.json"
   ],
 
-  "visualTree": "$resource:VisualTree.json"
+  "logicalTree": "$resource:LogicalTree.json"
 }

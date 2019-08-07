@@ -30,7 +30,7 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? FamilyNumberCode { get; set; }
         public List<InstrumentGroupJson>? InstrumentGroups { get; set; }
         public List<ContainerJson>? Containers { get; set; }
-        public VisualTreeNodeJson? VisualTree { get; set; }
+        public VisualTreeNodeJson? LogicalTree { get; set; }
         public Dictionary<string, int>? Counts { get; set; }
 
         internal static ModuleJson FromJson(JObject json)
@@ -67,7 +67,7 @@ namespace VDrumExplorer.Data.Json
 
             var fieldsByPath = rootContainer.DescendantsAndSelf().ToDictionary(f => f.Path).AsReadOnly();
             var context = VisualTreeConversionContext.Create(this, fieldsByPath);
-            var visualRoot = ValidateNotNull(root, VisualTree, nameof(VisualTree))
+            var visualRoot = ValidateNotNull(root, LogicalTree, nameof(LogicalTree))
                 .ConvertVisualNodes(context).Single();
 
             return new ModuleSchema(name, modelId.Value, familyCode.Value, familyNumberCode.Value, rootContainer, instrumentGroups, visualRoot);
