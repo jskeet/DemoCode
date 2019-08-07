@@ -96,10 +96,10 @@ namespace VDrumExplorer.Gui
             {
                 using (var stream = File.OpenRead(fileName))
                 {
-                    var data = ModuleData.FromStream(stream);
-                    data.Validate();
-                    var client = detectedMidi?.schema == data.Schema ? detectedMidi?.client : null;
-                    new ModuleExplorer(data, client).Show();
+                    var module = Module.FromStream(stream);
+                    module.Validate();
+                    var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
+                    new ModuleExplorer(module, client).Show();
                 }
             }
             catch (Exception ex)
@@ -119,9 +119,9 @@ namespace VDrumExplorer.Gui
             var schema = detected.Value.schema;
             var progress = new DeviceLoaderDialog(client, schema);
             progress.ShowDialog();
-            if (progress.LoadedData != null)
+            if (progress.LoadedModule != null)
             {
-                new ModuleExplorer(progress.LoadedData, detectedMidi?.client).Show();
+                new ModuleExplorer(progress.LoadedModule, detectedMidi?.client).Show();
             }
         }
 
@@ -214,18 +214,20 @@ namespace VDrumExplorer.Gui
 
         private class DeviceLoaderDialog : Form
         {
-            private readonly ModuleData data;            
+            private readonly ModuleData data;
+            private readonly ModuleSchema schema;
             private readonly SysExClient client;
             private readonly Label label;
             private readonly ProgressBar progress;
             private readonly List<Container> containers;
-            public ModuleData LoadedData { get; private set; }
+            public Module LoadedModule { get; private set; }
 
             public DeviceLoaderDialog(SysExClient client, ModuleSchema schema)
             {
                 this.client = client;
+                this.schema = schema;
                 containers = schema.Root.DescendantsAndSelf().OfType<Container>().Where(c => c.Loadable).ToList();
-                data = new ModuleData(schema);
+                data = new ModuleData();
                 label = new Label { TextAlign = ContentAlignment.MiddleCenter, Text = "", AutoSize = true, Dock = DockStyle.Top, Padding = new Padding(5) };
                 progress = new ProgressBar { Maximum = containers.Count, Dock = DockStyle.Bottom, Padding = new Padding(5) };
                 Controls.Add(label);
@@ -252,7 +254,7 @@ namespace VDrumExplorer.Gui
                     progress.Value = loaded;
                     data.Populate(container.Address, segment);
                 }
-                LoadedData = data;
+                LoadedModule = new Module(schema, data);
                 Close();
             }
         }

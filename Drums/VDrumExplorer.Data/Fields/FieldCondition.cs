@@ -12,11 +12,11 @@ namespace VDrumExplorer.Data.Fields
         public FieldCondition(ModuleAddress referenceAddress, int requiredValue) =>
             (ReferenceAddress, RequiredValue) = (referenceAddress, requiredValue);
 
-        public bool IsEnabled(ModuleData data, IField field)
+        public bool IsEnabled(Module module, IField field)
         {
-            var container = data.Schema.ParentsByField[field];
+            var container = module.Schema.ParentsByField[field];
             var referenceField = (NumericFieldBase)container.FieldsByAddress[ReferenceAddress];
-            int value = referenceField.GetRawValue(data);
+            int value = referenceField.GetRawValue(module.Data);
             return value == RequiredValue;
         }
     }

@@ -11,15 +11,20 @@ using VDrumExplorer.Data.Fields;
 
 namespace VDrumExplorer.Data
 {
+    /// <summary>
+    /// The data within a module, as a collection of populated non-overlapping segments.
+    /// </summary>
     public class ModuleData
     {
-        public ModuleSchema Schema { get; }
-
         private readonly object sync = new object();
         private readonly List<Segment> segments = new List<Segment>();
 
-        public ModuleData(ModuleSchema schema) =>
-            Schema = schema;
+        /// <summary>
+        /// Creates an empty instance which can then be populated.
+        /// </summary>
+        public ModuleData()
+        {
+        }
 
         public void Populate(ModuleAddress address, byte[] data)
         {
@@ -40,101 +45,35 @@ namespace VDrumExplorer.Data
             }
         }
 
-        /// <summary>
-        /// Loads module data, autodetecting the schema.
-        /// </summary>
-        public static ModuleData FromStream(Stream stream)
-        {
-            Header header;
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
-            {
-                header = Header.Load(reader);
-                foreach (var schema in SchemaRegistry.GetSchemas())
-                {
-                    if (header.Equals(Header.FromSchema(schema)))
-                    {
-                        var ret = new ModuleData(schema);
-                        ret.LoadData(reader);
-                        return ret;
-                    }
-                }
-            }
-            throw new InvalidOperationException($"No built-in schemas match the file's header ({header})");
-        }
+        public static ModuleData Load(Stream stream) => Load(new BinaryReader(stream, Encoding.UTF8, true));
 
-        private void LoadData(BinaryReader reader)
+        public static ModuleData Load(BinaryReader reader)
         {
-            List<Segment> localSegments = new List<Segment>();
+            var data = new ModuleData();
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                localSegments.Add(Segment.Load(reader));
+                var segment = Segment.Load(reader);
+                // TODO: Use the public API to add the segments, so that ordering doesn't matter?
+                data.segments.Add(segment);
             }
-            lock (sync)
-            {
-                segments.Clear();
-                segments.AddRange(localSegments);
-            }
+            return data;
         }
 
-        /// <summary>
-        /// Loads memory data from the given stream. Any existing data is cleared, if this operation is successful.
-        /// </summary>
-        public void Load(Stream stream)
-        {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
-            {
-                var streamHeader = Header.Load(reader);
-                var schemaHeader = Header.FromSchema(Schema);
-                if (!streamHeader.Equals(schemaHeader))
-                {
-                    throw new InvalidOperationException($"Stream data does not match schema. Stream header: {streamHeader}. Schema header: {schemaHeader}");
-                }
-                LoadData(reader);
-            }
-        }
+        public void Save(Stream stream) => Save(new BinaryWriter(stream, Encoding.UTF8, true));
 
-        public void Save(Stream stream)
+        public void Save(BinaryWriter writer)
         {
             List<Segment> localSegments;
             lock (sync)
             {
                 localSegments = segments.ToList();
             }
-            
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                var header = Header.FromSchema(Schema);
-                header.Save(writer);
-                writer.Write(localSegments.Count);
-                foreach (var segment in localSegments)
-                {
-                    segment.Save(writer);
-                }                
-            }
-        }
 
-        /// <summary>
-        /// Validates that every field in the schema has a valid value.
-        /// This will fail if only partial data has been loaded.
-        /// </summary>
-        public void Validate()
-        {
-            List<Exception> exceptions = new List<Exception>();
-            foreach (var field in Schema.Root.DescendantsAndSelf(this).OfType<IPrimitiveField>())
+            writer.Write(localSegments.Count);
+            foreach (var segment in localSegments)
             {
-                try
-                {
-                    field.GetText(this);
-                }
-                catch (Exception e)
-                {
-                    exceptions.Add(new InvalidOperationException($"Field {field.Path} failed validation: {e.Message}"));
-                }
-            }
-            if (exceptions.Count != 0)
-            {
-                throw new AggregateException("Validation failed", exceptions.ToArray());
+                segment.Save(writer);
             }
         }
 
@@ -265,61 +204,6 @@ namespace VDrumExplorer.Data
             public static SegmentAddressComparer Instance = new SegmentAddressComparer();
 
             public int Compare(Segment x, Segment y) => x.Start.CompareTo(y.Start);
-        }
-
-        private sealed class Header : IEquatable<Header?>
-        {
-            public const int CurrentFormatVersion = 1;
-            
-            public int FormatVersion { get; }
-            public int ModelId { get; }
-            public int FamilyCode { get; }
-            public int FamilyNumberCode { get; }
-            public string Name { get; }
-
-            public Header(int formatVersion, int modelId, int familyCode, int familyNumberCode, string name) =>
-                (FormatVersion, ModelId, FamilyCode, FamilyNumberCode, Name) = (formatVersion, modelId, familyCode, familyNumberCode, name);
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(FormatVersion);
-                writer.Write(ModelId);
-                writer.Write(FamilyCode);
-                writer.Write(FamilyNumberCode);
-                writer.Write(Name);
-            }
-
-            public static Header Load(BinaryReader reader)
-            {
-                var version = reader.ReadInt32();
-                if (version != CurrentFormatVersion)
-                {
-                    throw new InvalidOperationException($"Unknown file format version. Expected {CurrentFormatVersion}; was {version}");
-                }
-                var modelId = reader.ReadInt32();
-                var familyCode = reader.ReadInt32();
-                var familyNumberCode = reader.ReadInt32();
-                var name = reader.ReadString();
-                return new Header(version, modelId, familyCode, familyNumberCode, name);
-            }
-
-            public override bool Equals(object? obj) => Equals(obj as Header);
-            
-            public bool Equals(Header? other) =>
-                other != null &&
-                FormatVersion == other.FormatVersion &&
-                Name == other.Name &&
-                ModelId == other.ModelId &&
-                FamilyCode == other.FamilyCode &&
-                FamilyNumberCode == other.FamilyNumberCode;
-
-            public override int GetHashCode() => HashCode.Combine(FormatVersion, ModelId, FamilyCode, FamilyNumberCode, Name.GetHashCode());
-
-            // TODO: Work out how to handle compatibility.
-            public static Header FromSchema(ModuleSchema schema) =>
-                new Header(CurrentFormatVersion, schema.ModelId, schema.FamilyCode, schema.FamilyNumberCode, schema.Name);
-
-            public override string ToString() => $"Name: {Name}; Midi ID: {ModelId}; Family code: {FamilyCode}; Family number code: {FamilyNumberCode}";
         }
     }
 }

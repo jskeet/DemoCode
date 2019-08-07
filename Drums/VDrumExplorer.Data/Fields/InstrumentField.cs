@@ -14,20 +14,20 @@ namespace VDrumExplorer.Data.Fields
         {
         }
 
-        public override string GetText(ModuleData data)
+        public override string GetText(Module module)
         {
-            var instrument = GetInstrument(data);
+            var instrument = GetInstrument(module);
             return $"{instrument.Name} ({instrument.Group.Description})";
         }
 
-        public Instrument GetInstrument(ModuleData data)
+        public Instrument GetInstrument(Module module)
         {
-            int index = GetRawValue(data);
-            if (index >= data.Schema.InstrumentsById.Count)
+            int index = GetRawValue(module.Data);
+            if (index >= module.Schema.InstrumentsById.Count)
             {
-                throw new InvalidOperationException($"Invalid instrument index {index}. The schema specifies {data.Schema.InstrumentsById.Count} instruments.");
+                throw new InvalidOperationException($"Invalid instrument index {index}. The schema specifies {module.Schema.InstrumentsById.Count} instruments.");
             }
-            return data.Schema.InstrumentsById[index];
+            return module.Schema.InstrumentsById[index];
         }
     }
 }
