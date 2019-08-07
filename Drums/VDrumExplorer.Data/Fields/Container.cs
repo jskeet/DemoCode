@@ -27,7 +27,7 @@ namespace VDrumExplorer.Data.Fields
             FieldsByAddress = Fields.ToDictionary(f => f.Address).AsReadOnly();
         }
 
-        public IEnumerable<IField> Children(ModuleData data) => Fields;
+        public IEnumerable<IField> Children(Module module) => Fields;
 
         /// <summary>
         /// Returns all fields in this container recursively. Dynamic overlay fields are returned as they are,
@@ -59,7 +59,7 @@ namespace VDrumExplorer.Data.Fields
         /// but the overlaid fields are, having resolved the relevant container.
         /// </summary>
         /// <returns>A sequence of fields, including the container itself.</returns>
-        public IEnumerable<IField> DescendantsAndSelf(ModuleData data)
+        public IEnumerable<IField> DescendantsAndSelf(Module module)
         {
             yield return this;
             foreach (var field in Fields)
@@ -73,7 +73,7 @@ namespace VDrumExplorer.Data.Fields
                 }
                 else if (field is DynamicOverlay overlay)
                 {
-                    foreach (var descendant in overlay.Children(data))
+                    foreach (var descendant in overlay.Children(module))
                     {
                         yield return descendant;
                     }

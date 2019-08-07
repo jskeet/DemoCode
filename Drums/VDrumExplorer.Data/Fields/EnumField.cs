@@ -14,6 +14,6 @@ namespace VDrumExplorer.Data.Fields
             : base(path, address, size, description, condition, 0, values.Count - 1) =>
             Values = values;
 
-        public override string GetText(ModuleData data) => Values[GetRawValue(data)];
+        public override string GetText(Module module) => Values[GetRawValue(module.Data)];
     }
 }

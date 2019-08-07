@@ -17,7 +17,7 @@ namespace VDrumExplorer.Gui
     public partial class ModuleExplorer : Form
     {
         // Non-UI elements
-        private readonly ModuleData data;
+        private readonly Module module;
         private readonly SysExClient midiClient;
         private ViewMode viewMode;
 
@@ -27,13 +27,13 @@ namespace VDrumExplorer.Gui
         private readonly ToolStripMenuItem physicalViewMenuItem;
         private readonly ToolStripMenuItem logicalViewMenuItem;
 
-        public ModuleExplorer(ModuleData data, SysExClient midiClient)
+        public ModuleExplorer(Module module, SysExClient midiClient)
         {
-            this.data = data;
+            this.module = module;
             this.midiClient = midiClient;
             Width = 600;
             Height = 800;
-            Text = $"Module explorer: {data.Schema.Name}";
+            Text = $"Module explorer: {module.Schema.Name}";
 
             var topPanel = new FlowLayoutPanel
             {
@@ -110,7 +110,7 @@ namespace VDrumExplorer.Gui
             }
             using (var stream = File.OpenWrite(fileName))
             {
-                data.Save(stream);
+                module.Save(stream);
             }
         }
 
@@ -120,22 +120,22 @@ namespace VDrumExplorer.Gui
             logicalViewMenuItem.Checked = viewMode == ViewMode.Logical;
             physicalViewMenuItem.Checked = viewMode == ViewMode.Physical;
 
-            var rootModelNode = viewMode == ViewMode.Logical ? data.Schema.LogicalRoot : data.Schema.PhysicalRoot;
+            var rootModelNode = viewMode == ViewMode.Logical ? module.Schema.LogicalRoot : module.Schema.PhysicalRoot;
             var rootGuiNode = new TreeNode();
-            PopulateNode(rootGuiNode, data, rootModelNode);
+            PopulateNode(rootGuiNode, rootModelNode);
             treeView.Nodes.Clear();
             treeView.Nodes.Add(rootGuiNode);
             LoadReadOnlyDetailsPage(rootModelNode);
         }
 
-        private static void PopulateNode(TreeNode node, ModuleData data, VisualTreeNode vnode)
+        private void PopulateNode(TreeNode node, VisualTreeNode vnode)
         {
             node.Tag = vnode;
-            node.Text = vnode.Description.Format(data);
+            node.Text = vnode.Description.Format(module);
             foreach (var vchild in vnode.Children)
             {
                 var childNode = new TreeNode();
-                PopulateNode(childNode, data, vchild);
+                PopulateNode(childNode, vchild);
                 node.Nodes.Add(childNode);
             }
         }
@@ -162,7 +162,7 @@ namespace VDrumExplorer.Gui
                     foreach (var primitive in fields)
                     {
                         nestedFlow.Controls.Add(new Label { Text = primitive.Description, AutoSize = true });
-                        var value = new Label { Text = primitive.GetText(data), AutoSize = true };
+                        var value = new Label { Text = primitive.GetText(module), AutoSize = true };
                         nestedFlow.Controls.Add(value);
                         nestedFlow.SetFlowBreak(value, true);
                     }
@@ -171,7 +171,7 @@ namespace VDrumExplorer.Gui
                 {
                     foreach (var formatElement in detail.DetailDescriptions)
                     {
-                        var value = new Label { Text = formatElement.Format(data), AutoSize = true };
+                        var value = new Label { Text = formatElement.Format(module), AutoSize = true };
                         nestedFlow.Controls.Add(value);
                         nestedFlow.SetFlowBreak(value, true);
                     }
@@ -188,7 +188,7 @@ namespace VDrumExplorer.Gui
             }
             else if (field is DynamicOverlay overlay)
             {
-                var fields = overlay.Children(data);
+                var fields = overlay.Children(module);
                 foreach (var primitive2 in fields.OfType<IPrimitiveField>())
                 {
                     yield return primitive2;
@@ -204,7 +204,7 @@ namespace VDrumExplorer.Gui
                 return true;
             }
             // In logical view, conditional fields may or may not be shown.
-            return field.IsEnabled(data);
+            return field.IsEnabled(module);
         }
     }
 }
