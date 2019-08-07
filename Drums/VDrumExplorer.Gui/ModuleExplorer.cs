@@ -19,6 +19,7 @@ namespace VDrumExplorer.Gui
         // Non-UI elements
         private readonly ModuleData data;
         private readonly SysExClient midiClient;
+        private ViewMode viewMode;
 
         // UI elements we need to be able to refer to
         private readonly TreeView treeView;
@@ -59,8 +60,8 @@ namespace VDrumExplorer.Gui
             Controls.Add(splitContainer);
             Controls.Add(topPanel);
 
-            logicalViewMenuItem = new ToolStripMenuItem("Logical", null, SetView) { Checked = true };
-            physicalViewMenuItem = new ToolStripMenuItem("Physical", null, SetView);
+            logicalViewMenuItem = new ToolStripMenuItem("Logical", null, SetViewFromMenu) { Checked = true, Tag = ViewMode.Logical };
+            physicalViewMenuItem = new ToolStripMenuItem("Physical", null, SetViewFromMenu) { Tag = ViewMode.Physical };
 
             var menu = new MenuStrip
             {
@@ -81,29 +82,20 @@ namespace VDrumExplorer.Gui
             };
             MainMenuStrip = menu;
             Controls.Add(menu);
-            LoadView(data.Schema.LogicalRoot);
+            LoadView(ViewMode.Logical);
         }
 
-        private void SetView(object sender, EventArgs e)
+        private void SetViewFromMenu(object sender, EventArgs e)
         {
-            var selected = (ToolStripMenuItem) sender;
-            if (selected.Checked)
+            var senderMenuItem = (ToolStripMenuItem) sender;
+            var targetViewMode = (ViewMode) senderMenuItem.Tag;
+            if (targetViewMode == viewMode)
             {
                 return;
             }
-            selected.Checked = true;
-            if (selected == physicalViewMenuItem)
-            {
-                logicalViewMenuItem.Checked = false;
-                LoadView(data.Schema.PhysicalRoot);
-            }
-            else
-            {
-                physicalViewMenuItem.Checked = false;
-                LoadView(data.Schema.LogicalRoot);
-            }
+            LoadView(targetViewMode);
         }
-
+        
         private void SaveFile(object sender, EventArgs e)
         {
             string fileName;
@@ -122,13 +114,18 @@ namespace VDrumExplorer.Gui
             }
         }
 
-        private void LoadView(VisualTreeNode rootVisualNode)
+        private void LoadView(ViewMode viewMode)
         {
-            var root = new TreeNode();
-            PopulateNode(root, data, rootVisualNode);
+            this.viewMode = viewMode;
+            logicalViewMenuItem.Checked = viewMode == ViewMode.Logical;
+            physicalViewMenuItem.Checked = viewMode == ViewMode.Physical;
+
+            var rootModelNode = viewMode == ViewMode.Logical ? data.Schema.LogicalRoot : data.Schema.PhysicalRoot;
+            var rootGuiNode = new TreeNode();
+            PopulateNode(rootGuiNode, data, rootModelNode);
             treeView.Nodes.Clear();
-            treeView.Nodes.Add(root);
-            LoadReadOnlyDetailsPage(rootVisualNode);
+            treeView.Nodes.Add(rootGuiNode);
+            LoadReadOnlyDetailsPage(rootModelNode);
         }
 
         private static void PopulateNode(TreeNode node, ModuleData data, VisualTreeNode vnode)
@@ -159,8 +156,10 @@ namespace VDrumExplorer.Gui
                 groupBox.Controls.Add(nestedFlow);
                 if (detail.Container != null)
                 {
-                    // TODO: Show disabled fields in physical view?
-                    foreach (var primitive in detail.Container.Fields.SelectMany(GetFields).Where(p => p.IsEnabled(data)))
+                    var fields = detail.Container.Fields
+                        .SelectMany(GetPrimtiveFields)
+                        .Where(ShouldDisplayField);
+                    foreach (var primitive in fields)
                     {
                         nestedFlow.Controls.Add(new Label { Text = primitive.Description, AutoSize = true });
                         var value = new Label { Text = primitive.GetText(data), AutoSize = true };
@@ -181,13 +180,13 @@ namespace VDrumExplorer.Gui
             }
         }
 
-        private IEnumerable<IPrimitiveField> GetFields(IField field)
+        private IEnumerable<IPrimitiveField> GetPrimtiveFields(IField field)
         {
             if (field is IPrimitiveField primitive)
             {
                 yield return primitive;
             }
-            if (field is DynamicOverlay overlay)
+            else if (field is DynamicOverlay overlay)
             {
                 var fields = overlay.Children(data);
                 foreach (var primitive2 in fields.OfType<IPrimitiveField>())
@@ -195,6 +194,17 @@ namespace VDrumExplorer.Gui
                     yield return primitive2;
                 }
             }
+        }
+
+        private bool ShouldDisplayField(IField field)
+        {
+            // In physical view, we display all fields, for schema debugging.
+            if (viewMode == ViewMode.Physical)
+            {
+                return true;
+            }
+            // In logical view, conditional fields may or may not be shown.
+            return field.IsEnabled(data);
         }
     }
 }
