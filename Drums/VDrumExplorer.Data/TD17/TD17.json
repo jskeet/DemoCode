@@ -28,5 +28,5 @@
     "$resource:KitUnitVEdit.json"
   ],
 
-  "visualTree": "$resource:VisualTree.json"
+  "logicalTree": "$resource:LogicalTree.json"
 }
