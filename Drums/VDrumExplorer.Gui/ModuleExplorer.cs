@@ -81,7 +81,7 @@ namespace VDrumExplorer.Gui
             };
             MainMenuStrip = menu;
             Controls.Add(menu);
-            LoadView(data.Schema.VisualRoot);
+            LoadView(data.Schema.LogicalRoot);
         }
 
         private void SetView(object sender, EventArgs e)
@@ -100,7 +100,7 @@ namespace VDrumExplorer.Gui
             else
             {
                 physicalViewMenuItem.Checked = false;
-                LoadView(data.Schema.VisualRoot);
+                LoadView(data.Schema.LogicalRoot);
             }
         }
 
@@ -128,7 +128,7 @@ namespace VDrumExplorer.Gui
             PopulateNode(root, data, rootVisualNode);
             treeView.Nodes.Clear();
             treeView.Nodes.Add(root);
-            HandleTreeViewSelection(root, new TreeViewEventArgs(root));
+            LoadReadOnlyDetailsPage(rootVisualNode);
         }
 
         private static void PopulateNode(TreeNode node, ModuleData data, VisualTreeNode vnode)
@@ -145,16 +145,21 @@ namespace VDrumExplorer.Gui
 
         private void HandleTreeViewSelection(object sender, TreeViewEventArgs e)
         {
-            var vtn = (VisualTreeNode) e.Node.Tag;
+            LoadReadOnlyDetailsPage((VisualTreeNode)e.Node.Tag);
+        }
+
+        private void LoadReadOnlyDetailsPage(VisualTreeNode node)
+        {
             detailsPanel.Controls.Clear();
-            foreach (var detail in vtn.Details)
+            foreach (var detail in node.Details)
             {
-                var groupBox = new GroupBox { Text = detail.Description ?? "FIXME", Dock = DockStyle.Fill, AutoSize = true };
+                var groupBox = new GroupBox { Text = detail.Description, Dock = DockStyle.Fill, AutoSize = true };
                 groupBox.AutoSize = true;
                 var nestedFlow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
                 groupBox.Controls.Add(nestedFlow);
                 if (detail.Container != null)
                 {
+                    // TODO: Show disabled fields in physical view?
                     foreach (var primitive in detail.Container.Fields.SelectMany(GetFields).Where(p => p.IsEnabled(data)))
                     {
                         nestedFlow.Controls.Add(new Label { Text = primitive.Description, AutoSize = true });
