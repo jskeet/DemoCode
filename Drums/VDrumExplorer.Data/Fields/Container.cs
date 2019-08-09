@@ -18,8 +18,8 @@ namespace VDrumExplorer.Data.Fields
         
         public string? Name { get; }
 
-        internal Container(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition, string? name, IReadOnlyList<IField> fields)
-            : base(path, address, size, description, condition)
+        internal Container(FieldBase.Parameters common, string? name, IReadOnlyList<IField> fields)
+            : base(common)
         {
             Name = name;
             Fields = fields;

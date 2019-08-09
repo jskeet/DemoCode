@@ -14,9 +14,8 @@ namespace VDrumExplorer.Data.Fields
         internal IReadOnlyList<Container> OverlaidContainers { get; }
         
         // No condition; overlays are already conditional effectively.
-        public DynamicOverlay(FieldPath path, ModuleAddress address, int size, string description,
-            ModuleAddress switchAddress, string? switchTransform, IReadOnlyList<Container> containers)
-            : base(path, address, size, description, null) =>
+        internal DynamicOverlay(FieldBase.Parameters common, ModuleAddress switchAddress, string? switchTransform, IReadOnlyList<Container> containers)
+            : base(common) =>
             (this.switchAddress, this.switchTransform, OverlaidContainers) = (switchAddress, switchTransform, containers);
 
         public IEnumerable<IField> Children(Module module)
