@@ -23,9 +23,9 @@ namespace VDrumExplorer.Data.Fields
         public int? ValueOffset { get; }
         public string? Suffix { get; }
 
-        public NumericField(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition, int min, int max,
+        internal NumericField(FieldBase.Parameters common, int min, int max,
             int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting)
-            : base(path, address, size, description, condition, min, max) =>
+            : base(common, min, max) =>
             (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) = (divisor, multiplier, valueOffset, suffix, customValueFormatting);
 
         public override string GetText(Module module)

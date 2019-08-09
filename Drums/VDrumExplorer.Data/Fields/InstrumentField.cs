@@ -8,9 +8,9 @@ namespace VDrumExplorer.Data.Fields
 {
     public class InstrumentField : NumericFieldBase, IPrimitiveField
     {
-        public InstrumentField(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition)
+        internal InstrumentField(FieldBase.Parameters common)
             // We don't know how many instruments there will actually be, but we'll validate in GetInstrument.
-            : base(path, address, size, description, condition, 0, int.MaxValue)
+            : base(common, 0, int.MaxValue)
         {
         }
 

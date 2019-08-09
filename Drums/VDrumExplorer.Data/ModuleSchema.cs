@@ -65,14 +65,20 @@ namespace VDrumExplorer.Data
         /// </summary>
         public VisualTreeNode PhysicalRoot { get; }
 
-        internal ModuleSchema(string name, int midiId, int familyCode, int familyNumberCode, Container root, IReadOnlyList<InstrumentGroup> instrumentGroups, VisualTreeNode visualRoot)
+        // Note: this used to be in ModuleJson.ToModuleSchema(), but it turns out it's really useful for
+        // a field to have access to the schema it's part of... which is tricky when everything is immutable
+        // and the schema also has to have references to the fields. So this code is ugly - and makes field testing
+        // trickier - but at least it's pleasant to use elsewhere.
+        internal ModuleSchema(ModuleJson json)
         {
-            Name = name;
-            ModelId = midiId;
-            Root = root;
-            FamilyCode = familyCode;
-            FamilyNumberCode = familyNumberCode;
-            InstrumentGroups = instrumentGroups;
+            json.Validate();
+            Name = json.Name!;
+            ModelId = json.ModelId!.Value;
+            FamilyCode = json.FamilyCode!.Value;
+            FamilyNumberCode = json.FamilyNumberCode!.Value;
+            Root = json.BuildRootContainer(this);
+            LogicalRoot = json.BuildLogicalRoot(Root);
+            InstrumentGroups = json.BuildInstrumentGroups();
             Instruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
                 .ToList()
@@ -82,7 +88,6 @@ namespace VDrumExplorer.Data
             PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>()
                 .ToDictionary(f => f.Address)
                 .AsReadOnly();
-            LogicalRoot = visualRoot;
             ParentsByField = BuildParentsByField(Root);
             PhysicalRoot = VisualTreeNode.FromContainer(Root);
         }
@@ -94,7 +99,7 @@ namespace VDrumExplorer.Data
             FromJson(JsonLoader.FromDirectory(path).LoadResource(resourceName));
 
         private static ModuleSchema FromJson(JObject json) =>
-            ModuleJson.FromJson(json).ToModuleSchema();
+            new ModuleSchema(ModuleJson.FromJson(json));
 
         private static IReadOnlyDictionary<IField, Container> BuildParentsByField(Container root)
         {

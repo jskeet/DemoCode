@@ -7,7 +7,7 @@ using System.Text;
 
 namespace VDrumExplorer.Data.Fields
 {
-    public class StringField : FieldBase, IPrimitiveField
+    public sealed class StringField : FieldBase, IPrimitiveField
     {
         /// <summary>
         /// The length of the field, in characters.
@@ -16,10 +16,10 @@ namespace VDrumExplorer.Data.Fields
 
         private readonly int bytesPerChar;
 
-        public StringField(FieldPath path, ModuleAddress address, int length, int bytesPerChar, string description, FieldCondition? condition)
-            : base(path, address, length * bytesPerChar, description, condition)
+        internal StringField(FieldBase.Parameters common, int length)
+            : base(common)
         {
-            this.bytesPerChar = bytesPerChar;
+            bytesPerChar = Size / length;
         }
 
         public string GetText(Module module)
@@ -39,7 +39,6 @@ namespace VDrumExplorer.Data.Fields
                 default:
                     throw new InvalidOperationException($"Can't get a string with bytesPerChar of {bytesPerChar}");
             }
-
         }
     }
 }

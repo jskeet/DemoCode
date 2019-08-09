@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using VDrumExplorer.Data.Fields;
+using VDrumExplorer.Data.Layout;
 
 namespace VDrumExplorer.Data.Json
 {
@@ -51,26 +52,35 @@ namespace VDrumExplorer.Data.Json
                 _ => throw new InvalidOperationException($"Invalid repeat value: '{repeat}'")
             };
 
-        internal ModuleSchema ToModuleSchema()
+        internal void Validate()
         {
             var root = FieldPath.Root();
-            var name = ValidateNotNull(root, Name, nameof(Name));
-            var modelId = ValidateNotNull(root, ModelId, nameof(ModelId));
-            var familyCode = ValidateNotNull(root, FamilyCode, nameof(FamilyCode));
-            var familyNumberCode = ValidateNotNull(root, FamilyNumberCode, nameof(FamilyNumberCode));
+            ValidateNotNull(root, Name, nameof(Name));
+            ValidateNotNull(root, ModelId, nameof(ModelId));
+            ValidateNotNull(root, FamilyCode, nameof(FamilyCode));
+            ValidateNotNull(root, FamilyNumberCode, nameof(FamilyNumberCode));
+            ValidateNotNull(root, LogicalTree, nameof(LogicalTree));
+            FindContainer(root, "Root");
+        }        
 
-            var rootContainer = FindContainer(root, "Root").ToContainer(this, root, new ModuleAddress(0), "Root", condition: null);
-            var instrumentGroups = InstrumentGroups
+        internal Container BuildRootContainer(ModuleSchema schema)
+        {
+            var root = FieldPath.Root();
+            return FindContainer(root, "Root")
+                .ToContainer(schema, this, root, new ModuleAddress(0), "Root", condition: null);
+        }
+        
+        internal IReadOnlyList<InstrumentGroup> BuildInstrumentGroups() =>
+            InstrumentGroups
                 .Select((igj, index) => igj.ToInstrumentGroup(index))
                 .ToList()
                 .AsReadOnly();
 
-            var fieldsByPath = rootContainer.DescendantsAndSelf().ToDictionary(f => f.Path).AsReadOnly();
+        internal VisualTreeNode BuildLogicalRoot(Container root)
+        {
+            var fieldsByPath = root.DescendantsAndSelf().ToDictionary(f => f.Path).AsReadOnly();
             var context = VisualTreeConversionContext.Create(this, fieldsByPath);
-            var visualRoot = ValidateNotNull(root, LogicalTree, nameof(LogicalTree))
-                .ConvertVisualNodes(context).Single();
-
-            return new ModuleSchema(name, modelId.Value, familyCode.Value, familyNumberCode.Value, rootContainer, instrumentGroups, visualRoot);
+            return LogicalTree!.ConvertVisualNodes(context).Single();
         }
     }
 }

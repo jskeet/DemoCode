@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace VDrumExplorer.Data.Fields
 {
-    public class BooleanField : EnumField
+    public sealed class BooleanField : EnumField
     {
         private static readonly IReadOnlyList<string> OffOnValues = new List<string> { "Off", "On" }.AsReadOnly();
 
-        public BooleanField(FieldPath path, ModuleAddress address, int size, string description, FieldCondition? condition)
-            : base(path, address, size, description, condition, OffOnValues)
+        internal BooleanField(FieldBase.Parameters common)
+            : base(common, OffOnValues)
         {
         }
 
