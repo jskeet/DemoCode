@@ -8,6 +8,6 @@ namespace VDrumExplorer.Data.Fields
 {
     public interface IContainerField : IField
     {
-        IEnumerable<IField> Children(Module module);
+        IEnumerable<IField> Children(ModuleData data);
     }
 }

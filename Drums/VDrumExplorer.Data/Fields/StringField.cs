@@ -22,9 +22,9 @@ namespace VDrumExplorer.Data.Fields
             bytesPerChar = Size / length;
         }
 
-        public string GetText(Module module)
+        public string GetText(ModuleData data)
         {
-            byte[] rawBytes = module.Data.GetData(Address, Size);
+            byte[] rawBytes = data.GetData(Address, Size);
             switch (bytesPerChar)
             {
                 case 1:

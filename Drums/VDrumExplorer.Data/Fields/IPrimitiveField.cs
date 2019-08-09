@@ -6,6 +6,6 @@ namespace VDrumExplorer.Data.Fields
 {
     public interface IPrimitiveField : IField
     {
-        string GetText(Module module);
+        string GetText(ModuleData data);
     }
 }

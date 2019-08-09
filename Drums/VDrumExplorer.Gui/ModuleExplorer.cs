@@ -132,7 +132,7 @@ namespace VDrumExplorer.Gui
         private void PopulateNode(TreeNode node, VisualTreeNode vnode)
         {
             node.Tag = vnode;
-            node.Text = vnode.Description.Format(module);
+            node.Text = vnode.Description.Format(module.Data);
             foreach (var vchild in vnode.Children)
             {
                 var childNode = new TreeNode();
@@ -160,7 +160,7 @@ namespace VDrumExplorer.Gui
                     foreach (var primitive in fields)
                     {
                         table.Controls.Add(new Label { Font = DefaultFont, Text = primitive.Description, AutoSize = true });
-                        var value = new Label { Font = DefaultFont, Text = primitive.GetText(module), AutoSize = true };
+                        var value = new Label { Font = DefaultFont, Text = primitive.GetText(module.Data), AutoSize = true };
                         table.Controls.Add(value);
                     }
                 }
@@ -168,7 +168,7 @@ namespace VDrumExplorer.Gui
                 {
                     foreach (var formatElement in detail.DetailDescriptions)
                     {
-                        var value = new Label { Font = DefaultFont, Text = formatElement.Format(module), AutoSize = true };
+                        var value = new Label { Font = DefaultFont, Text = formatElement.Format(module.Data), AutoSize = true };
                         table.Controls.Add(value);
                         table.SetColumnSpan(value, 2);
                     }
@@ -193,7 +193,7 @@ namespace VDrumExplorer.Gui
             }
             else if (field is DynamicOverlay overlay)
             {
-                var fields = overlay.Children(module);
+                var fields = overlay.Children(module.Data);
                 foreach (var primitive2 in fields.OfType<IPrimitiveField>())
                 {
                     yield return primitive2;
@@ -209,7 +209,7 @@ namespace VDrumExplorer.Gui
                 return true;
             }
             // In logical view, conditional fields may or may not be shown.
-            return field.IsEnabled(module);
+            return field.IsEnabled(module.Data);
         }
     }
 }

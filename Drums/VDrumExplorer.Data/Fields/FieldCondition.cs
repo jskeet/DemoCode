@@ -12,11 +12,14 @@ namespace VDrumExplorer.Data.Fields
         public FieldCondition(ModuleAddress referenceAddress, int requiredValue) =>
             (ReferenceAddress, RequiredValue) = (referenceAddress, requiredValue);
 
-        public bool IsEnabled(Module module, IField field)
+        public bool IsEnabled(IField field, ModuleData data)
         {
-            var container = module.Schema.ParentsByField[field];
+            // We can't just ask the schema for the field at the reference address, because
+            // it might be within an overlay. We could potentially simplify things by making each field
+            // know the container it's part of, and making the condition know which field *it's* part of.
+            var container = field.Schema.ParentsByField[field];
             var referenceField = (NumericFieldBase)container.FieldsByAddress[ReferenceAddress];
-            int value = referenceField.GetRawValue(module.Data);
+            int value = referenceField.GetRawValue(data);
             return value == RequiredValue;
         }
     }

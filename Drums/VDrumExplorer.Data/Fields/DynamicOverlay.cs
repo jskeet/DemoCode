@@ -18,13 +18,13 @@ namespace VDrumExplorer.Data.Fields
             : base(common) =>
             (this.switchAddress, this.switchTransform, OverlaidContainers) = (switchAddress, switchTransform, containers);
 
-        public IEnumerable<IField> Children(Module module)
+        public IEnumerable<IField> Children(ModuleData data)
         {
-            var field = module.Schema.PrimitiveFieldsByAddress[switchAddress];
+            var field = Schema.PrimitiveFieldsByAddress[switchAddress];
             int index = switchTransform switch
             {
-                null => ((NumericFieldBase) field).GetRawValue(module.Data),
-                "instrumentGroup" => ((InstrumentField) field).GetInstrument(module).Group.Index,
+                null => ((NumericFieldBase) field).GetRawValue(data),
+                "instrumentGroup" => ((InstrumentField) field).GetInstrument(data).Group.Index,
                 _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
             };
             return OverlaidContainers[index].Fields;
