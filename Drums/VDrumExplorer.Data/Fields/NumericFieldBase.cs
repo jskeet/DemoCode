@@ -19,7 +19,7 @@ namespace VDrumExplorer.Data.Fields
             : base(common) =>
             (Min, Max) = (min, max);
 
-        public abstract string GetText(Module module);
+        public abstract string GetText(ModuleData data);
 
         internal int GetRawValue(ModuleData data)
         {

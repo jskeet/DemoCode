@@ -47,11 +47,11 @@ namespace VDrumExplorer.Data
         public void Validate()
         {
             List<Exception> exceptions = new List<Exception>();
-            foreach (var field in Schema.Root.DescendantsAndSelf(this).OfType<IPrimitiveField>())
+            foreach (var field in Schema.Root.DescendantsAndSelf(Data).OfType<IPrimitiveField>())
             {
                 try
                 {
-                    field.GetText(this);
+                    field.GetText(Data);
                 }
                 catch (Exception e)
                 {

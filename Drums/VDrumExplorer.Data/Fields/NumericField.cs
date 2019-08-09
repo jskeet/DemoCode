@@ -28,9 +28,9 @@ namespace VDrumExplorer.Data.Fields
             : base(common, min, max) =>
             (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) = (divisor, multiplier, valueOffset, suffix, customValueFormatting);
 
-        public override string GetText(Module module)
+        public override string GetText(ModuleData data)
         {
-            int value = GetRawValue(module.Data);
+            int value = GetRawValue(data);
             if (CustomValueFormatting != null && value == CustomValueFormatting.Value.value)
             {
                 return CustomValueFormatting.Value.text;

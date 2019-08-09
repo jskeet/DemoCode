@@ -6,6 +6,7 @@ namespace VDrumExplorer.Data.Fields
 {
     public interface IField
     {
+        ModuleSchema Schema { get; }
         string Description { get; }
         FieldPath Path { get; }
         ModuleAddress Address { get; }
