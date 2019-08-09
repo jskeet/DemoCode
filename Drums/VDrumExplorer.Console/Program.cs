@@ -24,6 +24,9 @@ namespace VDrumExplorer.ConsoleDemo
             await Task.Yield();
             try
             {
+                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} Before loading schemas");
+                SchemaRegistry.GetSchemas();
+                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} After loading schemas");
             }
             catch (Exception e)
             {
