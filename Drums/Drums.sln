@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Console", "VD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Gui", "VDrumExplorer.Gui\VDrumExplorer.Gui.csproj", "{72B51651-9AB2-421A-BCA0-4D6E58C4C44C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDrumExplorer.Wpf", "VDrumExplorer.Wpf\VDrumExplorer.Wpf.csproj", "{4D227C70-F0D5-4354-A2E6-D2A884123DDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{72B51651-9AB2-421A-BCA0-4D6E58C4C44C}.Release|x64.Build.0 = Release|Any CPU
 		{72B51651-9AB2-421A-BCA0-4D6E58C4C44C}.Release|x86.ActiveCfg = Release|Any CPU
 		{72B51651-9AB2-421A-BCA0-4D6E58C4C44C}.Release|x86.Build.0 = Release|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Release|x64.Build.0 = Release|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D227C70-F0D5-4354-A2E6-D2A884123DDA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
