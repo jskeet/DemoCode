@@ -17,7 +17,10 @@
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Margin="5" Padding="5,2">Edit mode</Button>
+            <Button Margin="5" Padding="5,2" Click="EnterEditMode" x:Name="editModeButton">Edit mode</Button>
+            <Button Margin="5" Padding="5,2" Click="CommitChanges" IsEnabled="False" x:Name="commitChangesButton">Commit changes</Button>
+            <Button Margin="5" Padding="5,2" Click="CancelChanges" IsEnabled="False" x:Name="cancelChangesButton">Cancel changes</Button>
+            <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton">Copy page to device</Button>
         </StackPanel>
 
         <Grid>
@@ -29,7 +32,7 @@
             <TreeView x:Name="treeView" Grid.Column="0" SelectedItemChanged="HandleTreeViewSelection" />
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
-                <StackPanel x:Name="detailsPanel" Grid.Column="2" />
+                <StackPanel Margin="5,0,0,0" x:Name="detailsPanel" Grid.Column="2" />
             </ScrollViewer>
         </Grid>
     </DockPanel>

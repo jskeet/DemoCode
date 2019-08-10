@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Globalization;
 using static System.FormattableString;
 
 namespace VDrumExplorer.Data.Fields
@@ -35,10 +36,58 @@ namespace VDrumExplorer.Data.Fields
             {
                 return CustomValueFormatting.Value.text;
             }
+            decimal scaled = ScaleRawValueForFormatting(value);
+            return Invariant($"{scaled}{Suffix}");
+        }
+
+        public override bool TrySetText(ModuleData data, string text)
+        {
+            if (CustomValueFormatting != null && text == CustomValueFormatting.Value.text)
+            {
+                SetRawValue(data, CustomValueFormatting.Value.value);
+                return true;
+            }
+            if (Suffix != null && text.EndsWith(Suffix))
+            {
+                text = text.Substring(0, text.Length - Suffix.Length);
+            }
+            if (!decimal.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
+            {
+                return false;
+            }
+            // Reverse the scaling...
+            decimal value = parsed * (Divisor ?? 1m);
+            value /= Multiplier ?? 1m;
+            value -= ValueOffset ?? 0;
+            if (value < int.MinValue || value > int.MaxValue)
+            {
+                return false;
+            }
+            int candidateRawValue = (int) value;
+            if (candidateRawValue < Min || candidateRawValue > Max)
+            {
+                return false;
+            }
+            
+            // Check that this raw candidate value is actually reasonable.
+            // This avoids problems such as when the divisor is 2, but the user enters 1.3.
+            decimal rescaled = ScaleRawValueForFormatting(candidateRawValue);
+            if (rescaled == parsed)
+            {
+                SetRawValue(data, candidateRawValue);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private decimal ScaleRawValueForFormatting(int value)
+        {
             value += ValueOffset ?? 0;
             value *= Multiplier ?? 1;
-            decimal scaled = value / (Divisor ?? 1m);
-            return Invariant($"{scaled}{Suffix}");
+            return value / (Divisor ?? 1m);
         }
     }
 }

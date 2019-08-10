@@ -16,5 +16,7 @@ namespace VDrumExplorer.Data.Fields
         }
 
         public bool GetValue(ModuleData data) => GetRawValue(data) == 1;
+
+        public void SetValue(ModuleData data, bool value) => SetRawValue(data, value ? 1 : 0);
     }
 }
