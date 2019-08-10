@@ -12,14 +12,15 @@ namespace VDrumExplorer.Data.Fields
     /// </summary>
     public abstract class NumericFieldBase : FieldBase, IPrimitiveField
     {
-        public int? Min { get; }
-        public int? Max { get; }
+        public int Min { get; }
+        public int Max { get; }
 
         private protected NumericFieldBase(FieldBase.Parameters common, int min, int max)
             : base(common) =>
             (Min, Max) = (min, max);
 
         public abstract string GetText(ModuleData data);
+        public abstract bool TrySetText(ModuleData data, string text);
 
         internal int GetRawValue(ModuleData data)
         {
@@ -41,6 +42,32 @@ namespace VDrumExplorer.Data.Fields
                 throw new InvalidOperationException($"Invalid range value: {value}");
             }
             return value;
+        }
+
+        internal void SetRawValue(ModuleData data, int newValue)
+        {
+            if (newValue < Min || newValue > Max)
+            {
+                throw new ArgumentOutOfRangeException($"Value out of range. Min={Min}; Max={Max}; Attempt={newValue}");
+            }
+            switch (Size)
+            {
+                case 1:
+                    data.SetAddressValue(Address, (byte) newValue);
+                    break;
+                case 2:
+                    data.SetAddressValue(Address, (byte) ((newValue >> 4) & 0xf));
+                    data.SetAddressValue(Address + 1, (byte) ((newValue >> 0) & 0xf));
+                    break;
+                case 4:
+                    data.SetAddressValue(Address, (byte) ((newValue >> 12) & 0xf));
+                    data.SetAddressValue(Address + 1, (byte) ((newValue >> 8) & 0xf));
+                    data.SetAddressValue(Address + 2, (byte) ((newValue >> 4) & 0xf));
+                    data.SetAddressValue(Address + 3, (byte) ((newValue >> 0) & 0xf));
+                    break;
+                default:
+                    throw new InvalidOperationException($"Cannot set value with size {Size}");
+            }
         }
     }
 }

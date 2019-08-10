@@ -25,6 +25,32 @@ namespace VDrumExplorer.Data
         {
         }
 
+        // FIXME: Not sure about this... maybe have a "snapshot" that we can revert to instead, that becomes invalid?
+        public ModuleData Clone()
+        {
+            List<DataSegment> newSegments;
+            lock (sync)
+            {
+                newSegments = segments.Select(s => s.Clone()).ToList();                
+            }
+            var ret = new ModuleData();
+            ret.segments.AddRange(newSegments);
+            return ret;
+        }
+
+        // FIXME: Not sure about this...
+        public void Reset(ModuleData other)
+        {
+            lock (sync)
+            {
+                lock (other.sync)
+                {
+                    segments.Clear();
+                    segments.AddRange(other.segments);
+                }
+            }
+        }
+
         public void Populate(ModuleAddress address, byte[] data)
         {
             if (data.Length >= 0x100)
@@ -78,10 +104,10 @@ namespace VDrumExplorer.Data
 
         public bool HasData(ModuleAddress address) => GetSegmentOrNull(address) != null;
 
-        private DataSegment GetSegment(ModuleAddress address) =>
+        public DataSegment GetSegment(ModuleAddress address) =>
             GetSegmentOrNull(address) ?? throw new ArgumentException($"No data found for {address}");
 
-        private DataSegment? GetSegmentOrNull(ModuleAddress address)
+        public DataSegment? GetSegmentOrNull(ModuleAddress address)
         {
             lock (sync)
             {

@@ -11,7 +11,7 @@ namespace VDrumExplorer.Data
     /// <summary>
     /// A segment of data within a <see cref="ModuleData"/>.
     /// </summary>
-    internal sealed class DataSegment
+    public sealed class DataSegment
     {
         public static IComparer<DataSegment> AddressComparer { get; } = new AddressComparerImpl();
             
@@ -27,6 +27,11 @@ namespace VDrumExplorer.Data
             }
             (Start, Data, End) = (start, data, start + data.Length);
         }
+
+        public DataSegment Clone() => new DataSegment(Start, (byte[]) Data.Clone());
+
+        // FIXME: Clone?
+        public ReadOnlySpan<byte> GetData() => Data.AsSpan();
 
         public bool Contains(ModuleAddress other) =>
             other.CompareTo(Start) >= 0 && other.CompareTo(End) < 0;

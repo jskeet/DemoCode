@@ -135,6 +135,12 @@ namespace VDrumExplorer.Midi
             }
         }
 
+        public void SendData(int address, byte[] bytes)
+        {
+            var message = new DataResponseMessage(DeviceId, ModelId, address, bytes);
+            output.Send(message.ToSysExMessage());
+        }
+
         private class Consumer
         {
             public int ExpectedAddress { get; }

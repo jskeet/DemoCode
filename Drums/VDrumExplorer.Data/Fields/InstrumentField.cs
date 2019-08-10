@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Linq;
 
 namespace VDrumExplorer.Data.Fields
 {
@@ -29,5 +30,18 @@ namespace VDrumExplorer.Data.Fields
             }
             return Schema.InstrumentsById[index];
         }
+
+        public override bool TrySetText(ModuleData data, string text)
+        {
+            var instrument = Schema.Instruments.FirstOrDefault(inst => inst.Name == text);
+            if (instrument != null)
+            {
+                SetInstrument(data, instrument);
+                return false;
+            }
+            return true;
+        }
+
+        public void SetInstrument(ModuleData data, Instrument instrument) => SetRawValue(data, instrument.Id);
     }
 }
