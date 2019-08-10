@@ -15,23 +15,25 @@ namespace VDrumExplorer.Wpf
     /// </summary>
     public partial class ModuleLoader : Window
     {
+        private readonly ILogger logger;
         private (SysExClient client, ModuleSchema schema)? detectedMidi;
 
         public ModuleLoader()
         {
             InitializeComponent();
+            logger = new TextBlockLogger(logPanel);
             Loaded += OnLoaded;
             Closed += OnClosed;
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Log("Loading schema registry");
+            logger.Log("Loading schema registry");
             await Task.Run(SchemaRegistry.GetSchemas);
             var midiDevice = await DetectMidiDeviceAsync();
             detectedMidi = midiDevice;
             loadFromDeviceButton.IsEnabled = detectedMidi.HasValue;
-            Log("-----------------");
+            logger.Log("-----------------");
         }
 
         private void OnClosed(object sender, EventArgs e)
@@ -44,26 +46,26 @@ namespace VDrumExplorer.Wpf
             var inputDevices = DeviceInfo.GetInputDevices();
             var outputDevices = DeviceInfo.GetOutputDevices();
 
-            Log($"Detecting MIDI ports");
-            Log($"Input ports:");
+            logger.Log($"Detecting MIDI ports");
+            logger.Log($"Input ports:");
             foreach (var input in inputDevices)
             {
-                Log($"{input.LocalDeviceId}: {input.Name}");
+                logger.Log($"{input.LocalDeviceId}: {input.Name}");
             }
-            Log($"Output ports:");
+            logger.Log($"Output ports:");
             foreach (var output in outputDevices)
             {
-                Log($"{output.LocalDeviceId}: {output.Name}");
+                logger.Log($"{output.LocalDeviceId}: {output.Name}");
             }
             var commonNames = inputDevices.Select(input => input.Name).Intersect(outputDevices.Select(output => output.Name)).OrderBy(x => x).ToList();
             if (commonNames.Count == 0)
             {
-                Log($"Not detected any input/output MIDI ports. Abandoning MIDI detection.");
+                logger.Log($"Not detected any input/output MIDI ports. Abandoning MIDI detection.");
                 return null;
             }
             if (commonNames.Count > 1)
             {
-                Log($"Detected multiple input/output MIDI ports: {string.Join(",", commonNames)}. Abandoning MIDI detection.");
+                logger.Log($"Detected multiple input/output MIDI ports: {string.Join(",", commonNames)}. Abandoning MIDI detection.");
                 return null;
             }
             string name = commonNames.Single();
@@ -71,27 +73,22 @@ namespace VDrumExplorer.Wpf
             var matchedOutputs = outputDevices.Where(output => output.Name == name).ToList();
             if (matchedInputs.Count != 1 || matchedOutputs.Count != 1)
             {
-                Log($"Matched name {name} is ambiguous. Abandoning MIDI detection.");
+                logger.Log($"Matched name {name} is ambiguous. Abandoning MIDI detection.");
                 return null;
             }
-            Log($"Using MIDI ports with name {name}. Detecting devices using Roland identity requests.");
+            logger.Log($"Using MIDI ports with name {name}. Detecting devices using Roland identity requests.");
 
             var inputId = matchedInputs[0].LocalDeviceId;
             var outputId = matchedOutputs[0].LocalDeviceId;
 
             ConcurrentBag<IdentityResponse> responses = new ConcurrentBag<IdentityResponse>();
-            Log("Before identity");
             using (var identityClient = new IdentityClient(inputId, outputId))
             {
-                Log("In identity");
                 identityClient.IdentityReceived += response => responses.Add(response);
                 identityClient.SendRequests();
                 // Half a second should be plenty of time.
-                Log("Before delay");
                 await Task.Delay(500);
-                Log("After delay");
             }
-            Log("After identity");
             var schemas = SchemaRegistry.GetSchemas();
             var responseList = responses.OrderBy(r => r.DeviceId).ToList();
             ModuleSchema matchedSchema = null;
@@ -101,7 +98,7 @@ namespace VDrumExplorer.Wpf
             {
                 var match = schemas.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
                 string matchLog = match == null ? "No matching schema" : $"Matches schema {match.Name}";
-                Log($"Detected device ID {response.DeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
+                logger.Log($"Detected device ID {response.DeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
                 if (match != null)
                 {
                     matchedSchema = match;
@@ -112,23 +109,15 @@ namespace VDrumExplorer.Wpf
             switch (matchCount)
             {
                 case 0:
-                    Log($"No devices with a known schema. Abandoning MIDI detection.");
+                    logger.Log($"No devices with a known schema. Abandoning MIDI detection.");
                     return null;
                 case 1:
-                    Log($"Using device {matchedResponse.DeviceId} with schema {matchedSchema.Name}.");
+                    logger.Log($"Using device {matchedResponse.DeviceId} with schema {matchedSchema.Name}.");
                     return (new SysExClient(inputId, outputId, matchedSchema.ModelId, matchedResponse.DeviceId), matchedSchema);
                 default:
-                    Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
+                    logger.Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
                     return null;
             }
-        }
-
-        private void Log(string text) => logPanel.Text += $"{DateTime.Now:HH:mm:ss.fff} {text}\r\n";
-
-        private void Log(Exception e)
-        {
-            // TODO: Aggregate exception etc.
-            Log(e.ToString());
         }
 
         private void LoadFile(object sender, RoutedEventArgs e)
@@ -148,18 +137,29 @@ namespace VDrumExplorer.Wpf
                     var module = Module.FromStream(stream);
                     module.Validate();
                     var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
-                    new ModuleExplorer(module, client).Show();
+                    new ModuleExplorer(logger, module, client).Show();
                 }
             }
             catch (Exception ex)
             {
-                Log(ex);
+                logger.Log($"Error loading {fileName}", ex);
             }
         }
 
         private void LoadFromDevice(object sender, RoutedEventArgs e)
         {
-
+            // Shouldn't happen, as the button shouldn't be enabled.
+            if (detectedMidi == null)
+            {
+                return;
+            }
+            var midi = detectedMidi.Value;
+            var dialog = new DeviceLoaderDialog(logger, midi.client, midi.schema);
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                new ModuleExplorer(logger, dialog.Module, midi.client).Show();
+            }
         }
     }
 }

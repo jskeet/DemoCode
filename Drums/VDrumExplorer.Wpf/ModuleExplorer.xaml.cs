@@ -24,6 +24,7 @@ namespace VDrumExplorer.Wpf
     /// </summary>
     public partial class ModuleExplorer : Window
     {
+        private readonly ILogger logger;
         private readonly Module module;
         private readonly SysExClient midiClient;
         private ViewMode viewMode;
@@ -33,8 +34,9 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
         }
 
-        public ModuleExplorer(Module module, SysExClient midiClient) : this()
+        internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient) : this()
         {
+            this.logger = logger;
             this.module = module;
             this.midiClient = midiClient;
             Title = $"Module explorer: {module.Schema.Name}";
