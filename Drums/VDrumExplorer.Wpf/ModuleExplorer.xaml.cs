@@ -1,17 +1,14 @@
-﻿using Microsoft.Win32;
+﻿// Copyright 2019 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Layout;

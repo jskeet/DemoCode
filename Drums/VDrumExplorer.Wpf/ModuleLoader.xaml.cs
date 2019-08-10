@@ -1,4 +1,8 @@
-﻿using Microsoft.Win32;
+﻿// Copyright 2019 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
 using System.IO;

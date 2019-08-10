@@ -1,10 +1,7 @@
-﻿using Sanford.Multimedia.Midi;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright 2019 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
 using System.Windows;
 
 namespace VDrumExplorer.Wpf
