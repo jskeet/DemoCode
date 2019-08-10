@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="ModuleLoader" Height="450" Width="800">
+        Title="VDrum Module Loader" Height="450" Width="800">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Click="LoadFile" Margin="5">Load file</Button>
-            <Button x:Name="loadFromDeviceButton" Click="LoadFromDevice" IsEnabled="False" Margin="5">Load from device</Button>
+            <Button Click="LoadFile" Margin="5" Padding="5,2">Load file</Button>
+            <Button x:Name="loadFromDeviceButton" Click="LoadFromDevice" IsEnabled="False" Margin="5" Padding="5,2">Load from device</Button>
         </StackPanel>
         <ScrollViewer>
             <GroupBox Header="Log" Margin="5">

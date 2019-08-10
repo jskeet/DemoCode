@@ -6,24 +6,31 @@
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
         Title="ModuleExplorer" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="0">
-            <TreeView Grid.Column="0">
-                <TreeViewItem>Foo</TreeViewItem>
-            </TreeView>
-        </ScrollViewer>
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
-            <StackPanel Grid.Column="2" >
-                <GroupBox Header="Foo">
-                    <TextBlock>Bar</TextBlock>
-                </GroupBox>
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Click="SaveFile" />
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_Logical" Click="SetViewFromMenu" Tag="{x:Static local:ViewMode.Logical}" x:Name="logicalViewMenuItem"/>
+                <MenuItem Header="_Physical" Click="SetViewFromMenu" Tag="{x:Static local:ViewMode.Physical}" x:Name="physicalViewMenuItem"/>
+            </MenuItem>
+        </Menu>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Margin="5" Padding="5,2">Edit mode</Button>
+        </StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TreeView x:Name="treeView" Grid.Column="0" SelectedItemChanged="HandleTreeViewSelection" />
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
+                <StackPanel x:Name="detailsPanel" Grid.Column="2" />
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
 </Window>

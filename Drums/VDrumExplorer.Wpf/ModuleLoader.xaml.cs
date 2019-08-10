@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
@@ -132,7 +133,28 @@ namespace VDrumExplorer.Wpf
 
         private void LoadFile(object sender, RoutedEventArgs e)
         {
+            string fileName;
+            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+            fileName = dialog.FileName;
 
+            try
+            {
+                using (var stream = File.OpenRead(fileName))
+                {
+                    var module = Module.FromStream(stream);
+                    module.Validate();
+                    var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
+                    new ModuleExplorer(module, client).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
+            }
         }
 
         private void LoadFromDevice(object sender, RoutedEventArgs e)
