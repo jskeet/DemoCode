@@ -16,7 +16,7 @@ namespace VDrumExplorer.Data
     public class ModuleData
     {
         private readonly object sync = new object();
-        private readonly List<Segment> segments = new List<Segment>();
+        private readonly List<DataSegment> segments = new List<DataSegment>();
 
         /// <summary>
         /// Creates an empty instance which can then be populated.
@@ -31,11 +31,11 @@ namespace VDrumExplorer.Data
             {
                 throw new ArgumentException("Data size must be less than 0x100");
             }
-            var segment = new Segment(address, data);
+            var segment = new DataSegment(address, data);
 
             lock (sync)
             {
-                int index = segments.BinarySearch(segment, SegmentAddressComparer.Instance);
+                int index = segments.BinarySearch(segment, DataSegment.AddressComparer);
                 if (index >= 0)
                 {
                     throw new ArgumentException("Segment already exists");
@@ -52,7 +52,7 @@ namespace VDrumExplorer.Data
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var segment = Segment.Load(reader);
+                var segment = DataSegment.Load(reader);
                 // TODO: Use the public API to add the segments, so that ordering doesn't matter?
                 data.segments.Add(segment);
             }
@@ -63,7 +63,7 @@ namespace VDrumExplorer.Data
 
         public void Save(BinaryWriter writer)
         {
-            List<Segment> localSegments;
+            List<DataSegment> localSegments;
             lock (sync)
             {
                 localSegments = segments.ToList();
@@ -78,10 +78,10 @@ namespace VDrumExplorer.Data
 
         public bool HasData(ModuleAddress address) => GetSegmentOrNull(address) != null;
 
-        private Segment GetSegment(ModuleAddress address) =>
+        private DataSegment GetSegment(ModuleAddress address) =>
             GetSegmentOrNull(address) ?? throw new ArgumentException($"No data found for {address}");
 
-        private Segment? GetSegmentOrNull(ModuleAddress address)
+        private DataSegment? GetSegmentOrNull(ModuleAddress address)
         {
             lock (sync)
             {
@@ -153,56 +153,5 @@ namespace VDrumExplorer.Data
 
         internal void SetAddressValue(ModuleAddress address, byte value) =>
             GetSegment(address)[address] = value;
-
-        private class Segment
-        {
-            public ModuleAddress Start { get; }
-            private byte[] Data { get; }
-            public ModuleAddress End { get; }
-
-            public Segment(ModuleAddress start, byte[] data) =>
-                (Start, Data, End) = (start, data, start + data.Length);
-
-            public bool Contains(ModuleAddress other) =>
-                other.CompareTo(Start) >= 0 && other.CompareTo(End) < 0;
-
-            public byte this[ModuleAddress address]
-            {
-                get => Data[GetOffset(address)];
-                set => Data[GetOffset(address)] = value;
-            }
-
-            private int GetOffset(ModuleAddress address)
-            {
-                int offset = address - Start;
-                if (offset >= 0x100)
-                {
-                    offset -= 0x80;
-                }
-                return offset;
-            }
-
-            public void Save(BinaryWriter writer)
-            {
-                writer.Write(Start.Value);
-                writer.Write(Data.Length);
-                writer.Write(Data);
-            }
-
-            public static Segment Load(BinaryReader reader)
-            {
-                var address = new ModuleAddress(reader.ReadInt32());
-                var length = reader.ReadInt32();
-                var data = reader.ReadBytes(length);
-                return new Segment(address, data);
-            }
-        }
-
-        private class SegmentAddressComparer : IComparer<Segment>
-        {
-            public static SegmentAddressComparer Instance = new SegmentAddressComparer();
-
-            public int Compare(Segment x, Segment y) => x.Start.CompareTo(y.Start);
-        }
     }
 }
