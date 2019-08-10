@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VDrumExplorer.Data.Fields
+namespace VDrumExplorer.Data
 {
     /// <summary>
     /// An address in the compressed address sapace, which doesn't allow
