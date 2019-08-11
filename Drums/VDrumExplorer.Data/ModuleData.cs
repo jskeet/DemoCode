@@ -27,17 +27,56 @@ namespace VDrumExplorer.Data
 
         public event EventHandler<ModuleDataChangedEventArgs> DataChanged;
 
-        // FIXME: Not sure about this... maybe have a "snapshot" that we can revert to instead, that becomes invalid?
-        public ModuleData Clone()
+        /// <summary>
+        /// Takes an internal snapshot of the data within each segment. The snapshot can then
+        /// be committed or reverted later.
+        /// </summary>
+        public void Snapshot()
         {
-            List<DataSegment> newSegments;
             lock (sync)
             {
-                newSegments = segments.Select(s => s.Clone()).ToList();                
+                foreach (var segment in segments)
+                {
+                    segment.Snapshot();
+                }
             }
-            var ret = new ModuleData();
-            ret.segments.AddRange(newSegments);
-            return ret;
+        }
+
+        /// <summary>
+        /// Reverts the snapshots in each segment. A change event is fired for
+        /// each segment that had been changed.
+        /// </summary>
+        public void RevertSnapshot()
+        {
+            var changedSegments = new List<DataSegment>();
+            lock (sync)
+            {
+                foreach (var segment in segments)
+                {
+                    if (segment.RevertSnapshot())
+                    {
+                        changedSegments.Add(segment);
+                    }
+                }
+            }
+            foreach (var segment in changedSegments)
+            {
+                DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
+            }
+        }
+
+        /// <summary>
+        /// Commits the snapshots in each segment. No change events are fired.
+        /// </summary>
+        public void CommitSnapshot()
+        {
+            lock (sync)
+            {
+                foreach (var segment in segments)
+                {
+                    segment.CommitSnapshot();
+                }
+            }
         }
 
         // FIXME: Not sure about this...
