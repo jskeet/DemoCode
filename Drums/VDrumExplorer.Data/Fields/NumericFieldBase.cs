@@ -50,24 +50,26 @@ namespace VDrumExplorer.Data.Fields
             {
                 throw new ArgumentOutOfRangeException($"Value out of range. Min={Min}; Max={Max}; Attempt={newValue}");
             }
+            byte[] bytes = new byte[Size];
             switch (Size)
             {
                 case 1:
-                    data.SetAddressValue(Address, (byte) newValue);
+                    bytes[0] = (byte) newValue;
                     break;
                 case 2:
-                    data.SetAddressValue(Address, (byte) ((newValue >> 4) & 0xf));
-                    data.SetAddressValue(Address + 1, (byte) ((newValue >> 0) & 0xf));
+                    bytes[0] = (byte) ((newValue >> 4) & 0xf);
+                    bytes[1] = (byte) ((newValue >> 0) & 0xf);
                     break;
                 case 4:
-                    data.SetAddressValue(Address, (byte) ((newValue >> 12) & 0xf));
-                    data.SetAddressValue(Address + 1, (byte) ((newValue >> 8) & 0xf));
-                    data.SetAddressValue(Address + 2, (byte) ((newValue >> 4) & 0xf));
-                    data.SetAddressValue(Address + 3, (byte) ((newValue >> 0) & 0xf));
+                    bytes[0] = (byte) ((newValue >> 12) & 0xf);
+                    bytes[1] = (byte) ((newValue >> 8) & 0xf);
+                    bytes[2] = (byte) ((newValue >> 4) & 0xf);
+                    bytes[3] = (byte) ((newValue >> 0) & 0xf);
                     break;
                 default:
                     throw new InvalidOperationException($"Cannot set value with size {Size}");
             }
+            data.SetData(Address, bytes);
         }
     }
 }
