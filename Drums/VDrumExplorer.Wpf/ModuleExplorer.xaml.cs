@@ -143,7 +143,7 @@ namespace VDrumExplorer.Wpf
             }
         }
 
-        private IEnumerable<IPrimitiveField> GetPrimtiveFields(IField field)
+        private IEnumerable<IPrimitiveField> GetPrimitiveFields(IField field)
         {
             if (field is IPrimitiveField primitive)
             {
@@ -176,7 +176,7 @@ namespace VDrumExplorer.Wpf
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             var fields = detail.Container.Fields
-                .SelectMany(GetPrimtiveFields)
+                .SelectMany(GetPrimitiveFields)
                 .Where(ShouldDisplayField);
             foreach (var primitive in fields)
             {
