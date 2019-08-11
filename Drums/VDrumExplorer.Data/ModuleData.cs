@@ -25,6 +25,8 @@ namespace VDrumExplorer.Data
         {
         }
 
+        public event EventHandler<ModuleDataChangedEventArgs> DataChanged;
+
         // FIXME: Not sure about this... maybe have a "snapshot" that we can revert to instead, that becomes invalid?
         public ModuleData Clone()
         {
@@ -68,6 +70,7 @@ namespace VDrumExplorer.Data
                 }
                 segments.Insert(~index, segment);
             }
+            DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
         }
 
         public static ModuleData Load(Stream stream) => Load(new BinaryReader(stream, Encoding.UTF8, true));
@@ -175,6 +178,7 @@ namespace VDrumExplorer.Data
                 // This handles overflow from 0x7f to 0x100 appropriately.
                 segment[address + i] = bytes[i];
             }
+            DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
         }
     }
 }
