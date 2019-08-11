@@ -133,9 +133,7 @@ namespace VDrumExplorer.Wpf
             }
             foreach (var detail in node.Details)
             {
-                var grid =
-                    detail.Container == null ? FormatDescriptions(detail)
-                    : editMode ? FormatContainerReadWrite(detail) : FormatContainerReadOnly(detail);
+                var grid = detail.Container == null ? FormatDescriptions(detail) : FormatContainer(detail);
                 var groupBox = new GroupBox
                 {
                     Header = new TextBlock { FontWeight = FontWeights.SemiBold, Text = detail.Description },
@@ -172,40 +170,7 @@ namespace VDrumExplorer.Wpf
             return field.IsEnabled(module.Data);
         }
 
-        private Grid FormatContainerReadOnly(VisualTreeDetail detail)
-        {
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            var fields = detail.Container.Fields
-                .SelectMany(GetPrimtiveFields)
-                .Where(ShouldDisplayField);
-            foreach (var primitive in fields)
-            {
-                var label = new Label
-                {
-                    Padding = new Thickness(0),
-                    Margin = new Thickness(2, 1, 0, 0),
-                    Content = primitive.Description
-                };
-                var value = new Label
-                {
-                    Padding = new Thickness(0),
-                    Margin = new Thickness(5, 1, 0, 0),
-                    Content = primitive.GetText(module.Data)
-                };
-                Grid.SetRow(label, grid.RowDefinitions.Count);
-                Grid.SetRow(value, grid.RowDefinitions.Count);
-                Grid.SetColumn(label, 0);
-                Grid.SetColumn(value, 1);
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.Children.Add(label);
-                grid.Children.Add(value);
-            }
-            return grid;
-        }
-
-        private Grid FormatContainerReadWrite(VisualTreeDetail detail)
+        private Grid FormatContainer(VisualTreeDetail detail)
         {
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -222,8 +187,23 @@ namespace VDrumExplorer.Wpf
                     Content = primitive.Description,
                     VerticalContentAlignment = VerticalAlignment.Center
                 };
-                var value = CreateReadWriteFieldElement(primitive);
-                value.Margin = new Thickness(5, 1, 0, 0);
+                FrameworkElement value;
+                if (editMode)
+                {
+                    value = CreateReadWriteFieldElement(primitive);
+                    value.Margin = new Thickness(5, 1, 0, 0);
+
+                }
+                else
+                {
+                    value = new Label
+                    {
+                        Padding = new Thickness(0),
+                        Margin = new Thickness(5, 1, 0, 0),
+                        Content = primitive.GetText(module.Data)
+                    };
+                }
+
                 Grid.SetRow(label, grid.RowDefinitions.Count);
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(label, 0);
