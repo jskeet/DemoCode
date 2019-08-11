@@ -176,8 +176,5 @@ namespace VDrumExplorer.Data
                 segment[address + i] = bytes[i];
             }
         }
-
-        internal void SetAddressValue(ModuleAddress address, byte value) =>
-            GetSegment(address)[address] = value;
     }
 }
