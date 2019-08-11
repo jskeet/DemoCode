@@ -30,6 +30,7 @@ namespace VDrumExplorer.Wpf
         private ViewMode viewMode;
         private bool editMode;
         private ModuleData snapshot;
+        private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         
         public ModuleExplorer()
         {
@@ -41,11 +42,17 @@ namespace VDrumExplorer.Wpf
             this.logger = logger;
             this.module = module;
             this.midiClient = midiClient;
+            module.Data.DataChanged += HandleModuleDataChanged;
             copyToDeviceButton.IsEnabled = midiClient != null;
             Title = $"Module explorer: {module.Schema.Name}";
             LoadView(ViewMode.Logical);
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            module.Data.DataChanged -= HandleModuleDataChanged;
+            base.OnClosed(e);
+        }
 
         private void SetViewFromMenu(object sender, EventArgs e)
         {
@@ -74,6 +81,7 @@ namespace VDrumExplorer.Wpf
 
         private void LoadView(ViewMode viewMode)
         {
+            var boundItems = new List<(TreeViewItem, ModuleAddress)>();            
             this.viewMode = viewMode;
             logicalViewMenuItem.IsChecked = viewMode == ViewMode.Logical;
             physicalViewMenuItem.IsChecked = viewMode == ViewMode.Physical;
@@ -84,21 +92,28 @@ namespace VDrumExplorer.Wpf
             treeView.Items.Add(rootGuiNode);
             detailsPanel.Tag = rootModelNode;
             LoadDetailsPage();
-        }
-
-        private TreeViewItem CreateNode(VisualTreeNode vnode)
-        {
-            var node = new TreeViewItem
+            
+            TreeViewItem CreateNode(VisualTreeNode vnode)
             {
-                Tag = vnode,
-                Header = vnode.Description.Format(module.Data)
-            };
-            foreach (var vchild in vnode.Children)
-            {
-                var childNode = CreateNode(vchild);
-                node.Items.Add(childNode);
+                var node = new TreeViewItem
+                {                    
+                    Header = vnode.Description.Format(module.Data),
+                    Tag = vnode
+                };
+                foreach (var address in vnode.Description.FormatFieldsOrEmpty.Select(field => module.Data.GetSegment(field.Address).Start).Distinct())
+                {
+                    boundItems.Add((node, address));
+                }                
+                foreach (var vchild in vnode.Children)
+                {
+                    var childNode = CreateNode(vchild);
+                    node.Items.Add(childNode);
+                }
+                return node;
             }
-            return node;
+
+            treeViewItemsToUpdateBySegmentStart = boundItems
+                .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
         private void HandleTreeViewSelection(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -399,6 +414,31 @@ namespace VDrumExplorer.Wpf
                 await Task.Delay(100);
             }
             logger.Log($"Finished writing segments to the device.");
+        }
+
+        private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke((Action) HandleModuleDataChangedImpl);
+            
+            void HandleModuleDataChangedImpl()
+            {
+                var segment = e.ChangedSegment;
+                ReflectChangesInTree(segment);
+                ReflectChangesInDetails(segment);
+            }
+            
+            void ReflectChangesInTree(DataSegment segment)
+            {
+                foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
+                {
+                    var vnode = (VisualTreeNode) treeViewItem.Tag;
+                    treeViewItem.Header = vnode.Description.Format(module.Data);
+                }
+            }
+
+            void ReflectChangesInDetails(DataSegment segment)
+            {
+            }
         }
     }
 }
