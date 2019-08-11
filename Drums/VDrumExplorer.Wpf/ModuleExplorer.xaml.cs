@@ -31,7 +31,8 @@ namespace VDrumExplorer.Wpf
         private bool editMode;
         private ModuleData snapshot;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
-        
+        private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
+
         public ModuleExplorer()
         {
             InitializeComponent();
@@ -81,7 +82,7 @@ namespace VDrumExplorer.Wpf
 
         private void LoadView(ViewMode viewMode)
         {
-            var boundItems = new List<(TreeViewItem, ModuleAddress)>();            
+            var boundItems = new List<(TreeViewItem, ModuleAddress)>();
             this.viewMode = viewMode;
             logicalViewMenuItem.IsChecked = viewMode == ViewMode.Logical;
             physicalViewMenuItem.IsChecked = viewMode == ViewMode.Physical;
@@ -125,10 +126,13 @@ namespace VDrumExplorer.Wpf
 
         private void LoadDetailsPage()
         {
+            var boundItems = new List<(GroupBox, ModuleAddress)>();
             var node = (VisualTreeNode) detailsPanel.Tag;
             detailsPanel.Children.Clear();
             if (node == null)
             {
+                detailGroupsToUpdateBySegmentStart = boundItems
+                    .ToLookup(pair => pair.Item2, pair => pair.Item1);
                 return;
             }
             foreach (var detail in node.Details)
@@ -137,10 +141,18 @@ namespace VDrumExplorer.Wpf
                 var groupBox = new GroupBox
                 {
                     Header = new TextBlock { FontWeight = FontWeights.SemiBold, Text = detail.Description },
-                    Content = grid
+                    Content = grid,
+                    Tag = detail
                 };
                 detailsPanel.Children.Add(groupBox);
+                if (grid.Tag is (DynamicOverlay overlay, Container currentContainer))
+                {
+                    var segmentStart = module.Data.GetSegment(overlay.SwitchAddress).Start;
+                    boundItems.Add((groupBox, segmentStart));
+                }
             }
+            detailGroupsToUpdateBySegmentStart = boundItems
+                .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
         private IEnumerable<IPrimitiveField> GetPrimitiveFields(IField field)
@@ -178,6 +190,7 @@ namespace VDrumExplorer.Wpf
             var fields = detail.Container.Fields
                 .SelectMany(GetPrimitiveFields)
                 .Where(ShouldDisplayField);
+
             foreach (var primitive in fields)
             {
                 var label = new Label
@@ -212,6 +225,15 @@ namespace VDrumExplorer.Wpf
                 grid.Children.Add(label);
                 grid.Children.Add(value);
             }
+
+            // Assumption: at most one dynamic overlay per container
+            var overlay = detail.Container.Fields.OfType<DynamicOverlay>().FirstOrDefault();
+            if (overlay != null)
+            {
+                var currentContainer = overlay.GetOverlaidContainer(module.Data);
+                grid.Tag = (overlay, currentContainer);
+            }
+
             return grid;
         }
 
@@ -418,6 +440,20 @@ namespace VDrumExplorer.Wpf
 
             void ReflectChangesInDetails(DataSegment segment)
             {
+                foreach (var groupBox in detailGroupsToUpdateBySegmentStart[segment.Start])
+                {
+                    var detail = (VisualTreeDetail) groupBox.Tag;
+                    Grid grid = (Grid) groupBox.Content;
+                    var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
+                    var currentContainer = overlay.GetOverlaidContainer(module.Data);
+                    if (currentContainer != previousContainer)
+                    {
+                        // As the container has changed, let's reset the values to sensible defaults.
+                        // This will itself trigger a change notification event, but that's okay.
+                        currentContainer.Reset(module.Data);
+                        groupBox.Content = FormatContainer(detail);
+                    }
+                }
             }
         }
     }

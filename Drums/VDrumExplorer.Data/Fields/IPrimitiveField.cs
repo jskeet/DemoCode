@@ -23,5 +23,10 @@ namespace VDrumExplorer.Data.Fields
         /// <param name="text">The text to parse.</param>
         /// <returns>true if the value is valid; false otherwise.</returns>
         bool TrySetText(ModuleData data, string text);
+
+        /// <summary>
+        /// Sets the field to a valid default value within the module data.
+        /// </summary>
+        void Reset(ModuleData data);
     }
 }
