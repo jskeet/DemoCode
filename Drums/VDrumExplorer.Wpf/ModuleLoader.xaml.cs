@@ -32,17 +32,6 @@ namespace VDrumExplorer.Wpf
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // JUST FOR SIMPLICITY... remove this hack
-            using (var stream = File.OpenRead("c:/users/jon/test/projects/democode/drums/td17.dat"))
-            {
-                var module = Module.FromStream(stream);
-                module.Validate();
-                var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
-                new ModuleExplorer(logger, module, client).Show();
-            }
-            // END HACK
-
-
             logger.Log("Loading schema registry");
             await Task.Run(SchemaRegistry.GetSchemas);
             var midiDevice = await DetectMidiDeviceAsync();

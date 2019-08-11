@@ -78,20 +78,7 @@ namespace VDrumExplorer.Data
                 }
             }
         }
-
-        // FIXME: Not sure about this...
-        public void Reset(ModuleData other)
-        {
-            lock (sync)
-            {
-                lock (other.sync)
-                {
-                    segments.Clear();
-                    segments.AddRange(other.segments);
-                }
-            }
-        }
-
+        
         public void Populate(ModuleAddress address, byte[] data)
         {
             if (data.Length >= 0x100)
