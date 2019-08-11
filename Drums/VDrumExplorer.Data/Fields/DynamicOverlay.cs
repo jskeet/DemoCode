@@ -9,25 +9,28 @@ namespace VDrumExplorer.Data.Fields
 {
     public sealed class DynamicOverlay : FieldBase, IContainerField
     {
-        private readonly ModuleAddress switchAddress;
+        public ModuleAddress SwitchAddress { get; }
+        
         private readonly string? switchTransform;
         internal IReadOnlyList<Container> OverlaidContainers { get; }
         
         // No condition; overlays are already conditional effectively.
         internal DynamicOverlay(FieldBase.Parameters common, ModuleAddress switchAddress, string? switchTransform, IReadOnlyList<Container> containers)
             : base(common) =>
-            (this.switchAddress, this.switchTransform, OverlaidContainers) = (switchAddress, switchTransform, containers);
+            (SwitchAddress, this.switchTransform, OverlaidContainers) = (switchAddress, switchTransform, containers);
 
-        public IEnumerable<IField> Children(ModuleData data)
+        public IEnumerable<IField> Children(ModuleData data) => GetOverlaidContainer(data).Fields;
+
+        public Container GetOverlaidContainer(ModuleData data)
         {
-            var field = Schema.PrimitiveFieldsByAddress[switchAddress];
+            var field = Schema.PrimitiveFieldsByAddress[SwitchAddress];
             int index = switchTransform switch
             {
                 null => ((NumericFieldBase) field).GetRawValue(data),
                 "instrumentGroup" => ((InstrumentField) field).GetInstrument(data).Group.Index,
                 _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
             };
-            return OverlaidContainers[index].Fields;
+            return OverlaidContainers[index];
         }
     }
 }

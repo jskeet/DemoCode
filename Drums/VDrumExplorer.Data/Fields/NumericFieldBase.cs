@@ -71,5 +71,7 @@ namespace VDrumExplorer.Data.Fields
             }
             data.SetData(Address, bytes);
         }
+
+        public void Reset(ModuleData data) => SetRawValue(data, Min);
     }
 }

@@ -70,5 +70,7 @@ namespace VDrumExplorer.Data.Fields
             }
             return true;
         }
+
+        public void Reset(ModuleData data) => TrySetText(data, new string(' ', Length));
     }
 }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -82,6 +83,18 @@ namespace VDrumExplorer.Data.Fields
                 {
                     yield return field;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Resets all primitive fields in the container to valid values, recursively.
+        /// (For the moment, we'll assume that's all that's required.)
+        /// </summary>
+        public void Reset(ModuleData data)
+        {
+            foreach (var field in Fields.OfType<IPrimitiveField>())
+            {
+                field.Reset(data);
             }
         }
     }
