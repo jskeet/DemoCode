@@ -16,6 +16,7 @@ namespace VDrumExplorer.Data.Layout
     public sealed class FormattableDescription
     {
         public IReadOnlyList<IPrimitiveField>? FormatFields { get; }
+        public IEnumerable<IPrimitiveField> FormatFieldsOrEmpty => FormatFields ?? Enumerable.Empty<IPrimitiveField>();
         public string FormatString { get; }
 
         public FormattableDescription(string formatString, IReadOnlyList<IPrimitiveField>? formatFields) =>

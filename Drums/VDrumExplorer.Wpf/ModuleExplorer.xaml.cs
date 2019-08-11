@@ -384,7 +384,7 @@ namespace VDrumExplorer.Wpf
                 else
                 {
                     var addresses = detail.DetailDescriptions
-                        .SelectMany(dd => dd.FormatFields ?? Enumerable.Empty<IPrimitiveField>())
+                        .SelectMany(dd => dd.FormatFieldsOrEmpty)
                         .Select(field => field.Address);
                     foreach (var address in addresses)
                     {
