@@ -5,7 +5,6 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +28,6 @@ namespace VDrumExplorer.Wpf
         private readonly SysExClient midiClient;
         private ViewMode viewMode;
         private bool editMode;
-        private ModuleData snapshot;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
@@ -347,10 +345,7 @@ namespace VDrumExplorer.Wpf
         private void EnterEditMode(object sender, RoutedEventArgs e)
         {
             editMode = true;
-            Stopwatch sw = Stopwatch.StartNew();
-            snapshot = module.Data.Clone();
-            sw.Stop();
-            logger.Log($"Snapshotting took {(int) sw.ElapsedMilliseconds}ms");
+            module.Data.Snapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -358,7 +353,7 @@ namespace VDrumExplorer.Wpf
         private void CommitChanges(object sender, RoutedEventArgs e)
         {
             editMode = false;
-            snapshot = null;
+            module.Data.CommitSnapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -366,8 +361,7 @@ namespace VDrumExplorer.Wpf
         private void CancelChanges(object sender, RoutedEventArgs e)
         {
             editMode = false;
-            module.Data.Reset(snapshot);
-            snapshot = null;
+            module.Data.RevertSnapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -412,7 +406,7 @@ namespace VDrumExplorer.Wpf
             logger.Log($"Writing {segments.Count} segments to the device.");
             foreach (var segment in segments.OrderBy(s => s.Start))
             {
-                midiClient.SendData(segment.Start.Value, segment.GetData().ToArray());
+                midiClient.SendData(segment.Start.Value, segment.CopyData());
                 await Task.Delay(100);
             }
             logger.Log($"Finished writing segments to the device.");

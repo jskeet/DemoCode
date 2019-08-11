@@ -14,7 +14,10 @@ namespace VDrumExplorer.Data
     public sealed class DataSegment
     {
         public static IComparer<DataSegment> AddressComparer { get; } = new AddressComparerImpl();
-            
+
+        private bool copyToSnapshotOnNextWrite = false;
+        private byte[]? snapshot;
+        
         public ModuleAddress Start { get; }
         private byte[] Data { get; }
         public ModuleAddress End { get; }
@@ -28,10 +31,7 @@ namespace VDrumExplorer.Data
             (Start, Data, End) = (start, data, start + data.Length);
         }
 
-        public DataSegment Clone() => new DataSegment(Start, (byte[]) Data.Clone());
-
-        // FIXME: Clone?
-        public ReadOnlySpan<byte> GetData() => Data.AsSpan();
+        public byte[] CopyData() => (byte[]) Data.Clone();
 
         public bool Contains(ModuleAddress other) =>
             other.CompareTo(Start) >= 0 && other.CompareTo(End) < 0;
@@ -39,7 +39,19 @@ namespace VDrumExplorer.Data
         public byte this[ModuleAddress address]
         {
             get => Data[GetOffset(address)];
-            set => Data[GetOffset(address)] = value;
+            set
+            {
+                var offset = GetOffset(address);
+                if (Data[offset] != value)
+                {
+                    if (copyToSnapshotOnNextWrite)
+                    {
+                        snapshot = CopyData();
+                        copyToSnapshotOnNextWrite = false;
+                    }
+                    Data[GetOffset(address)] = value;
+                }
+            }
         }
 
         private int GetOffset(ModuleAddress address)
@@ -65,6 +77,43 @@ namespace VDrumExplorer.Data
             var length = reader.ReadInt32();
             var data = reader.ReadBytes(length);
             return new DataSegment(address, data);
+        }
+
+        /// <summary>
+        /// Snapshots the data within this segment. Any previous snapshot is lost.
+        /// </summary>
+        public void Snapshot()
+        {
+            copyToSnapshotOnNextWrite = true;
+            snapshot = null;
+        }
+
+        /// <summary>
+        /// Commits the snapshot, forgetting previous data.
+        /// </summary>
+        /// <returns>true if changes had been made since the snapshot was taken, false otherwise.</returns>
+        public bool CommitSnapshot()
+        {
+            bool ret = snapshot != null;
+            snapshot = null;
+            copyToSnapshotOnNextWrite = false;
+            return ret;
+        }
+
+        /// <summary>
+        /// Reverts the snapshot, forgetting changes made since the snapshot was taken.
+        /// </summary>
+        /// <returns>true if changes had been made since the snapshot was taken, false otherwise.</returns>
+        public bool RevertSnapshot()
+        {
+            copyToSnapshotOnNextWrite = false;
+            if (snapshot != null)
+            {
+                Buffer.BlockCopy(snapshot, 0, Data, 0, snapshot.Length);
+                snapshot = null;
+                return true;
+            }
+            return false;
         }
 
         private class AddressComparerImpl : IComparer<DataSegment>
