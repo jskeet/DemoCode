@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- FIXME: We should be able to use netstandard2.1... -->
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
     <LangVersion>preview</LangVersion>
     <!-- Nullable option for VS... (FIXME: Remove!) -->
     <NullableContextOptions>enable</NullableContextOptions>
