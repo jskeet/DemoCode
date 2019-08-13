@@ -120,7 +120,8 @@
       "type": "range32",
       "min": 0,
       "max": 30,
-      "valueOffset": -15
+      "valueOffset": -15,
+      "suffix": "dB"
     },
     {
       "offset": "0x36",
@@ -128,7 +129,8 @@
       "type": "range32",
       "min": 0,
       "max": 30,
-      "valueOffset": -15
+      "valueOffset": -15,
+      "suffix": "dB"
     },
     {
       "offset": "0x3e",
