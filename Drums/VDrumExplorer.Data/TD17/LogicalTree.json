@@ -78,6 +78,7 @@
               ],
               "path": ".",
               "format": "Instrument $instrument: {0}",
+              "midiNotePath": "KitMidi/Midi[$instrument]",
               "details": [
                 {
                   "description": "Common",

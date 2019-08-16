@@ -24,9 +24,34 @@ namespace VDrumExplorer.ConsoleDemo
             await Task.Yield();
             try
             {
-                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} Before loading schemas");
-                SchemaRegistry.GetSchemas();
-                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} After loading schemas");
+                using (var client = CreateClientForTd17())
+                {
+                    int channel = 1;
+                    Console.WriteLine("Playing notes");
+                    client.PlayNote(channel, 36, 10);
+                    Console.WriteLine("Played note 1");
+                    await Task.Delay(500);
+
+                    client.PlayNote(channel, 36, 50);
+                    Console.WriteLine("Played note 2");
+                    await Task.Delay(500);
+
+                    client.PlayNote(channel, 36, 100);
+                    Console.WriteLine("Played note 3");
+                    await Task.Delay(500);
+
+                    client.PlayNote(channel, 38, 10);
+                    Console.WriteLine("Played note 4");
+                    await Task.Delay(500);
+
+                    client.PlayNote(channel, 38, 50);
+                    Console.WriteLine("Played note 5");
+                    await Task.Delay(500);
+
+                    client.PlayNote(channel, 38, 100);
+                    Console.WriteLine("Played note 6");
+                    await Task.Delay(500);
+                }
             }
             catch (Exception e)
             {

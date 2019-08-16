@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
         Title="ModuleExplorer" Height="450" Width="800">
-    <DockPanel>
+    <DockPanel x:Name="mainPanel">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Save" Click="SaveFile" />
@@ -20,7 +20,31 @@
             <Button Margin="5" Padding="5,2" Click="EnterEditMode" x:Name="editModeButton">Edit mode</Button>
             <Button Margin="5" Padding="5,2" Click="CommitChanges" IsEnabled="False" x:Name="commitChangesButton">Commit changes</Button>
             <Button Margin="5" Padding="5,2" Click="CancelChanges" IsEnabled="False" x:Name="cancelChangesButton">Cancel changes</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel">
             <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton">Copy page to device</Button>
+            <Button Margin="5" Padding="5,2" Click="PlayNote" x:Name="playNoteButton">Play note</Button>
+            <Label Margin="5" Padding="5,2">Midi Channel:</Label>
+            <ComboBox Margin="5" Padding="5,2" x:Name="midiChannelSelector">
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem>3</ComboBoxItem>
+                <ComboBoxItem>4</ComboBoxItem>
+                <ComboBoxItem>5</ComboBoxItem>
+                <ComboBoxItem>6</ComboBoxItem>
+                <ComboBoxItem>7</ComboBoxItem>
+                <ComboBoxItem>8</ComboBoxItem>
+                <ComboBoxItem>9</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">10</ComboBoxItem>
+                <ComboBoxItem>11</ComboBoxItem>
+                <ComboBoxItem>12</ComboBoxItem>
+                <ComboBoxItem>13</ComboBoxItem>
+                <ComboBoxItem>14</ComboBoxItem>
+                <ComboBoxItem>15</ComboBoxItem>
+                <ComboBoxItem>16</ComboBoxItem>
+            </ComboBox>
+            <Label Margin="5" Padding="5,2">Attack:</Label>
+            <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider"/>
         </StackPanel>
 
         <Grid>

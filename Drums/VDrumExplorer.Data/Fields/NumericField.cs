@@ -11,7 +11,7 @@ namespace VDrumExplorer.Data.Fields
     /// <summary>
     /// A field that is normally displayed as a number, with some optional scaling, offseting etc.
     /// </summary>
-    public sealed class NumericField : NumericFieldBase
+    public class NumericField : NumericFieldBase
     {
         /// <summary>
         /// Some fields have a single "special" value (e.g. "Off", or "-INF").

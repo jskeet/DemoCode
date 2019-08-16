@@ -31,6 +31,17 @@ namespace VDrumExplorer.Midi
             input.StartRecording();
         }
 
+        public void PlayNote(int channel, int note, int velocity)
+        {
+            var builder = new ChannelMessageBuilder { MidiChannel = channel - 1, Data1 = note, Data2 = velocity, Command = ChannelCommand.NoteOn };
+            builder.Build();
+            output.Send(builder.Result);
+            builder.Command = ChannelCommand.NoteOff;
+            builder.Data2 = 0x64;
+            builder.Build();
+            output.Send(builder.Result);
+        }
+
         public void Dispose()
         {
             input.Dispose();

@@ -16,6 +16,7 @@ namespace VDrumExplorer.Data.Json
         public List<VisualTreeDetailJson> Details { get; set; } = new List<VisualTreeDetailJson>();
         public string? Description { get; set; }
         public string? Path { get; set; }
+        public string? MidiNotePath { get; set; }
 
         public List<string>? FormatPaths { get; set; }
         public string? Repeat { get; set; }
@@ -47,7 +48,8 @@ namespace VDrumExplorer.Data.Json
             
                 var children = Children.SelectMany(child => child.ConvertVisualNodes(context)).ToList().AsReadOnly();
                 var details = Details.Select(detail => detail.ToVisualTreeDetail(context)).ToList().AsReadOnly();
-                return new VisualTreeNode(children, details, description);
+                var midiNoteField = MidiNotePath is null ? null : context.GetMidiNoteField(MidiNotePath);
+                return new VisualTreeNode(children, details, description, midiNoteField);
             }
 
             FormattableDescription BuildDescription(VisualTreeConversionContext context)
