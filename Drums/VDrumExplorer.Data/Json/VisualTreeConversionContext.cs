@@ -54,6 +54,15 @@ namespace VDrumExplorer.Data.Json
             return container!;
         }
 
+        internal MidiNoteField GetMidiNoteField(string relativePath)
+        {
+            FieldPath fieldPath = Path + ReplaceIndexes(relativePath);
+            Validate(Path, fieldsByPath.TryGetValue(fieldPath, out var field), "Container not found");
+            var primitive = field as MidiNoteField;
+            Validate(primitive is object, "Field is not a Midi note field");
+            return primitive!;
+        }
+
         private FieldPath GetPath(string relativePath) => Path + ReplaceIndexes(relativePath);
 
         internal VisualTreeConversionContext WithPath(string relativePath) =>

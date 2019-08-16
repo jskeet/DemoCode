@@ -193,6 +193,7 @@ namespace VDrumExplorer.Data.Json
                 "volume32" => new NumericField(BuildCommon(4), -601, 60, 10, null, 0, "dB", (-601, "INF")),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
+                "midi32" => new MidiNoteField(BuildCommon(4)),
                 string text when text.StartsWith(ContainerPrefix) => BuildContainer(),
                 _ => throw new InvalidOperationException($"Unknown field type: {Type}")
             };

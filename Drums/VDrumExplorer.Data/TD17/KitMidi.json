@@ -3,196 +3,145 @@
   "size": "0x60",
   "fields": [
     {
+      "name": "Midi[1]",
       "offset": "0x00",
       "description": "Kick note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[2]",
       "offset": "0x04",
       "description": "Snare head note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[3]",
       "offset": "0x08",
       "description": "Snare rim note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
       "offset": "0x0c",
       "description": "Snare xstick note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[4]",
       "offset": "0x10",
       "description": "Tom 1 head note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[5]",
       "offset": "0x14",
       "description": "Tom 1 rim note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[6]",
       "offset": "0x18",
       "description": "Tom 2 head note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[7]",
       "offset": "0x1c",
       "description": "Tom 2 rim note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[8]",
       "offset": "0x20",
       "description": "Tom 3 head note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[9]",
       "offset": "0x24",
       "description": "Tom 3 rim note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[10]",
       "offset": "0x28",
       "description": "Hi-hat open bow note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[11]",
       "offset": "0x2c",
       "description": "Hi-hat open edge note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
       "offset": "0x30",
       "description": "Hi-hat close bow note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
       "offset": "0x34",
       "description": "Hi-hat close edge note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi",
       "offset": "0x38",
       "description": "Hi-hat pedal note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[12]",
       "offset": "0x3c",
       "description": "Crash 1 bow note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[13]",
       "offset": "0x40",
       "description": "Crash 1 edge note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[14]",
       "offset": "0x44",
       "description": "Crash 2 bow note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[15]",
       "offset": "0x48",
       "description": "Crash 2 edge note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[16]",
       "offset": "0x4c",
       "description": "Ride bow note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[17]",
       "offset": "0x50",
       "description": "Ride edge note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[18]",
       "offset": "0x54",
       "description": "Ride bell note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[19]",
       "offset": "0x58",
       "description": "Aux head note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     },
     {
+      "name": "Midi[20]",
       "offset": "0x5c",
       "description": "Aux rim note",
-      "type": "range32",
-      "min": 0,
-      "max": 128,
-      "off": 128
+      "type": "midi32"
     }
   ]
 }

@@ -41,8 +41,11 @@ namespace VDrumExplorer.Wpf
             this.logger = logger;
             this.module = module;
             this.midiClient = midiClient;
-            module.Data.DataChanged += HandleModuleDataChanged;
-            copyToDeviceButton.IsEnabled = midiClient != null;
+            if (midiClient == null)
+            {
+                mainPanel.Children.Remove(midiPanel);
+            }
+            module.Data.DataChanged += HandleModuleDataChanged;            
             Title = $"Module explorer: {module.Schema.Name}";
             LoadView(ViewMode.Logical);
         }
@@ -127,6 +130,7 @@ namespace VDrumExplorer.Wpf
             var boundItems = new List<(GroupBox, ModuleAddress)>();
             var node = (VisualTreeNode) detailsPanel.Tag;
             detailsPanel.Children.Clear();
+            playNoteButton.IsEnabled = midiClient is object && node?.MidiNoteField?.GetMidiNote(module.Data) is int note;
             if (node == null)
             {
                 detailGroupsToUpdateBySegmentStart = boundItems
@@ -278,7 +282,6 @@ namespace VDrumExplorer.Wpf
         
         private FrameworkElement CreateInstrumentFieldElement(InstrumentField field)
         {
-            var allGroups = module.Schema.InstrumentGroups;
             var selected = field.GetInstrument(module.Data);
             var groupChoice = new ComboBox { ItemsSource = module.Schema.InstrumentGroups, SelectedItem = selected.Group };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
@@ -410,6 +413,17 @@ namespace VDrumExplorer.Wpf
                 await Task.Delay(100);
             }
             logger.Log($"Finished writing segments to the device.");
+        }
+
+        private void PlayNote(object sendar, RoutedEventArgs e)
+        {
+            var node = detailsPanel.Tag as VisualTreeNode;            
+            if (node?.MidiNoteField?.GetMidiNote(module.Data) is int note)
+            {
+                int attack = (int) attackSlider.Value;
+                int channel = int.Parse(midiChannelSelector.Text);
+                midiClient.PlayNote(channel, note, attack);
+            }            
         }
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
