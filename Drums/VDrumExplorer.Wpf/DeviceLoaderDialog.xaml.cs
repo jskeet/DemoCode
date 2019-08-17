@@ -43,6 +43,7 @@ namespace VDrumExplorer.Wpf
         
         private async void LoadDeviceData(object sender, RoutedEventArgs e)
         {
+            client.UnconsumedMessageHandler += LogUnconsumedMessage;
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
@@ -72,6 +73,13 @@ namespace VDrumExplorer.Wpf
             {
                 logger.Log("Error loading data from device", ex);
             }
+            finally
+            {
+                client.UnconsumedMessageHandler -= LogUnconsumedMessage;
+            }
+
+            void LogUnconsumedMessage(object sender, DataResponseMessage message) =>
+                logger.Log($"Unexpected data response. Address: {message.Address:x8}; Length: {message.Length:x8}");
         }
 
         private void Cancel(object sender, RoutedEventArgs e) =>
