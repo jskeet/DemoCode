@@ -14,7 +14,8 @@ namespace VDrumExplorer.Midi
     {
         public int ModelId { get; }
         public int DeviceId { get; }
-
+        public event EventHandler<DataResponseMessage> UnconsumedMessageHandler;
+        
         private readonly InputDevice input;
         private readonly OutputDevice output;
         private readonly object sync = new object();
@@ -82,6 +83,7 @@ namespace VDrumExplorer.Midi
             }
             if (sourcesToComplete.Count == 0)
             {
+                UnconsumedMessageHandler?.Invoke(this, response);
                 AddUnconsumedMessage();
             }
 

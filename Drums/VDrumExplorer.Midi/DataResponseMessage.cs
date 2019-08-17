@@ -10,7 +10,7 @@ using System.IO;
 
 namespace VDrumExplorer.Midi
 {
-    internal class DataResponseMessage
+    public sealed class DataResponseMessage
     {
         public int Address { get; }
         public int DeviceId { get; }
