@@ -16,5 +16,5 @@ chances of it actually being correct without a real implementation
 to test against are pretty slim.
 
 I'm very grateful to Roland for providing the [TD-17 MIDI
-implementation](FIXME) document which has been absolutely vital in
+implementation](https://www.roland.com/global/support/by_product/td-17/owners_manuals/b28f606f-fa2e-4cb3-b4ec-1d25ce06a918/) document which has been absolutely vital in
 writing this code.
