@@ -1,7 +1,6 @@
 ﻿{
-  // Done - but check instrument group count
   "name": "KitPadVEdit",
-  "size": "0x41",
+  "size": "0x21",
   "fields": [
     {
       "offset": "0x00",
