@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
@@ -55,10 +56,9 @@ namespace VDrumExplorer.Wpf
                 {
                     // TODO: Make RequestDataAsync return a segment.
                     label.Content = $"Loading {container.Path}";
-                    var segment = await client.RequestDataAsync(container.Address.Value, container.Size, cancellationTokenSource.Token);
+                    await PopulateSegment(container, cancellationTokenSource.Token);
                     loaded++;
                     progress.Value = loaded;
-                    data.Populate(container.Address, segment);
                 }
                 Module = new Module(schema, data);
                 DialogResult = true;
@@ -80,6 +80,21 @@ namespace VDrumExplorer.Wpf
 
             void LogUnconsumedMessage(object sender, DataResponseMessage message) =>
                 logger.Log($"Unexpected data response. Address: {message.Address:x8}; Length: {message.Length:x8}");
+        }
+
+        private async Task PopulateSegment(Container container, CancellationToken token)
+        {
+            var timerToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+            var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(token, timerToken).Token;
+            try
+            {
+                var segment = await client.RequestDataAsync(container.Address.Value, container.Size, effectiveToken);
+                data.Populate(container.Address, segment);
+            }
+            catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
+            {
+                logger.Log($"Device didn't respond for container {container.Path}; skipping.");
+            }
         }
 
         private void Cancel(object sender, RoutedEventArgs e) =>
