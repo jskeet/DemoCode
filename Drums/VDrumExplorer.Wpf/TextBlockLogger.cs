@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.IO;
 using System.Windows.Controls;
 
 namespace VDrumExplorer.Wpf
@@ -22,5 +23,7 @@ namespace VDrumExplorer.Wpf
             // TODO: Aggregate exception etc.
             Log($"{message}: {e}");
         }
+
+        public void SaveLog(string file) => File.WriteAllText(file, block.Text);
     }
 }
