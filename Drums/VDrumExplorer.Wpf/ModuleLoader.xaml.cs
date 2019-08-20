@@ -19,7 +19,7 @@ namespace VDrumExplorer.Wpf
     /// </summary>
     public partial class ModuleLoader : Window
     {
-        private readonly ILogger logger;
+        private readonly TextBlockLogger logger;
         private (SysExClient client, ModuleSchema schema)? detectedMidi;
 
         public ModuleLoader()
@@ -164,6 +164,18 @@ namespace VDrumExplorer.Wpf
             {
                 new ModuleExplorer(logger, dialog.Module, midi.client).Show();
             }
+        }
+
+        private void SaveLog(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog { Filter = "Text files|*.txt" };
+            var result = dialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+            logger.SaveLog(dialog.FileName);
+
         }
     }
 }

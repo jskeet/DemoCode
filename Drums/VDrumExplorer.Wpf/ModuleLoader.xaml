@@ -10,6 +10,7 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Click="LoadFile" Margin="5" Padding="5,2">Load file</Button>
             <Button x:Name="loadFromDeviceButton" Click="LoadFromDevice" IsEnabled="False" Margin="5" Padding="5,2">Load from device</Button>
+            <Button x:Name="saveLogButton" Click="SaveLog" Margin="5" Padding="5,2">Save log file</Button>
         </StackPanel>
         <ScrollViewer>
             <GroupBox Header="Log" Margin="5">
