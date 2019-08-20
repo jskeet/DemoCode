@@ -7,7 +7,7 @@
       "description": "Parameters",
       "type": "dynamicOverlay",
       "dynamicOverlay": {
-        "size": "0x21",
+        "size": "0x41",
         "comment": "This is an offset into a different container, to get at the instrument and then its group",
         "switchOffset": "-0xC000",
         "switchTransform": "instrumentGroup",
