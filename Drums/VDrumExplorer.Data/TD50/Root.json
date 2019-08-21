@@ -18,6 +18,7 @@
     },
     {
       "offset": "0x03_00_00_00",
+      "name": "SetList",
       "description": "Set List",
       "type": "container:SetListParams",
       "repeat": "$setLists",

@@ -48,7 +48,7 @@ namespace VDrumExplorer.Data.Json
         internal Container GetContainer(string relativePath)
         {
             FieldPath containerPath = Path + ReplaceIndexes(relativePath);
-            Validate(Path, fieldsByPath.TryGetValue(containerPath, out var field), "Container not found");
+            Validate(containerPath, fieldsByPath.TryGetValue(containerPath, out var field), "Container not found");
             var container = field as Container;
             Validate(container is object, "Field is not a container");
             return container!;
@@ -83,7 +83,8 @@ namespace VDrumExplorer.Data.Json
 
         private string ReplaceIndexes(string text)
         {
-            foreach (var pair in indexes)
+            // Replace longer variables first
+            foreach (var pair in indexes.OrderByDescending(p => p.Key.Length))
             {
                 text = text.Replace("$" + pair.Key, pair.Value);
             }

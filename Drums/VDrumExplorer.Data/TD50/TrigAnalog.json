@@ -3,6 +3,7 @@
   "size": "0xc",
   "fields": [
     {
+      "name": "PadType",
       "offset": "0x00",
       "description": "Trigger Type",
       "type": "enum",

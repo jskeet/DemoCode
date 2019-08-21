@@ -8,6 +8,7 @@
       "type": "container:TrigMisc"
     },
     {
+      "name": "TrigAnalog",
       "offset": "0x01_00",
       "description": "Trigger Analog",
       "type": "container:TrigAnalog",
