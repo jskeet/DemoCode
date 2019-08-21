@@ -18,6 +18,7 @@
       "type": "boolean"
     },
     {
+      "name": "CompType",
       "offset": "0x02",
       "description": "Comp type",
       "type": "enum",

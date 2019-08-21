@@ -2,7 +2,232 @@
   "description": "Root",
   "path": ".",
   "details": [
+    {
+      "description": "Current kit",
+      "path": "Current"
+    },
+    {
+      "description": "Output",
+      "path": "Setup/Output"
+    },
+    {
+      "description": "Control",
+      "path": "Setup/Control"
+    },
+    {
+      "description": "Click",
+      "path": "Setup/Click"
+    },
+    {
+      "description": "Misc",
+      "path": "Setup/Misc"
+    }
   ],
   "children": [
+    {
+      "description": "Kits",
+      "path": ".",
+      "details": [
+        {
+          "description": "Kits",
+          "repeat": "$kits",
+          "index": "kit",
+          "formatPaths": [
+            "Kit[$kit]/KitCommon/KitName",
+            "Kit[$kit]/KitCommon/KitSubName"
+          ],
+          "format": "Kit $kit: {0} / {1}"
+        }
+      ],
+      "children": [
+        {
+          "repeat": "$kits",
+          "index": "kit",
+          "path": "Kit[$kit]",
+          "formatPaths": [
+            "KitCommon/KitName",
+            "KitCommon/KitSubName"
+          ],
+          "format": "Kit $kit: {0}",
+          "details": [
+            {
+              "description": "Kit common",
+              "path": "KitCommon"
+            },
+            {
+              "description": "Instruments",
+              "repeat": "$instruments",
+              "index": "instrument",
+              "formatPaths": [
+                "KitPadMain[$instrument]/Instrument",
+                "KitPadSub[$instrument]/Instrument"
+              ],
+              "format": "Instrument $instrument: {0} ({1})"
+            },
+            {
+              "description": "Kit Pads",
+              "repeat": "$kitPads",
+              "index": "kitPad",
+              "formatPaths": [
+                "KitPad[$kitPad]/CompType"
+              ],
+              "format": "Kit Pad $kitPad: {0}"
+            },
+            {
+              "description": "Kit Multifx",
+              "repeat": "$mfx",
+              "index": "mfx",
+              "formatPaths": [
+                "KitMfx[$mfx]/Type"
+              ],
+              "format": "Multifx $mfx: {0}"
+            },
+            {
+              "description": "Kit Midi",
+              "path": "KitMidi"
+            },
+            {
+              "description": "Kit Room",
+              "path": "KitRoom"
+            },
+            {
+              "description": "Kit Reverb",
+              "path": "KitReverb"
+            },
+            {
+              "description": "Kit Stereo Enhancer",
+              "path": "KitStereoEnhancer"
+            },
+            {
+              "description": "Kit Master EQ",
+              "path": "KitMasterEQ"
+            },
+            {
+              "description": "Kit Master Comp",
+              "path": "KitMasterComp"
+            },
+          ],
+          "children": [
+            {
+              "repeat": "$instruments",
+              "index": "instrument",
+              "formatPaths": [
+                "KitPadMain[$instrument]/Instrument"
+              ],
+              "path": ".",
+              "format": "Instrument $instrument: {0}",
+              //FIXME
+              //"midiNotePath": "KitMidi/Midi[$instrument]",
+              "details": [
+                {
+                  "description": "Common",
+                  "path": "KitPadCommon[$instrument]"
+                },
+                {
+                  "description": "Main instrument",
+                  "path": "KitPadMain[$instrument]"
+                },
+                {
+                  "description": "Main VEdit",
+                  "path": "KitPadVEditMain[$instrument]"
+                },
+                {
+                  "description": "Sub instrument",
+                  "path": "KitPadSub[$instrument]"
+                },
+                {
+                  "description": "Sub VEdit",
+                  "path": "KitPadVEditSub[$instrument]"
+                }
+              ]
+            },
+            {
+              "repeat": "$mfx",
+              "index": "mfx",
+              "formatPaths": [
+                "Type"
+              ],
+              "path": "KitMfx[$mfx]",
+              "format": "Multifx $mfx: {0}",
+              "details": [
+                {
+                  "description": "Multifx details",
+                  "path": "."
+                }
+              ]
+            },
+            {
+              "repeat": "$kitPads",
+              "index": "kitPad",
+              "formatPaths": [
+                "CompType"
+              ],
+              "path": "KitPad[$kitPad]",
+              "format": "Kit Pad $kitPad: {0}",
+              "details": [
+                {
+                  "description": "Kit Pad Details",
+                  "path": "."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Set Lists",
+      "path": ".",
+      "details": [
+        {
+          "description": "Set Lists",
+          "repeat": "$setLists",
+          "index": "setLists",
+          "formatPaths": [
+            "SetList[$setLists]/Name"
+          ],
+          "format": "Set List $setList: {0}"
+        }
+      ],
+      "children": [
+        {
+          "repeat": "$setLists",
+          "index": "setList",
+          "path": "SetList[$setList]",
+          "formatPaths": [
+            "Name"
+          ],
+          "format": "Set List $setList: {0}",
+          "details": [
+            {
+              "description": "Details",
+              "path": "."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Triggers",
+      "path": "Trigger",
+      "details": [
+        {
+          "description": "Trigger misc",
+          "path": "TrigMisc"
+        },
+        {
+          "description": "Triggers",
+          "repeat": "$triggers",
+          "index": "trigger",
+          "formatPaths": [
+            "TrigAnalog[$trigger]/PadType"
+          ],
+          "format": "Trigger $trigger: {0}"
+        }
+      ],
+      "children": [
+        // FIXME
+      ]
+    }
   ]
 }
