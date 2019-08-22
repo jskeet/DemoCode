@@ -10,8 +10,8 @@ namespace VDrumExplorer.Data.Fields
     public class InstrumentField : NumericFieldBase, IPrimitiveField
     {
         internal InstrumentField(FieldBase.Parameters common)
-            // We don't know how many instruments there will actually be, but we'll validate in GetInstrument.
-            : base(common, 0, int.MaxValue)
+            // Note: although common.Schema isn't fully populated yet, the instruments will be valid by this point.
+            : base(common, 0, common.Schema.InstrumentsById.Count)
         {
         }
 
@@ -21,15 +21,7 @@ namespace VDrumExplorer.Data.Fields
             return $"{instrument.Name} ({instrument.Group.Description})";
         }
 
-        public Instrument GetInstrument(ModuleData data)
-        {
-            int index = GetRawValue(data);
-            if (index >= Schema.InstrumentsById.Count)
-            {
-                throw new InvalidOperationException($"Invalid instrument index {index}. The schema specifies {Schema.InstrumentsById.Count} instruments.");
-            }
-            return Schema.InstrumentsById[index];
-        }
+        public Instrument GetInstrument(ModuleData data) => Schema.InstrumentsById[GetRawValue(data)];
 
         public override bool TrySetText(ModuleData data, string text)
         {
