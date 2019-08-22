@@ -134,20 +134,28 @@ namespace VDrumExplorer.Wpf
             }
             fileName = dialog.FileName;
 
+            Module module;
             try
             {
                 using (var stream = File.OpenRead(fileName))
                 {
-                    var module = Module.FromStream(stream);
-                    module.Validate();
-                    var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
-                    new ModuleExplorer(logger, module, client).Show();
+                    module = Module.FromStream(stream);
                 }
             }
             catch (Exception ex)
             {
                 logger.Log($"Error loading {fileName}", ex);
+                return;
             }
+            logger.Log($"Validating fields");
+            var validation = module.Validate();
+            foreach (var error in validation.Errors)
+            {
+                logger.Log($"Field {error.Field.Path} error: {error.Message}");
+            }
+            logger.Log($"Validation complete. Total fields: {validation.TotalFields}. Errors: {validation.Errors.Count}");
+            var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
+            new ModuleExplorer(logger, module, client).Show();
         }
 
         private void LoadFromDevice(object sender, RoutedEventArgs e)
