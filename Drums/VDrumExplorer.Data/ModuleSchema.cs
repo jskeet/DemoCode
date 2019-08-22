@@ -71,20 +71,24 @@ namespace VDrumExplorer.Data
         // trickier - but at least it's pleasant to use elsewhere.
         internal ModuleSchema(ModuleJson json)
         {
+            // Note: we populate everything other than the fields first, so that field
+            // construction can rely on it.
             json.Validate();
             Name = json.Name!;
             ModelId = json.ModelId!.Value;
             FamilyCode = json.FamilyCode!.Value;
             FamilyNumberCode = json.FamilyNumberCode!.Value;
-            Root = json.BuildRootContainer(this);
-            LogicalRoot = json.BuildLogicalRoot(Root);
             InstrumentGroups = json.BuildInstrumentGroups();
             Instruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
                 .ToList()
                 .AsReadOnly();
-            // FIXME: Won't this be the same as instruments?
+            // FIXME: Won't this be the same as instruments? Maybe just validate that?
             InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
+            
+            // Now do everything with the fields.
+            Root = json.BuildRootContainer(this);
+            LogicalRoot = json.BuildLogicalRoot(Root);
             PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>()
                 .ToDictionary(f => f.Address)
                 .AsReadOnly();
