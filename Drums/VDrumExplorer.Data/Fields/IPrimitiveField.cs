@@ -28,5 +28,13 @@ namespace VDrumExplorer.Data.Fields
         /// Sets the field to a valid default value within the module data.
         /// </summary>
         void Reset(ModuleData data);
+
+        /// <summary>
+        /// Validates the field against specific module data.
+        /// </summary>
+        /// <param name="data">The data to validate against the field.</param>
+        /// <param name="error">The error message, if any. Null otherwise.</param>
+        /// <returns>true if the data is valid for this field; false otherwise.</returns>
+        bool Validate(ModuleData data, out string? error);
     }
 }

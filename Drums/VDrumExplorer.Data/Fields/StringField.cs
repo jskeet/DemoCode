@@ -8,7 +8,7 @@ using System.Text;
 
 namespace VDrumExplorer.Data.Fields
 {
-    public sealed class StringField : FieldBase, IPrimitiveField
+    public sealed class StringField : PrimitiveFieldBase
     {
         /// <summary>
         /// The length of the field, in characters.
@@ -24,7 +24,7 @@ namespace VDrumExplorer.Data.Fields
             bytesPerChar = Size / length;
         }
 
-        public string GetText(ModuleData data)
+        public override string GetText(ModuleData data)
         {
             byte[] rawBytes = data.GetData(Address, Size);
             switch (bytesPerChar)
@@ -43,7 +43,7 @@ namespace VDrumExplorer.Data.Fields
             }
         }
 
-        public bool TrySetText(ModuleData data, string text)
+        public override bool TrySetText(ModuleData data, string text)
         {
             if (text.Length > Length || text.Any(c => c < 32 || c > 126))
             {
@@ -71,6 +71,13 @@ namespace VDrumExplorer.Data.Fields
             return true;
         }
 
-        public void Reset(ModuleData data) => TrySetText(data, new string(' ', Length));
+        public override void Reset(ModuleData data) => TrySetText(data, new string(' ', Length));
+
+        protected override bool ValidateData(ModuleData data, out string? error)
+        {
+            // We could potentially validate that it contains non-control-character ASCII...
+            error = null;
+            return true;
+        }
     }
 }

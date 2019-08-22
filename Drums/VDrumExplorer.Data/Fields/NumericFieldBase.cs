@@ -10,7 +10,7 @@ namespace VDrumExplorer.Data.Fields
     /// Abstract base class for fields based on a numeric value in a given range.
     /// Concrete subclasses provide formatting.
     /// </summary>
-    public abstract class NumericFieldBase : FieldBase, IPrimitiveField
+    public abstract class NumericFieldBase : PrimitiveFieldBase, IPrimitiveField
     {
         public int Min { get; }
         public int Max { get; }
@@ -19,24 +19,23 @@ namespace VDrumExplorer.Data.Fields
             : base(common) =>
             (Min, Max) = (min, max);
 
-        public abstract string GetText(ModuleData data);
-        public abstract bool TrySetText(ModuleData data, string text);
-
-        internal int GetRawValue(ModuleData data)
-        {
-            int value = Size switch
+        private int GetRawValueUnvalidated(ModuleData data) =>
+            Size switch
             {
                 1 => data.GetAddressValue(Address),
-                2 => ((sbyte)((data.GetAddressValue(Address) << 4) | data.GetAddressValue(Address + 1))),
-                        // TODO: Just fetch a byte array? Stackalloc it?
-                4 => (short)(
+                2 => ((sbyte) ((data.GetAddressValue(Address) << 4) | data.GetAddressValue(Address + 1))),
+                // TODO: Just fetch a byte array? Stackalloc it?
+                4 => (short) (
                     (data.GetAddressValue(Address) << 12) |
                     (data.GetAddressValue(Address + 1) << 8) |
                     (data.GetAddressValue(Address + 2) << 4) |
                     data.GetAddressValue(Address + 3)),
                 _ => throw new InvalidOperationException($"Cannot get value with size {Size}")
             };
-            
+
+        internal int GetRawValue(ModuleData data)
+        {
+            var value = GetRawValueUnvalidated(data);
             if (value < Min || value > Max)
             {
                 throw new InvalidOperationException($"Invalid range value: {value}");
@@ -72,6 +71,18 @@ namespace VDrumExplorer.Data.Fields
             data.SetData(Address, bytes);
         }
 
-        public void Reset(ModuleData data) => SetRawValue(data, Min);
+        public override void Reset(ModuleData data) => SetRawValue(data, Min);
+
+        protected override bool ValidateData(ModuleData data, out string? error)
+        {
+            var rawValue = GetRawValueUnvalidated(data);
+            if (rawValue < Min || rawValue > Max)
+            {
+                error = $"Invalid raw value {rawValue}. Expected range: [{Min}-{Max}]";
+                return false;
+            }
+            error = null;
+            return true;
+        }
     }
 }
