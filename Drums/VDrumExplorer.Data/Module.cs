@@ -44,24 +44,20 @@ namespace VDrumExplorer.Data
         /// Validates that every field in the schema has a valid value.
         /// This will fail if only partial data has been loaded.
         /// </summary>
-        public void Validate()
+        public ValidationResult Validate()
         {
-            List<Exception> exceptions = new List<Exception>();
+            int count = 0;
+            var errors = new List<ValidationError>();
             foreach (var field in Schema.Root.DescendantsAndSelf(Data).OfType<IPrimitiveField>())
             {
-                try
+                count++;
+                if (!field.Validate(Data, out var message))
                 {
-                    field.GetText(Data);
-                }
-                catch (Exception e)
-                {
-                    exceptions.Add(new InvalidOperationException($"Field {field.Path} failed validation: {e.Message}"));
+                    // TODO: use an attribute to avoid needing the dammit operator
+                    errors.Add(new ValidationError(field, message!));
                 }
             }
-            if (exceptions.Count != 0)
-            {
-                throw new AggregateException("Validation failed", exceptions.ToArray());
-            }
+            return new ValidationResult(count, errors.AsReadOnly());
         }
 
         public void Save(Stream stream)

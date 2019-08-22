@@ -55,33 +55,39 @@ namespace VDrumExplorer.Data.Fields
         }
 
         /// <summary>
-        /// Returns all fields in this container recursively. Dynamic overlay fields are processed
+        /// Returns all fields in this container recursively, in a breadth-first manner. Dynamic overlay fields are processed
         /// according to the data in <paramref name="data"/>; the field itself is not returned,
         /// but the overlaid fields are, having resolved the relevant container.
         /// </summary>
         /// <returns>A sequence of fields, including the container itself.</returns>
         public IEnumerable<IField> DescendantsAndSelf(ModuleData data)
         {
-            yield return this;
-            foreach (var field in Fields)
+            Queue<Container> containerQueue = new Queue<Container>();
+            containerQueue.Enqueue(this);
+            while (containerQueue.Count > 0)
             {
-                if (field is Container container)
+                var container = containerQueue.Dequeue();
+                yield return container;
+                foreach (var field in container.Fields)
                 {
-                    foreach (var descendant in container.DescendantsAndSelf())
+                    if (field is IPrimitiveField primitive)
                     {
-                        yield return descendant;
+                        yield return primitive;
                     }
-                }
-                else if (field is DynamicOverlay overlay)
-                {
-                    foreach (var descendant in overlay.Children(data))
+                    else if (field is DynamicOverlay overlay)
                     {
-                        yield return descendant;
+                        // We assume overlays are shallow. If they're not, we'll find out via an exception in the cast...
+                        // (We also assume the field the overlay switches on is present... maybe we shouldn't.)
+                        var overlaid = overlay.GetOverlaidContainer(data);
+                        foreach (var overlaidPrimitive in overlaid.Fields)
+                        {
+                            yield return (IPrimitiveField) overlaidPrimitive;
+                        }
                     }
-                }
-                else
-                {
-                    yield return field;
+                    else if (field is Container subcontainer)
+                    {
+                        containerQueue.Enqueue(subcontainer);
+                    }
                 }
             }
         }
