@@ -54,6 +54,15 @@ namespace VDrumExplorer.Data
             }
         }
 
+        internal void SetData(ModuleAddress address, byte[] bytes)
+        {
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                // This handles overflow from 0x7f to 0x100 appropriately.
+                this[address + i] = bytes[i];
+            }
+        }
+
         private int GetOffset(ModuleAddress address)
         {
             int offset = address - Start;

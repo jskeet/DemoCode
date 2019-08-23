@@ -199,10 +199,32 @@ namespace VDrumExplorer.Data
         internal void SetData(ModuleAddress address, byte[] bytes)
         {
             var segment = GetSegment(address);
-            for (int i = 0; i < bytes.Length; i++)
+            segment.SetData(address, bytes);
+            DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
+        }
+        
+        /// <summary>
+        /// Writes multiple data changes into a single segment, raising a single <see cref="DataChanged"/> event
+        /// afterwards.
+        /// </summary>
+        /// <param name="changes">The changes to write. Must be non-empty, and all changes must be in the same segment.</param>
+        internal void SetMultipleData(params (ModuleAddress address, byte[] bytes)[] changes)
+        {
+            if (changes.Length == 0)
             {
-                // This handles overflow from 0x7f to 0x100 appropriately.
-                segment[address + i] = bytes[i];
+                throw new ArgumentException("At least one change must be specified");
+            }
+            var segment = GetSegment(changes[0].address);
+            foreach (var change in changes)
+            {
+                if (GetSegment(change.address) != segment)
+                {
+                    throw new ArgumentException("All changes must be in the same segment");
+                }
+            }
+            foreach (var change in changes)
+            {
+                segment.SetData(change.address, change.bytes);
             }
             DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
         }
