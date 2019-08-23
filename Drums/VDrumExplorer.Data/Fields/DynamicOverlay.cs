@@ -27,10 +27,18 @@ namespace VDrumExplorer.Data.Fields
             int index = switchTransform switch
             {
                 null => ((NumericFieldBase) field).GetRawValue(data),
-                "instrumentGroup" => ((InstrumentField) field).GetInstrument(data).Group.Index,
+                "instrumentGroup" => GetInstrumentGroupIndex(),
                 _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
             };
             return OverlaidContainers[index];
+            
+            int GetInstrumentGroupIndex()
+            {
+                var instrumentField = (InstrumentField) field;
+                var instrument = instrumentField.GetInstrument(data);
+                // User samples get an extra overlay at the end.
+                return instrument.Group?.Index ?? Schema.InstrumentGroups.Count;
+            }
         }
     }
 }

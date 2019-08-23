@@ -5,6 +5,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -282,9 +283,32 @@ namespace VDrumExplorer.Wpf
         
         private FrameworkElement CreateInstrumentFieldElement(InstrumentField field)
         {
+            // Instrument fields are really complicated:
+            // - They can be preset or user samples ("bank")
+            // - For preset instruments, we want to pick group and then instrument
+            // - For user samples, we want a simple textbox for the sample number
+
+            const string presetBank = "Preset";
+            const string samplesBank = "User sample";
+            
             var selected = field.GetInstrument(module.Data);
-            var groupChoice = new ComboBox { ItemsSource = module.Schema.InstrumentGroups, SelectedItem = selected.Group };
-            var instrumentChoice = new ComboBox { ItemsSource = selected.Group.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
+            var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
+            var groupChoice = new ComboBox { ItemsSource = module.Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
+            var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
+            var userSampleTextBox = new TextBox { Width = 50, Text = selected.Id.ToString(CultureInfo.InvariantCulture), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
+            
+            SetVisibility(selected.Group != null);
+
+            userSampleTextBox.SelectionChanged += (sender, args) =>
+            {
+                bool valid = int.TryParse(userSampleTextBox.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int sample)
+                    && sample >= 1 && sample <= module.Schema.UserSampleInstruments.Count;
+                if (valid)
+                {
+                    field.SetInstrument(module.Data, module.Schema.UserSampleInstruments[sample - 1]);
+                }
+                userSampleTextBox.Foreground = valid ? SystemColors.WindowTextBrush : errorBrush;
+            };
             groupChoice.SelectionChanged += (sender, args) =>
             {
                 var currentInstrument = (Instrument) instrumentChoice.SelectedItem;
@@ -304,16 +328,43 @@ namespace VDrumExplorer.Wpf
                 }
                 field.SetInstrument(module.Data, instrument);
             };
-
-            Grid.SetColumn(groupChoice, 0);
-            Grid.SetColumn(instrumentChoice, 1);
+            bankChoice.SelectionChanged += (sender, args) =>
+            {
+                switch (bankChoice.SelectedIndex)
+                {
+                    case 0:
+                        // Force a change so that we set the instrument
+                        groupChoice.SelectedIndex = 1;
+                        groupChoice.SelectedIndex = 0;
+                        SetVisibility(true);
+                        break;
+                    case 1:
+                        // Make it temporarily invalid so that it's forced to set the data
+                        userSampleTextBox.Text = "";
+                        userSampleTextBox.Text = "1";
+                        SetVisibility(false);
+                        break;
+                }
+            };
+            
+            Grid.SetColumn(bankChoice, 0);
+            Grid.SetColumn(groupChoice, 1);
+            Grid.SetColumn(instrumentChoice, 2);
+            Grid.SetColumn(userSampleTextBox, 3);
             Grid grid = new Grid
             {
-                ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+                ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition(), new ColumnDefinition(), new ColumnDefinition() },
                 RowDefinitions = { new RowDefinition() },
-                Children = { groupChoice, instrumentChoice }
+                Children = { bankChoice, groupChoice, instrumentChoice, userSampleTextBox }
             };
             return grid;
+
+            void SetVisibility(bool preset)
+            {
+                userSampleTextBox.Visibility = preset ? Visibility.Collapsed : Visibility.Visible;
+                groupChoice.Visibility = preset ? Visibility.Visible : Visibility.Collapsed;
+                instrumentChoice.Visibility = preset ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         private static readonly Brush errorBrush = new SolidColorBrush(Colors.Red);

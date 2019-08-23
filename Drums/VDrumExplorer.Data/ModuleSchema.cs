@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -40,8 +41,8 @@ namespace VDrumExplorer.Data
 
         public Container Root { get; set; }
 
-        public IReadOnlyDictionary<int, Instrument> InstrumentsById { get; }
-        public IReadOnlyList<Instrument> Instruments { get; }
+        public IReadOnlyList<Instrument> PresetInstruments { get; }
+        public IReadOnlyList<Instrument> UserSampleInstruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
         
         /// <summary>
@@ -79,12 +80,23 @@ namespace VDrumExplorer.Data
             FamilyCode = json.FamilyCode!.Value;
             FamilyNumberCode = json.FamilyNumberCode!.Value;
             InstrumentGroups = json.BuildInstrumentGroups();
-            Instruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
+            PresetInstruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
                 .ToList()
                 .AsReadOnly();
-            // FIXME: Won't this be the same as instruments? Maybe just validate that?
-            InstrumentsById = Instruments.ToDictionary(i => i.Id).AsReadOnly();
+            // Just validate that our list is consistent.
+            for (int i = 0; i < PresetInstruments.Count; i++)
+            {
+                if (PresetInstruments[i].Id != i)
+                {
+                    throw new InvalidOperationException($"Instrument {PresetInstruments[i]} is in index {i}");
+                }
+            }
+
+            UserSampleInstruments = Enumerable.Range(0, json.UserSamples!.Value)
+                .Select(id => Instrument.FromUserSample(id))
+                .ToList()
+                .AsReadOnly();
             
             // Now do everything with the fields.
             Root = json.BuildRootContainer(this);

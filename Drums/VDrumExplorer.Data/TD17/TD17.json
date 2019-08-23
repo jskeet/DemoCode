@@ -4,11 +4,12 @@
   "familyCode": "0x034b",
   "familyNumberCode": "0x0",
   "instrumentGroups": "$resource:InstrumentGroups.json",
+  "userSamples": 100,
   "counts": {
     "kits": 100,
     "instruments": 20,
     "triggers": 10
-  },    
+  },
   "containers": [
     "$resource:Root.json",
     "$resource:Kit.json",

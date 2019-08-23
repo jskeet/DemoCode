@@ -32,7 +32,9 @@ namespace VDrumExplorer.Data.Json
 
         /// <summary>
         /// Any transform to apply. Currently supported value "instrumentGroup", which expects
-        /// the target of the offset to be an instrument number, then converted into an instrument group.
+        /// the target of the offset to be an instrument field. The instrument group is determined from that.
+        /// (An extra container is expected after all the preset instruments, for user samples, as they're
+        /// not in an instrument group.)
         /// </summary>
         public string? SwitchTransform { get; set; }
 

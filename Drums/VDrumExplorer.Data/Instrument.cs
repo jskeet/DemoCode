@@ -21,13 +21,19 @@ namespace VDrumExplorer.Data
         public string Name { get; }
         
         /// <summary>
-        /// The group containing the instrument.
+        /// The group containing the instrument, or null for a user sample.
         /// </summary>
-        public InstrumentGroup Group { get; }
+        public InstrumentGroup? Group { get; }
 
-        internal Instrument(int id, string name, InstrumentGroup group) =>
+        private Instrument(int id, string name, InstrumentGroup? group) =>
             (Id, Name, Group) = (id, name, group);
 
-        public override string ToString() => $"{Id}: {Name} ({Group.Description})";
+        internal static Instrument FromPreset(int id, string name, InstrumentGroup group) =>
+            new Instrument(id, name, group);
+
+        internal static Instrument FromUserSample(int id) =>
+            new Instrument(id, $"User sample {id + 1}", null);
+
+        public override string ToString() => Group == null ? Name : $"{Name} ({Group?.Description})";
     }
 }

@@ -5,21 +5,13 @@
     {
       "offset": "0x00",
       "description": "Instrument",
-      "type": "instrument"
+      "type": "instrument",
+      "bankOffset": "0x08"
     },
     {
       "offset": "0x04",
       "description": "Volume",
       "type": "volume32"
-    },
-    {
-      "offset": "0x08",
-      "description": "Instrument bank",
-      "type": "enum",
-      "values": [
-        "Preset",
-        "User"
-      ]
     }
   ]
 }

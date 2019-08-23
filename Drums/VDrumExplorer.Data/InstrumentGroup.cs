@@ -26,7 +26,7 @@ namespace VDrumExplorer.Data
             Description = description;
             Index = index;
             Instruments = instruments
-                .Select(pair => new Instrument(pair.Key, pair.Value, this))
+                .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, this))
                 .OrderBy(i => i.Id)
                 .ToList()
                 .AsReadOnly();

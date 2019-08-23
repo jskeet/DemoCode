@@ -28,6 +28,7 @@
           "$resource:VEdit/Other.json",
           "$resource:VEdit/Other.json",
           "$resource:VEdit/Other.json",
+          "$resource:VEdit/Other.json",
           "$resource:VEdit/Other.json"
         ]
       }
