@@ -29,6 +29,7 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? ModelId { get; set; }
         public HexInt32? FamilyCode { get; set; }
         public HexInt32? FamilyNumberCode { get; set; }
+        public int? UserSamples { get; set; }
         public List<InstrumentGroupJson>? InstrumentGroups { get; set; }
         public List<ContainerJson>? Containers { get; set; }
         public VisualTreeNodeJson? LogicalTree { get; set; }
@@ -60,6 +61,7 @@ namespace VDrumExplorer.Data.Json
             ValidateNotNull(root, FamilyCode, nameof(FamilyCode));
             ValidateNotNull(root, FamilyNumberCode, nameof(FamilyNumberCode));
             ValidateNotNull(root, LogicalTree, nameof(LogicalTree));
+            ValidateNotNull(root, UserSamples, nameof(UserSamples));
             FindContainer(root, "Root");
         }        
 

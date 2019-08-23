@@ -16,6 +16,7 @@ namespace VDrumExplorer.Data.Fields
         /// <returns>The formatted value.</returns>
         string GetText(ModuleData data);
 
+        // TODO: Move this down to NumericField/StringField?
         /// <summary>
         /// Attempts to set the given value within the module data after parsing from text.
         /// </summary>

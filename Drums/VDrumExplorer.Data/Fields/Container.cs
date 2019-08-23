@@ -16,12 +16,14 @@ namespace VDrumExplorer.Data.Fields
         public IReadOnlyList<IField> Fields { get; }
         internal IReadOnlyDictionary<ModuleAddress, IField> FieldsByAddress { get; }
         public bool Loadable { get; }
-        
+        public new int Size { get; }
+
         public string? Name { get; }
 
         internal Container(FieldBase.Parameters common, string? name, IReadOnlyList<IField> fields)
             : base(common)
         {
+            Size = base.Size;
             Name = name;
             Fields = fields;
             Loadable = !Fields.Any(f => f is Container);

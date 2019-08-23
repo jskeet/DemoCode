@@ -10,7 +10,6 @@ namespace VDrumExplorer.Data.Fields
         string Description { get; }
         FieldPath Path { get; }
         ModuleAddress Address { get; }
-        int Size { get; }
         FieldCondition? Condition { get; }
     }
 }

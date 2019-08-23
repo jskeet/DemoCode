@@ -127,6 +127,12 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? Gap { get; set; }
 
         /// <summary>
+        /// For instrument fields only, the offset of the bank switch field from the
+        /// instrument field.
+        /// </summary>
+        public HexInt32? BankOffset { get; set; }
+
+        /// <summary>
         /// The details for a DynamicOverlay field.
         /// </summary>
         public DynamicOverlayJson? DynamicOverlay { get; set; }
@@ -188,7 +194,7 @@ namespace VDrumExplorer.Data.Json
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
                 "dynamicOverlay" => BuildDynamicOverlay(),
-                "instrument" => new InstrumentField(BuildCommon(4)),
+                "instrument" => new InstrumentField(BuildCommon(4), address + ValidateNotNull(BankOffset, nameof(BankOffset)).Value),
                 "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues),
                 "volume32" => new NumericField(BuildCommon(4), -601, 60, 10, null, 0, "dB", (-601, "INF")),
                 "string" => BuildStringField(1),
