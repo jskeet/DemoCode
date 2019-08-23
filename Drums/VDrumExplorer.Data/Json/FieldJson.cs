@@ -149,7 +149,7 @@ namespace VDrumExplorer.Data.Json
             string description = ValidateNotNull(parentPath + "???", Description, nameof(Description));
             string name = Name ?? description;
             FieldPath path = parentPath + name;
-            int? repeat = module.GetRepeat(Repeat);
+            int? repeat = module.GetCount(Repeat);
             var offset = ValidateNotNull(path, Offset, nameof(Offset));
             ModuleAddress address = parentAddress + offset.Value;
             FieldCondition? condition = GetCondition();

@@ -97,7 +97,7 @@
       "offset": "0x01_40_00",
       "description": "Pad Compressor",
       "type": "container:KitPad",
-      "repeat": "$kitPads",
+      "repeat": "$triggers",
       "gap": "0x01_00"
     }
   ]

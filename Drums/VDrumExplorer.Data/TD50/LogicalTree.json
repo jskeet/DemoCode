@@ -59,20 +59,22 @@
               "repeat": "$instruments",
               "index": "instrument",
               "formatPaths": [
+                "/lookups/instruments[$instrument]",
                 "KitPadMain[$instrument]/Instrument",
                 "KitPadSub[$instrument]/Instrument"
               ],
-              "format": "Instrument $instrument: {0} ({1})"
+              "format": "{0}: {1} / {2}"
             },
             {
               "description": "Pad Compressors",
-              "repeat": "$kitPads",
-              "index": "kitPad",
+              "repeat": "$triggers",
+              "index": "trigger",
               "formatPaths": [
-                "KitPad[$kitPad]/CompType",
-                "KitPad[$kitPad]/CompSwitch"
+                "/lookups/triggers[$trigger]",
+                "KitPad[$trigger]/CompType",
+                "KitPad[$trigger]/CompSwitch"
               ],
-              "format": "Pad Compressor $kitPad: {0} ({1})"
+              "format": "{0}: {1} ({2})"
             },
             {
               "description": "Kit Multifx",
@@ -118,10 +120,11 @@
                   "repeat": "$instruments",
                   "index": "instrument",
                   "formatPaths": [
+                    "/lookups/instruments[$instrument]",
                     "KitPadMain[$instrument]/Instrument",
                     "KitPadSub[$instrument]/Instrument"
                   ],
-                  "format": "Instrument $instrument: {0} ({1})"
+                  "format": "{0}: {1} ({2})"
                 }
               ],
               "children": [
@@ -129,10 +132,11 @@
                   "repeat": "$instruments",
                   "index": "instrument",
                   "formatPaths": [
+                    "/lookups/instruments[$instrument]",
                     "KitPadMain[$instrument]/Instrument"
                   ],
                   "path": ".",
-                  "format": "Instrument $instrument: {0}",
+                  "format": "{0}: {1}",
                   "midiNotePath": "KitMidi/Midi[$instrument]",
                   "details": [
                     {
@@ -165,25 +169,27 @@
               "details": [
                 {
                   "description": "Pad Compressors",
-                  "repeat": "$kitPads",
-                  "index": "kitPad",
+                  "repeat": "$triggers",
+                  "index": "trigger",
                   "formatPaths": [
-                    "KitPad[$kitPad]/CompType",
-                    "KitPad[$kitPad]/CompSwitch"
+                    "/lookups/triggers[$trigger]",
+                    "KitPad[$trigger]/CompType",
+                    "KitPad[$trigger]/CompSwitch"
                   ],
-                  "format": "Pad Compressor $kitPad: {0} ({1})"
+                  "format": "$0: {1} ({2})"
                 }
               ],
               "children": [
                 {
-                  "repeat": "$kitPads",
-                  "index": "kitPad",
+                  "repeat": "$triggers",
+                  "index": "trigger",
                   "formatPaths": [
+                    "/lookups/triggers[$trigger]",
                     "CompType",
                     "CompSwitch"
                   ],
-                  "path": "KitPad[$kitPad]",
-                  "format": "Pad Compressor $kitPad: {0} ({1})",
+                  "path": "KitPad[$trigger]",
+                  "format": "{0}: {1} ({2})",
                   "details": [
                     {
                       "description": "Kit Pad Compressor Details",

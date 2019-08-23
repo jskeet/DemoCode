@@ -51,10 +51,11 @@
               "repeat": "$instruments",
               "index": "instrument",
               "formatPaths": [
+                "/lookups/instruments[$instrument]",
                 "KitUnitMain[$instrument]/Instrument",
                 "KitUnitSub[$instrument]/Instrument"
               ],
-              "format": "Instrument $instrument: {0} ({1})"
+              "format": "{0}: {1} / {2}"
             },
             {
               "description": "Kit Midi",
@@ -74,10 +75,11 @@
               "repeat": "$instruments",
               "index": "instrument",
               "formatPaths": [
+                "/lookups/instruments[$instrument]",
                 "KitUnitMain[$instrument]/Instrument"
               ],
               "path": ".",
-              "format": "Instrument $instrument: {0}",
+              "format": "{0}: {1}",
               "midiNotePath": "KitMidi/Midi[$instrument]",
               "details": [
                 {
@@ -119,9 +121,10 @@
           "repeat": "$triggers",
           "index": "trigger",
           "formatPaths": [
+            "/lookups/triggers[$trigger]",
             "Trigger[$trigger]/PadType"
           ],
-          "format": "Trigger $trigger: {0}"
+          "format": "{0}: {1}"
         }
       ],
       "children": [
@@ -130,9 +133,10 @@
           "index": "trigger",
           "path": "Trigger[$trigger]",
           "formatPaths": [
+            "/lookups/triggers[$trigger]",
             "PadType"
           ],
-          "format": "Trigger $trigger",
+          "format": "{0}: {1}",
           "details": [
             {
               "description": "Trigger",
