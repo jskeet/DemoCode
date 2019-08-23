@@ -34,6 +34,8 @@ namespace VDrumExplorer.Data.Json
         public List<ContainerJson>? Containers { get; set; }
         public VisualTreeNodeJson? LogicalTree { get; set; }
         public Dictionary<string, int>? Counts { get; set; }
+        
+        public List<LookupJson>? Lookups { get; set; }
 
         internal static ModuleJson FromJson(JObject json)
         {
@@ -44,13 +46,13 @@ namespace VDrumExplorer.Data.Json
         internal ContainerJson FindContainer(FieldPath path, string name) =>
             Containers.FirstOrDefault(c => c.Name == name) ?? throw new ModuleSchemaException(path, $"Unable to find container with name '{name}'");
 
-        internal int? GetRepeat(string? repeat) =>
+        internal int? GetCount(string? repeat) =>
             repeat switch
             {
                 null => (int?) null,
                 _ when repeat.StartsWith("$") && Counts != null && Counts.TryGetValue(repeat.Substring(1), out var count) => count,
                 _ when int.TryParse(repeat, NumberStyles.None, CultureInfo.InvariantCulture, out var result) => result,
-                _ => throw new InvalidOperationException($"Invalid repeat value: '{repeat}'")
+                _ => throw new InvalidOperationException($"Invalid count value: '{repeat}'")
             };
 
         internal void Validate()
@@ -62,6 +64,7 @@ namespace VDrumExplorer.Data.Json
             ValidateNotNull(root, FamilyNumberCode, nameof(FamilyNumberCode));
             ValidateNotNull(root, LogicalTree, nameof(LogicalTree));
             ValidateNotNull(root, UserSamples, nameof(UserSamples));
+            Lookups?.ForEach(lookup => lookup.Validate(GetCount));
             FindContainer(root, "Root");
         }        
 
@@ -80,8 +83,19 @@ namespace VDrumExplorer.Data.Json
 
         internal VisualTreeNode BuildLogicalRoot(Container root)
         {
-            var fieldsByPath = root.DescendantsAndSelf().ToDictionary(f => f.Path).AsReadOnly();
-            var context = VisualTreeConversionContext.Create(this, fieldsByPath);
+            var fieldsByPath = root.DescendantsAndSelf().ToDictionary(f => f.Path);
+            // This is ugly to do with LINQ...
+            var lookupsByPath = new Dictionary<FieldPath, string>();
+            foreach (var lookup in Lookups ?? Enumerable.Empty<LookupJson>())
+            {
+                var lookupRoot = new FieldPath("lookups") + lookup.Name!;
+                for (int i = 0; i < lookup.Values!.Count; i++)
+                {
+                    var path = lookupRoot.WithIndex(i + 1);
+                    lookupsByPath[path] = lookup.Values[i];
+                }
+            }
+            var context = VisualTreeConversionContext.Create(this, fieldsByPath.AsReadOnly(), lookupsByPath.AsReadOnly());
             return LogicalTree!.ConvertVisualNodes(context).Single();
         }
     }

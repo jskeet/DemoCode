@@ -15,16 +15,16 @@ namespace VDrumExplorer.Data.Layout
     /// </summary>
     public sealed class FormattableDescription
     {
-        public IReadOnlyList<IPrimitiveField>? FormatFields { get; }
-        public IEnumerable<IPrimitiveField> FormatFieldsOrEmpty => FormatFields ?? Enumerable.Empty<IPrimitiveField>();
+        public IReadOnlyList<IModuleDataFormattableString>? FormatFields { get; }
+        public IEnumerable<IModuleDataFormattableString> FormatFieldsOrEmpty => FormatFields ?? Enumerable.Empty<IModuleDataFormattableString>();
         public string FormatString { get; }
 
-        public FormattableDescription(string formatString, IReadOnlyList<IPrimitiveField>? formatFields) =>
+        public FormattableDescription(string formatString, IReadOnlyList<IModuleDataFormattableString>? formatFields) =>
             (FormatString, FormatFields) = (formatString, formatFields);
 
         public string Format(ModuleData data) =>
             FormatFields is null
             ? FormatString
-            : string.Format(FormatString, FormatFields.Select(f => f.GetText(data)).ToArray());
+            : string.Format(FormatString, FormatFields.Select(f => f.Format(data)).ToArray());
     }
 }

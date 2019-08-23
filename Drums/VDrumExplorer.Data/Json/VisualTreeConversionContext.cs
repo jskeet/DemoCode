@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -20,21 +21,28 @@ namespace VDrumExplorer.Data.Json
     {
         private readonly ModuleJson moduleJson;
         private readonly IReadOnlyDictionary<FieldPath, IField> fieldsByPath;
+        private readonly IReadOnlyDictionary<FieldPath, string> lookupsByPath;
         internal FieldPath Path { get; }
         private readonly IDictionary<string, string> indexes;
 
         private VisualTreeConversionContext(
-            ModuleJson moduleJson, IReadOnlyDictionary<FieldPath, IField> fieldsByPath,
+            ModuleJson moduleJson,
+            IReadOnlyDictionary<FieldPath, IField> fieldsByPath,
+            IReadOnlyDictionary<FieldPath, string> lookupsByPath,
             FieldPath currentPath, IDictionary<string, string> indexes)
         {
             this.moduleJson = moduleJson;
             this.fieldsByPath = fieldsByPath;
+            this.lookupsByPath = lookupsByPath;
             Path = currentPath;
             this.indexes = indexes;
         }
 
-        internal static VisualTreeConversionContext Create(ModuleJson moduleJson, IReadOnlyDictionary<FieldPath, IField> fieldsByPath) =>
-            new VisualTreeConversionContext(moduleJson, fieldsByPath, FieldPath.Root(), new Dictionary<string, string>());
+        internal static VisualTreeConversionContext Create(
+            ModuleJson moduleJson,
+            IReadOnlyDictionary<FieldPath, IField> fieldsByPath,
+            IReadOnlyDictionary<FieldPath, string> lookupsByPath) =>
+            new VisualTreeConversionContext(moduleJson, fieldsByPath, lookupsByPath, FieldPath.Root(), new Dictionary<string, string>());
 
         internal VisualTreeConversionContext WithIndex(string indexName, int indexValue)
         {
@@ -42,7 +50,7 @@ namespace VDrumExplorer.Data.Json
             {
                 { indexName, indexValue.ToString(CultureInfo.InvariantCulture) }
             };
-            return new VisualTreeConversionContext(moduleJson, fieldsByPath, Path, newIndexes);
+            return new VisualTreeConversionContext(moduleJson, fieldsByPath, lookupsByPath, Path, newIndexes);
         }
 
         internal Container GetContainer(string relativePath)
@@ -63,22 +71,39 @@ namespace VDrumExplorer.Data.Json
             return primitive!;
         }
 
-        private FieldPath GetPath(string relativePath) => Path + ReplaceIndexes(relativePath);
+        private FieldPath GetPath(string relativePath)
+        {
+            var replaced = ReplaceIndexes(relativePath);
+            return replaced.StartsWith("/") ? new FieldPath(replaced.Substring(1)) : Path + replaced;
+        }
 
         internal VisualTreeConversionContext WithPath(string relativePath) =>
-            new VisualTreeConversionContext(moduleJson, fieldsByPath, GetPath(relativePath), indexes);
+            new VisualTreeConversionContext(moduleJson, fieldsByPath, lookupsByPath, GetPath(relativePath), indexes);
 
-        internal int? GetRepeat(string? repeat) => moduleJson.GetRepeat(repeat);
+        internal int? GetRepeat(string? repeat) => moduleJson.GetCount(repeat);
 
         internal FormattableDescription BuildDescription(string formatString, IEnumerable<string> formatPaths)
         {
             formatString = ReplaceIndexes(formatString);
             var formatFields = formatPaths
                 .Select(GetPath)
-                .Select(p => (IPrimitiveField) fieldsByPath[p])
+                .Select(GetFormattableString)
                 .ToList()
                 .AsReadOnly();
             return new FormattableDescription(formatString, formatFields);
+        }
+
+        private IModuleDataFormattableString GetFormattableString(FieldPath path)
+        {
+            if (fieldsByPath.TryGetValue(path, out var field) && field is IPrimitiveField primitive)
+            {
+                return new FieldFormattableString(primitive);
+            }
+            if (lookupsByPath.TryGetValue(path, out var lookupValue))
+            {
+                return new LookupFormattableString(path, lookupValue);
+            }
+            throw new InvalidOperationException($"Path {path} not found as a primitive field or lookup");
         }
 
         private string ReplaceIndexes(string text)

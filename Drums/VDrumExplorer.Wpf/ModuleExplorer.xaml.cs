@@ -103,7 +103,12 @@ namespace VDrumExplorer.Wpf
                     Header = vnode.Description.Format(module.Data),
                     Tag = vnode
                 };
-                foreach (var address in vnode.Description.FormatFieldsOrEmpty.Select(field => module.Data.GetSegment(field.Address).Start).Distinct())
+                var segmentStarts = vnode.Description.FormatFieldsOrEmpty
+                    .Select(field => field.Address)
+                    .Where(address => address != null)
+                    .Select(address => module.Data.GetSegment(address.Value).Start)
+                    .Distinct();
+                foreach (var address in segmentStarts)
                 {
                     boundItems.Add((node, address));
                 }                
@@ -435,6 +440,8 @@ namespace VDrumExplorer.Wpf
                 return;
             }
 
+            // TODO: We should copy all the segments from the container down.
+            
             // Find all the segments we need.
             var segments = new HashSet<DataSegment>();
             foreach (var detail in node.Details)
@@ -450,7 +457,9 @@ namespace VDrumExplorer.Wpf
                 {
                     var addresses = detail.DetailDescriptions
                         .SelectMany(dd => dd.FormatFieldsOrEmpty)
-                        .Select(field => field.Address);
+                        .Select(field => field.Address)
+                        .Where(address => address != null)
+                        .Select(address => address.Value);
                     foreach (var address in addresses)
                     {
                         segments.Add(module.Data.GetSegment(address));
