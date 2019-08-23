@@ -13,14 +13,15 @@
       ]
     },
     {
+      "name": "CompSwitch",
       "offset": "0x01",
-      "description": "Comp switch",
+      "description": "Compressor switch",
       "type": "boolean"
     },
     {
       "name": "CompType",
       "offset": "0x02",
-      "description": "Comp type",
+      "description": "Compressor type",
       "type": "enum",
       "values": [
         "Kick 1",
