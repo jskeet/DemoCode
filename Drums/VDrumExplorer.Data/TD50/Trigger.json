@@ -10,14 +10,16 @@
     {
       "name": "TrigAnalog",
       "offset": "0x01_00",
-      "description": "Trigger Analog",
+      "description": "{1} Trigger Analog",
+      "descriptionLookup": "triggers",
       "type": "container:TrigAnalog",
       "repeat": "$triggers",
       "gap": "0x1_00"
     },
     {
       "offset": "0x0f_00",
-      "description": "Trigger Digital",
+      "description": "{1} Trigger Digital",
+      "descriptionLookup": "triggers",
       "type": "container:TrigDigital",
       "repeat": "$triggers",
       "gap": "0x1_00"

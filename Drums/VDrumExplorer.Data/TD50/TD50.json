@@ -59,6 +59,20 @@
         "Aux 3",
         "Aux 4"
       ]
+    },
+    {
+      "name": "extraOutputs",
+      "size": "$extraOutputs",
+      "values": [
+        "MFX 1",
+        "MFX 2",
+        "MFX 3",
+        "Song",
+        "Click",
+        "Mix in",
+        "USB in main",
+        "USB in sub"
+      ]
     }
   ],
   "counts": {
@@ -66,7 +80,8 @@
     "instruments": 28,
     "triggers": 14,
     "setLists": 32,
-    "mfx":  3
+    "mfx": 3,
+    "extraOutputs": 8
   },
   "containers": [
     "$resource:Root.json",

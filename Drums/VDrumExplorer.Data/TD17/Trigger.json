@@ -8,8 +8,10 @@
       "type": "container:TrigMisc"
     },
     {
+      "name": "Trigger",
       "offset": "0x01_00",
-      "description": "Trigger",
+      "description": "{1} Trigger",
+      "descriptionLookup": "triggers",
       "type": "container:Trig",
       "repeat": "$triggers",
       "gap": "0x1_00"

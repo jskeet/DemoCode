@@ -56,7 +56,7 @@
             <TreeView x:Name="treeView" Grid.Column="0" SelectedItemChanged="HandleTreeViewSelection" />
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
-                <StackPanel Margin="5,0,0,0" x:Name="detailsPanel" Grid.Column="2" />
+                <StackPanel Margin="5,0,5,0" x:Name="detailsPanel" Grid.Column="2" />
             </ScrollViewer>
         </Grid>
     </DockPanel>

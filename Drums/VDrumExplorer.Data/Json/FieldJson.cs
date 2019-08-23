@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using VDrumExplorer.Data.Fields;
 using static System.FormattableString;
@@ -47,7 +48,9 @@ namespace VDrumExplorer.Data.Json
         public string? Comment { get; set; }
 
         /// <summary>
-        /// Description to display.
+        /// Description to display. For repeated fields, this is a format string,
+        /// where {0} will be replaced with the element index, and {1} will be replaced
+        /// with the value from <see cref="DescriptionLookup"/>, if any.
         /// </summary>
         public string? Description { get; set; }
 
@@ -127,6 +130,11 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? Gap { get; set; }
 
         /// <summary>
+        /// For repeated fields only, a lookup to provide format values.
+        /// </summary>
+        public string? DescriptionLookup { get; set; }
+
+        /// <summary>
         /// For instrument fields only, the offset of the bank switch field from the
         /// instrument field.
         /// </summary>
@@ -141,7 +149,7 @@ namespace VDrumExplorer.Data.Json
         /// If set, the condition for the field to be enabled.
         /// </summary>
         public FieldConditionJson? Condition { get; set; }
-
+        
         public override string ToString() => Description ?? "(No description)";
 
         internal IEnumerable<IField> ToFields(ModuleSchema schema, ModuleJson module, FieldPath parentPath, ModuleAddress parentAddress)
@@ -160,9 +168,20 @@ namespace VDrumExplorer.Data.Json
             else
             {
                 var gap = ValidateNotNull(parentPath, Gap, nameof(Gap)).Value;
+                List<string>? lookup = null;
+                if (DescriptionLookup != null)
+                {
+                    ValidateNotNull(module.Lookups, nameof(module.Lookups));
+                    lookup = module.Lookups.FirstOrDefault(candidate => candidate.Name == DescriptionLookup)?.Values;
+                    Validate(lookup != null, "Lookup ${DescriptionLookup} not found for descriptions.");
+                    Validate(lookup!.Count == repeat,
+                        $"Lookup ${DescriptionLookup} has {lookup.Count} elements; field has repeats {repeat} times.");
+                }
                 for (int i = 1; i <= repeat; i++)
                 {
-                    string fullDescription = Invariant($"{description} ({i})");
+                    string indexValue = i.ToString(CultureInfo.InvariantCulture);
+                    string? lookupValue = lookup?[i - 1];
+                    string fullDescription = string.Format(Description, indexValue, lookupValue);
                     yield return ToField(schema, module, path.WithIndex(i), fullDescription, condition, address);
                     address += gap;
                 }

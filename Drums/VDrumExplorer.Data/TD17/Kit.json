@@ -28,7 +28,8 @@
     {
       "name": "KitUnitCommon",
       "offset": "0x20_00",
-      "description": "Kit Unit Common",
+      "description": "Kit Unit Common ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitUnitCommon",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -36,7 +37,8 @@
     {
       "name": "KitUnitMain",
       "offset": "0x40_00",
-      "description": "Kit Unit Main",
+      "description": "Kit Unit Main ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitUnitInst",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -44,7 +46,8 @@
     {
       "name": "KitUnitSub",
       "offset": "0x60_00",
-      "description": "Kit Unit Sub",
+      "description": "Kit Unit Sub ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitUnitInst",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -52,7 +55,8 @@
     {
       "name": "KitUnitVEditMain",
       "offset": "0x01_00_00",
-      "description": "Kit Unit VEdit Main",
+      "description": "Kit Unit VEdit Main ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitUnitVEdit",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -60,7 +64,8 @@
     {
       "name": "KitUnitVEditSub",
       "offset": "0x01_20_00",
-      "description": "Kit Unit VEdit Sub",
+      "description": "Kit Unit VEdit Sub ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitUnitVEdit",
       "repeat": "$instruments",
       "gap": "0x01_00"

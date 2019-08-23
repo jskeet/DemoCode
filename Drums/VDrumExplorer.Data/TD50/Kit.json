@@ -47,7 +47,7 @@
     {
       "name": "KitMfx",
       "offset": "0x10_00",
-      "description": "Kit Multi FX",
+      "description": "Kit Multi FX {0}",
       "type": "container:KitMfx",
       "repeat": "$mfx",
       "gap": "0x02_00"
@@ -55,7 +55,8 @@
     {
       "name": "KitPadCommon",
       "offset": "0x20_00",
-      "description": "Kit Pad Common",
+      "description": "Kit Pad Common ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitPadCommon",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -63,7 +64,8 @@
     {
       "name": "KitPadMain",
       "offset": "0x40_00",
-      "description": "Kit Pad Main",
+      "description": "Kit Pad Main ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitPadInst",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -71,7 +73,8 @@
     {
       "name": "KitPadSub",
       "offset": "0x60_00",
-      "description": "Kit Pad Sub",
+      "description": "Kit Pad Sub ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitPadInst",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -79,7 +82,8 @@
     {
       "name": "KitPadVEditMain",
       "offset": "0x01_00_00",
-      "description": "Kit Pad VEdit Main",
+      "description": "Kit Pad VEdit Main ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitPadVEdit",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -87,7 +91,8 @@
     {
       "name": "KitPadVEditSub",
       "offset": "0x01_20_00",
-      "description": "Kit Pad VEdit Sub",
+      "description": "Kit Pad VEdit Sub ({1})",
+      "descriptionLookup": "instruments",
       "type": "container:KitPadVEdit",
       "repeat": "$instruments",
       "gap": "0x01_00"
@@ -95,7 +100,8 @@
     {
       "name": "KitPad",
       "offset": "0x01_40_00",
-      "description": "Pad Compressor",
+      "description": "{1} Compressor",
+      "descriptionLookup": "triggers",
       "type": "container:KitPad",
       "repeat": "$triggers",
       "gap": "0x01_00"
