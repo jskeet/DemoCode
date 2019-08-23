@@ -65,13 +65,14 @@
               "format": "Instrument $instrument: {0} ({1})"
             },
             {
-              "description": "Kit Pads",
+              "description": "Pad Compressors",
               "repeat": "$kitPads",
               "index": "kitPad",
               "formatPaths": [
-                "KitPad[$kitPad]/CompType"
+                "KitPad[$kitPad]/CompType",
+                "KitPad[$kitPad]/CompSwitch"
               ],
-              "format": "Kit Pad $kitPad: {0}"
+              "format": "Pad Compressor $kitPad: {0} ({1})"
             },
             {
               "description": "Kit Multifx",
@@ -99,45 +100,96 @@
               "path": "KitStereoEnhancer"
             },
             {
-              "description": "Kit Master EQ",
+              "description": "Kit Master Equalizer",
               "path": "KitMasterEQ"
             },
             {
-              "description": "Kit Master Comp",
+              "description": "Kit Master Compressor",
               "path": "KitMasterComp"
-            },
+            }
           ],
           "children": [
             {
-              "repeat": "$instruments",
-              "index": "instrument",
-              "formatPaths": [
-                "KitPadMain[$instrument]/Instrument"
-              ],
+              "description": "Instruments",
               "path": ".",
-              "format": "Instrument $instrument: {0}",
-              //FIXME
-              //"midiNotePath": "KitMidi/Midi[$instrument]",
               "details": [
                 {
-                  "description": "Common",
-                  "path": "KitPadCommon[$instrument]"
-                },
+                  "description": "Instruments",
+                  "repeat": "$instruments",
+                  "index": "instrument",
+                  "formatPaths": [
+                    "KitPadMain[$instrument]/Instrument",
+                    "KitPadSub[$instrument]/Instrument"
+                  ],
+                  "format": "Instrument $instrument: {0} ({1})"
+                }
+              ],
+              "children": [
                 {
-                  "description": "Main instrument",
-                  "path": "KitPadMain[$instrument]"
-                },
+                  "repeat": "$instruments",
+                  "index": "instrument",
+                  "formatPaths": [
+                    "KitPadMain[$instrument]/Instrument"
+                  ],
+                  "path": ".",
+                  "format": "Instrument $instrument: {0}",
+                  "midiNotePath": "KitMidi/Midi[$instrument]",
+                  "details": [
+                    {
+                      "description": "Common",
+                      "path": "KitPadCommon[$instrument]"
+                    },
+                    {
+                      "description": "Main instrument",
+                      "path": "KitPadMain[$instrument]"
+                    },
+                    {
+                      "description": "Main VEdit",
+                      "path": "KitPadVEditMain[$instrument]"
+                    },
+                    {
+                      "description": "Sub instrument",
+                      "path": "KitPadSub[$instrument]"
+                    },
+                    {
+                      "description": "Sub VEdit",
+                      "path": "KitPadVEditSub[$instrument]"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "description": "Pad Compressors",
+              "path": ".",
+              "details": [
                 {
-                  "description": "Main VEdit",
-                  "path": "KitPadVEditMain[$instrument]"
-                },
+                  "description": "Pad Compressors",
+                  "repeat": "$kitPads",
+                  "index": "kitPad",
+                  "formatPaths": [
+                    "KitPad[$kitPad]/CompType",
+                    "KitPad[$kitPad]/CompSwitch"
+                  ],
+                  "format": "Pad Compressor $kitPad: {0} ({1})"
+                }
+              ],
+              "children": [
                 {
-                  "description": "Sub instrument",
-                  "path": "KitPadSub[$instrument]"
-                },
-                {
-                  "description": "Sub VEdit",
-                  "path": "KitPadVEditSub[$instrument]"
+                  "repeat": "$kitPads",
+                  "index": "kitPad",
+                  "formatPaths": [
+                    "CompType",
+                    "CompSwitch"
+                  ],
+                  "path": "KitPad[$kitPad]",
+                  "format": "Pad Compressor $kitPad: {0} ({1})",
+                  "details": [
+                    {
+                      "description": "Kit Pad Compressor Details",
+                      "path": "."
+                    }
+                  ]
                 }
               ]
             },
@@ -152,21 +204,6 @@
               "details": [
                 {
                   "description": "Multifx details",
-                  "path": "."
-                }
-              ]
-            },
-            {
-              "repeat": "$kitPads",
-              "index": "kitPad",
-              "formatPaths": [
-                "CompType"
-              ],
-              "path": "KitPad[$kitPad]",
-              "format": "Kit Pad $kitPad: {0}",
-              "details": [
-                {
-                  "description": "Kit Pad Details",
                   "path": "."
                 }
               ]
@@ -226,7 +263,21 @@
         }
       ],
       "children": [
-        // FIXME
+        {
+          "repeat": "$triggers",
+          "index": "trigger",
+          "formatPaths": [
+            "PadType"
+          ],
+          "format": "Trigger $trigger: {0}",
+          "path": "TrigAnalog[$trigger]",
+          "details": [
+            {
+              "description": "Trigger Details",
+              "path": "."
+            }
+          ]
+        }        
       ]
     }
   ]

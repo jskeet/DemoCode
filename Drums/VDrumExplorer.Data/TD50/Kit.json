@@ -35,7 +35,7 @@
     {
       "name": "KitMasterComp",
       "offset": "0x06_00",
-      "description": "Kit Master Comp",
+      "description": "Kit Master Compressor",
       "type": "container:KitMasterComp"
     },
     {
@@ -95,7 +95,7 @@
     {
       "name": "KitPad",
       "offset": "0x01_40_00",
-      "description": "Kit Pad",
+      "description": "Pad Compressor",
       "type": "container:KitPad",
       "repeat": "$kitPads",
       "gap": "0x01_00"

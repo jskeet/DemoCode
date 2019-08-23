@@ -4,7 +4,7 @@
   "fields": [
     {
       "offset": "0x00",
-      "description": "Comp on/off",
+      "description": "Compressor on/off",
       "type": "boolean"
     },
     {
@@ -12,11 +12,11 @@
       "description": "Type",
       "type": "enum",
       "values": [
-        "Single soft comp",
-        "Single hard comp",
+        "Single soft compressor",
+        "Single hard compressor",
         "Single limiter",
-        "2 band soft comp",
-        "2 band hard comp",
+        "2 band soft compressor",
+        "2 band hard compressor",
         "2 band limiter"
       ]
     },

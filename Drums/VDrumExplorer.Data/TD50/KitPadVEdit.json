@@ -41,7 +41,8 @@
           "$resource:VEdit/Other.json",
           "$resource:VEdit/Other.json",
           "$resource:VEdit/SnareBrush.json",
-          "$resource:VEdit/TomBrush.json"
+          "$resource:VEdit/TomBrush.json",
+          "$resource:VEdit/Other.json"
         ]
       }
     }
