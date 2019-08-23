@@ -14,9 +14,8 @@
       "offset": "0x03",
       "description": "Thickness",
       "type": "range16",
-      "min": 0,
-      "max": 10,
-      "valueOffset": -5
+      "min": -5,
+      "max": 5
     },
     {
       "offset": "0x05",
