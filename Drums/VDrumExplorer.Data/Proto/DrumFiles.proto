@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+// Copyright 2019 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+
+option csharp_namespace = "VDrumExplorer.Data.Proto";
+
+message DrumFile
+{
+    oneof file
+	{
+	    Module module = 1;
+		Kit kit = 2;
+	}
+}
+
+// An identifier for a module, used to match a schema with a file or device.
+message ModuleIdentifier
+{
+    string name = 1;
+	int32 model_id = 2;
+	int32 family_code = 3;
+	int32 family_number_code = 4;
+}
+
+// A segment of data within a module.
+message DataSegment
+{
+    int32 start = 1;
+	bytes data = 2;
+}
+
+// Complete data for a module.
+message Module
+{
+    ModuleIdentifier identifier = 1;
+	repeated DataSegment segments = 2;
+}
+
+// A kit within a module. The data will start at address 0,
+// to be relocated to wherever it needs to be loaded.
+message Kit
+{
+    ModuleIdentifier identifier = 1;
+	repeated DataSegment segments = 2;
+}

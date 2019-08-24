@@ -10,6 +10,8 @@ using System.Text;
 
 namespace VDrumExplorer.Data
 {
+    // TODO: Remove all attempts at thread safety?
+
     /// <summary>
     /// The data within a module, as a collection of populated non-overlapping segments.
     /// </summary>
@@ -133,6 +135,8 @@ namespace VDrumExplorer.Data
 
         public bool HasData(ModuleAddress address) => GetSegmentOrNull(address) != null;
 
+        internal List<DataSegment> GetSegments() => segments.ToList();
+        
         public DataSegment GetSegment(ModuleAddress address) =>
             GetSegmentOrNull(address) ?? throw new ArgumentException($"No data found for {address}");
 
