@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using VDrumExplorer.Data;
 
@@ -17,7 +18,7 @@ namespace VDrumExplorer.Gui
         static void Main()
         {
             // Validate nice and early...
-            SchemaRegistry.GetSchemas();
+            SchemaRegistry.KnownSchemas.Values.Select(lazy => lazy.Value).ToList();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

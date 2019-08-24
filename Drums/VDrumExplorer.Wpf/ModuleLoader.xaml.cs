@@ -27,17 +27,27 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
             logger = new TextBlockLogger(logPanel);
             Loaded += OnLoaded;
+            Loaded += LoadSchemaRegistry;
             Closed += OnClosed;
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            logger.Log("Loading schema registry");
-            await Task.Run(SchemaRegistry.GetSchemas);
             var midiDevice = await DetectMidiDeviceAsync();
             detectedMidi = midiDevice;
             loadFromDeviceButton.IsEnabled = detectedMidi.HasValue;
             logger.Log("-----------------");
+        }
+
+        private async void LoadSchemaRegistry(object sender, RoutedEventArgs e)
+        {
+            logger.Log($"Loading known schemas");
+            foreach (var pair in SchemaRegistry.KnownSchemas)
+            {
+                logger.Log($"Loading schema for {pair.Key.Name}");
+                await Task.Run(() => pair.Value.Value);
+            }
+            logger.Log($"Finished loading schemas");
         }
 
         private void OnClosed(object sender, EventArgs e)
@@ -93,19 +103,19 @@ namespace VDrumExplorer.Wpf
                 // Half a second should be plenty of time.
                 await Task.Delay(500);
             }
-            var schemas = SchemaRegistry.GetSchemas();
+            var schemaKeys = SchemaRegistry.KnownSchemas.Keys;
             var responseList = responses.OrderBy(r => r.DeviceId).ToList();
-            ModuleSchema matchedSchema = null;
+            ModuleIdentifier matchedIdentifier = null;
             IdentityResponse matchedResponse = null;
             int matchCount = 0;
             foreach (var response in responseList)
             {
-                var match = schemas.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
+                var match = schemaKeys.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
                 string matchLog = match == null ? "No matching schema" : $"Matches schema {match.Name}";
                 logger.Log($"Detected device ID {response.DeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
                 if (match != null)
                 {
-                    matchedSchema = match;
+                    matchedIdentifier = match;
                     matchedResponse = response;
                     matchCount++;
                 }
@@ -116,8 +126,9 @@ namespace VDrumExplorer.Wpf
                     logger.Log($"No devices with a known schema. Abandoning MIDI detection.");
                     return null;
                 case 1:
-                    logger.Log($"Using device {matchedResponse.DeviceId} with schema {matchedSchema.Name}.");
-                    return (new SysExClient(inputId, outputId, matchedSchema.ModelId, matchedResponse.DeviceId), matchedSchema);
+                    logger.Log($"Using device {matchedResponse.DeviceId} with schema {matchedIdentifier.Name}.");
+                    var schema = SchemaRegistry.KnownSchemas[matchedIdentifier].Value;
+                    return (new SysExClient(inputId, outputId, matchedIdentifier.ModelId, matchedResponse.DeviceId), schema);
                 default:
                     logger.Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
                     return null;

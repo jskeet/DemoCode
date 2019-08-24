@@ -173,19 +173,19 @@ namespace VDrumExplorer.Gui
                 // Half a second should be plenty of time.
                 await Task.Delay(500);                
             }
-            var schemas = SchemaRegistry.GetSchemas();
+            var schemaKeys = SchemaRegistry.KnownSchemas.Keys;
             var responseList = responses.OrderBy(r => r.DeviceId).ToList();
-            ModuleSchema matchedSchema = null;
+            ModuleIdentifier matchedIdentifier = null;
             IdentityResponse matchedResponse = null;
             int matchCount = 0;
             foreach (var response in responseList)
             {
-                var match = schemas.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
+                var match = schemaKeys.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
                 string matchLog = match == null ? "No matching schema" : $"Matches schema {match.Name}";
                 Log($"Detected device ID {response.DeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
                 if (match != null)
                 {
-                    matchedSchema = match;
+                    matchedIdentifier = match;
                     matchedResponse = response;
                     matchCount++;
                 }
@@ -196,8 +196,8 @@ namespace VDrumExplorer.Gui
                     Log($"No devices with a known schema. Abandoning MIDI detection.");
                     return null;
                 case 1:
-                    Log($"Using device {matchedResponse.DeviceId} with schema {matchedSchema.Name}.");
-                    return (new SysExClient(inputId, outputId, matchedSchema.ModelId, matchedResponse.DeviceId), matchedSchema);
+                    Log($"Using device {matchedResponse.DeviceId} with schema {matchedIdentifier.Name}.");
+                    return (new SysExClient(inputId, outputId, matchedIdentifier.ModelId, matchedResponse.DeviceId), SchemaRegistry.KnownSchemas[matchedIdentifier].Value);
                 default:
                     Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
                     return null;

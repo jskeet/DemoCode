@@ -28,13 +28,11 @@ namespace VDrumExplorer.Data
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
             {
                 header = Header.Load(reader);
-                foreach (var schema in SchemaRegistry.GetSchemas())
+                var identifier = header.ToIdentifier();
+                if (SchemaRegistry.KnownSchemas.TryGetValue(identifier, out var schema))
                 {
-                    if (header.Equals(Header.FromSchema(schema)))
-                    {
-                        var data = ModuleData.Load(reader);
-                        return new Module(schema, data);
-                    }
+                    var data = ModuleData.Load(reader);
+                    return new Module(schema.Value, data);
                 }
             }
             throw new InvalidOperationException($"No built-in schemas match the file's header ({header})");
@@ -80,6 +78,9 @@ namespace VDrumExplorer.Data
             public int FamilyNumberCode { get; }
             public string Name { get; }
 
+            public ModuleIdentifier ToIdentifier() => new ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
+            
+            
             public Header(int formatVersion, int modelId, int familyCode, int familyNumberCode, string name) =>
                 (FormatVersion, ModelId, FamilyCode, FamilyNumberCode, Name) = (formatVersion, modelId, familyCode, familyNumberCode, name);
 
