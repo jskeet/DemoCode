@@ -2,12 +2,12 @@
   "fields": [
     {
       "offset": "0x06",
-      "description": "Tempo sync left",
+      "description": "Tempo Sync Left",
       "type": "boolean32"
     },
     {
       "offset": "0x0a",
-      "description": "Delay left time (milliseconds)",
+      "description": "Delay Left Time (milliseconds)",
       "type": "range32",
       "suffix": "ms",
       "min": 1,
@@ -19,7 +19,7 @@
     },
     {
       "offset": "0x0e",
-      "description": "Delay left time (note)",
+      "description": "Delay Left Time (note)",
       "type": "musicalNote",
       "condition": {
         "offset": "0x06",
@@ -28,12 +28,12 @@
     },
     {
       "offset": "0x12",
-      "description": "Tempo sync right",
+      "description": "Tempo Sync right",
       "type": "boolean32"
     },
     {
       "offset": "0x16",
-      "description": "Delay right time (milliseconds)",
+      "description": "Delay Right time (milliseconds)",
       "type": "range32",
       "suffix": "ms",
       "min": 1,
@@ -45,7 +45,7 @@
     },
     {
       "offset": "0x1a",
-      "description": "Delay right time (note)",
+      "description": "Delay Right time (note)",
       "type": "musicalNote",
       "condition": {
         "offset": "0x12",
@@ -54,7 +54,7 @@
     },
     {
       "offset": "0x21",
-      "description": "Phase left",
+      "description": "Phase Left",
       "type": "enum",
       "values": [
         "Normal",
@@ -63,7 +63,7 @@
     },
     {
       "offset": "0x25",
-      "description": "Phase right",
+      "description": "Phase Right",
       "type": "enum",
       "values": [
         "Normal",
@@ -90,9 +90,9 @@
       "suffix": "%"
     },
     {
-      "offset": "0x31",
-      "description": "High frequency damp",
-      "type": "enum",
+      "offset": "0x2e",
+      "description": "High Frequency Damp",
+      "type": "enum32",
       "values": [
         "200Hz",
         "250Hz",
@@ -116,7 +116,7 @@
     },
     {
       "offset": "0x32",
-      "description": "Low gain",
+      "description": "Low Gain",
       "type": "range32",
       "min": 0,
       "max": 30,
@@ -125,7 +125,7 @@
     },
     {
       "offset": "0x36",
-      "description": "High gain",
+      "description": "High Gain",
       "type": "range32",
       "min": 0,
       "max": 30,

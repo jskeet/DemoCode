@@ -41,7 +41,7 @@
     },
     {
       "offset": "0x1a",
-      "description": "Tempo sync",
+      "description": "Tempo Sync",
       "type": "enum32",
       "values": [
         "Off",
