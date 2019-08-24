@@ -15,4 +15,8 @@
     <EmbeddedResource Include="TD17/**/*.json" />
     <EmbeddedResource Include="TD50/**/*.json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Proto\" />
+  </ItemGroup>
 </Project>

@@ -10,18 +10,15 @@ namespace VDrumExplorer.Data
     // TODO: Not really sure what to do with this, static/instance methods, non-public etc.
     public static class SchemaRegistry
     {
-        // The laziness is primarily to avoid loading data within a type initializer, which causes all kinds of problems.
-        private static readonly Lazy<ModuleSchema> td17 =
-            new Lazy<ModuleSchema>(() => ModuleSchema.FromAssemblyResources(typeof(SchemaRegistry).Assembly, "VDrumExplorer.Data.TD17", "TD17.json"));
-        private static readonly Lazy<ModuleSchema> td50 =
-            new Lazy<ModuleSchema>(() => ModuleSchema.FromAssemblyResources(typeof(SchemaRegistry).Assembly, "VDrumExplorer.Data.TD50", "TD50.json"));
+        public static IReadOnlyDictionary<ModuleIdentifier, Lazy<ModuleSchema>> KnownSchemas { get; }
+            = new Dictionary<ModuleIdentifier, Lazy<ModuleSchema>>
+        {
+            { ModuleIdentifier.TD17, CreateLazySchema("VDrumExplorer.Data.TD17", "TD17.json") },
+            { ModuleIdentifier.TD50, CreateLazySchema("VDrumExplorer.Data.TD50", "TD50.json") }
 
-        public static IReadOnlyList<ModuleSchema> GetSchemas() =>
-            new List<ModuleSchema>
-            {
-                td17.Value,
-                td50.Value
-            }
-            .AsReadOnly();
+        }.AsReadOnly();
+        
+        private static Lazy<ModuleSchema> CreateLazySchema(string resourceBase, string resourceName) =>
+            new Lazy<ModuleSchema>(() => ModuleSchema.FromAssemblyResources(typeof(SchemaRegistry).Assembly, resourceBase, resourceName));
     }
 }
