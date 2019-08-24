@@ -49,7 +49,7 @@ namespace VDrumExplorer.Wpf
             {
                 Stopwatch sw = Stopwatch.StartNew();
                 var containers = schema.Root.DescendantsAndSelf().OfType<Container>().Where(c => c.Loadable).ToList();
-                logger.Log($"Loading {containers.Count} containers from device {schema.Name}");
+                logger.Log($"Loading {containers.Count} containers from device {schema.Identifier.Name}");
                 progress.Maximum = containers.Count;
                 int loaded = 0;
                 foreach (var container in containers)

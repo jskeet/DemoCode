@@ -121,7 +121,7 @@ namespace VDrumExplorer.Data
 
             // TODO: Work out how to handle compatibility.
             public static Header FromSchema(ModuleSchema schema) =>
-                new Header(CurrentFormatVersion, schema.ModelId, schema.FamilyCode, schema.FamilyNumberCode, schema.Name);
+                new Header(CurrentFormatVersion, schema.Identifier.ModelId, schema.Identifier.FamilyCode, schema.Identifier.FamilyNumberCode, schema.Identifier.Name);
 
             public override string ToString() => $"Name: {Name}; Midi ID: {ModelId}; Family code: {FamilyCode}; Family number code: {FamilyNumberCode}";
         }
