@@ -47,7 +47,7 @@ namespace VDrumExplorer.Wpf
                 mainPanel.Children.Remove(midiPanel);
             }
             module.Data.DataChanged += HandleModuleDataChanged;            
-            Title = $"Module explorer: {module.Schema.Name}";
+            Title = $"Module explorer: {module.Schema.Identifier.Name}";
             LoadView(ViewMode.Logical);
         }
 

@@ -233,7 +233,7 @@ namespace VDrumExplorer.Gui
                 Controls.Add(label);
                 Controls.Add(progress);
                 Padding = new Padding(5);
-                Text = $"Loading {schema.Name}";
+                Text = $"Loading {schema.Identifier.Name}";
                 AutoSize = true;
                 Size = new Size(500, 0);
                 //AutoSizeMode = AutoSizeMode.GrowAndShrink;

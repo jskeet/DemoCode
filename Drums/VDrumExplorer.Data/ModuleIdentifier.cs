@@ -45,5 +45,7 @@ namespace VDrumExplorer.Data
             (other.Name, other.ModelId, other.FamilyCode, other.FamilyNumberCode) == (Name, ModelId, FamilyCode, FamilyNumberCode);
 
         public override int GetHashCode() => (Name, ModelId, FamilyCode, FamilyNumberCode).GetHashCode();
+
+        public override string ToString() => $"Name: {Name}; ModelId: {ModelId}; FamilyCode: {FamilyCode}; FamilyNumberCode: {FamilyNumberCode}";
     }
 }

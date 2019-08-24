@@ -18,26 +18,11 @@ namespace VDrumExplorer.Data
     /// can be populated by a <see cref="ModuleData"/>.
     /// </summary>
     public sealed class ModuleSchema
-    {        
+    {
         /// <summary>
-        /// The name of the module, e.g. "TD-17".
+        /// The identifier for the module.
         /// </summary>
-        public string Name { get; }
-        
-        /// <summary>
-        /// The ID of the module.
-        /// </summary>
-        public int ModelId { get; }
-        
-        /// <summary>
-        /// The family code as reported by a Midi identity response.
-        /// </summary>
-        public int FamilyCode { get; }
-
-        /// <summary>
-        /// The family number code as reported by a Midi identity response.
-        /// </summary>
-        public int FamilyNumberCode { get; }
+        public ModuleIdentifier Identifier { get; }
 
         public Container Root { get; set; }
 
@@ -75,10 +60,7 @@ namespace VDrumExplorer.Data
             // Note: we populate everything other than the fields first, so that field
             // construction can rely on it.
             json.Validate();
-            Name = json.Name!;
-            ModelId = json.ModelId!.Value;
-            FamilyCode = json.FamilyCode!.Value;
-            FamilyNumberCode = json.FamilyNumberCode!.Value;
+            Identifier = new ModuleIdentifier(json.Name!, json.ModelId!.Value, json.FamilyCode!.Value, json.FamilyNumberCode!.Value);
             InstrumentGroups = json.BuildInstrumentGroups();
             PresetInstruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
