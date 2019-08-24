@@ -225,9 +225,9 @@
         {
           "description": "Set Lists",
           "repeat": "$setLists",
-          "index": "setLists",
+          "index": "setList",
           "formatPaths": [
-            "SetList[$setLists]/Name"
+            "SetList[$setList]/Name"
           ],
           "format": "Set List $setList: {0}"
         }
