@@ -138,7 +138,7 @@ namespace VDrumExplorer.Wpf
         private void LoadFile(object sender, RoutedEventArgs e)
         {
             string fileName;
-            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false };
+            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "VDrum Explorer files|*.vdrum" };
             if (dialog.ShowDialog() != true)
             {
                 return;

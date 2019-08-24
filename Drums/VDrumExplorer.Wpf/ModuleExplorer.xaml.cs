@@ -70,7 +70,7 @@ namespace VDrumExplorer.Wpf
 
         private void SaveFile(object sender, EventArgs e)
         {
-            var dialog = new SaveFileDialog();
+            var dialog = new SaveFileDialog { Filter = "VDrum Explorer files|*.vdrum" };
             var result = dialog.ShowDialog();
             if (result != true)
             {
