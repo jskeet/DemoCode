@@ -1,4 +1,44 @@
 ﻿{
   "fields": [
+    {
+      "offset": "0x06",
+      "description": "Speed",
+      "type": "range32",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "offset": "0x0a",
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+
+    {
+      "offset": "0x0e",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x12",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x16",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }

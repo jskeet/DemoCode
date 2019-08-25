@@ -1,4 +1,82 @@
 ﻿{
   "fields": [
+    {
+      "offset": "0x06",
+      "description": "Type",
+      "type": "enum32",
+      "values": [
+        "Room 1",
+        "Room 2",
+        "Stage 1",
+        "Stage 2",
+        "Hall 1",
+        "Hall 2"
+      ]
+    },
+    {
+      // TODO: This is awkward. See Chorus for details.
+      "offset": "0x0a",
+      "description": "Pre Delay",
+      "type": "range32",
+      "min": 0,
+      "max": 125
+    },
+    {
+      "offset": "0x0e",
+      "description": "Time",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x12",
+      "description": "High Frequency Damp",
+      "type": "enum",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "offset": "0x16",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1a",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x22",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }
