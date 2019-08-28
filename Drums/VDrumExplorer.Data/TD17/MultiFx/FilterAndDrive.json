@@ -1,4 +1,32 @@
 ﻿{
   "fields": [
+    {
+      "offset": "0x06",
+      "description": "Cutoff",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Resonance",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0e",
+      "description": "Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x12",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }
