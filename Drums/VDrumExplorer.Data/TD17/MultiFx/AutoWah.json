@@ -5,8 +5,8 @@
       "description": "Filter type",
       "type": "enum32",
       "values": [
-        "Low-pass filter",
-        "High-pass filter"
+        "Low-pass Filter",
+        "High-pass Filter"
       ]
     },
     {
