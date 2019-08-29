@@ -63,7 +63,15 @@ namespace PatternsAndRanges
               : throw new ArgumentOutOfRangeException()
         };
 
-        static int Fib5(int n)
+        static int Fib5(int n) => n switch
+        {
+            _ when n < 0 => throw new ArgumentOutOfRangeException(),
+            0 => 0,
+            1 => 1,
+            _ => Fib5(n - 1) + Fib5(n - 2)
+        };
+
+        static int Fib6(int n)
         {
             return Impl((0, 1), 0);
 

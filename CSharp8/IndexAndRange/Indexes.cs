@@ -7,6 +7,7 @@ namespace IndexAndRange
         static void Main()
         {
             string text = "Conference";
+            Console.WriteLine(text[^1]);
             Index index = 1;
             Console.WriteLine(index);
             Console.WriteLine(text[index]);
