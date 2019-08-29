@@ -1,31 +1,27 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Async
 {
     class AsyncIterator
     {
-        private readonly IGeoService service;
-
-        public AsyncIterator(IGeoService service) =>
-            this.service = service;
-
-        /*
-         * Expected code: does not yet compile.
-        public async IAsyncEnumerable<string> ListCitiesAsync()
+        static async Task Main()
         {
-            string pageToken = null;
-            do
+            await foreach (var item in ListStringsAsync())
             {
-                var request = new ListCitiesRequest(pageToken);
-                var response = await service.ListCitiesAsync(request);
-                foreach (var city in response.Cities)
-                {
-                    yield return city;
-                }
-                pageToken = response.NextPageToken;
-            } while (pageToken != null);
+                Console.WriteLine(item);
+            }
         }
-        */
+
+        private static async IAsyncEnumerable<string> ListStringsAsync()
+        {
+            yield return "First";
+            await Task.Delay(1000);
+            yield return "Second";
+            await Task.Delay(1000);
+            yield return "Third";
+        }
     }
 }
