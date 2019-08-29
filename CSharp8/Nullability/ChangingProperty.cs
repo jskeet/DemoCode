@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nullability
 {
     class ChangingProperty
     {
-        string? Name { get; set; }
+        string? Name => DateTime.UtcNow.Second == 0 ? null : "not null";
+
+        static void Main()
+        {
+            var instance = new ChangingProperty();
+            instance.PrintNameLength();
+        }
 
         public void PrintNameLength()
         {

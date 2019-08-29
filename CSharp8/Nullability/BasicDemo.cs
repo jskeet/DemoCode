@@ -12,13 +12,9 @@ namespace Nullability
         public string LastName { get; }
         public string MiddleName { get; }
 
-        public Person(string firstName, string lastName, string middleName)
-        {
-            // TODO: Validate arguments
-            FirstName = firstName;
-            LastName = lastName;
-            MiddleName = middleName;
-        }
+        // TODO: Validate arguments
+        public Person(string firstName, string lastName, string middleName) =>
+            (FirstName, LastName, MiddleName) = (firstName, lastName, middleName);
     }
 
     class BasicDemo

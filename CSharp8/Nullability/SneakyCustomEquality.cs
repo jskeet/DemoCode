@@ -13,7 +13,7 @@ namespace Nullability
         public static bool operator
             !=(SneakyCustomEquality? lhs, SneakyCustomEquality? rhs) => true;
         public override int GetHashCode() => 0;
-        public override bool Equals(object obj) => false;
+        public override bool Equals(object? obj) => false;
 
         static void Main()
         {

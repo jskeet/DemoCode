@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Nullability
 {
@@ -6,11 +7,9 @@ namespace Nullability
     {
         static void Main()
         {
+            // Infer nullability of an argument based on the return value.
             string? text = null;
-            // string.IsNullOrEmpty will definitely return true for null
-            // input. It will return false for *some* but not all non-null 
-            // input. How can the compiler know what this means?
-            if (string.IsNullOrEmpty(text))
+            if (StringIsNullOrEmpty(text))
             {
                 Console.WriteLine("It was null or empty");
             }
@@ -19,6 +18,34 @@ namespace Nullability
                 // This should be okay - we know text isn't null
                 // at this point.
                 Console.WriteLine(text.Length);
+            }
+
+            // Type system says value will be not-null.
+            // Attribute says it might actually be null.
+            // Interestingly, can't use "out string value" here
+            // even though that's the inferred type!
+            if (!TryGetValue(false, out var value))
+            {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                Console.WriteLine(value.Length);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }
+        }
+
+        static bool StringIsNullOrEmpty([NotNullWhen(false)] string? text) => string.IsNullOrEmpty(text);
+
+        // Imagine a Dictionary<bool, string>
+        static bool TryGetValue(bool key, [MaybeNullWhen(false)] out string value)
+        {
+            if (key)
+            {
+                value = "Found the key";
+                return true;
+            }
+            else
+            {
+                value = null!;
+                return false;
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Nullability
 {
@@ -11,7 +12,7 @@ namespace Nullability
             var comparer = new AwkwardInterface();
             // This should work
             comparer.Equals(null, null);
-            // This should warn - it's going to throw
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             comparer.GetHashCode(null);
         }
 
@@ -30,9 +31,9 @@ namespace Nullability
             return x.Length == y.Length;
         }
 
-        public int GetHashCode(string? obj)
+        // We're forced to use string? due to the interface, but we don't want to actually allow null.
+        public int GetHashCode([DisallowNull] string? obj)
         {
-            // That's a bit weird...
             if (obj == null)
             {
                 throw new ArgumentNullException();
