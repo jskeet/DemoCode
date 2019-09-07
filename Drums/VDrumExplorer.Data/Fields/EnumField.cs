@@ -10,11 +10,11 @@ namespace VDrumExplorer.Data.Fields
     {
         public IReadOnlyList<string> Values { get; }
 
-        internal EnumField(FieldBase.Parameters common, IReadOnlyList<string> values)
-            : base(common, 0, values.Count - 1) =>
+        internal EnumField(FieldBase.Parameters common, IReadOnlyList<string> values, int min)
+            : base(common, min, values.Count + min - 1) =>
             Values = values;
 
-        public override string GetText(ModuleData data) => Values[GetRawValue(data)];
+        public override string GetText(ModuleData data) => Values[GetRawValue(data) - Min];
 
         public override bool TrySetText(ModuleData data, string text)
         {
@@ -22,13 +22,13 @@ namespace VDrumExplorer.Data.Fields
             {
                 if (Values[i] == text)
                 {
-                    SetRawValue(data, i);
+                    SetRawValue(data, i + Min);
                     return true;
                 }
             }
             return false;
         }
 
-        public void SetValue(ModuleData data, int value) => SetRawValue(data, value);
+        public void SetValue(ModuleData data, int value) => SetRawValue(data, value + Min);
     }
 }

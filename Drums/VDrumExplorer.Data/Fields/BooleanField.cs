@@ -11,7 +11,7 @@ namespace VDrumExplorer.Data.Fields
         private static readonly IReadOnlyList<string> OffOnValues = new List<string> { "Off", "On" }.AsReadOnly();
 
         internal BooleanField(FieldBase.Parameters common)
-            : base(common, OffOnValues)
+            : base(common, OffOnValues, 0)
         {
         }
 
