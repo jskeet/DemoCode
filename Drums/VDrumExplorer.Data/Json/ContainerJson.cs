@@ -16,11 +16,6 @@ namespace VDrumExplorer.Data.Json
         public string? Comment { get; set; }
 
         /// <summary>
-        /// Name of the container.
-        /// </summary>
-        public string? Name { get; set; }
-        
-        /// <summary>
         /// Must be absent for all containers which reference other containers.
         /// Must be present for all containers with just primitive fields.
         /// </summary>
