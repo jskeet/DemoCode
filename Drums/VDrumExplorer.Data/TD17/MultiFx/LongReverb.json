@@ -15,11 +15,10 @@
       "max": 127
     },
     {
-      // FIXME: This is awkward. The values are 1-32 rather than 0-31
-      // Check this!
       "offset": "0x0e",
       "description": "Pre Low Pass Filter",
       "type": "enum32",
+      "min": 1,
       "values": [
         "16Hz",
         "20Hz",
@@ -140,11 +139,10 @@
       ]
     },
     {
-      // TODO: This is awkward. The values are 1-32 rather than 0-31
-      // Check this!
       "offset": "0x22",
       "description": "High Frequency Damp",
       "type": "enum32",
+      "min": 1,
       "values": [
         "16Hz",
         "20Hz",

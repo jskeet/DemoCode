@@ -214,7 +214,7 @@ namespace VDrumExplorer.Data.Json
                 "enum32" => BuildEnumField(4),
                 "dynamicOverlay" => BuildDynamicOverlay(),
                 "instrument" => new InstrumentField(BuildCommon(4), address + ValidateNotNull(BankOffset, nameof(BankOffset)).Value),
-                "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues),
+                "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0),
                 "volume32" => new NumericField(BuildCommon(4), -601, 60, 10, null, 0, "dB", (-601, "INF")),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
@@ -224,7 +224,7 @@ namespace VDrumExplorer.Data.Json
             };
 
             EnumField BuildEnumField(int size) =>
-                new EnumField(BuildCommon(size), ValidateNotNull(path, Values, nameof(Values)).AsReadOnly());
+                new EnumField(BuildCommon(size), ValidateNotNull(path, Values, nameof(Values)).AsReadOnly(), Min ?? 0);
 
             StringField BuildStringField(int bytesPerChar)
             {
