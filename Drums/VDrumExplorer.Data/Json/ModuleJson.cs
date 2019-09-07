@@ -31,7 +31,7 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? FamilyNumberCode { get; set; }
         public int? UserSamples { get; set; }
         public List<InstrumentGroupJson>? InstrumentGroups { get; set; }
-        public List<ContainerJson>? Containers { get; set; }
+        public Dictionary<string, ContainerJson>? Containers { get; set; }
         public VisualTreeNodeJson? LogicalTree { get; set; }
         public Dictionary<string, int>? Counts { get; set; }
         

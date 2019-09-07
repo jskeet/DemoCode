@@ -1,7 +1,4 @@
 ﻿{
-  // Done
-  // This will look ugly in the UI, admittedly...
-  "name": "KitMidi",
   "size": "0x013c",
   "fields": [
     {

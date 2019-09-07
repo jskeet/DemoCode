@@ -54,24 +54,24 @@
       ]
     }
   ],
-  "containers": [
-    "$resource:Root.json",
-    "$resource:Kit.json",
-    "$resource:Setup.json",
-    "$resource:Trigger.json",
-    "$resource:Current.json",
-    "$resource:KitCommon.json",
-    "$resource:KitMidi.json",
-    "$resource:KitAmbience.json",
-    "$resource:KitUnitInst.json",
-    "$resource:KitUnitCommon.json",
-    "$resource:Click.json",
-    "$resource:TrigMisc.json",
-    "$resource:Trig.json",
-    "$resource:SetupMisc.json",
-    "$resource:KitMfx.json",
-    "$resource:KitUnitVEdit.json"
-  ],
+  "containers": {
+    "Root": "$resource:Root.json",
+    "Kit": "$resource:Kit.json",
+    "Setup": "$resource:Setup.json",
+    "Trigger": "$resource:Trigger.json",
+    "Current": "$resource:Current.json",
+    "KitCommon": "$resource:KitCommon.json",
+    "KitMidi": "$resource:KitMidi.json",
+    "KitAmbience": "$resource:KitAmbience.json",
+    "KitUnitInst": "$resource:KitUnitInst.json",
+    "KitUnitCommon": "$resource:KitUnitCommon.json",
+    "Click": "$resource:Click.json",
+    "TrigMisc": "$resource:TrigMisc.json",
+    "Trig": "$resource:Trig.json",
+    "SetupMisc": "$resource:SetupMisc.json",
+    "KitMfx": "$resource:KitMfx.json",
+    "KitUnitVEdit": "$resource:KitUnitVEdit.json"
+  },
 
   "logicalTree": "$resource:LogicalTree.json"
 }
