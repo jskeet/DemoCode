@@ -13,6 +13,7 @@ namespace VDrumExplorer.Data.Fields
     public sealed class Container : FieldBase
     {
         public IReadOnlyList<IField> Fields { get; }
+        private readonly IDictionary<string, IField> fieldsByName;
         public bool Loadable { get; }
         public new int Size { get; }
 
@@ -22,7 +23,10 @@ namespace VDrumExplorer.Data.Fields
             Size = base.Size;
             Fields = fields;
             Loadable = !Fields.Any(f => f is Container);
+            fieldsByName = fields.ToDictionary(f => f.Name);
         }
+
+        internal IField GetField(string name) => fieldsByName[name];
 
         /// <summary>
         /// Returns all fields in this container recursively. Dynamic overlay fields are returned as they are,
