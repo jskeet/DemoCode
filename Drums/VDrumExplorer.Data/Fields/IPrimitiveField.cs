@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace VDrumExplorer.Data.Fields
 {
     /// <summary>
@@ -41,6 +43,6 @@ namespace VDrumExplorer.Data.Fields
         /// <param name="data">The data to validate against the field.</param>
         /// <param name="error">The error message, if any. Null otherwise.</param>
         /// <returns>true if the data is valid for this field; false otherwise.</returns>
-        bool Validate(FixedContainer context, ModuleData data, out string? error);
+        bool Validate(FixedContainer context, ModuleData data, [NotNullWhen(false)] out string? error);
     }
 }

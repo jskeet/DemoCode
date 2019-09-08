@@ -15,4 +15,13 @@ namespace System.Diagnostics.CodeAnalysis
     internal sealed class NotNullAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    public sealed class NotNullWhenAttribute : Attribute
+    {
+        public bool ReturnValue { get; set; }
+
+        public NotNullWhenAttribute(bool returnValue) =>
+            ReturnValue = returnValue;
+    }
 }
