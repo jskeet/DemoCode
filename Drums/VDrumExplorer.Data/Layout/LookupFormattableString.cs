@@ -16,5 +16,7 @@ namespace VDrumExplorer.Data.Layout
         public string Format(FixedContainer context, ModuleData data) => Value;
 
         public override string ToString() => $"{Path}: {Value}";
+
+        public ModuleAddress? GetSegmentAddress(FixedContainer context) => null;
     }
 }

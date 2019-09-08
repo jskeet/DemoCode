@@ -103,17 +103,10 @@ namespace VDrumExplorer.Wpf
                     Header = vnode.Description.Format(vnode.Context, module.Data),
                     Tag = vnode
                 };
-                /* FIXME
-                var segmentStarts = vnode.Description.FormatFieldsOrEmpty
-                    .Select(field => field.Address)
-                    .Where(address => address != null)
-                    .Select(address => module.Data.GetSegment(address.Value).Start)
-                    .Distinct();
-                foreach (var address in segmentStarts)
+                foreach (var address in vnode.Description.GetSegmentAddresses(vnode.Context))
                 {
                     boundItems.Add((node, address));
                 }
-                */
                 foreach (var vchild in vnode.Children)
                 {
                     var childNode = CreateNode(vchild);
@@ -156,13 +149,14 @@ namespace VDrumExplorer.Wpf
                     Tag = detail
                 };
                 detailsPanel.Children.Add(groupBox);
-                /* FIXME
+
                 if (grid.Tag is (DynamicOverlay overlay, Container currentContainer))
                 {
-                    var segmentStart = module.Data.GetSegment(overlay.SwitchAddress).Start;
+                    var container = detail.Container.FinalField;
+                    var detailContext = detail.Container.GetFinalContext(context).ToChildContext(container);
+                    var segmentStart = module.Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
-                */
             }
             detailGroupsToUpdateBySegmentStart = boundItems
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
@@ -227,7 +221,6 @@ namespace VDrumExplorer.Wpf
                 grid.Children.Add(value);
             }
 
-            // FIXME: This part is probably wrong.
             // Assumption: at most one dynamic overlay per container
             var overlay = context.Container.Fields.OfType<DynamicOverlay>().FirstOrDefault();
             if (overlay != null)
@@ -500,14 +493,17 @@ namespace VDrumExplorer.Wpf
                 foreach (var groupBox in detailGroupsToUpdateBySegmentStart[segment.Start])
                 {
                     var detail = (VisualTreeDetail) groupBox.Tag;
+
+                    var container = detail.Container.FinalField;
+                    var detailContext = detail.Container.GetFinalContext(context).ToChildContext(container);
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
-                    var currentContainer = overlay.GetOverlaidContainer(context, module.Data);
+                    var currentContainer = overlay.GetOverlaidContainer(detailContext, module.Data);
                     if (currentContainer != previousContainer)
                     {
                         // As the container has changed, let's reset the values to sensible defaults.
                         // This will itself trigger a change notification event, but that's okay.
-                        currentContainer.Reset(context, module.Data);
+                        currentContainer.Reset(detailContext, module.Data);
                         groupBox.Content = FormatContainer(context, detail);
                     }
                 }
