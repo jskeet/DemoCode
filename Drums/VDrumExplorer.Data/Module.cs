@@ -42,8 +42,10 @@ namespace VDrumExplorer.Data
                     count++;
                     if (!field.Validate(context, Data, out var message))
                     {
+                        string path = $"{annotatedContainer.Path}/{field.Name}";
+                        var address = context.Address + field.Offset;
                         // TODO: use NotNullWhen to avoid needing the dammit operator
-                        errors.Add(new ValidationError(annotatedContainer.AnnotateChildField(field), message!));
+                        errors.Add(new ValidationError(path, address, field, message!));
                     }
                 }
             }

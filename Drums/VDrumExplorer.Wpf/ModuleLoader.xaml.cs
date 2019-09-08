@@ -162,7 +162,7 @@ namespace VDrumExplorer.Wpf
             var validation = module.Validate();
             foreach (var error in validation.Errors)
             {
-                logger.Log($"Field {error.Field.Path} error: {error.Message}");
+                logger.Log($"Field {error.Path} error: {error.Message}");
             }
             logger.Log($"Validation complete. Total fields: {validation.TotalFields}. Errors: {validation.Errors.Count}");
             var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;

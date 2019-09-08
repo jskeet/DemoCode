@@ -22,8 +22,5 @@ namespace VDrumExplorer.Data.Fields
 
         public AnnotatedContainer AnnotateChildContainer(Container container) =>
             new AnnotatedContainer($"{Path}/{container.Name}", Context.ToChildContext(container));
-
-        public AnnotatedField AnnotateChildField(IField field) =>
-            new AnnotatedField($"{Path}/{field.Name}", field, Context.Address + field.Offset);
     }
 }
