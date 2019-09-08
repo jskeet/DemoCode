@@ -8,8 +8,16 @@ namespace VDrumExplorer.Data.Fields
     {
         ModuleSchema Schema { get; }
         string Description { get; }
-        FieldPath Path { get; }
-        ModuleAddress Address { get; }
         FieldCondition? Condition { get; }
+
+        /// <summary>
+        /// The unique name of this field within its parent container.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        ///  The offset of this field relative to its parent container.
+        /// </summary>
+        public int Offset { get; }
     }
 }

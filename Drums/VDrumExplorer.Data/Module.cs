@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Proto;
 
@@ -35,13 +34,17 @@ namespace VDrumExplorer.Data
         {
             int count = 0;
             var errors = new List<ValidationError>();
-            foreach (var field in Schema.Root.DescendantsAndSelf(Data).OfType<IPrimitiveField>())
+            foreach (var annotatedContainer in Schema.GetContainers())
             {
-                count++;
-                if (!field.Validate(Data, out var message))
+                var context = annotatedContainer.Context;
+                foreach (var field in context.GetPrimitiveFields(Data))
                 {
-                    // TODO: use an attribute to avoid needing the dammit operator
-                    errors.Add(new ValidationError(field, message!));
+                    count++;
+                    if (!field.Validate(context, Data, out var message))
+                    {
+                        // TODO: use NotNullWhen to avoid needing the dammit operator
+                        errors.Add(new ValidationError(annotatedContainer.AnnotateChildField(field), message!));
+                    }
                 }
             }
             return new ValidationResult(count, errors.AsReadOnly());

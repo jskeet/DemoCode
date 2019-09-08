@@ -26,7 +26,7 @@ namespace VDrumExplorer.Data.Json
         internal IEnumerable<VisualTreeNode> ConvertVisualNodes(VisualTreeConversionContext parentContext)
         {
             int? repeat = parentContext.GetRepeat(Repeat);
-            var relativePath = ValidateNotNull(parentContext.Path, Path, nameof(Path));
+            var relativePath = ValidateNotNull(Path, nameof(Path));
             if (repeat == null)
             {
                 var context = parentContext.WithPath(relativePath);
@@ -34,7 +34,7 @@ namespace VDrumExplorer.Data.Json
             }
             else
             {
-                var index = ValidateNotNull(parentContext.Path, Index, nameof(Index));
+                var index = ValidateNotNull(Index, nameof(Index));
                 for (int i = 1; i <= repeat; i++)
                 {
                     var context = parentContext.WithIndex(index, i).WithPath(relativePath);
@@ -49,21 +49,21 @@ namespace VDrumExplorer.Data.Json
                 var children = Children.SelectMany(child => child.ConvertVisualNodes(context)).ToList().AsReadOnly();
                 var details = Details.Select(detail => detail.ToVisualTreeDetail(context)).ToList().AsReadOnly();
                 var midiNoteField = MidiNotePath is null ? null : context.GetMidiNoteField(MidiNotePath);
-                return new VisualTreeNode(children, details, description, midiNoteField);
+                return new VisualTreeNode(context.ContainerContext, children, details, description, midiNoteField);
             }
 
             FormattableDescription BuildDescription(VisualTreeConversionContext context)
             {
                 if (Description != null)
                 {
-                    ValidateNull(parentContext.Path, Format, nameof(Format), nameof(Description));
-                    ValidateNull(parentContext.Path, FormatPaths, nameof(FormatPaths), nameof(Description));
+                    ValidateNull(Format, nameof(Format), nameof(Description));
+                    ValidateNull(FormatPaths, nameof(FormatPaths), nameof(Description));
                     return new FormattableDescription(Description, null);
                 }
                 else
                 {
-                    var format = ValidateNotNull(parentContext.Path, Format, nameof(Format));
-                    var formatPaths = ValidateNotNull(parentContext.Path, FormatPaths, nameof(FormatPaths));
+                    var format = ValidateNotNull(Format, nameof(Format));
+                    var formatPaths = ValidateNotNull(FormatPaths, nameof(FormatPaths));
                     return context.BuildDescription(format, formatPaths);
                 }
             }

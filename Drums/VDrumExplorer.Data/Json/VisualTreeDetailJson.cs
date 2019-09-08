@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System.Collections.Generic;
+using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Layout;
 
 namespace VDrumExplorer.Data.Json
@@ -21,24 +22,24 @@ namespace VDrumExplorer.Data.Json
 
         internal VisualTreeDetail ToVisualTreeDetail(VisualTreeConversionContext context)
         {
-            var description = ValidateNotNull(context.Path, Description, nameof(Description));
+            var description = ValidateNotNull(Description, nameof(Description));
             
             int? repeat = context.GetRepeat(Repeat);
             if (repeat == null)
             {
-                string relativePath = ValidateNotNull(context.Path, Path, nameof(Path));
-                ValidateNull(context.Path, Format, nameof(Format), nameof(Repeat));
-                ValidateNull(context.Path, FormatPaths, nameof(FormatPaths), nameof(Repeat));
+                string relativePath = ValidateNotNull(Path, nameof(Path));
+                ValidateNull(Format, nameof(Format), nameof(Repeat));
+                ValidateNull(FormatPaths, nameof(FormatPaths), nameof(Repeat));
 
                 var container = context.GetContainer(relativePath);                
                 return new VisualTreeDetail(description, container);
             }
             else
             {                
-                var format = ValidateNotNull(context.Path, Format, nameof(Format));
-                var formatPaths = ValidateNotNull(context.Path, FormatPaths, nameof(FormatPaths));
-                var index = ValidateNotNull(context.Path, Index, nameof(Index));
-                ValidateNull(context.Path, Path, nameof(Path), nameof(Repeat));
+                var format = ValidateNotNull(Format, nameof(Format));
+                var formatPaths = ValidateNotNull(FormatPaths, nameof(FormatPaths));
+                var index = ValidateNotNull(Index, nameof(Index));
+                ValidateNull(Path, nameof(Path), nameof(Repeat));
                 
                 List<FormattableDescription> detailDescriptions = new List<FormattableDescription>();
                 for (int i = 1; i <= repeat; i++)

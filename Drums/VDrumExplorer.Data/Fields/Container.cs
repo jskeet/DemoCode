@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,26 +10,19 @@ namespace VDrumExplorer.Data.Fields
     /// <summary>
     /// A data container representing a portion of memory.
     /// </summary>
-    public sealed class Container : FieldBase, IContainerField
+    public sealed class Container : FieldBase
     {
         public IReadOnlyList<IField> Fields { get; }
-        internal IReadOnlyDictionary<ModuleAddress, IField> FieldsByAddress { get; }
         public bool Loadable { get; }
         public new int Size { get; }
 
-        public string? Name { get; }
-
-        internal Container(FieldBase.Parameters common, string? name, IReadOnlyList<IField> fields)
+        internal Container(FieldBase.Parameters common, IReadOnlyList<IField> fields)
             : base(common)
         {
             Size = base.Size;
-            Name = name;
             Fields = fields;
             Loadable = !Fields.Any(f => f is Container);
-            FieldsByAddress = Fields.ToDictionary(f => f.Address).AsReadOnly();
         }
-
-        public IEnumerable<IField> Children(ModuleData data) => Fields;
 
         /// <summary>
         /// Returns all fields in this container recursively. Dynamic overlay fields are returned as they are,
@@ -56,6 +48,7 @@ namespace VDrumExplorer.Data.Fields
             }
         }
 
+        /*
         /// <summary>
         /// Returns all fields in this container recursively, in a breadth-first manner. Dynamic overlay fields are processed
         /// according to the data in <paramref name="data"/>; the field itself is not returned,
@@ -93,16 +86,17 @@ namespace VDrumExplorer.Data.Fields
                 }
             }
         }
+        */
 
         /// <summary>
         /// Resets all primitive fields in the container to valid values, recursively.
         /// (For the moment, we'll assume that's all that's required.)
         /// </summary>
-        public void Reset(ModuleData data)
+        public void Reset(FixedContainer context, ModuleData data)
         {
             foreach (var field in Fields.OfType<IPrimitiveField>())
             {
-                field.Reset(data);
+                field.Reset(context, data);
             }
         }
     }

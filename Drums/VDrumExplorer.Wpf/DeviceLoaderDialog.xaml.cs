@@ -48,7 +48,7 @@ namespace VDrumExplorer.Wpf
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
-                var containers = schema.Root.DescendantsAndSelf().OfType<Container>().Where(c => c.Loadable).ToList();
+                var containers = schema.GetContainers().Where(c => c.Container.Loadable).ToList();
                 logger.Log($"Loading {containers.Count} containers from device {schema.Identifier.Name}");
                 progress.Maximum = containers.Count;
                 int loaded = 0;
@@ -82,18 +82,18 @@ namespace VDrumExplorer.Wpf
                 logger.Log($"Unexpected data response. Address: {message.Address:x8}; Length: {message.Length:x8}");
         }
 
-        private async Task PopulateSegment(Container container, CancellationToken token)
+        private async Task PopulateSegment(AnnotatedContainer annotatedContainer, CancellationToken token)
         {
             var timerToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(token, timerToken).Token;
             try
             {
-                var segment = await client.RequestDataAsync(container.Address.Value, container.Size, effectiveToken);
-                data.Populate(container.Address, segment);
+                var segment = await client.RequestDataAsync(annotatedContainer.Context.Address.Value, annotatedContainer.Container.Size, effectiveToken);
+                data.Populate(annotatedContainer.Context.Address, segment);
             }
             catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
             {
-                logger.Log($"Device didn't respond for container {container.Path}; skipping.");
+                logger.Log($"Device didn't respond for container {annotatedContainer.Path}; skipping.");
             }
         }
 

@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Layout;
+using static System.FormattableString;
 
 namespace VDrumExplorer.Data.Json
 {
@@ -43,9 +44,6 @@ namespace VDrumExplorer.Data.Json
             return json.ToObject<ModuleJson>(serializer);
         }
 
-        internal ContainerJson FindContainer(FieldPath path, string name) =>
-            Containers.FirstOrDefault(c => c.Name == name) ?? throw new ModuleSchemaException(path, $"Unable to find container with name '{name}'");
-
         internal int? GetCount(string? repeat) =>
             repeat switch
             {
@@ -57,22 +55,20 @@ namespace VDrumExplorer.Data.Json
 
         internal void Validate()
         {
-            var root = FieldPath.Root();
-            ValidateNotNull(root, Name, nameof(Name));
-            ValidateNotNull(root, ModelId, nameof(ModelId));
-            ValidateNotNull(root, FamilyCode, nameof(FamilyCode));
-            ValidateNotNull(root, FamilyNumberCode, nameof(FamilyNumberCode));
-            ValidateNotNull(root, LogicalTree, nameof(LogicalTree));
-            ValidateNotNull(root, UserSamples, nameof(UserSamples));
+            ValidateNotNull(Name, nameof(Name));
+            ValidateNotNull(ModelId, nameof(ModelId));
+            ValidateNotNull(FamilyCode, nameof(FamilyCode));
+            ValidateNotNull(FamilyNumberCode, nameof(FamilyNumberCode));
+            ValidateNotNull(LogicalTree, nameof(LogicalTree));
+            ValidateNotNull(UserSamples, nameof(UserSamples));
+            ValidateNotNull(Containers, nameof(Containers));
             Lookups?.ForEach(lookup => lookup.Validate(GetCount));
-            FindContainer(root, "Root");
-        }        
+            Validation.Validate(Containers.TryGetValue("Root", out _), "No root container present");
+        }
 
         internal Container BuildRootContainer(ModuleSchema schema)
         {
-            var root = FieldPath.Root();
-            return FindContainer(root, "Root")
-                .ToContainer(schema, this, root, new ModuleAddress(0), "Root", condition: null);
+            return Containers!["Root"].ToContainer(schema, this, "Root", 0, "Root", condition: null);
         }
         
         internal IReadOnlyList<InstrumentGroup> BuildInstrumentGroups() =>
@@ -81,21 +77,19 @@ namespace VDrumExplorer.Data.Json
                 .ToList()
                 .AsReadOnly();
 
-        internal VisualTreeNode BuildLogicalRoot(Container root)
+        internal VisualTreeNode BuildLogicalRoot(FixedContainer root)
         {
-            var fieldsByPath = root.DescendantsAndSelf().ToDictionary(f => f.Path);
             // This is ugly to do with LINQ...
-            var lookupsByPath = new Dictionary<FieldPath, string>();
+            var lookupsByPath = new Dictionary<string, string>();
             foreach (var lookup in Lookups ?? Enumerable.Empty<LookupJson>())
             {
-                var lookupRoot = new FieldPath("lookups") + lookup.Name!;
                 for (int i = 0; i < lookup.Values!.Count; i++)
                 {
-                    var path = lookupRoot.WithIndex(i + 1);
+                    var path = Invariant($"/lookups/{lookup.Name}[{i + 1}]");
                     lookupsByPath[path] = lookup.Values[i];
                 }
             }
-            var context = VisualTreeConversionContext.Create(this, fieldsByPath.AsReadOnly(), lookupsByPath.AsReadOnly());
+            var context = VisualTreeConversionContext.Create(this, root, lookupsByPath.AsReadOnly());
             return LogicalTree!.ConvertVisualNodes(context).Single();
         }
     }

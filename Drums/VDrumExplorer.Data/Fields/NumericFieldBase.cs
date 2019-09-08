@@ -19,23 +19,26 @@ namespace VDrumExplorer.Data.Fields
             : base(common) =>
             (Min, Max) = (min, max);
 
-        private int GetRawValueUnvalidated(ModuleData data) =>
-            Size switch
+        private int GetRawValueUnvalidated(FixedContainer context, ModuleData data)
+        {
+            var address = GetAddress(context);
+            return Size switch
             {
-                1 => data.GetAddressValue(Address),
-                2 => ((sbyte) ((data.GetAddressValue(Address) << 4) | data.GetAddressValue(Address + 1))),
+                1 => data.GetAddressValue(address),
+                2 => ((sbyte) ((data.GetAddressValue(address) << 4) | data.GetAddressValue(address + 1))),
                 // TODO: Just fetch a byte array? Stackalloc it?
                 4 => (short) (
-                    (data.GetAddressValue(Address) << 12) |
-                    (data.GetAddressValue(Address + 1) << 8) |
-                    (data.GetAddressValue(Address + 2) << 4) |
-                    data.GetAddressValue(Address + 3)),
+                    (data.GetAddressValue(address) << 12) |
+                    (data.GetAddressValue(address + 1) << 8) |
+                    (data.GetAddressValue(address + 2) << 4) |
+                    data.GetAddressValue(address + 3)),
                 _ => throw new InvalidOperationException($"Cannot get value with size {Size}")
             };
+        }
 
-        internal int GetRawValue(ModuleData data)
+        internal int GetRawValue(FixedContainer context, ModuleData data)
         {
-            var value = GetRawValueUnvalidated(data);
+            var value = GetRawValueUnvalidated(context, data);
             if (value < Min || value > Max)
             {
                 throw new InvalidOperationException($"Invalid range value: {value}");
@@ -43,7 +46,7 @@ namespace VDrumExplorer.Data.Fields
             return value;
         }
 
-        internal void SetRawValue(ModuleData data, int newValue)
+        internal void SetRawValue(FixedContainer context, ModuleData data, int newValue)
         {
             if (newValue < Min || newValue > Max)
             {
@@ -68,14 +71,14 @@ namespace VDrumExplorer.Data.Fields
                 default:
                     throw new InvalidOperationException($"Cannot set value with size {Size}");
             }
-            data.SetData(Address, bytes);
+            data.SetData(GetAddress(context), bytes);
         }
 
-        public override void Reset(ModuleData data) => SetRawValue(data, Min);
+        public override void Reset(FixedContainer context, ModuleData data) => SetRawValue(context, data, Min);
 
-        protected override bool ValidateData(ModuleData data, out string? error)
+        protected override bool ValidateData(FixedContainer context, ModuleData data, out string? error)
         {
-            var rawValue = GetRawValueUnvalidated(data);
+            var rawValue = GetRawValueUnvalidated(context, data);
             if (rawValue < Min || rawValue > Max)
             {
                 error = $"Invalid raw value {rawValue}. Expected range: [{Min}-{Max}]";

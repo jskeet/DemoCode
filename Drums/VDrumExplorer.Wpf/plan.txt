@@ -1,0 +1,14 @@
+﻿Plan for fields
+
+- Fields, including containers, have no address or path. They do have a name, which should be unique relative to their parent container, as well as an offset into the parent container.
+- When creating repeats:
+  - Multiple fields (and containers) are created
+  - All containers can have the same list of fields - but don't need to initially. (Should work without, but still be inefficient.)
+
+New type: FixedContainer: a Container, Address. (Maybe DataContext?)
+New type: FieldChain: a linked list of containers ending in a field. Resolved from a field path.
+- And we can make it generic in the expected final element type
+
+- A VisualTreeNode contains a FixedContainer as the context
+- A VisualTreeDetails is not fixed in itself.
+  - FormattableDetails can be relative to a FixedContainer + Data, but what about the Container? Is it always a direct child? No - e.g. Setup/Output.

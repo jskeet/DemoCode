@@ -22,9 +22,9 @@ namespace VDrumExplorer.Data.Layout
         public FormattableDescription(string formatString, IReadOnlyList<IModuleDataFormattableString>? formatFields) =>
             (FormatString, FormatFields) = (formatString, formatFields);
 
-        public string Format(ModuleData data) =>
+        public string Format(FixedContainer context, ModuleData data) =>
             FormatFields is null
             ? FormatString
-            : string.Format(FormatString, FormatFields.Select(f => f.Format(data)).ToArray());
+            : string.Format(FormatString, FormatFields.Select(f => f.Format(context, data)).ToArray());
     }
 }

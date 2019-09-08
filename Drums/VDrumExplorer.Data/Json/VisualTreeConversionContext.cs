@@ -20,29 +20,27 @@ namespace VDrumExplorer.Data.Json
     internal class VisualTreeConversionContext
     {
         private readonly ModuleJson moduleJson;
-        private readonly IReadOnlyDictionary<FieldPath, IField> fieldsByPath;
-        private readonly IReadOnlyDictionary<FieldPath, string> lookupsByPath;
-        internal FieldPath Path { get; }
+        private readonly IReadOnlyDictionary<string, string> lookupsByPath;
+        internal FixedContainer ContainerContext { get; }
         private readonly IDictionary<string, string> indexes;
 
         private VisualTreeConversionContext(
             ModuleJson moduleJson,
-            IReadOnlyDictionary<FieldPath, IField> fieldsByPath,
-            IReadOnlyDictionary<FieldPath, string> lookupsByPath,
-            FieldPath currentPath, IDictionary<string, string> indexes)
+            FixedContainer containerContext,
+            IReadOnlyDictionary<string, string> lookupsByPath,
+            IDictionary<string, string> indexes)
         {
             this.moduleJson = moduleJson;
-            this.fieldsByPath = fieldsByPath;
+            this.ContainerContext = containerContext;
             this.lookupsByPath = lookupsByPath;
-            Path = currentPath;
             this.indexes = indexes;
         }
 
         internal static VisualTreeConversionContext Create(
             ModuleJson moduleJson,
-            IReadOnlyDictionary<FieldPath, IField> fieldsByPath,
-            IReadOnlyDictionary<FieldPath, string> lookupsByPath) =>
-            new VisualTreeConversionContext(moduleJson, fieldsByPath, lookupsByPath, FieldPath.Root(), new Dictionary<string, string>());
+            FixedContainer containerContext,
+            IReadOnlyDictionary<string, string> lookupsByPath) =>
+            new VisualTreeConversionContext(moduleJson, containerContext, lookupsByPath, new Dictionary<string, string>());
 
         internal VisualTreeConversionContext WithIndex(string indexName, int indexValue)
         {
@@ -50,35 +48,27 @@ namespace VDrumExplorer.Data.Json
             {
                 { indexName, indexValue.ToString(CultureInfo.InvariantCulture) }
             };
-            return new VisualTreeConversionContext(moduleJson, fieldsByPath, lookupsByPath, Path, newIndexes);
+            return new VisualTreeConversionContext(moduleJson, ContainerContext, lookupsByPath, newIndexes);
         }
 
-        internal Container GetContainer(string relativePath)
+        internal FieldChain<Container> GetContainer(string relativePath) =>
+            relativePath == "."
+            ? FieldChain<Container>.EmptyChain(ContainerContext.Container)
+            : FieldChain<Container>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
+
+        internal FieldChain<MidiNoteField> GetMidiNoteField(string relativePath) =>
+            FieldChain<MidiNoteField>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
+
+        internal VisualTreeConversionContext WithPath(string relativePath)
         {
-            FieldPath containerPath = Path + ReplaceIndexes(relativePath);
-            Validate(containerPath, fieldsByPath.TryGetValue(containerPath, out var field), "Container not found");
-            var container = field as Container;
-            Validate(container is object, "Field is not a container");
-            return container!;
+            if (relativePath == ".")
+            {
+                return this;
+            }
+            var chain = FieldChain<Container>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
+            var newContainerContext = chain.GetFinalContext(ContainerContext).ToChildContext(chain.FinalField);
+            return new VisualTreeConversionContext(moduleJson, newContainerContext, lookupsByPath, indexes);
         }
-
-        internal MidiNoteField GetMidiNoteField(string relativePath)
-        {
-            FieldPath fieldPath = Path + ReplaceIndexes(relativePath);
-            Validate(Path, fieldsByPath.TryGetValue(fieldPath, out var field), "Container not found");
-            var primitive = field as MidiNoteField;
-            Validate(primitive is object, "Field is not a Midi note field");
-            return primitive!;
-        }
-
-        private FieldPath GetPath(string relativePath)
-        {
-            var replaced = ReplaceIndexes(relativePath);
-            return replaced.StartsWith("/") ? new FieldPath(replaced.Substring(1)) : Path + replaced;
-        }
-
-        internal VisualTreeConversionContext WithPath(string relativePath) =>
-            new VisualTreeConversionContext(moduleJson, fieldsByPath, lookupsByPath, GetPath(relativePath), indexes);
 
         internal int? GetRepeat(string? repeat) => moduleJson.GetCount(repeat);
 
@@ -86,24 +76,21 @@ namespace VDrumExplorer.Data.Json
         {
             formatString = ReplaceIndexes(formatString);
             var formatFields = formatPaths
-                .Select(GetPath)
                 .Select(GetFormattableString)
                 .ToList()
                 .AsReadOnly();
             return new FormattableDescription(formatString, formatFields);
         }
 
-        private IModuleDataFormattableString GetFormattableString(FieldPath path)
+        private IModuleDataFormattableString GetFormattableString(string path)
         {
-            if (fieldsByPath.TryGetValue(path, out var field) && field is IPrimitiveField primitive)
+            var indexed = ReplaceIndexes(path);
+            if (lookupsByPath.TryGetValue(indexed, out var lookupValue))
             {
-                return new FieldFormattableString(primitive);
+                return new LookupFormattableString(indexed, lookupValue);
             }
-            if (lookupsByPath.TryGetValue(path, out var lookupValue))
-            {
-                return new LookupFormattableString(path, lookupValue);
-            }
-            throw new InvalidOperationException($"Path {path} not found as a primitive field or lookup");
+            var fieldChain = FieldChain<IPrimitiveField>.Create(ContainerContext.Container, indexed);
+            return new FieldFormattableString(fieldChain);
         }
 
         private string ReplaceIndexes(string text)

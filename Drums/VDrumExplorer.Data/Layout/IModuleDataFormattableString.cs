@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using VDrumExplorer.Data.Fields;
+
 namespace VDrumExplorer.Data.Layout
 {
     /// <summary>
@@ -13,11 +15,6 @@ namespace VDrumExplorer.Data.Layout
         /// <summary>
         /// Formats the value with respect to the given module data.
         /// </summary>
-        string Format(ModuleData data);
-        
-        /// <summary>
-        /// The address of data that is being formatted, or null if the value is fixed.
-        /// </summary>
-        ModuleAddress? Address { get; }
+        string Format(FixedContainer context, ModuleData data);
     }
 }

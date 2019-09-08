@@ -10,9 +10,13 @@ namespace VDrumExplorer.Data.Fields
     {
         public virtual void Visit(IField field)
         {
-            if (field is IContainerField container)
+            if (field is DynamicOverlay overlay)
             {
-                VisitIContainerField(container);
+                VisitDynamicOverlay(overlay);
+            }
+            if (field is Container container)
+            {
+                VisitContainer(container);
             }
             else if (field is IPrimitiveField primitive)
             {
@@ -26,22 +30,6 @@ namespace VDrumExplorer.Data.Fields
 
         public virtual void VisitIPrimitiveField(IPrimitiveField primitiveField)
         {
-        }
-
-        public virtual void VisitIContainerField(IContainerField containerField)
-        {
-            if (containerField is Container container)
-            {
-                VisitContainer(container);
-            }
-            else if (containerField is DynamicOverlay overlay)
-            {
-                VisitDynamicOverlay(overlay);
-            }
-            else
-            {
-                throw new InvalidOperationException($"Every field should be a container or a dynamic overlay");
-            }
         }
 
         public virtual void VisitDynamicOverlay(DynamicOverlay overlay)
