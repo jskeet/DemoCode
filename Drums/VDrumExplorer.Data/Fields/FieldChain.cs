@@ -29,13 +29,14 @@ namespace VDrumExplorer.Data.Fields
             var containers = pathElements.Length == 1 ? EmptyContainerList : new LinkedList<Container>();
             for (int i = 0; i < pathElements.Length - 1; i++)
             {
-                IField fieldByName = parent.Fields.Single(f => f.Name == pathElements[i]);
+                //IField fieldByName = parent.Fields.Single(f => f.Name == pathElements[i]);
+                IField fieldByName = parent.GetField(pathElements[i]);
                 Container container = (Container) fieldByName;
                 containers.AddLast(container);
                 parent = container;
             }
 
-            var finalField = (T) parent.Fields.Single(f => f.Name == pathElements.Last());
+            var finalField = (T) parent.GetField(pathElements[pathElements.Length - 1]);
             return new FieldChain<T>(containers, finalField);
         }
 
