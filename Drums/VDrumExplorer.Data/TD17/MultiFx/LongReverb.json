@@ -235,7 +235,7 @@
       ]
     },
     {
-      "offset": "0x36",
+      "offset": "0x32",
       "description": "EQ High Gain",
       "type": "range32",
       "min": 0,
@@ -244,12 +244,13 @@
       "suffix": "dB"
     },
     {
-      "offset": "0x3a",
+      "offset": "0x36",
       "description": "EQ High Frequency",
       "type": "enum32",
       "values": [
-        "200Hz",
-        "400Hz"
+        "2000Hz",
+        "4000Hz",
+        "8000Hz"
       ]
     },
     {
