@@ -177,7 +177,7 @@
                     "KitPad[$trigger]/CompType",
                     "KitPad[$trigger]/CompSwitch"
                   ],
-                  "format": "$0: {1} ({2})"
+                  "format": "{0}: {1} ({2})"
                 }
               ],
               "children": [
