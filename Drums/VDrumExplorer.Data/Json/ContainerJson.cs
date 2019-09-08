@@ -22,16 +22,23 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? Size { get; set; }
         public List<FieldJson>? Fields { get; set; }
 
+        private IReadOnlyList<IField>? cachedFields = null;
+
         internal Container ToContainer(ModuleSchema schema, ModuleJson module, string name, int offset, string description, FieldCondition? condition)
         {
-            // TODO: Check that all fields are either primitive or container, check the size etc.
-            List<Fields.IField> fields = Fields
-                .SelectMany(fieldJson => fieldJson.ToFields(schema, module))
-                .ToList();
+            // TODO: This works and is pleasantly efficient, but it's pretty ugly.
+            if (cachedFields == null)
+            {
+                // TODO: Check that all fields are either primitive or container, check the size etc.
+                cachedFields = Fields
+                    .SelectMany(fieldJson => fieldJson.ToFields(schema, module))
+                    .ToList()
+                    .AsReadOnly();
+            }
             var lastField = Fields.LastOrDefault();
             int size = Size?.Value ?? lastField?.Offset?.Value ?? 0;
             var common = new FieldBase.Parameters(schema, name, offset, size, description, condition);
-            return new Container(common, fields.AsReadOnly());
+            return new Container(common, cachedFields);
         }
     }
 }
