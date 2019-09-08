@@ -1,4 +1,245 @@
 ﻿{
   "fields": [
+    {
+      "offset": "0x06",
+      "description": "Threshold",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Tempo Sync Rev",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x0e",
+      "description": "RevDelay Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x0a",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x12",
+      "description": "RevDelay Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x0a",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x16",
+      "description": "RevDelay Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "offset": "0x01a",
+      "description": "RevDelay HF Damp",
+      "type": "enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "offset": "0x1e",
+      "description": "RevDelay Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x22",
+      "description": "RevDelay Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x26",
+      "description": "Tempo Sync Delay1",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x2a",
+      "description": "Delay1 Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x26",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x2e",
+      "description": "Delay1 Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x26",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x32",
+      "description": "Tempo Sync Delay2",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x36",
+      "description": "Delay2 Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x32",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x3a",
+      "description": "Delay2 Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x32",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x3e",
+      "description": "Tempo Sync Delay3",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x42",
+      "description": "Delay3 Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x3e",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x46",
+      "description": "Delay3 Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x3e",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x04e",
+      "description": "Delay HF Damp",
+      "type": "enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "offset": "0x52",
+      "description": "Delay1 Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x56",
+      "description": "Delay2 Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x5a",
+      "description": "Delay1 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x5e",
+      "description": "Delay2 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x62",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x66",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x6e",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }

@@ -1,4 +1,115 @@
 ﻿{
   "fields": [
+    {
+      "offset": "0x06",
+      "description": "Filter type",
+      "type": "enum32",
+      "values": [
+        "Low-pass Filter",
+        "High-pass Filter"
+      ]
+    },
+    {
+      "offset": "0x0a",
+      "description": "Manual",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0e",
+      "description": "Peak",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x12",
+      "description": "Sens",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x16",
+      "description": "Polarity",
+      "type": "enum32",
+      "values": [
+        "Up",
+        "Down"
+      ]
+    },
+    {
+      "offset": "0x1a",
+      "description": "Tempo Sync",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "offset": "0x1e",
+      "description": "Rate (Hz)",
+      "type": "range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "suffix": "Hz",
+      "condition": {
+        "offset": "0x1a",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x22",
+      "description": "Rate (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x1a",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x26",
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x2a",
+      "description": "Phase",
+      "type": "range32",
+      "min": 0,
+      "max": 90,
+      "multiplier": 2,
+      "suffix": " deg"
+    },
+    {
+      "offset": "0x2e",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x32",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x36",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }

@@ -1,4 +1,67 @@
 ﻿{
   "fields": [
+    {
+      "offset": "0x06",
+      "description": "Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Tone",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0e",
+      "description": "Amp Switch",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x12",
+      "description": "Amp Type",
+      "type": "enum32",
+      "values": [
+        "Small",
+        "Built-in",
+        "2-Stack",
+        "3-Stack"
+      ]
+    },
+    {
+      "offset": "0x16",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1a",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1e",
+      "description": "Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x22",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }
