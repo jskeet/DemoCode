@@ -22,13 +22,13 @@ namespace VDrumExplorer.Data.Json
         private readonly ModuleJson moduleJson;
         private readonly IReadOnlyDictionary<string, string> lookupsByPath;
         internal FixedContainer ContainerContext { get; }
-        private readonly IDictionary<string, string> indexes;
+        private readonly List<KeyValuePair<string, string>> indexes;
 
         private VisualTreeConversionContext(
             ModuleJson moduleJson,
             FixedContainer containerContext,
             IReadOnlyDictionary<string, string> lookupsByPath,
-            IDictionary<string, string> indexes)
+            List<KeyValuePair<string, string>> indexes)
         {
             this.moduleJson = moduleJson;
             this.ContainerContext = containerContext;
@@ -40,14 +40,13 @@ namespace VDrumExplorer.Data.Json
             ModuleJson moduleJson,
             FixedContainer containerContext,
             IReadOnlyDictionary<string, string> lookupsByPath) =>
-            new VisualTreeConversionContext(moduleJson, containerContext, lookupsByPath, new Dictionary<string, string>());
+            new VisualTreeConversionContext(moduleJson, containerContext, lookupsByPath, new List<KeyValuePair<string, string>>());
 
         internal VisualTreeConversionContext WithIndex(string indexName, int indexValue)
         {
-            var newIndexes = new Dictionary<string, string>(indexes)
-            {
-                { indexName, indexValue.ToString(CultureInfo.InvariantCulture) }
-            };
+            var newPair = new KeyValuePair<string, string>("$" + indexName, indexValue.ToString(CultureInfo.InvariantCulture));
+            // Replace longer variables first
+            var newIndexes = indexes.Concat(new[] { newPair }).OrderByDescending(pair => pair.Key.Length).ToList();
             return new VisualTreeConversionContext(moduleJson, ContainerContext, lookupsByPath, newIndexes);
         }
 
@@ -95,10 +94,9 @@ namespace VDrumExplorer.Data.Json
 
         private string ReplaceIndexes(string text)
         {
-            // Replace longer variables first
-            foreach (var pair in indexes.OrderByDescending(p => p.Key.Length))
+            foreach (var pair in indexes)
             {
-                text = text.Replace("$" + pair.Key, pair.Value);
+                text = text.Replace(pair.Key, pair.Value);
             }
             return text;
         }
