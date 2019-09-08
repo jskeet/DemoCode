@@ -267,7 +267,12 @@ namespace VDrumExplorer.Wpf
 
         private FrameworkElement CreateStringFieldElement(FixedContainer context, StringField field)
         {
-            var textBox = new TextBox { MaxLength = field.Length, Text = field.GetText(context, module.Data), Padding = new Thickness(0) };
+            var textBox = new TextBox
+            {
+                MaxLength = field.Length,
+                Text = field.GetText(context, module.Data).TrimEnd(),
+                Padding = new Thickness(0)
+            };
             textBox.TextChanged += (sender, args) =>
                 textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
