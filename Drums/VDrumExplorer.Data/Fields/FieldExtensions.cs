@@ -6,7 +6,7 @@ namespace VDrumExplorer.Data.Fields
 {
     public static class FieldExtensions
     {
-        public static bool IsEnabled(this IField field, ModuleData data) =>
-            field.Condition?.IsEnabled(field, data) ?? true;
+        public static bool IsEnabled(this IField field, FixedContainer context, ModuleData data) =>
+            field.Condition?.IsEnabled(field, context, data) ?? true;
     }
 }

@@ -2,18 +2,22 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using VDrumExplorer.Data.Fields;
 
 namespace VDrumExplorer.Data.Layout
 {
     internal sealed class FieldFormattableString : IModuleDataFormattableString
     {
-        private IPrimitiveField field;
+        private FieldChain<IPrimitiveField> chain;
 
-        public FieldFormattableString(IPrimitiveField field) => this.field = field;
+        public FieldFormattableString(FieldChain<IPrimitiveField> chain) => this.chain = chain;
 
-        public ModuleAddress? Address => field.Address;
-
-        public string Format(ModuleData data) => field.GetText(data);
+        public string Format(FixedContainer context, ModuleData data)
+        {
+            context = chain.GetFinalContext(context);
+            var fields = chain.FinalField;
+            return fields.GetText(context, data);
+        }
     }
 }

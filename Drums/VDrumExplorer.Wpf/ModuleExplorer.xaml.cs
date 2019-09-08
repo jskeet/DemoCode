@@ -100,9 +100,10 @@ namespace VDrumExplorer.Wpf
             {
                 var node = new TreeViewItem
                 {                    
-                    Header = vnode.Description.Format(module.Data),
+                    Header = vnode.Description.Format(vnode.Context, module.Data),
                     Tag = vnode
                 };
+                /* FIXME
                 var segmentStarts = vnode.Description.FormatFieldsOrEmpty
                     .Select(field => field.Address)
                     .Where(address => address != null)
@@ -111,7 +112,8 @@ namespace VDrumExplorer.Wpf
                 foreach (var address in segmentStarts)
                 {
                     boundItems.Add((node, address));
-                }                
+                }
+                */
                 foreach (var vchild in vnode.Children)
                 {
                     var childNode = CreateNode(vchild);
@@ -135,8 +137,9 @@ namespace VDrumExplorer.Wpf
         {
             var boundItems = new List<(GroupBox, ModuleAddress)>();
             var node = (VisualTreeNode) detailsPanel.Tag;
+            var context = node.Context;
             detailsPanel.Children.Clear();
-            playNoteButton.IsEnabled = midiClient is object && node?.MidiNoteField?.GetMidiNote(module.Data) is int note;
+            playNoteButton.IsEnabled = GetMidiNote(node) is int note;
             if (node == null)
             {
                 detailGroupsToUpdateBySegmentStart = boundItems
@@ -145,7 +148,7 @@ namespace VDrumExplorer.Wpf
             }
             foreach (var detail in node.Details)
             {
-                var grid = detail.Container == null ? FormatDescriptions(detail) : FormatContainer(detail);
+                var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(context, detail);
                 var groupBox = new GroupBox
                 {
                     Header = new TextBlock { FontWeight = FontWeights.SemiBold, Text = detail.Description },
@@ -153,33 +156,19 @@ namespace VDrumExplorer.Wpf
                     Tag = detail
                 };
                 detailsPanel.Children.Add(groupBox);
+                /* FIXME
                 if (grid.Tag is (DynamicOverlay overlay, Container currentContainer))
                 {
                     var segmentStart = module.Data.GetSegment(overlay.SwitchAddress).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
+                */
             }
             detailGroupsToUpdateBySegmentStart = boundItems
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
-        private IEnumerable<IPrimitiveField> GetPrimitiveFields(IField field)
-        {
-            if (field is IPrimitiveField primitive)
-            {
-                yield return primitive;
-            }
-            else if (field is DynamicOverlay overlay)
-            {
-                var fields = overlay.Children(module.Data);
-                foreach (var primitive2 in fields.OfType<IPrimitiveField>())
-                {
-                    yield return primitive2;
-                }
-            }
-        }
-
-        private bool ShouldDisplayField(IField field)
+        private bool ShouldDisplayField(FixedContainer context, IField field)
         {
             // In physical view, we display all fields, for schema debugging.
             if (viewMode == ViewMode.Physical)
@@ -187,17 +176,21 @@ namespace VDrumExplorer.Wpf
                 return true;
             }
             // In logical view, conditional fields may or may not be shown.
-            return field.IsEnabled(module.Data);
+            return field.IsEnabled(context, module.Data);
         }
 
-        private Grid FormatContainer(VisualTreeDetail detail)
+        private Grid FormatContainer(FixedContainer context, VisualTreeDetail detail)
         {
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            var fields = detail.Container.Fields
-                .SelectMany(GetPrimitiveFields)
-                .Where(ShouldDisplayField);
+
+            // Find the real context based on the container.
+            var container = detail.Container.FinalField;
+            context = detail.Container.GetFinalContext(context).ToChildContext(container);
+
+            var fields = context.GetPrimitiveFields(module.Data)
+                .Where(f => ShouldDisplayField(context, f));
 
             foreach (var primitive in fields)
             {
@@ -211,7 +204,7 @@ namespace VDrumExplorer.Wpf
                 FrameworkElement value;
                 if (editMode)
                 {
-                    value = CreateReadWriteFieldElement(primitive);
+                    value = CreateReadWriteFieldElement(context, primitive);
                     value.Margin = new Thickness(5, 1, 0, 0);
 
                 }
@@ -221,7 +214,7 @@ namespace VDrumExplorer.Wpf
                     {
                         Padding = new Thickness(0),
                         Margin = new Thickness(5, 1, 0, 0),
-                        Content = primitive.GetText(module.Data)
+                        Content = primitive.GetText(context, module.Data)
                     };
                 }
 
@@ -234,59 +227,60 @@ namespace VDrumExplorer.Wpf
                 grid.Children.Add(value);
             }
 
+            // FIXME: This part is probably wrong.
             // Assumption: at most one dynamic overlay per container
-            var overlay = detail.Container.Fields.OfType<DynamicOverlay>().FirstOrDefault();
+            var overlay = context.Container.Fields.OfType<DynamicOverlay>().FirstOrDefault();
             if (overlay != null)
             {
-                var currentContainer = overlay.GetOverlaidContainer(module.Data);
+                var currentContainer = overlay.GetOverlaidContainer(context, module.Data);
                 grid.Tag = (overlay, currentContainer);
             }
 
             return grid;
         }
 
-        private FrameworkElement CreateReadWriteFieldElement(IPrimitiveField field) =>
+        private FrameworkElement CreateReadWriteFieldElement(FixedContainer context, IPrimitiveField field) =>
             field switch
             {
-                BooleanField bf => CreateBooleanFieldElement(bf),
-                EnumField ef => CreateEnumFieldElement(ef),
-                StringField sf => CreateStringFieldElement(sf),
-                InstrumentField inst => CreateInstrumentFieldElement(inst),
-                NumericField num => CreateNumericFieldElement(num),
-                _ => new Label { Content = field.GetText(module.Data), Padding = new Thickness(0) }
+                BooleanField bf => CreateBooleanFieldElement(context, bf),
+                EnumField ef => CreateEnumFieldElement(context, ef),
+                StringField sf => CreateStringFieldElement(context, sf),
+                InstrumentField inst => CreateInstrumentFieldElement(context, inst),
+                NumericField num => CreateNumericFieldElement(context, num),
+                _ => new Label { Content = field.GetText(context, module.Data), Padding = new Thickness(0) }
             };
 
-        private FrameworkElement CreateBooleanFieldElement(BooleanField field)
+        private FrameworkElement CreateBooleanFieldElement(FixedContainer context, BooleanField field)
         {
-            var box = new CheckBox { IsChecked = field.GetValue(module.Data), Padding = new Thickness(0) };
-            box.Checked += (sender, args) => field.SetValue(module.Data, true);
-            box.Unchecked += (sender, args) => field.SetValue(module.Data, false);
+            var box = new CheckBox { IsChecked = field.GetValue(context, module.Data), Padding = new Thickness(0) };
+            box.Checked += (sender, args) => field.SetValue(context, module.Data, true);
+            box.Unchecked += (sender, args) => field.SetValue(context, module.Data, false);
             return box;
         }
 
-        private FrameworkElement CreateEnumFieldElement(EnumField field)
+        private FrameworkElement CreateEnumFieldElement(FixedContainer context, EnumField field)
         {
             var combo = new ComboBox
             {
                 ItemsSource = field.Values,
-                SelectedItem = field.GetText(module.Data),
+                SelectedItem = field.GetText(context, module.Data),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center
             };
-            combo.SelectionChanged += (sender, args) => field.SetValue(module.Data, combo.SelectedIndex);
+            combo.SelectionChanged += (sender, args) => field.SetValue(context, module.Data, combo.SelectedIndex);
             return combo;
         }
 
-        private FrameworkElement CreateStringFieldElement(StringField field)
+        private FrameworkElement CreateStringFieldElement(FixedContainer context, StringField field)
         {
-            var textBox = new TextBox { MaxLength = field.Length, Text = field.GetText(module.Data), Padding = new Thickness(0) };
+            var textBox = new TextBox { MaxLength = field.Length, Text = field.GetText(context, module.Data), Padding = new Thickness(0) };
             textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
         
-        private FrameworkElement CreateInstrumentFieldElement(InstrumentField field)
+        private FrameworkElement CreateInstrumentFieldElement(FixedContainer context, InstrumentField field)
         {
             // Instrument fields are really complicated:
             // - They can be preset or user samples ("bank")
@@ -296,7 +290,7 @@ namespace VDrumExplorer.Wpf
             const string presetBank = "Preset";
             const string samplesBank = "User sample";
             
-            var selected = field.GetInstrument(module.Data);
+            var selected = field.GetInstrument(context, module.Data);
             var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
             var groupChoice = new ComboBox { ItemsSource = module.Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
@@ -310,7 +304,7 @@ namespace VDrumExplorer.Wpf
                     && sample >= 1 && sample <= module.Schema.UserSampleInstruments.Count;
                 if (valid)
                 {
-                    field.SetInstrument(module.Data, module.Schema.UserSampleInstruments[sample - 1]);
+                    field.SetInstrument(context, module.Data, module.Schema.UserSampleInstruments[sample - 1]);
                 }
                 userSampleTextBox.Foreground = valid ? SystemColors.WindowTextBrush : errorBrush;
             };
@@ -331,7 +325,7 @@ namespace VDrumExplorer.Wpf
                 {
                     return;
                 }
-                field.SetInstrument(module.Data, instrument);
+                field.SetInstrument(context, module.Data, instrument);
             };
             bankChoice.SelectionChanged += (sender, args) =>
             {
@@ -373,15 +367,15 @@ namespace VDrumExplorer.Wpf
         }
 
         private static readonly Brush errorBrush = new SolidColorBrush(Colors.Red);
-        private FrameworkElement CreateNumericFieldElement(NumericField field)
+        private FrameworkElement CreateNumericFieldElement(FixedContainer context, NumericField field)
         {
-            var textBox = new TextBox { Text = field.GetText(module.Data), Padding = new Thickness(0) };
+            var textBox = new TextBox { Text = field.GetText(context, module.Data), Padding = new Thickness(0) };
             textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
 
-        private Grid FormatDescriptions(VisualTreeDetail detail)
+        private Grid FormatDescriptions(FixedContainer context, VisualTreeDetail detail)
         {
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -391,7 +385,7 @@ namespace VDrumExplorer.Wpf
                 {
                     Margin = new Thickness(2, 1, 0, 0),
                     Padding = new Thickness(0),
-                    Content = formatElement.Format(module.Data)
+                    Content = formatElement.Format(context, module.Data)
                 };
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(value, 0);
@@ -444,27 +438,9 @@ namespace VDrumExplorer.Wpf
             
             // Find all the segments we need.
             var segments = new HashSet<DataSegment>();
-            foreach (var detail in node.Details)
+            if (segments != null)
             {
-                if (detail.Container is Container container)
-                {
-                    if (container.Loadable)
-                    {
-                        segments.Add(module.Data.GetSegment(container.Address));
-                    }
-                }
-                else
-                {
-                    var addresses = detail.DetailDescriptions
-                        .SelectMany(dd => dd.FormatFieldsOrEmpty)
-                        .Select(field => field.Address)
-                        .Where(address => address != null)
-                        .Select(address => address.Value);
-                    foreach (var address in addresses)
-                    {
-                        segments.Add(module.Data.GetSegment(address));
-                    }
-                }
+                throw new NotImplementedException("Reimplement properly");
             }
             logger.Log($"Writing {segments.Count} segments to the device.");
             foreach (var segment in segments.OrderBy(s => s.Start))
@@ -475,15 +451,26 @@ namespace VDrumExplorer.Wpf
             logger.Log($"Finished writing segments to the device.");
         }
 
-        private void PlayNote(object sendar, RoutedEventArgs e)
+        private void PlayNote(object sender, RoutedEventArgs e)
         {
-            var node = detailsPanel.Tag as VisualTreeNode;            
-            if (node?.MidiNoteField?.GetMidiNote(module.Data) is int note)
+            var node = detailsPanel.Tag as VisualTreeNode;
+            if (GetMidiNote(node) is int note)
             {
                 int attack = (int) attackSlider.Value;
                 int channel = int.Parse(midiChannelSelector.Text);
                 midiClient.PlayNote(channel, note, attack);
             }            
+        }
+
+        private int? GetMidiNote(VisualTreeNode node)
+        {
+            if (midiClient is null || node?.MidiNoteField is null)
+            {
+                return null;
+            }
+            var finalContext = node.MidiNoteField.GetFinalContext(node.Context);
+            var field = node.MidiNoteField.FinalField;
+            return field.GetMidiNote(finalContext, module.Data);
         }
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
@@ -502,24 +489,26 @@ namespace VDrumExplorer.Wpf
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
                 {
                     var vnode = (VisualTreeNode) treeViewItem.Tag;
-                    treeViewItem.Header = vnode.Description.Format(module.Data);
+                    treeViewItem.Header = vnode.Description.Format(vnode.Context, module.Data);
                 }
             }
 
             void ReflectChangesInDetails(DataSegment segment)
             {
+                var node = (VisualTreeNode) detailsPanel.Tag;
+                var context = node.Context;
                 foreach (var groupBox in detailGroupsToUpdateBySegmentStart[segment.Start])
                 {
                     var detail = (VisualTreeDetail) groupBox.Tag;
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
-                    var currentContainer = overlay.GetOverlaidContainer(module.Data);
+                    var currentContainer = overlay.GetOverlaidContainer(context, module.Data);
                     if (currentContainer != previousContainer)
                     {
                         // As the container has changed, let's reset the values to sensible defaults.
                         // This will itself trigger a change notification event, but that's okay.
-                        currentContainer.Reset(module.Data);
-                        groupBox.Content = FormatContainer(detail);
+                        currentContainer.Reset(context, module.Data);
+                        groupBox.Content = FormatContainer(context, detail);
                     }
                 }
             }

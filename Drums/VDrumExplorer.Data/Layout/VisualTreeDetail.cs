@@ -18,9 +18,9 @@ namespace VDrumExplorer.Data.Layout
         public string Description { get; }
         
         /// <summary>
-        /// A field container. May be null, in which case <see cref="DetailDescriptions"/> will not be null.
+        /// A field chain to a container. May be null, in which case <see cref="DetailDescriptions"/> will not be null.
         /// </summary>
-        public Container? Container { get; }
+        public FieldChain<Container>? Container { get; }
                 
         /// <summary>
         /// A list of formattable descriptions. May be null, in which case <see cref="Container"/>
@@ -28,7 +28,7 @@ namespace VDrumExplorer.Data.Layout
         /// </summary>
         public IReadOnlyList<FormattableDescription>? DetailDescriptions { get; }
 
-        public VisualTreeDetail(string description, Container container) =>
+        public VisualTreeDetail(string description, FieldChain<Container> container) =>
             (Description, Container, DetailDescriptions) = (description, container, null);
 
         public VisualTreeDetail(string description, IReadOnlyList<FormattableDescription> formatElements) =>

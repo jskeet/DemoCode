@@ -22,18 +22,16 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? Size { get; set; }
         public List<FieldJson>? Fields { get; set; }
 
-        public override string ToString() => Name ?? "(Unnamed)";
-
-        internal Container ToContainer(ModuleSchema schema, ModuleJson module, FieldPath path, ModuleAddress address, string description, FieldCondition? condition)
+        internal Container ToContainer(ModuleSchema schema, ModuleJson module, string name, int offset, string description, FieldCondition? condition)
         {
             // TODO: Check that all fields are either primitive or container, check the size etc.
             List<Fields.IField> fields = Fields
-                .SelectMany(fieldJson => fieldJson.ToFields(schema, module, path, address))
+                .SelectMany(fieldJson => fieldJson.ToFields(schema, module))
                 .ToList();
             var lastField = Fields.LastOrDefault();
             int size = Size?.Value ?? lastField?.Offset?.Value ?? 0;
-            var common = new FieldBase.Parameters(schema, path, address, size, description, condition);
-            return new Container(common, Name, fields.AsReadOnly());
+            var common = new FieldBase.Parameters(schema, name, offset, size, description, condition);
+            return new Container(common, fields.AsReadOnly());
         }
     }
 }

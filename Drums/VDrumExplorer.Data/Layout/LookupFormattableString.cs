@@ -8,13 +8,12 @@ namespace VDrumExplorer.Data.Layout
 {
     internal sealed class LookupFormattableString : IModuleDataFormattableString
     {
-        public FieldPath Path { get; }
+        public string Path { get; }
         public string Value { get; }
-        public ModuleAddress? Address => null;
 
-        public LookupFormattableString(FieldPath path, string value) => (Path, Value) = (path, value);
+        public LookupFormattableString(string path, string value) => (Path, Value) = (path, value);
 
-        public string Format(ModuleData data) => Value;
+        public string Format(FixedContainer context, ModuleData data) => Value;
 
         public override string ToString() => $"{Path}: {Value}";
     }

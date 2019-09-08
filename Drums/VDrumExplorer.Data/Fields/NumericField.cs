@@ -29,9 +29,9 @@ namespace VDrumExplorer.Data.Fields
             : base(common, min, max) =>
             (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) = (divisor, multiplier, valueOffset, suffix, customValueFormatting);
 
-        public override string GetText(ModuleData data)
+        public override string GetText(FixedContainer context, ModuleData data)
         {
-            int value = GetRawValue(data);
+            int value = GetRawValue(context, data);
             if (CustomValueFormatting != null && value == CustomValueFormatting.Value.value)
             {
                 return CustomValueFormatting.Value.text;
@@ -40,11 +40,11 @@ namespace VDrumExplorer.Data.Fields
             return Invariant($"{scaled}{Suffix}");
         }
 
-        public override bool TrySetText(ModuleData data, string text)
+        public override bool TrySetText(FixedContainer context, ModuleData data, string text)
         {
             if (CustomValueFormatting != null && text == CustomValueFormatting.Value.text)
             {
-                SetRawValue(data, CustomValueFormatting.Value.value);
+                SetRawValue(context, data, CustomValueFormatting.Value.value);
                 return true;
             }
             if (Suffix != null && text.EndsWith(Suffix))
@@ -74,7 +74,7 @@ namespace VDrumExplorer.Data.Fields
             decimal rescaled = ScaleRawValueForFormatting(candidateRawValue);
             if (rescaled == parsed)
             {
-                SetRawValue(data, candidateRawValue);
+                SetRawValue(context, data, candidateRawValue);
                 return true;
             }
             else

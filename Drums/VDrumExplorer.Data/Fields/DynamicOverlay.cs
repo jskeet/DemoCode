@@ -7,26 +7,31 @@ using System.Collections.Generic;
 
 namespace VDrumExplorer.Data.Fields
 {
-    public sealed class DynamicOverlay : FieldBase, IContainerField
+    public sealed class DynamicOverlay : FieldBase
     {
-        public ModuleAddress SwitchAddress { get; }
+        private InstrumentField instrumentField;
+
+        public int SwitchOffset { get; }
         
         private readonly string? switchTransform;
         internal IReadOnlyList<Container> OverlaidContainers { get; }
-        
+
         // No condition; overlays are already conditional effectively.
-        internal DynamicOverlay(FieldBase.Parameters common, ModuleAddress switchAddress, string? switchTransform, IReadOnlyList<Container> containers)
-            : base(common) =>
-            (SwitchAddress, this.switchTransform, OverlaidContainers) = (switchAddress, switchTransform, containers);
-
-        public IEnumerable<IField> Children(ModuleData data) => GetOverlaidContainer(data).Fields;
-
-        public Container GetOverlaidContainer(ModuleData data)
+        internal DynamicOverlay(FieldBase.Parameters common, int switchOffset, string? switchTransform, IReadOnlyList<Container> containers)
+            : base(common)
         {
-            var field = Schema.PrimitiveFieldsByAddress[SwitchAddress];
+            (SwitchOffset, this.switchTransform, OverlaidContainers) = (switchOffset, switchTransform, containers);
+            // FIXME: This is really horribly, but it works for now.
+            instrumentField = new InstrumentField(new FieldBase.Parameters(Schema, "dummy instrument field", 0, 4, "dummy instrument field", null), 8);
+        }
+
+        public Container GetOverlaidContainer(FixedContainer context, ModuleData data)
+        {
+            // FIXME: This is really hacky at the moment...
+            var switchAddress = context.Address + SwitchOffset;
             int index = switchTransform switch
             {
-                null => ((NumericFieldBase) field).GetRawValue(data),
+                null => data.GetAddressValue(switchAddress),
                 "instrumentGroup" => GetInstrumentGroupIndex(),
                 _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
             };
@@ -34,8 +39,9 @@ namespace VDrumExplorer.Data.Fields
             
             int GetInstrumentGroupIndex()
             {
-                var instrumentField = (InstrumentField) field;
-                var instrument = instrumentField.GetInstrument(data);
+                // This is in the wrong container. It's all horrible!
+                var instrumentContext = new FixedContainer(context.Container, switchAddress);
+                var instrument = instrumentField.GetInstrument(instrumentContext, data);
                 // User samples get an extra overlay at the end.
                 return instrument.Group?.Index ?? Schema.InstrumentGroups.Count;
             }

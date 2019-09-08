@@ -14,21 +14,21 @@ namespace VDrumExplorer.Data.Fields
             : base(common, min, values.Count + min - 1) =>
             Values = values;
 
-        public override string GetText(ModuleData data) => Values[GetRawValue(data) - Min];
+        public override string GetText(FixedContainer context, ModuleData data) => Values[GetRawValue(context, data) - Min];
 
-        public override bool TrySetText(ModuleData data, string text)
+        public override bool TrySetText(FixedContainer context, ModuleData data, string text)
         {
             for (int i = 0; i < Values.Count; i++)
             {
                 if (Values[i] == text)
                 {
-                    SetRawValue(data, i + Min);
+                    SetRawValue(context, data, i + Min);
                     return true;
                 }
             }
             return false;
         }
 
-        public void SetValue(ModuleData data, int value) => SetRawValue(data, value + Min);
+        public void SetValue(FixedContainer context, ModuleData data, int value) => SetRawValue(context, data, value + Min);
     }
 }

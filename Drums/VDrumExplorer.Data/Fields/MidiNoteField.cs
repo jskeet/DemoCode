@@ -12,9 +12,9 @@ namespace VDrumExplorer.Data.Fields
         {
         }
 
-        public int? GetMidiNote(ModuleData data)
+        public int? GetMidiNote(FixedContainer context, ModuleData data)
         {
-            var note = GetRawValue(data);
+            var note = GetRawValue(context, data);
             return note == 128 ? default(int?) : note;
         }            
     }

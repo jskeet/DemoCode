@@ -24,22 +24,11 @@ namespace VDrumExplorer.Data
         /// </summary>
         public ModuleIdentifier Identifier { get; }
 
-        public Container Root { get; set; }
+        public FixedContainer Root { get; set; }
 
         public IReadOnlyList<Instrument> PresetInstruments { get; }
         public IReadOnlyList<Instrument> UserSampleInstruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
-        
-        /// <summary>
-        /// Mapping from ModuleAddress to primitive fields. Only non-overlaid fields are included.
-        /// </summary>
-        public IReadOnlyDictionary<ModuleAddress, IPrimitiveField> PrimitiveFieldsByAddress { get; }
-        
-        /// <summary>
-        /// Backlinks from each field to its parent container, including the fields within overlaid containers.
-        /// The overlaid container themselves do not (currently) link back to the DynamicOverlay they're part of.
-        /// </summary>
-        public IReadOnlyDictionary<IField, Container> ParentsByField { get; }
         
         /// <summary>
         /// Root of the visual tree for the module using the logical layout.
@@ -81,13 +70,9 @@ namespace VDrumExplorer.Data
                 .AsReadOnly();
             
             // Now do everything with the fields.
-            Root = json.BuildRootContainer(this);
+            Root = new FixedContainer(json.BuildRootContainer(this), new ModuleAddress(0));
             LogicalRoot = json.BuildLogicalRoot(Root);
-            PrimitiveFieldsByAddress = Root.DescendantsAndSelf().OfType<IPrimitiveField>()
-                .ToDictionary(f => f.Address)
-                .AsReadOnly();
-            ParentsByField = BuildParentsByField(Root);
-            PhysicalRoot = VisualTreeNode.FromContainer(Root);
+            PhysicalRoot = VisualTreeNode.FromFixedContainer(Root);
         }
 
         public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
@@ -99,35 +84,17 @@ namespace VDrumExplorer.Data
         private static ModuleSchema FromJson(JObject json) =>
             new ModuleSchema(ModuleJson.FromJson(json));
 
-        private static IReadOnlyDictionary<IField, Container> BuildParentsByField(Container root)
+        public IEnumerable<AnnotatedContainer> GetContainers()
         {
-            var dictionary = new Dictionary<IField, Container>();
-            new ParentBuildingVisitor(dictionary).Visit(root);
-            return dictionary.AsReadOnly();
-        }
-
-        private class ParentBuildingVisitor : FieldVisitor
-        {
-            private readonly IDictionary<IField, Container> dictionary;
-
-            internal ParentBuildingVisitor(IDictionary<IField, Container> dictionary) =>
-                this.dictionary = dictionary;
-
-            public override void VisitContainer(Container container)
+            var queue = new Queue<AnnotatedContainer>();
+            queue.Enqueue(new AnnotatedContainer("", Root));
+            while (queue.Count != 0)
             {
-                base.VisitContainer(container);
-                foreach (var field in container.Fields)
+                var current = queue.Dequeue();
+                yield return current;
+                foreach (var container in current.Container.Fields.OfType<Container>())
                 {
-                    dictionary[field] = container;
-                }
-            }
-
-            public override void VisitDynamicOverlay(DynamicOverlay overlay)
-            {
-                base.VisitDynamicOverlay(overlay);
-                foreach (var container in overlay.OverlaidContainers)
-                {
-                    Visit(container);
+                    queue.Enqueue(current.AnnotateChildContainer(container));
                 }
             }
         }

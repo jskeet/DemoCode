@@ -24,9 +24,10 @@ namespace VDrumExplorer.Data.Fields
             bytesPerChar = Size / length;
         }
 
-        public override string GetText(ModuleData data)
+        public override string GetText(FixedContainer context, ModuleData data)
         {
-            byte[] rawBytes = data.GetData(Address, Size);
+            var address = GetAddress(context);
+            byte[] rawBytes = data.GetData(address, Size);
             switch (bytesPerChar)
             {
                 case 1:
@@ -43,8 +44,9 @@ namespace VDrumExplorer.Data.Fields
             }
         }
 
-        public override bool TrySetText(ModuleData data, string text)
+        public override bool TrySetText(FixedContainer context, ModuleData data, string text)
         {
+            var address = GetAddress(context);
             if (text.Length > Length || text.Any(c => c < 32 || c > 126))
             {
                 return false;
@@ -54,7 +56,7 @@ namespace VDrumExplorer.Data.Fields
             {
                 case 1:
                     byte[] ascii = Encoding.ASCII.GetBytes(text);
-                    data.SetData(Address, ascii);
+                    data.SetData(address, ascii);
                     break;
                 case 2:
                     byte[] rawBytes = new byte[Length * 2];
@@ -63,7 +65,7 @@ namespace VDrumExplorer.Data.Fields
                         rawBytes[i * 2] = (byte) (text[i] >> 4);
                         rawBytes[i * 2 + 1] = (byte) (text[i] & 0xf);
                     }
-                    data.SetData(Address, rawBytes);
+                    data.SetData(address, rawBytes);
                     break;
                 default:
                     throw new InvalidOperationException($"Can't set a string with bytesPerChar of {bytesPerChar}");
@@ -71,9 +73,9 @@ namespace VDrumExplorer.Data.Fields
             return true;
         }
 
-        public override void Reset(ModuleData data) => TrySetText(data, new string(' ', Length));
+        public override void Reset(FixedContainer context, ModuleData data) => TrySetText(context, data, new string(' ', Length));
 
-        protected override bool ValidateData(ModuleData data, out string? error)
+        protected override bool ValidateData(FixedContainer context, ModuleData data, out string? error)
         {
             // We could potentially validate that it contains non-control-character ASCII...
             error = null;

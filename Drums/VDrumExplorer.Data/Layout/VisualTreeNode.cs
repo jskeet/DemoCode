@@ -16,24 +16,31 @@ namespace VDrumExplorer.Data.Layout
     /// </summary>
     public sealed class VisualTreeNode
     {
+        /// <summary>
+        /// The context in which fields should be resolved.
+        /// </summary>
+        public FixedContainer Context { get; }
+
         public IReadOnlyList<VisualTreeNode> Children { get; }
         public IReadOnlyList<VisualTreeDetail> Details { get; }
 
         public FormattableDescription Description { get; }
-        public MidiNoteField? MidiNoteField { get; }
+        public FieldChain<MidiNoteField>? MidiNoteField { get; }
 
         public VisualTreeNode(
+            FixedContainer context,
             IReadOnlyList<VisualTreeNode> children,
             IReadOnlyList<VisualTreeDetail> details,
             FormattableDescription description,
-            MidiNoteField? midiNoteField) =>
-            (Children, Details, Description, MidiNoteField) = (children, details, description, midiNoteField);
+            FieldChain<MidiNoteField>? midiNoteField) =>
+            (Context, Children, Details, Description, MidiNoteField) = (context, children, details, description, midiNoteField);
 
-        internal static VisualTreeNode FromContainer(Container container)
+        internal static VisualTreeNode FromFixedContainer(FixedContainer context)
         {
-            var children = container.Fields.OfType<Container>().Select(FromContainer).ToList().AsReadOnly();
-            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, container) }.AsReadOnly();
-            return new VisualTreeNode(children, details, new FormattableDescription(container.Description, null), null);
+            var container = context.Container;
+            var children = container.Fields.OfType<Container>().Select(c => FromFixedContainer(new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
+            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container>.EmptyChain(container)) }.AsReadOnly();
+            return new VisualTreeNode(context, children, details, new FormattableDescription(container.Description, null), null);
         }
     }
 }

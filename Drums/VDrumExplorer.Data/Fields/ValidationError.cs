@@ -6,10 +6,10 @@ namespace VDrumExplorer.Data.Fields
 {
     public sealed class ValidationError
     {
-        public IField Field { get; }
+        public AnnotatedField Field { get; }
         public string Message { get; }
         
-        public ValidationError(IField field, string message) =>
+        public ValidationError(AnnotatedField field, string message) =>
             (Field, Message) = (field, message);
     }
 }

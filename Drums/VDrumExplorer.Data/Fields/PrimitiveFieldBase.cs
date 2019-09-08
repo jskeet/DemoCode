@@ -6,24 +6,24 @@ namespace VDrumExplorer.Data.Fields
 {
     public abstract class PrimitiveFieldBase : FieldBase, IPrimitiveField
     {
-        public abstract string GetText(ModuleData data);
-        public abstract void Reset(ModuleData data);
-        public abstract bool TrySetText(ModuleData data, string text);
+        public abstract string GetText(FixedContainer context, ModuleData data);
+        public abstract void Reset(FixedContainer context, ModuleData data);
+        public abstract bool TrySetText(FixedContainer context, ModuleData data, string text);
 
         private protected PrimitiveFieldBase(Parameters p) : base(p)
         {
         }
         
-        public bool Validate(ModuleData data, out string? error)
+        public bool Validate(FixedContainer context, ModuleData data, out string? error)
         {
-            var segment = data.GetSegment(Address);
+            var segment = data.GetSegment(GetAddress(context));
             // TODO: Check the length against size?
             if (segment == null)
             {
                 error = "No segment containing field present in the module data.";
                 return false;
             }
-            return ValidateData(data, out error);
+            return ValidateData(context, data, out error);
         }
 
         /// <summary>
@@ -31,6 +31,6 @@ namespace VDrumExplorer.Data.Fields
         /// after performing the common check that the field has a segment in the module data.
         /// Implementations may therefore assume that the data exists.
         /// </summary>
-        protected abstract bool ValidateData(ModuleData data, out string? error);
+        protected abstract bool ValidateData(FixedContainer context, ModuleData data, out string? error);
     }
 }
