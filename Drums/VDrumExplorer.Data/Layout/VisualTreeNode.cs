@@ -42,5 +42,20 @@ namespace VDrumExplorer.Data.Layout
             var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container>.EmptyChain(container)) }.AsReadOnly();
             return new VisualTreeNode(context, children, details, new FormattableDescription(container.Description, null), null);
         }
+
+        public IEnumerable<VisualTreeNode> DescendantNodesAndSelf()
+        {
+            Queue<VisualTreeNode> nodeQueue = new Queue<VisualTreeNode>();
+            nodeQueue.Enqueue(this);
+            while (nodeQueue.Count != 0)
+            {
+                var node = nodeQueue.Dequeue();
+                yield return node;
+                foreach (var child in node.Children)
+                {
+                    nodeQueue.Enqueue(child);
+                }
+            }
+        }
     }
 }

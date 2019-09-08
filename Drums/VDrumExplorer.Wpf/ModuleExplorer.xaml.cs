@@ -427,21 +427,30 @@ namespace VDrumExplorer.Wpf
                 return;
             }
 
-            // TODO: We should copy all the segments from the container down.
-            
             // Find all the segments we need.
-            var segments = new HashSet<DataSegment>();
-            if (segments != null)
-            {
-                throw new NotImplementedException("Reimplement properly");
-            }
+            // We assume that each item of data is reflected in the details as a container
+            // rather than a formatted description either in the details page or in the tree.
+            // (Only containers have *editable* data anyway.)
+            var segments = node.DescendantNodesAndSelf()
+                .SelectMany(GetSegments)
+                .Distinct()
+                .OrderBy(segment => segment.Start)
+                .ToList();
             logger.Log($"Writing {segments.Count} segments to the device.");
-            foreach (var segment in segments.OrderBy(s => s.Start))
+            foreach (var segment in segments)
             {
                 midiClient.SendData(segment.Start.Value, segment.CopyData());
                 await Task.Delay(100);
             }
             logger.Log($"Finished writing segments to the device.");
+
+            IEnumerable<DataSegment> GetSegments(VisualTreeNode treeNode) =>
+                treeNode.Details
+                    .Select(d => d.Container)
+                    .Where(chain => chain is FieldChain<Container>)
+                    .Select(chain => chain.GetFinalContext(treeNode.Context).ToChildContext(chain.FinalField))
+                    .Where(fc => fc.Container.Loadable)
+                    .Select(fc => module.Data.GetSegment(fc.Address));
         }
 
         private void PlayNote(object sender, RoutedEventArgs e)
