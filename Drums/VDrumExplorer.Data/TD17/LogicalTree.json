@@ -76,10 +76,11 @@
               "index": "instrument",
               "formatPaths": [
                 "/lookups/instruments[$instrument]",
-                "KitUnitMain[$instrument]/Instrument"
+                "KitUnitMain[$instrument]/Instrument",
+                "KitUnitSub[$instrument]/Instrument"
               ],
               "path": ".",
-              "format": "{0}: {1}",
+              "format": "{0}: {1} / {2}",
               "midiNotePath": "KitMidi/Midi[$instrument]",
               "details": [
                 {

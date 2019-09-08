@@ -34,6 +34,6 @@ namespace VDrumExplorer.Data
         internal static Instrument FromUserSample(int id) =>
             new Instrument(id, $"User sample {id + 1}", null);
 
-        public override string ToString() => Group == null ? Name : $"{Name} ({Group?.Description})";
+        public override string ToString() => Name;
     }
 }

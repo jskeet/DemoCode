@@ -124,7 +124,7 @@
                     "KitPadMain[$instrument]/Instrument",
                     "KitPadSub[$instrument]/Instrument"
                   ],
-                  "format": "{0}: {1} ({2})"
+                  "format": "{0}: {1} / {2}"
                 }
               ],
               "children": [
@@ -133,10 +133,11 @@
                   "index": "instrument",
                   "formatPaths": [
                     "/lookups/instruments[$instrument]",
-                    "KitPadMain[$instrument]/Instrument"
+                    "KitPadMain[$instrument]/Instrument",
+                    "KitPadSub[$instrument]/Instrument"
                   ],
                   "path": ".",
-                  "format": "{0}: {1}",
+                  "format": "{0}: {1} / {2}",
                   "midiNotePath": "KitMidi/Midi[$instrument]",
                   "details": [
                     {
