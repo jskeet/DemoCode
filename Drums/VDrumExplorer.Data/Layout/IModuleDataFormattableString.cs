@@ -10,11 +10,13 @@ namespace VDrumExplorer.Data.Layout
     /// An element of a module that can be formatted, when provided with module data (which may
     /// or may not be used).
     /// </summary>
-    public interface IModuleDataFormattableString
+    internal interface IModuleDataFormattableString
     {
         /// <summary>
         /// Formats the value with respect to the given module data.
         /// </summary>
         string Format(FixedContainer context, ModuleData data);
+
+        ModuleAddress? GetSegmentAddress(FixedContainer context);
     }
 }

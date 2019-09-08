@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using VDrumExplorer.Data.Fields;
 
 namespace VDrumExplorer.Data.Layout
@@ -19,5 +18,8 @@ namespace VDrumExplorer.Data.Layout
             var fields = chain.FinalField;
             return fields.GetText(context, data);
         }
+
+        public ModuleAddress? GetSegmentAddress(FixedContainer context) =>
+            chain.GetFinalContext(context).Address;
     }
 }
