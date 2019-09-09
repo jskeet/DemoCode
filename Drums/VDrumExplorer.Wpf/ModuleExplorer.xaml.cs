@@ -153,7 +153,7 @@ namespace VDrumExplorer.Wpf
                 if (grid.Tag is (DynamicOverlay overlay, Container currentContainer))
                 {
                     var container = detail.Container.FinalField;
-                    var detailContext = detail.Container.GetFinalContext(context).ToChildContext(container);
+                    var detailContext = detail.FixContainer(context);
                     var segmentStart = module.Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
@@ -181,7 +181,7 @@ namespace VDrumExplorer.Wpf
 
             // Find the real context based on the container.
             var container = detail.Container.FinalField;
-            context = detail.Container.GetFinalContext(context).ToChildContext(container);
+            context = detail.FixContainer(context);
 
             var fields = context.GetPrimitiveFields(module.Data)
                 .Where(f => ShouldDisplayField(context, f));
@@ -451,9 +451,8 @@ namespace VDrumExplorer.Wpf
 
             IEnumerable<DataSegment> GetSegments(VisualTreeNode treeNode) =>
                 treeNode.Details
-                    .Select(d => d.Container)
-                    .Where(chain => chain is FieldChain<Container>)
-                    .Select(chain => chain.GetFinalContext(treeNode.Context).ToChildContext(chain.FinalField))
+                    .Where(d => d.Container is object)
+                    .Select(d => d.FixContainer(treeNode.Context))
                     .Where(fc => fc.Container.Loadable)
                     .Select(fc => module.Data.GetSegment(fc.Address));
         }
@@ -509,7 +508,7 @@ namespace VDrumExplorer.Wpf
                     var detail = (VisualTreeDetail) groupBox.Tag;
 
                     var container = detail.Container.FinalField;
-                    var detailContext = detail.Container.GetFinalContext(context).ToChildContext(container);
+                    var detailContext = detail.FixContainer(context);
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
                     var currentContainer = overlay.GetOverlaidContainer(detailContext, module.Data);

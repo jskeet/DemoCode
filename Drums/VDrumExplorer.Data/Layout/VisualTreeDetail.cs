@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using VDrumExplorer.Data.Fields;
 
@@ -21,7 +22,16 @@ namespace VDrumExplorer.Data.Layout
         /// A field chain to a container. May be null, in which case <see cref="DetailDescriptions"/> will not be null.
         /// </summary>
         public FieldChain<Container>? Container { get; }
-                
+
+        public FixedContainer FixContainer(FixedContainer context)
+        {
+            if (Container is null)
+            {
+                throw new InvalidOperationException("No container");
+            }
+            return Container.GetFinalContext(context).ToChildContext(Container.FinalField);
+        }
+
         /// <summary>
         /// A list of formattable descriptions. May be null, in which case <see cref="Container"/>
         /// will not be null.
