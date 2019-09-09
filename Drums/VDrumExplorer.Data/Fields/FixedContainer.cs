@@ -19,8 +19,7 @@ namespace VDrumExplorer.Data.Fields
             (Container, Address) = (container, address);
 
         public FixedContainer ToChildContext(Container container) =>
-            // FIXME: This is a horrible hack to make a path of "." work.
-            new FixedContainer(container, container == Container ? Address : Address + container.Offset);
+            new FixedContainer(container, Address + container.Offset);
 
         public IEnumerable<IPrimitiveField> GetPrimitiveFields(ModuleData data) =>
             GetChildren(data).OfType<IPrimitiveField>();

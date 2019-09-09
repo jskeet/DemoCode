@@ -20,8 +20,9 @@ namespace VDrumExplorer.Data.Layout
         
         /// <summary>
         /// A field chain to a container. May be null, in which case <see cref="DetailDescriptions"/> will not be null.
+        /// If the final field in the chain is null, the final context of the (typically empty) chain is the relevant container.
         /// </summary>
-        public FieldChain<Container>? Container { get; }
+        public FieldChain<Container?>? Container { get; }
 
         public FixedContainer FixContainer(FixedContainer context)
         {
@@ -29,7 +30,9 @@ namespace VDrumExplorer.Data.Layout
             {
                 throw new InvalidOperationException("No container");
             }
-            return Container.GetFinalContext(context).ToChildContext(Container.FinalField);
+            var finalContainer = Container.FinalField;
+            var finalContext = Container.GetFinalContext(context);
+            return finalContainer is null ? finalContext : finalContext.ToChildContext(finalContainer);
         }
 
         /// <summary>
@@ -38,7 +41,7 @@ namespace VDrumExplorer.Data.Layout
         /// </summary>
         public IReadOnlyList<FormattableDescription>? DetailDescriptions { get; }
 
-        public VisualTreeDetail(string description, FieldChain<Container> container) =>
+        public VisualTreeDetail(string description, FieldChain<Container?> container) =>
             (Description, Container, DetailDescriptions) = (description, container, null);
 
         public VisualTreeDetail(string description, IReadOnlyList<FormattableDescription> formatElements) =>

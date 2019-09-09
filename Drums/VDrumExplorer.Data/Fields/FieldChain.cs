@@ -13,7 +13,7 @@ namespace VDrumExplorer.Data.Fields
     /// Kit[5]/KitUnits[0]/Volume. All but the final element of the path must resolve to a container;
     /// the final element must resolve to a path of the type argument for the chain.
     /// </summary>
-    public sealed class FieldChain<T> where T : IField
+    public sealed class FieldChain<T> where T : IField?
     {
         private static readonly LinkedList<Container> EmptyContainerList = new LinkedList<Container>();
 
@@ -29,7 +29,6 @@ namespace VDrumExplorer.Data.Fields
             var containers = pathElements.Length == 1 ? EmptyContainerList : new LinkedList<Container>();
             for (int i = 0; i < pathElements.Length - 1; i++)
             {
-                //IField fieldByName = parent.Fields.Single(f => f.Name == pathElements[i]);
                 IField fieldByName = parent.GetField(pathElements[i]);
                 Container container = (Container) fieldByName;
                 containers.AddLast(container);

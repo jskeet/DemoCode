@@ -50,10 +50,10 @@ namespace VDrumExplorer.Data.Json
             return new VisualTreeConversionContext(moduleJson, ContainerContext, lookupsByPath, newIndexes);
         }
 
-        internal FieldChain<Container> GetContainer(string relativePath) =>
+        internal FieldChain<Container?> GetContainer(string relativePath) =>
             relativePath == "."
-            ? FieldChain<Container>.EmptyChain(ContainerContext.Container)
-            : FieldChain<Container>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
+            ? FieldChain<Container?>.EmptyChain(null)
+            : FieldChain<Container?>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
 
         internal FieldChain<MidiNoteField> GetMidiNoteField(string relativePath) =>
             FieldChain<MidiNoteField>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
