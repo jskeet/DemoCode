@@ -20,7 +20,10 @@ namespace VDrumExplorer.Data.Fields
         public AnnotatedContainer(string path, FixedContainer context) =>
             (Path, Context) = (path, context);
 
-        public AnnotatedContainer AnnotateChildContainer(Container container) =>
-            new AnnotatedContainer($"{Path}/{container.Name}", Context.ToChildContext(container));
+        public AnnotatedContainer AnnotateChildContainer(Container container)
+        {
+            string path = Path == "" ? container.Name : $"{Path}/{container.Name}";
+            return new AnnotatedContainer(path, Context.ToChildContext(container));
+        }
     }
 }

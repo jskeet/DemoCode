@@ -42,5 +42,20 @@ namespace VDrumExplorer.Data.Fields
                 }
             }
         }
+
+        public IEnumerable<AnnotatedContainer> AnnotateDescendantsAndSelf()
+        {
+            var queue = new Queue<AnnotatedContainer>();
+            queue.Enqueue(new AnnotatedContainer("", this));
+            while (queue.Count != 0)
+            {
+                var current = queue.Dequeue();
+                yield return current;
+                foreach (var container in current.Container.Fields.OfType<Container>())
+                {
+                    queue.Enqueue(current.AnnotateChildContainer(container));
+                }
+            }
+        }
     }
 }
