@@ -95,6 +95,11 @@ namespace VDrumExplorer.Wpf
             {
                 logger.Log($"Device didn't respond for container {annotatedContainer.Path}; skipping.");
             }
+            catch
+            {
+                logger.Log($"Failure while loading {annotatedContainer.Path}");
+                throw;
+            }
         }
 
         private void Cancel(object sender, RoutedEventArgs e) =>
