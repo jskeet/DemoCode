@@ -94,7 +94,7 @@ namespace VDrumExplorer.Data
                 int index = segments.BinarySearch(segment, DataSegment.AddressComparer);
                 if (index >= 0)
                 {
-                    throw new ArgumentException("Segment already exists");
+                    throw new ArgumentException($"Segment already exists for address {address}");
                 }
                 segments.Insert(~index, segment);
             }
