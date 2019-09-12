@@ -34,7 +34,7 @@ namespace VDrumExplorer.Data
         {
             int count = 0;
             var errors = new List<ValidationError>();
-            foreach (var annotatedContainer in Schema.GetContainers())
+            foreach (var annotatedContainer in Schema.Root.AnnotateDescendantsAndSelf())
             {
                 var context = annotatedContainer.Context;
                 foreach (var field in context.GetPrimitiveFields(Data))

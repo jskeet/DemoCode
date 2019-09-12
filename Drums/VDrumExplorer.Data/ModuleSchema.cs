@@ -83,20 +83,5 @@ namespace VDrumExplorer.Data
 
         private static ModuleSchema FromJson(JObject json) =>
             new ModuleSchema(ModuleJson.FromJson(json));
-
-        public IEnumerable<AnnotatedContainer> GetContainers()
-        {
-            var queue = new Queue<AnnotatedContainer>();
-            queue.Enqueue(new AnnotatedContainer("", Root));
-            while (queue.Count != 0)
-            {
-                var current = queue.Dequeue();
-                yield return current;
-                foreach (var container in current.Container.Fields.OfType<Container>())
-                {
-                    queue.Enqueue(current.AnnotateChildContainer(container));
-                }
-            }
-        }
     }
 }

@@ -48,7 +48,7 @@ namespace VDrumExplorer.Wpf
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
-                var containers = schema.GetContainers().Where(c => c.Container.Loadable).ToList();
+                var containers = schema.Root.AnnotateDescendantsAndSelf().Where(c => c.Container.Loadable).ToList();
                 logger.Log($"Loading {containers.Count} containers from device {schema.Identifier.Name}");
                 progress.Maximum = containers.Count;
                 int loaded = 0;
