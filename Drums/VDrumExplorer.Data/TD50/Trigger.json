@@ -16,6 +16,7 @@
       "gap": "0x1_00"
     },
     {
+      "name": "TrigDigital",
       "offset": "0x0f_00",
       "description": "{1} Trigger Digital",
       "descriptionLookup": "triggers",
