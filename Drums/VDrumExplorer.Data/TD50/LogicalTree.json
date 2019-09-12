@@ -284,7 +284,21 @@
               "path": "."
             }
           ]
-        }        
+        },
+        {
+          "repeat": "$triggers",
+          "index": "trigger",
+          "formatPaths": [
+          ],
+          "format": "Digital Trigger $trigger",
+          "path": "TrigDigital[$trigger]",
+          "details": [
+            {
+              "description": "Digital Trigger Details",
+              "path": "."
+            }
+          ]
+        }
       ]
     }
   ]

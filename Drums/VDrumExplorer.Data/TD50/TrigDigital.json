@@ -1,7 +1,148 @@
 {
-  // FIXME!
   "size": "0x1c",
   "fields": [
-
+    {
+      "offset": "0x01",
+      "description": "Sensitivity",
+      "type": "range8",
+      "min": 0,
+      "max": 62,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "offset": "0x02",
+      "description": "Rim Gain",
+      "type": "range8",
+      "min": 0,
+      "max": 32,
+      "divisor": 10
+    },
+    {
+      "offset": "0x03",
+      "description": "Threshold",
+      "type": "range8",
+      "min": 0,
+      "max": 31
+    },
+    {
+      "offset": "0x04",
+      "description": "Curve",
+      "type": "enum",
+      "values": [
+        "Linear",
+        "Exp 1",
+        "Exp 2",
+        "Log 1",
+        "Log 2",
+        "Spline",
+        "Loud 1",
+        "Loud 2"
+      ]
+    },
+    {
+      "offset": "0x05",
+      "description": "Ext Noise Cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 5,
+      "off": 0
+    },
+    {
+      "offset": "0x06",
+      "description": "Head/Rim Adjust",
+      "type": "range8",
+      "min": 0,
+      "max": 80
+    },
+    {
+      "offset": "0x07",
+      "description": "Scan Time",
+      "type": "range8",
+      "min": 0,
+      "max": 40,
+      "divisor": 10
+    },
+    {
+      "offset": "0x08",
+      "description": "Mask Time",
+      "type": "range8",
+      "min": 0,
+      "max": 64
+    },
+    {
+      "offset": "0x09",
+      "description": "Retrigger Cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 15,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x0a",
+      "description": "Position Detect Head",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x0b",
+      "description": "Position Detect Rim",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x0c",
+      "description": "Digital Trigger Advanced Parameter 1 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x0e",
+      "description": "Digital Trigger Advanced Parameter 2 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x10",
+      "description": "Digital Trigger Advanced Parameter 3 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x12",
+      "description": "Digital Trigger Advanced Parameter 4 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x14",
+      "description": "Digital Trigger Advanced Parameter 5 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x16",
+      "description": "Digital Trigger Advanced Parameter 6 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x18",
+      "description": "Digital Trigger Advanced Parameter 7 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "offset": "0x1a",
+      "description": "Digital Trigger Advanced Parameter 8 (FIXME)",
+      "type": "range16",
+      "min": 0,
+      "max": 1000
+    }
   ]
 }
