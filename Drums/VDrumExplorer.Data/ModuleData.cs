@@ -27,7 +27,7 @@ namespace VDrumExplorer.Data
         {
         }
 
-        public event EventHandler<ModuleDataChangedEventArgs> DataChanged;
+        public event EventHandler<ModuleDataChangedEventArgs>? DataChanged;
 
         /// <summary>
         /// Takes an internal snapshot of the data within each segment. The snapshot can then
