@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <ProjectReference Include="..\VDrumExplorer.Data\VDrumExplorer.Data.csproj" />
     <EmbeddedResource Include="Json/**/*.json" />
+    <EmbeddedResource Include="*.vdrum" />
   </ItemGroup>
 
 </Project>

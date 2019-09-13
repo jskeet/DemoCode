@@ -183,6 +183,31 @@ namespace VDrumExplorer.Data.Json
                     string fullDescription = string.Format(Description, indexValue, lookupValue);
                     yield return ToField(schema, module, indexedName, offset, fullDescription, condition);
                     offset += gap;
+                    // TODO: This is ugly. We need it because otherwise in SetList we end up with offsets of
+                    // 0x03_00_00_00
+                    // 0x03_00_10_00
+                    // 0x03_00_20_00
+                    // ....
+                    // 0x03_00_70_00
+                    // 0x03_00_80_00 => This will be promoted to an *address* of 0x03_01_00_00 automatically...
+                    // ...
+                    // 0x03_00_f0_00
+                    // 0x03_01_00_00 => We now get 0x03_01_00_00 again :(
+                    // 0x03_01_10_00
+                    // But it's annoying to have this *here*...
+
+                    if ((offset & 0x80) != 0)
+                    {
+                        offset += 0x80;
+                    }
+                    if ((offset & 0x80_00) != 0)
+                    {
+                        offset += 0x80_00;
+                    }
+                    if ((offset & 0x80_00_00) != 0)
+                    {
+                        offset += 0x80_00_00;
+                    }
                 }
             }
 
