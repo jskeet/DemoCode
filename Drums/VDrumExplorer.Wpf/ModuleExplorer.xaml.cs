@@ -130,7 +130,6 @@ namespace VDrumExplorer.Wpf
         {
             var boundItems = new List<(GroupBox, ModuleAddress)>();
             var node = (VisualTreeNode) detailsPanel.Tag;
-            var context = node.Context;
             detailsPanel.Children.Clear();
             playNoteButton.IsEnabled = GetMidiNote(node) is int note;
             if (node == null)
@@ -139,6 +138,7 @@ namespace VDrumExplorer.Wpf
                     .ToLookup(pair => pair.Item2, pair => pair.Item1);
                 return;
             }
+            var context = node.Context;
             foreach (var detail in node.Details)
             {
                 var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(context, detail);
