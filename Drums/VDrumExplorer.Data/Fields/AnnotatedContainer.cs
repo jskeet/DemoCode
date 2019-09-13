@@ -25,5 +25,7 @@ namespace VDrumExplorer.Data.Fields
             string path = Path == "" ? container.Name : $"{Path}/{container.Name}";
             return new AnnotatedContainer(path, Context.ToChildContext(container));
         }
+
+        public override string ToString() => $"{Path} ({Context.Address})";
     }
 }
