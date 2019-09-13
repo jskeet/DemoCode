@@ -39,7 +39,7 @@ namespace VDrumExplorer.Data.Layout
         {
             var container = context.Container;
             var children = container.Fields.OfType<Container>().Select(c => FromFixedContainer(new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
-            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container>.EmptyChain(container)) }.AsReadOnly();
+            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container?>.EmptyChain(container)) }.AsReadOnly();
             return new VisualTreeNode(context, children, details, new FormattableDescription(container.Description, null), null);
         }
 
