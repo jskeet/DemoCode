@@ -30,8 +30,7 @@ namespace VDrumExplorer.Wpf
 
         protected override void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
         {
-            var node = (VisualTreeNode) detailsPanel.Tag;
-            var kitNode = FindKitNode(node);
+            var kitNode = GetCurrentKitRootNode();
 
             // We try to protect against this in terms of enabling/disabling the button, but
             // let's be cautious anyway.
@@ -47,15 +46,16 @@ namespace VDrumExplorer.Wpf
             new KitExplorer(Logger, kit, MidiClient).Show();
         }
 
-        private VisualTreeNode FindKitNode(VisualTreeNode currentNode)
+        private VisualTreeNode GetCurrentKitRootNode()
         {
-            while (currentNode != null)
+            var node = CurrentNode;
+            while (node != null)
             {
-                if (currentNode.KitNumber != null)
+                if (node.KitNumber != null)
                 {
-                    return currentNode;
+                    return node;
                 }
-                currentNode = currentNode.Parent;
+                node = node.Parent;
             }
             return null;
         }
@@ -63,14 +63,12 @@ namespace VDrumExplorer.Wpf
         protected override void LoadDetailsPage()
         {
             base.LoadDetailsPage();
-            var node = (VisualTreeNode) detailsPanel.Tag;
-            openKitButton.IsEnabled = FindKitNode(node) is object;
+            openKitButton.IsEnabled = GetCurrentKitRootNode() is object;
         }
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)
         {
-            var node = (VisualTreeNode) detailsPanel.Tag;
-            if (node == null)
+            if (CurrentNode == null)
             {
                 return;
             }
@@ -81,7 +79,7 @@ namespace VDrumExplorer.Wpf
             // (Only containers have *editable* data anyway.)
             // We can't just save "all containers under the fixed container" as instruments
             // use several peer containers rather than "everything under one node".
-            var segments = node.DescendantNodesAndSelf()
+            var segments = CurrentNode.DescendantNodesAndSelf()
                 .SelectMany(GetSegments)
                 .Distinct()
                 .OrderBy(segment => segment.Start)

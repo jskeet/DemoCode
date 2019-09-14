@@ -35,6 +35,8 @@ namespace VDrumExplorer.Wpf
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
+        protected VisualTreeNode CurrentNode { get; set; }
+
         public DataExplorer()
         {
             InitializeComponent();
@@ -92,7 +94,7 @@ namespace VDrumExplorer.Wpf
             var rootGuiNode = CreateNode(RootNode);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
-            detailsPanel.Tag = RootNode;
+            CurrentNode = RootNode;
             LoadDetailsPage();
 
             TreeViewItem CreateNode(VisualTreeNode vnode)
@@ -121,7 +123,7 @@ namespace VDrumExplorer.Wpf
         private void HandleTreeViewSelection(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var item = (TreeViewItem) e.NewValue;
-            detailsPanel.Tag = (VisualTreeNode) item?.Tag;
+            CurrentNode = (VisualTreeNode) item?.Tag;
             LoadDetailsPage();
         }
 
@@ -145,17 +147,16 @@ namespace VDrumExplorer.Wpf
         protected virtual void LoadDetailsPage()
         {
             var boundItems = new List<(GroupBox, ModuleAddress)>();
-            var node = (VisualTreeNode) detailsPanel.Tag;
             detailsPanel.Children.Clear();
-            playNoteButton.IsEnabled = GetMidiNote(node) is int note;
-            if (node == null)
+            playNoteButton.IsEnabled = GetMidiNote(CurrentNode) is int note;
+            if (CurrentNode == null)
             {
                 detailGroupsToUpdateBySegmentStart = boundItems
                     .ToLookup(pair => pair.Item2, pair => pair.Item1);
                 return;
             }
-            var context = node.Context;
-            foreach (var detail in node.Details)
+            var context = CurrentNode.Context;
+            foreach (var detail in CurrentNode.Details)
             {
                 var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(context, detail);
                 var groupBox = new GroupBox
@@ -431,8 +432,7 @@ namespace VDrumExplorer.Wpf
 
         private void PlayNote(object sender, RoutedEventArgs e)
         {
-            var node = detailsPanel.Tag as VisualTreeNode;
-            if (GetMidiNote(node) is int note)
+            if (GetMidiNote(CurrentNode) is int note)
             {
                 int attack = (int) attackSlider.Value;
                 int channel = int.Parse(midiChannelSelector.Text);
@@ -473,8 +473,7 @@ namespace VDrumExplorer.Wpf
 
             void ReflectChangesInDetails(DataSegment segment)
             {
-                var node = (VisualTreeNode) detailsPanel.Tag;
-                var context = node.Context;
+                var context = CurrentNode.Context;
                 foreach (var groupBox in detailGroupsToUpdateBySegmentStart[segment.Start])
                 {
                     var detail = (VisualTreeDetail) groupBox.Tag;
