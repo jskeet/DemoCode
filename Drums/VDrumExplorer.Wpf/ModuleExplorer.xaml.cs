@@ -476,13 +476,21 @@ namespace VDrumExplorer.Wpf
                 .Distinct()
                 .OrderBy(segment => segment.Start)
                 .ToList();
-            logger.Log($"Writing {segments.Count} segments to the device.");
-            foreach (var segment in segments)
+            midiPanel.IsEnabled = false;
+            try
             {
-                midiClient.SendData(segment.Start.Value, segment.CopyData());
-                await Task.Delay(40);
+                logger.Log($"Writing {segments.Count} segments to the device.");
+                foreach (var segment in segments)
+                {
+                    midiClient.SendData(segment.Start.Value, segment.CopyData());
+                    await Task.Delay(40);
+                }
+                logger.Log($"Finished writing segments to the device.");
             }
-            logger.Log($"Finished writing segments to the device.");
+            finally
+            {
+                midiPanel.IsEnabled = true;
+            }
 
             IEnumerable<DataSegment> GetSegments(VisualTreeNode treeNode) =>
                 treeNode.Details
