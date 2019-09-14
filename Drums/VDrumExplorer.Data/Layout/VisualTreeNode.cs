@@ -32,14 +32,21 @@ namespace VDrumExplorer.Data.Layout
         public FormattableDescription Description { get; }
         public FieldChain<MidiNoteField>? MidiNoteField { get; }
 
+        /// <summary>
+        /// The kit number for which this is the root node, if any.
+        /// </summary>
+        public int? KitNumber { get; }
+
         internal VisualTreeNode(
             VisualTreeNode? parent,
             FixedContainer context,
             Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider,
             IReadOnlyList<VisualTreeDetail> details,
             FormattableDescription description,
-            FieldChain<MidiNoteField>? midiNoteField) =>
-            (Parent, Context, Children, Details, Description, MidiNoteField) = (parent, context, childrenProvider(this), details, description, midiNoteField);
+            FieldChain<MidiNoteField>? midiNoteField,
+            int? kitNumber) =>
+            (Parent, Context, Children, Details, Description, MidiNoteField, KitNumber) =
+            (parent, context, childrenProvider(this), details, description, midiNoteField, kitNumber);
 
         internal static VisualTreeNode FromFixedContainer(VisualTreeNode? parent, FixedContainer context)
         {
@@ -47,7 +54,7 @@ namespace VDrumExplorer.Data.Layout
             Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider = newNode =>
                 container.Fields.OfType<Container>().Select(c => FromFixedContainer(newNode, new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
             var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container?>.EmptyChain(container)) }.AsReadOnly();
-            return new VisualTreeNode(parent, context, childrenProvider, details, new FormattableDescription(container.Description, null), null);
+            return new VisualTreeNode(parent, context, childrenProvider, details, new FormattableDescription(container.Description, null), null, null);
         }
 
         public IEnumerable<VisualTreeNode> DescendantNodesAndSelf()
