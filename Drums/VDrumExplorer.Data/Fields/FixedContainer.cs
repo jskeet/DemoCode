@@ -76,5 +76,26 @@ namespace VDrumExplorer.Data.Fields
                 }
             }
         }
+
+        public ValidationResult ValidateDescendantsAndSelf(ModuleData data)
+        {
+            int count = 0;
+            var errors = new List<ValidationError>();
+            foreach (var annotatedContainer in AnnotateDescendantsAndSelf())
+            {
+                var context = annotatedContainer.Context;
+                foreach (var field in context.GetPrimitiveFields(data))
+                {
+                    count++;
+                    if (!field.Validate(context, data, out var message))
+                    {
+                        string path = $"{annotatedContainer.Path}/{field.Name}";
+                        var address = context.Address + field.Offset;
+                        errors.Add(new ValidationError(path, address, field, message));
+                    }
+                }
+            }
+            return new ValidationResult(count, errors.AsReadOnly());
+        }
     }
 }

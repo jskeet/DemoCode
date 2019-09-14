@@ -30,27 +30,7 @@ namespace VDrumExplorer.Data
         /// Validates that every field in the schema has a valid value.
         /// This will fail if only partial data has been loaded.
         /// </summary>
-        public ValidationResult Validate()
-        {
-            int count = 0;
-            var errors = new List<ValidationError>();
-            foreach (var annotatedContainer in Schema.Root.AnnotateDescendantsAndSelf())
-            {
-                var context = annotatedContainer.Context;
-                foreach (var field in context.GetPrimitiveFields(Data))
-                {
-                    count++;
-                    if (!field.Validate(context, Data, out var message))
-                    {
-                        string path = $"{annotatedContainer.Path}/{field.Name}";
-                        var address = context.Address + field.Offset;
-                        // TODO: use NotNullWhen to avoid needing the dammit operator
-                        errors.Add(new ValidationError(path, address, field, message));
-                    }
-                }
-            }
-            return new ValidationResult(count, errors.AsReadOnly());
-        }
+        public ValidationResult Validate() => Schema.Root.ValidateDescendantsAndSelf(Data);
 
         public void Save(Stream stream) => ProtoIo.Write(stream, this);
     }
