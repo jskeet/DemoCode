@@ -52,6 +52,6 @@ namespace VDrumExplorer.Data
             return new ValidationResult(count, errors.AsReadOnly());
         }
 
-        public void Save(Stream stream) => ProtoIo.Write(stream, this);        
+        public void Save(Stream stream) => ProtoIo.Write(stream, this);
     }
 }
