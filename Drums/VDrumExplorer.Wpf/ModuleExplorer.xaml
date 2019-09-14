@@ -46,7 +46,7 @@
             <Label Margin="5" Padding="5,2">Attack:</Label>
             <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider"/>
         </StackPanel>
-
+        <Separator DockPanel.Dock="Top" />
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
