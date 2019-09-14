@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 
 namespace VDrumExplorer.Data.Proto
 {
@@ -17,5 +18,15 @@ namespace VDrumExplorer.Data.Proto
                 Start = segment.Start.Value,
                 Data = ByteString.CopyFrom(segment.CopyData())
             };
+
+        internal static ModuleData LoadData(RepeatedField<DataSegment> segments)
+        {
+            var moduleData = new ModuleData();
+            foreach (var segment in segments)
+            {
+                moduleData.Populate(new ModuleAddress(segment.Start), segment.Data.ToByteArray());
+            }
+            return moduleData;
+        }
     }
 }

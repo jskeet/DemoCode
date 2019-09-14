@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using VDrumExplorer.Data.Proto;
 
 namespace VDrumExplorer.Data
 {
@@ -20,5 +22,12 @@ namespace VDrumExplorer.Data
         
         private static Lazy<ModuleSchema> CreateLazySchema(string resourceBase, string resourceName) =>
             new Lazy<ModuleSchema>(() => ModuleSchema.FromAssemblyResources(typeof(SchemaRegistry).Assembly, resourceBase, resourceName));
+
+        // It's unpleasant having this here, but I'm not sure of the alternative...
+        /// <summary>
+        /// Reads the given stream as drum data, returning a Kit or a Module depending
+        /// on the data within the stream.
+        /// </summary>
+        public static object ReadStream(Stream stream) => ProtoIo.ReadStream(stream);
     }
 }

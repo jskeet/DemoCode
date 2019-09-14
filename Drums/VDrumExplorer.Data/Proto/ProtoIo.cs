@@ -3,10 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using Google.Protobuf;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace VDrumExplorer.Data.Proto
@@ -19,16 +16,9 @@ namespace VDrumExplorer.Data.Proto
         internal static void Write(Stream stream, Kit kit)
         {
         }
+        internal static void Write(Stream stream, Data.Module module) =>
+            Write(stream, new DrumFile { Module = Module.FromModel(module) });
 
-        internal static void Write(Stream stream, Data.Module module)
-        {
-            var protoModule = new Module
-            {
-                Identifier = ModuleIdentifier.FromModel(module.Schema.Identifier),
-                Segments = { module.Data.GetSegments().Select(DataSegment.FromModel) }
-            };
-            Write(stream, new DrumFile { Module = protoModule });
-        }
 
         internal static void Write(Stream stream, DrumFile drumFile)
         {
@@ -36,28 +26,22 @@ namespace VDrumExplorer.Data.Proto
             drumFile.WriteTo(stream);
         }
 
-        internal static Data.Module ReadModule(Stream stream)
+        /// <summary>
+        /// Returns the model from a stream.
+        /// </summary>
+        /// <param name="stream">Stream to read</param>
+        /// <returns>The model data. The type depends on the data in the stream.</returns>
+        internal static object ReadStream(Stream stream)
         {
-            var file = ReadFile(stream);
-            if (file.FileCase != DrumFile.FileOneofCase.Module)
+            var file = ReadDrumFile(stream);
+            return file.FileCase switch
             {
-                throw new InvalidDataException($"Expected a module; actual case = {file.FileCase}");
-            }
-            var protoModule = file.Module;
-            var identifier = protoModule.Identifier.ToModel();
-            if (!SchemaRegistry.KnownSchemas.TryGetValue(identifier, out var schema))
-            {
-                throw new InvalidDataException($"No known schema matches identifier {identifier}");
-            }
-            var moduleData = new ModuleData();
-            foreach (var segment in protoModule.Segments)
-            {
-                moduleData.Populate(new ModuleAddress(segment.Start), segment.Data.ToByteArray());
-            }
-            return new Data.Module(schema.Value, moduleData);
+                DrumFile.FileOneofCase.Module => file.Module.ToModel(),
+                _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
+            };
         }
 
-        private static DrumFile ReadFile(Stream stream)
+        private static DrumFile ReadDrumFile(Stream stream)
         {
             // Simpler than using bulk read...
             for (int i = 0; i < MagicBytes.Length; i++)

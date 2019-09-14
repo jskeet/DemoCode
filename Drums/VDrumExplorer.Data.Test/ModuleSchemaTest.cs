@@ -34,7 +34,7 @@ namespace VDrumExplorer.Data.Test
         [TestCaseSource(nameof(SchemaNames))]
         public void SampleDataIsValid(string name)
         {
-            var module = TryLoadData(name);
+            var module = TryLoadModule(name);
             Assert.NotNull(module);
             module.Validate();
         }
@@ -43,7 +43,7 @@ namespace VDrumExplorer.Data.Test
         [TestCaseSource(nameof(SchemaNames))]
         public void SampleDataMatchesLoadableContainers(string name)
         {
-            var module = TryLoadData(name);
+            var module = TryLoadModule(name);
             var loadedSegmentStarts = module.Data.GetSegments()
                 .Select(s => s.Start)
                 .ToList();
@@ -55,7 +55,7 @@ namespace VDrumExplorer.Data.Test
             Assert.AreEqual(loadedSegmentStarts, loadableSegmentStarts);
         }
 
-        private static Module TryLoadData(string name)
+        private static Module TryLoadModule(string name)
         {
             var ns = typeof(ModuleSchemaTest).Namespace;
             string filename = name.ToLowerInvariant().Replace("-", "") + ".vdrum";
@@ -66,7 +66,7 @@ namespace VDrumExplorer.Data.Test
                 {
                     return null;
                 }
-                return ProtoIo.ReadModule(stream);
+                return (Module) ProtoIo.ReadStream(stream);
             }
         }
     }
