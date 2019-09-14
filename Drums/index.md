@@ -1,4 +1,4 @@
-Documentation for V-Drum Explorer
+# Documentation for V-Drum Explorer
 
 All source code is in the [Drums directory of the GitHub repo](https://github.com/jskeet/DemoCode/tree/master/Drums).
 
@@ -57,7 +57,8 @@ files, and edit the data.
 
 Click on "Load module/kit file" to load a file. The application will
 detect whether it contains data for a whole module or a single kit,
-and display the appropriate window, as described later.
+and display the appropriate window, as described later. A sample
+file (td17.vdrum) is provided in the zip file with the application.
 
 Click on "Save log file" to simply save the contents of the log (as
 displayed in the Module Loader) to a text file. This is primarily to

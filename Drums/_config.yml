@@ -1,0 +1,7 @@
+name: VDrum Explorer
+theme: jekyll-theme-primer
+kramdown:
+    input: GFM
+    syntax_highlighter: rouge
+    syntax_highlighter_opts:
+        css_class: 'highlight'
