@@ -90,7 +90,7 @@ namespace VDrumExplorer.Data.Json
                 }
             }
             var context = VisualTreeConversionContext.Create(this, root, lookupsByPath.AsReadOnly());
-            return LogicalTree!.ConvertVisualNodes(context).Single();
+            return LogicalTree!.ConvertVisualNodes(null, context).Single();
         }
     }
 }

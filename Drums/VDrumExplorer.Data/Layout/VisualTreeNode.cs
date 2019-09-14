@@ -21,26 +21,33 @@ namespace VDrumExplorer.Data.Layout
         /// </summary>
         public FixedContainer Context { get; }
 
+        /// <summary>
+        /// The parent of this node, or null for the root node.
+        /// </summary>
+        public VisualTreeNode? Parent { get; }
+
         public IReadOnlyList<VisualTreeNode> Children { get; }
         public IReadOnlyList<VisualTreeDetail> Details { get; }
 
         public FormattableDescription Description { get; }
         public FieldChain<MidiNoteField>? MidiNoteField { get; }
 
-        public VisualTreeNode(
+        internal VisualTreeNode(
+            VisualTreeNode? parent,
             FixedContainer context,
-            IReadOnlyList<VisualTreeNode> children,
+            Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider,
             IReadOnlyList<VisualTreeDetail> details,
             FormattableDescription description,
             FieldChain<MidiNoteField>? midiNoteField) =>
-            (Context, Children, Details, Description, MidiNoteField) = (context, children, details, description, midiNoteField);
+            (Parent, Context, Children, Details, Description, MidiNoteField) = (parent, context, childrenProvider(this), details, description, midiNoteField);
 
-        internal static VisualTreeNode FromFixedContainer(FixedContainer context)
+        internal static VisualTreeNode FromFixedContainer(VisualTreeNode? parent, FixedContainer context)
         {
             var container = context.Container;
-            var children = container.Fields.OfType<Container>().Select(c => FromFixedContainer(new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
+            Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider = newNode =>
+                container.Fields.OfType<Container>().Select(c => FromFixedContainer(newNode, new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
             var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container?>.EmptyChain(container)) }.AsReadOnly();
-            return new VisualTreeNode(context, children, details, new FormattableDescription(container.Description, null), null);
+            return new VisualTreeNode(parent, context, childrenProvider, details, new FormattableDescription(container.Description, null), null);
         }
 
         public IEnumerable<VisualTreeNode> DescendantNodesAndSelf()
