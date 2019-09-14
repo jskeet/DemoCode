@@ -35,7 +35,7 @@ namespace VDrumExplorer.Wpf
         {
             var midiDevice = await DetectMidiDeviceAsync();
             detectedMidi = midiDevice;
-            loadFromDeviceButton.IsEnabled = detectedMidi.HasValue;
+            midiPanel.IsEnabled = detectedMidi.HasValue;
             logger.Log("-----------------");
         }
 
@@ -169,7 +169,7 @@ namespace VDrumExplorer.Wpf
             new ModuleExplorer(logger, module, client).Show();
         }
 
-        private void LoadFromDevice(object sender, RoutedEventArgs e)
+        private void LoadModuleFromDevice(object sender, RoutedEventArgs e)
         {
             // Shouldn't happen, as the button shouldn't be enabled.
             if (detectedMidi == null)
