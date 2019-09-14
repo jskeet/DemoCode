@@ -787,8 +787,8 @@ namespace VDrumExplorer.Data.Proto {
   }
 
   /// <summary>
-  /// A kit within a module. The data will start at address 0,
-  /// to be relocated to wherever it needs to be loaded.
+  /// A kit within a module. The data will start at the address of the first kit in the
+  /// normal module schema, to be relocated to wherever it needs to be loaded.
   /// </summary>
   internal sealed partial class Kit : pb::IMessage<Kit> {
     private static readonly pb::MessageParser<Kit> _parser = new pb::MessageParser<Kit>(() => new Kit());
