@@ -8,9 +8,11 @@
         Title="VDrum Module Loader" Height="450" Width="800">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Click="LoadFile" Margin="5" Padding="5,2">Load file</Button>
-            <Button x:Name="loadFromDeviceButton" Click="LoadFromDevice" IsEnabled="False" Margin="5" Padding="5,2">Load from device</Button>
+            <Button Click="LoadFile" Margin="5" Padding="5,2">Load module/kit file</Button>
             <Button x:Name="saveLogButton" Click="SaveLog" Margin="5" Padding="5,2">Save log file</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel" IsEnabled="False">
+            <Button x:Name="loadFromDeviceButton" Click="LoadModuleFromDevice" Margin="5" Padding="5,2">Load all data from device</Button>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <GroupBox Header="Log" Margin="5">
