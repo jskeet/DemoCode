@@ -24,6 +24,25 @@ namespace VDrumExplorer.Data.Fields
         public IEnumerable<IPrimitiveField> GetPrimitiveFields(ModuleData data) =>
             GetChildren(data).OfType<IPrimitiveField>();
 
+        /// <summary>
+        /// Clones the loadable descendants of this container (including this container),
+        /// loading the data into a new <see cref="ModuleData"/> at the given target address.
+        /// </summary>
+        public ModuleData CloneData(ModuleData data, ModuleAddress targetAddress)
+        {
+            int offset = targetAddress - Address;
+            var clonedData = new ModuleData();
+            var segments = AnnotateDescendantsAndSelf()
+                .Select(ac => ac.Context)
+                .Where(fc => fc.Container.Loadable)
+                .Select(fc => data.GetSegment(fc.Address));
+            foreach (var segment in segments)
+            {
+                clonedData.Populate(segment.Start + offset, segment.CopyData());
+            }
+            return clonedData;
+        }
+
         public IEnumerable<IField> GetChildren(ModuleData data)
         {
             foreach (var field in Container.Fields)
