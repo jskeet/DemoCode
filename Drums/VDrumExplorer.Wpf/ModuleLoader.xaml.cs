@@ -190,7 +190,15 @@ namespace VDrumExplorer.Wpf
                 return;
             }
             var midi = detectedMidi.Value;
-            var dialog = new DeviceLoaderDialog(logger, midi.client, midi.schema);
+            var schema = midi.schema;
+            var dialog = new DeviceLoaderDialog(logger, midi.client, schema);
+            dialog.LoadDeviceData(schema.Root);
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client).Show();
+            }
+        }
             var result = dialog.ShowDialog();
             if (result == true)
             {
