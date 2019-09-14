@@ -436,8 +436,8 @@ namespace VDrumExplorer.Wpf
             // We assume that each item of data is reflected in the details as a container
             // rather than a formatted description either in the details page or in the tree.
             // (Only containers have *editable* data anyway.)
-            // TODO: Possibly just find loadable containers beneath this node's fixed container?
-            // When would that not give the same result? Let's write a test...
+            // We can't just save "all containers under the fixed container" as instruments
+            // use several peer containers rather than "everything under one node".
             var segments = node.DescendantNodesAndSelf()
                 .SelectMany(GetSegments)
                 .Distinct()
