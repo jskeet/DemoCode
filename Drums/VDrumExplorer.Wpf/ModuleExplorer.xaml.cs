@@ -31,6 +31,9 @@ namespace VDrumExplorer.Wpf
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
+        private ModuleData Data => module.Data;
+        private ModuleSchema Schema => module.Schema;
+
         public ModuleExplorer()
         {
             InitializeComponent();
@@ -45,14 +48,14 @@ namespace VDrumExplorer.Wpf
             {
                 mainPanel.Children.Remove(midiPanel);
             }
-            module.Data.DataChanged += HandleModuleDataChanged;            
-            Title = $"Module explorer: {module.Schema.Identifier.Name}";
+            Data.DataChanged += HandleModuleDataChanged;            
+            Title = $"Module explorer: {Schema.Identifier.Name}";
             LoadView();
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            module.Data.DataChanged -= HandleModuleDataChanged;
+            Data.DataChanged -= HandleModuleDataChanged;
             base.OnClosed(e);
         }
 
@@ -74,7 +77,7 @@ namespace VDrumExplorer.Wpf
         {
             var boundItems = new List<(TreeViewItem, ModuleAddress)>();
 
-            var rootModelNode = module.Schema.LogicalRoot;
+            var rootModelNode = Schema.LogicalRoot;
             var rootGuiNode = CreateNode(rootModelNode);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
@@ -85,7 +88,7 @@ namespace VDrumExplorer.Wpf
             {
                 var node = new TreeViewItem
                 {                    
-                    Header = vnode.Description.Format(vnode.Context, module.Data),
+                    Header = vnode.Description.Format(vnode.Context, Data),
                     Tag = vnode
                 };
                 foreach (var address in vnode.Description.GetSegmentAddresses(vnode.Context))
@@ -124,9 +127,9 @@ namespace VDrumExplorer.Wpf
             }
 
             // We clone the data from kitNode downwards, but relocating it as if it were the first kit.
-            var firstKitNode = module.Schema.KitRoots[1];
-            var clonedData = kitNode.Context.CloneData(module.Data, firstKitNode.Context.Address);
-            var kit = new Kit(module.Schema, clonedData);
+            var firstKitNode = Schema.KitRoots[1];
+            var clonedData = kitNode.Context.CloneData(Data, firstKitNode.Context.Address);
+            var kit = new Kit(Schema, clonedData);
             new KitExplorer(logger, kit, midiClient).Show();
         }
 
@@ -172,7 +175,7 @@ namespace VDrumExplorer.Wpf
                 {
                     var container = detail.Container.FinalField;
                     var detailContext = detail.FixContainer(context);
-                    var segmentStart = module.Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
+                    var segmentStart = Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
             }
@@ -190,8 +193,8 @@ namespace VDrumExplorer.Wpf
             var container = detail.Container.FinalField;
             context = detail.FixContainer(context);
 
-            var fields = context.GetPrimitiveFields(module.Data)
-                .Where(f => f.IsEnabled(context, module.Data));
+            var fields = context.GetPrimitiveFields(Data)
+                .Where(f => f.IsEnabled(context, Data));
 
             foreach (var primitive in fields)
             {
@@ -215,7 +218,7 @@ namespace VDrumExplorer.Wpf
                     {
                         Padding = new Thickness(0),
                         Margin = new Thickness(5, 1, 0, 0),
-                        Content = primitive.GetText(context, module.Data)
+                        Content = primitive.GetText(context, Data)
                     };
                 }
 
@@ -232,7 +235,7 @@ namespace VDrumExplorer.Wpf
             var overlay = context.Container.Fields.OfType<DynamicOverlay>().FirstOrDefault();
             if (overlay != null)
             {
-                var currentContainer = overlay.GetOverlaidContainer(context, module.Data);
+                var currentContainer = overlay.GetOverlaidContainer(context, Data);
                 grid.Tag = (overlay, currentContainer);
             }
 
@@ -247,14 +250,14 @@ namespace VDrumExplorer.Wpf
                 StringField sf => CreateStringFieldElement(context, sf),
                 InstrumentField inst => CreateInstrumentFieldElement(context, inst),
                 NumericField num => CreateNumericFieldElement(context, num),
-                _ => new Label { Content = field.GetText(context, module.Data), Padding = new Thickness(0) }
+                _ => new Label { Content = field.GetText(context, Data), Padding = new Thickness(0) }
             };
 
         private FrameworkElement CreateBooleanFieldElement(FixedContainer context, BooleanField field)
         {
-            var box = new CheckBox { IsChecked = field.GetValue(context, module.Data), Padding = new Thickness(0) };
-            box.Checked += (sender, args) => field.SetValue(context, module.Data, true);
-            box.Unchecked += (sender, args) => field.SetValue(context, module.Data, false);
+            var box = new CheckBox { IsChecked = field.GetValue(context, Data), Padding = new Thickness(0) };
+            box.Checked += (sender, args) => field.SetValue(context, Data, true);
+            box.Unchecked += (sender, args) => field.SetValue(context, Data, false);
             return box;
         }
 
@@ -263,12 +266,12 @@ namespace VDrumExplorer.Wpf
             var combo = new ComboBox
             {
                 ItemsSource = field.Values,
-                SelectedItem = field.GetText(context, module.Data),
+                SelectedItem = field.GetText(context, Data),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center
             };
-            combo.SelectionChanged += (sender, args) => field.SetValue(context, module.Data, combo.SelectedIndex);
+            combo.SelectionChanged += (sender, args) => field.SetValue(context, Data, combo.SelectedIndex);
             return combo;
         }
 
@@ -277,11 +280,11 @@ namespace VDrumExplorer.Wpf
             var textBox = new TextBox
             {
                 MaxLength = field.Length,
-                Text = field.GetText(context, module.Data).TrimEnd(),
+                Text = field.GetText(context, Data).TrimEnd(),
                 Padding = new Thickness(0)
             };
             textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
         
@@ -295,9 +298,9 @@ namespace VDrumExplorer.Wpf
             const string presetBank = "Preset";
             const string samplesBank = "User sample";
             
-            var selected = field.GetInstrument(context, module.Data);
+            var selected = field.GetInstrument(context, Data);
             var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
-            var groupChoice = new ComboBox { ItemsSource = module.Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
+            var groupChoice = new ComboBox { ItemsSource = Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
             var userSampleTextBox = new TextBox { Width = 50, Text = selected.Id.ToString(CultureInfo.InvariantCulture), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
             
@@ -306,10 +309,10 @@ namespace VDrumExplorer.Wpf
             userSampleTextBox.SelectionChanged += (sender, args) =>
             {
                 bool valid = int.TryParse(userSampleTextBox.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int sample)
-                    && sample >= 1 && sample <= module.Schema.UserSampleInstruments.Count;
+                    && sample >= 1 && sample <= Schema.UserSampleInstruments.Count;
                 if (valid)
                 {
-                    field.SetInstrument(context, module.Data, module.Schema.UserSampleInstruments[sample - 1]);
+                    field.SetInstrument(context, Data, Schema.UserSampleInstruments[sample - 1]);
                 }
                 userSampleTextBox.Foreground = valid ? SystemColors.WindowTextBrush : errorBrush;
             };
@@ -330,7 +333,7 @@ namespace VDrumExplorer.Wpf
                 {
                     return;
                 }
-                field.SetInstrument(context, module.Data, instrument);
+                field.SetInstrument(context, Data, instrument);
             };
             bankChoice.SelectionChanged += (sender, args) =>
             {
@@ -374,9 +377,9 @@ namespace VDrumExplorer.Wpf
         private static readonly Brush errorBrush = new SolidColorBrush(Colors.Red);
         private FrameworkElement CreateNumericFieldElement(FixedContainer context, NumericField field)
         {
-            var textBox = new TextBox { Text = field.GetText(context, module.Data), Padding = new Thickness(0) };
+            var textBox = new TextBox { Text = field.GetText(context, Data), Padding = new Thickness(0) };
             textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
 
@@ -390,7 +393,7 @@ namespace VDrumExplorer.Wpf
                 {
                     Margin = new Thickness(2, 1, 0, 0),
                     Padding = new Thickness(0),
-                    Content = formatElement.Format(context, module.Data)
+                    Content = formatElement.Format(context, Data)
                 };
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(value, 0);
@@ -403,7 +406,7 @@ namespace VDrumExplorer.Wpf
         private void EnterEditMode(object sender, RoutedEventArgs e)
         {
             editMode = true;
-            module.Data.Snapshot();
+            Data.Snapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -411,7 +414,7 @@ namespace VDrumExplorer.Wpf
         private void CommitChanges(object sender, RoutedEventArgs e)
         {
             editMode = false;
-            module.Data.CommitSnapshot();
+            Data.CommitSnapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -419,7 +422,7 @@ namespace VDrumExplorer.Wpf
         private void CancelChanges(object sender, RoutedEventArgs e)
         {
             editMode = false;
-            module.Data.RevertSnapshot();
+            Data.RevertSnapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -471,7 +474,7 @@ namespace VDrumExplorer.Wpf
                     .Where(d => d.Container is object)
                     .Select(d => d.FixContainer(treeNode.Context))
                     .Where(fc => fc.Container.Loadable)
-                    .Select(fc => module.Data.GetSegment(fc.Address));
+                    .Select(fc => Data.GetSegment(fc.Address));
         }
 
         private void PlayNote(object sender, RoutedEventArgs e)
@@ -493,7 +496,7 @@ namespace VDrumExplorer.Wpf
             }
             var finalContext = node.MidiNoteField.GetFinalContext(node.Context);
             var field = node.MidiNoteField.FinalField;
-            return field.GetMidiNote(finalContext, module.Data);
+            return field.GetMidiNote(finalContext, Data);
         }
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
@@ -512,7 +515,7 @@ namespace VDrumExplorer.Wpf
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
                 {
                     var vnode = (VisualTreeNode) treeViewItem.Tag;
-                    treeViewItem.Header = vnode.Description.Format(vnode.Context, module.Data);
+                    treeViewItem.Header = vnode.Description.Format(vnode.Context, Data);
                 }
             }
 
@@ -528,12 +531,12 @@ namespace VDrumExplorer.Wpf
                     var detailContext = detail.FixContainer(context);
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
-                    var currentContainer = overlay.GetOverlaidContainer(detailContext, module.Data);
+                    var currentContainer = overlay.GetOverlaidContainer(detailContext, Data);
                     if (currentContainer != previousContainer)
                     {
                         // As the container has changed, let's reset the values to sensible defaults.
                         // This will itself trigger a change notification event, but that's okay.
-                        currentContainer.Reset(detailContext, module.Data);
+                        currentContainer.Reset(detailContext, Data);
                         groupBox.Content = FormatContainer(context, detail);
                     }
                 }
