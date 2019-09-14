@@ -72,7 +72,7 @@ namespace VDrumExplorer.Data
             // Now do everything with the fields.
             Root = new FixedContainer(json.BuildRootContainer(this), new ModuleAddress(0));
             LogicalRoot = json.BuildLogicalRoot(Root);
-            PhysicalRoot = VisualTreeNode.FromFixedContainer(Root);
+            PhysicalRoot = VisualTreeNode.FromFixedContainer(null, Root);
         }
 
         public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>

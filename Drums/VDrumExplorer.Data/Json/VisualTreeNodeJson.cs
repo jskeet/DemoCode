@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Data.Layout;
@@ -23,7 +24,7 @@ namespace VDrumExplorer.Data.Json
         public string? Format { get; set; }
         public string? Index { get; set; }
 
-        internal IEnumerable<VisualTreeNode> ConvertVisualNodes(VisualTreeConversionContext parentContext)
+        internal IEnumerable<VisualTreeNode> ConvertVisualNodes(VisualTreeNode? parent, VisualTreeConversionContext parentContext)
         {
             int? repeat = parentContext.GetRepeat(Repeat);
             var relativePath = ValidateNotNull(Path, nameof(Path));
@@ -46,10 +47,10 @@ namespace VDrumExplorer.Data.Json
             {
                 FormattableDescription description = BuildDescription(context);
             
-                var children = Children.SelectMany(child => child.ConvertVisualNodes(context)).ToList().AsReadOnly();
+                Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider = newNode => Children.SelectMany(child => child.ConvertVisualNodes(newNode, context)).ToList().AsReadOnly();
                 var details = Details.Select(detail => detail.ToVisualTreeDetail(context)).ToList().AsReadOnly();
                 var midiNoteField = MidiNotePath is null ? null : context.GetMidiNoteField(MidiNotePath);
-                return new VisualTreeNode(context.ContainerContext, children, details, description, midiNoteField);
+                return new VisualTreeNode(parent, context.ContainerContext, childrenProvider, details, description, midiNoteField);
             }
 
             FormattableDescription BuildDescription(VisualTreeConversionContext context)
