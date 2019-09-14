@@ -5,6 +5,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -137,7 +138,7 @@ namespace VDrumExplorer.Wpf
 
         private void LoadFile(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "VDrum Explorer files|*.vdrum" };
+            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "All explorer files|*.vdrum;*.vkit|Module files|*.vdrum|Kit files|*.vkit" };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -158,6 +159,13 @@ namespace VDrumExplorer.Wpf
             // TODO: Potentially declare an IDrumData interface with the Schema property and Validate method.
             switch (loaded)
             {
+                case Kit kit:
+                {
+                    Validate(kit.Validate);
+                    var client = detectedMidi?.schema == kit.Schema ? detectedMidi?.client : null;
+                    new KitExplorer(logger, kit, client).Show();
+                    break;
+                }
                 case Module module:
                 {
                     Validate(module.Validate);
@@ -199,10 +207,35 @@ namespace VDrumExplorer.Wpf
                 new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client).Show();
             }
         }
+
+        private void LoadKitFromDevice(object sender, RoutedEventArgs e)
+        {
+            // Shouldn't happen, as the button shouldn't be enabled.
+            if (detectedMidi == null)
+            {
+                return;
+            }
+            var midi = detectedMidi.Value;
+            var schema = midi.schema;
+
+            if (!int.TryParse(loadKitFromDeviceKitNumber.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var kitNumber))
+            {
+                logger.Log("Invalid kit number");
+                return;
+            }
+            if (!schema.KitRoots.TryGetValue(kitNumber, out var specifiedKitRoot))
+            {
+                logger.Log("Unknown kit number");
+                return;
+            }
+            var dialog = new DeviceLoaderDialog(logger, midi.client, schema);
+            dialog.LoadDeviceData(specifiedKitRoot.Context);
             var result = dialog.ShowDialog();
             if (result == true)
             {
-                new ModuleExplorer(logger, dialog.Module, midi.client).Show();
+                var firstKitRoot = schema.KitRoots[1];
+                var clonedData = specifiedKitRoot.Context.CloneData(dialog.Data, firstKitRoot.Context.Address);
+                new KitExplorer(logger, new Kit(schema, clonedData), midi.client).Show();
             }
         }
 

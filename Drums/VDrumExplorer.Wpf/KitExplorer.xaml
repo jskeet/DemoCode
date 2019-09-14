@@ -1,29 +1,26 @@
-﻿<Window x:Class="VDrumExplorer.Wpf.ModuleExplorer"
+﻿<Window x:Class="VDrumExplorer.Wpf.KitExplorer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="ModuleExplorer" Height="450" Width="800">
+        Title="KitExplorer" Height="450" Width="800">
     <DockPanel x:Name="mainPanel">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Save" Click="SaveFile" />
-            </MenuItem>
-            <MenuItem Header="_View">
-                <MenuItem Header="_Logical" Click="SetViewFromMenu" Tag="{x:Static local:ViewMode.Logical}" x:Name="logicalViewMenuItem"/>
-                <MenuItem Header="_Physical" Click="SetViewFromMenu" Tag="{x:Static local:ViewMode.Physical}" x:Name="physicalViewMenuItem"/>
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Margin="5" Padding="5,2" Click="EnterEditMode" x:Name="editModeButton">Edit mode</Button>
             <Button Margin="5" Padding="5,2" Click="CommitChanges" IsEnabled="False" x:Name="commitChangesButton">Commit changes</Button>
             <Button Margin="5" Padding="5,2" Click="CancelChanges" IsEnabled="False" x:Name="cancelChangesButton">Cancel changes</Button>
-            <Button Margin="5" Padding="5,2" Click="OpenKitInKitExplorer" IsEnabled="False" x:Name="openKitButton">Open copy in Kit Explorer</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel">
-            <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton">Copy page to device</Button>
+            <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton">Copy kit to device</Button>
+            <Label Margin="5" Padding="5,2">Kit number:</Label>
+            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="copyToDeviceKitNumber"></TextBox>
             <Button Margin="5" Padding="5,2" Click="PlayNote" x:Name="playNoteButton">Play note</Button>
             <Label Margin="5" Padding="5,2">Midi Channel:</Label>
             <ComboBox Margin="5" Padding="5,2" x:Name="midiChannelSelector">
