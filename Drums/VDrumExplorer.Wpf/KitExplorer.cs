@@ -2,11 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Microsoft.Win32;
-using System;
 using System.Globalization;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using VDrumExplorer.Data;
 using VDrumExplorer.Midi;
@@ -16,9 +13,10 @@ namespace VDrumExplorer.Wpf
     public class KitExplorer : DataExplorer
     {
         private readonly Kit kit;
+        private const string SaveFileFilter = "VDrum Explorer kit files|*.vkit";
 
         internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient)
-            : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient)
+            : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, SaveFileFilter)
         {
             this.kit = kit;
             openKitButton.Visibility = Visibility.Collapsed;
@@ -26,19 +24,7 @@ namespace VDrumExplorer.Wpf
             Title = $"Kit explorer: {Schema.Identifier.Name}";
         }
 
-        protected override void SaveFile(object sender, EventArgs e)
-        {
-            var dialog = new SaveFileDialog { Filter = "VDrum Explorer kit files|*.vkit" };
-            var result = dialog.ShowDialog();
-            if (result != true)
-            {
-                return;
-            }
-            using (var stream = File.OpenWrite(dialog.FileName))
-            {
-                kit.Save(stream);
-            }
-        }
+        protected override void SaveToStream(Stream stream) => kit.Save(stream);
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)
         {
