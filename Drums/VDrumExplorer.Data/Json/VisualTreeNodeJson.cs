@@ -23,6 +23,7 @@ namespace VDrumExplorer.Data.Json
         public string? Repeat { get; set; }
         public string? Format { get; set; }
         public string? Index { get; set; }
+        public string? KitIndex { get; set; }
 
         internal IEnumerable<VisualTreeNode> ConvertVisualNodes(VisualTreeNode? parent, VisualTreeConversionContext parentContext)
         {
@@ -50,7 +51,8 @@ namespace VDrumExplorer.Data.Json
                 Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider = newNode => Children.SelectMany(child => child.ConvertVisualNodes(newNode, context)).ToList().AsReadOnly();
                 var details = Details.Select(detail => detail.ToVisualTreeDetail(context)).ToList().AsReadOnly();
                 var midiNoteField = MidiNotePath is null ? null : context.GetMidiNoteField(MidiNotePath);
-                return new VisualTreeNode(parent, context.ContainerContext, childrenProvider, details, description, midiNoteField);
+                var kitIndex = KitIndex == null ? (int?) null : context.GetIndex(KitIndex);
+                return new VisualTreeNode(parent, context.ContainerContext, childrenProvider, details, description, midiNoteField, kitIndex);
             }
 
             FormattableDescription BuildDescription(VisualTreeConversionContext context)

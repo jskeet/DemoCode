@@ -43,6 +43,7 @@
         {
           "repeat": "$kits",
           "index": "kit",
+          "kitIndex": "kit",
           "path": "Kit[$kit]",
           "formatPaths": [
             "KitCommon/KitName",

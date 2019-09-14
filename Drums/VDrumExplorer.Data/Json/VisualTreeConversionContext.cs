@@ -100,5 +100,12 @@ namespace VDrumExplorer.Data.Json
             }
             return text;
         }
+
+        public int GetIndex(string kitIndex)
+        {
+            var indexName = "$" + kitIndex;
+            var indexValue = indexes.Single(pair => pair.Key == indexName).Value;
+            return int.Parse(indexValue, CultureInfo.InvariantCulture);
+        }
     }
 }
