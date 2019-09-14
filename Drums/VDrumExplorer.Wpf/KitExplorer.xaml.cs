@@ -20,57 +20,45 @@ using VDrumExplorer.Midi;
 namespace VDrumExplorer.Wpf
 {
     /// <summary>
-    /// Interaction logic for ModuleExplorer.xaml
+    /// Interaction logic for KitExplorer.xaml
     /// </summary>
-    public partial class ModuleExplorer : Window
+    public partial class KitExplorer : Window
     {
         private readonly ILogger logger;
-        private readonly Module module;
+        private readonly Kit kit;
         private readonly SysExClient midiClient;
-        private ViewMode viewMode;
         private bool editMode;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
-        public ModuleExplorer()
+        public KitExplorer()
         {
             InitializeComponent();
         }
 
-        internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient) : this()
+        internal KitExplorer(ILogger logger, Kit module, SysExClient midiClient) : this()
         {
             this.logger = logger;
-            this.module = module;
+            this.kit = module;
             this.midiClient = midiClient;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
             }
-            module.Data.DataChanged += HandleModuleDataChanged;            
-            Title = $"Module explorer: {module.Schema.Identifier.Name}";
-            LoadView(ViewMode.Logical);
+            module.Data.DataChanged += HandleModuleDataChanged;
+            Title = $"Kit explorer: {module.Schema.Identifier.Name}";
+            LoadView();
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            module.Data.DataChanged -= HandleModuleDataChanged;
+            kit.Data.DataChanged -= HandleModuleDataChanged;
             base.OnClosed(e);
-        }
-
-        private void SetViewFromMenu(object sender, EventArgs e)
-        {
-            var senderMenuItem = (MenuItem) sender;
-            var targetViewMode = (ViewMode) senderMenuItem.Tag;
-            if (targetViewMode == viewMode)
-            {
-                return;
-            }
-            LoadView(targetViewMode);
         }
 
         private void SaveFile(object sender, EventArgs e)
         {
-            var dialog = new SaveFileDialog { Filter = "VDrum Explorer module files|*.vdrum" };
+            var dialog = new SaveFileDialog { Filter = "VDrum Explorer kit files|*.vkit" };
             var result = dialog.ShowDialog();
             if (result != true)
             {
@@ -78,29 +66,25 @@ namespace VDrumExplorer.Wpf
             }
             using (var stream = File.OpenWrite(dialog.FileName))
             {
-                module.Save(stream);
+                kit.Save(stream);
             }
         }
 
-        private void LoadView(ViewMode viewMode)
+        private void LoadView()
         {
             var boundItems = new List<(TreeViewItem, ModuleAddress)>();
-            this.viewMode = viewMode;
-            logicalViewMenuItem.IsChecked = viewMode == ViewMode.Logical;
-            physicalViewMenuItem.IsChecked = viewMode == ViewMode.Physical;
 
-            var rootModelNode = viewMode == ViewMode.Logical ? module.Schema.LogicalRoot : module.Schema.PhysicalRoot;
-            var rootGuiNode = CreateNode(rootModelNode);
+            var rootGuiNode = CreateNode(kit.KitRoot);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
-            detailsPanel.Tag = rootModelNode;
+            detailsPanel.Tag = kit.KitRoot;
             LoadDetailsPage();
             
             TreeViewItem CreateNode(VisualTreeNode vnode)
             {
                 var node = new TreeViewItem
-                {                    
-                    Header = vnode.Description.Format(vnode.Context, module.Data),
+                {
+                    Header = vnode.Description.Format(vnode.Context, kit.Data),
                     Tag = vnode
                 };
                 foreach (var address in vnode.Description.GetSegmentAddresses(vnode.Context))
@@ -126,45 +110,12 @@ namespace VDrumExplorer.Wpf
             LoadDetailsPage();
         }
 
-        private void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
-        {
-            var node = (VisualTreeNode) detailsPanel.Tag;
-            var kitNode = FindKitNode(node);
-
-            // We try to protect against this in terms of enabling/disabling the button, but
-            // let's be cautious anyway.
-            if (kitNode == null)
-            {
-                return;
-            }
-
-            // We clone the data from kitNode downwards, but relocating it as if it were the first kit.
-            var firstKitNode = module.Schema.KitRoots[1];
-            var clonedData = kitNode.Context.CloneData(module.Data, firstKitNode.Context.Address);
-            var kit = new Kit(module.Schema, clonedData);
-            new KitExplorer(logger, kit, midiClient).Show();
-        }
-
-        private VisualTreeNode FindKitNode(VisualTreeNode currentNode)
-        {
-            while (currentNode != null)
-            {
-                if (currentNode.KitNumber != null)
-                {
-                    return currentNode;
-                }
-                currentNode = currentNode.Parent;
-            }
-            return null;
-        }
-
         private void LoadDetailsPage()
         {
             var boundItems = new List<(GroupBox, ModuleAddress)>();
             var node = (VisualTreeNode) detailsPanel.Tag;
             detailsPanel.Children.Clear();
             playNoteButton.IsEnabled = GetMidiNote(node) is int note;
-            openKitButton.IsEnabled = FindKitNode(node) is object;
             if (node == null)
             {
                 detailGroupsToUpdateBySegmentStart = boundItems
@@ -187,7 +138,7 @@ namespace VDrumExplorer.Wpf
                 {
                     var container = detail.Container.FinalField;
                     var detailContext = detail.FixContainer(context);
-                    var segmentStart = module.Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
+                    var segmentStart = kit.Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
             }
@@ -195,16 +146,8 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
-        private bool ShouldDisplayField(FixedContainer context, IField field)
-        {
-            // In physical view, we display all fields, for schema debugging.
-            if (viewMode == ViewMode.Physical)
-            {
-                return true;
-            }
-            // In logical view, conditional fields may or may not be shown.
-            return field.IsEnabled(context, module.Data);
-        }
+        private bool ShouldDisplayField(FixedContainer context, IField field) =>
+            field.IsEnabled(context, kit.Data);
 
         private Grid FormatContainer(FixedContainer context, VisualTreeDetail detail)
         {
@@ -216,7 +159,7 @@ namespace VDrumExplorer.Wpf
             var container = detail.Container.FinalField;
             context = detail.FixContainer(context);
 
-            var fields = context.GetPrimitiveFields(module.Data)
+            var fields = context.GetPrimitiveFields(kit.Data)
                 .Where(f => ShouldDisplayField(context, f));
 
             foreach (var primitive in fields)
@@ -241,7 +184,7 @@ namespace VDrumExplorer.Wpf
                     {
                         Padding = new Thickness(0),
                         Margin = new Thickness(5, 1, 0, 0),
-                        Content = primitive.GetText(context, module.Data)
+                        Content = primitive.GetText(context, kit.Data)
                     };
                 }
 
@@ -258,7 +201,7 @@ namespace VDrumExplorer.Wpf
             var overlay = context.Container.Fields.OfType<DynamicOverlay>().FirstOrDefault();
             if (overlay != null)
             {
-                var currentContainer = overlay.GetOverlaidContainer(context, module.Data);
+                var currentContainer = overlay.GetOverlaidContainer(context, kit.Data);
                 grid.Tag = (overlay, currentContainer);
             }
 
@@ -273,14 +216,14 @@ namespace VDrumExplorer.Wpf
                 StringField sf => CreateStringFieldElement(context, sf),
                 InstrumentField inst => CreateInstrumentFieldElement(context, inst),
                 NumericField num => CreateNumericFieldElement(context, num),
-                _ => new Label { Content = field.GetText(context, module.Data), Padding = new Thickness(0) }
+                _ => new Label { Content = field.GetText(context, kit.Data), Padding = new Thickness(0) }
             };
 
         private FrameworkElement CreateBooleanFieldElement(FixedContainer context, BooleanField field)
         {
-            var box = new CheckBox { IsChecked = field.GetValue(context, module.Data), Padding = new Thickness(0) };
-            box.Checked += (sender, args) => field.SetValue(context, module.Data, true);
-            box.Unchecked += (sender, args) => field.SetValue(context, module.Data, false);
+            var box = new CheckBox { IsChecked = field.GetValue(context, kit.Data), Padding = new Thickness(0) };
+            box.Checked += (sender, args) => field.SetValue(context, kit.Data, true);
+            box.Unchecked += (sender, args) => field.SetValue(context, kit.Data, false);
             return box;
         }
 
@@ -289,12 +232,12 @@ namespace VDrumExplorer.Wpf
             var combo = new ComboBox
             {
                 ItemsSource = field.Values,
-                SelectedItem = field.GetText(context, module.Data),
+                SelectedItem = field.GetText(context, kit.Data),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center
             };
-            combo.SelectionChanged += (sender, args) => field.SetValue(context, module.Data, combo.SelectedIndex);
+            combo.SelectionChanged += (sender, args) => field.SetValue(context, kit.Data, combo.SelectedIndex);
             return combo;
         }
 
@@ -303,11 +246,11 @@ namespace VDrumExplorer.Wpf
             var textBox = new TextBox
             {
                 MaxLength = field.Length,
-                Text = field.GetText(context, module.Data).TrimEnd(),
+                Text = field.GetText(context, kit.Data).TrimEnd(),
                 Padding = new Thickness(0)
             };
             textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                textBox.Foreground = field.TrySetText(context, kit.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
         
@@ -321,9 +264,9 @@ namespace VDrumExplorer.Wpf
             const string presetBank = "Preset";
             const string samplesBank = "User sample";
             
-            var selected = field.GetInstrument(context, module.Data);
+            var selected = field.GetInstrument(context, kit.Data);
             var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
-            var groupChoice = new ComboBox { ItemsSource = module.Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
+            var groupChoice = new ComboBox { ItemsSource = kit.Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
             var userSampleTextBox = new TextBox { Width = 50, Text = selected.Id.ToString(CultureInfo.InvariantCulture), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
             
@@ -332,10 +275,10 @@ namespace VDrumExplorer.Wpf
             userSampleTextBox.SelectionChanged += (sender, args) =>
             {
                 bool valid = int.TryParse(userSampleTextBox.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int sample)
-                    && sample >= 1 && sample <= module.Schema.UserSampleInstruments.Count;
+                    && sample >= 1 && sample <= kit.Schema.UserSampleInstruments.Count;
                 if (valid)
                 {
-                    field.SetInstrument(context, module.Data, module.Schema.UserSampleInstruments[sample - 1]);
+                    field.SetInstrument(context, kit.Data, kit.Schema.UserSampleInstruments[sample - 1]);
                 }
                 userSampleTextBox.Foreground = valid ? SystemColors.WindowTextBrush : errorBrush;
             };
@@ -356,7 +299,7 @@ namespace VDrumExplorer.Wpf
                 {
                     return;
                 }
-                field.SetInstrument(context, module.Data, instrument);
+                field.SetInstrument(context, kit.Data, instrument);
             };
             bankChoice.SelectionChanged += (sender, args) =>
             {
@@ -400,9 +343,9 @@ namespace VDrumExplorer.Wpf
         private static readonly Brush errorBrush = new SolidColorBrush(Colors.Red);
         private FrameworkElement CreateNumericFieldElement(FixedContainer context, NumericField field)
         {
-            var textBox = new TextBox { Text = field.GetText(context, module.Data), Padding = new Thickness(0) };
+            var textBox = new TextBox { Text = field.GetText(context, kit.Data), Padding = new Thickness(0) };
             textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(context, module.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                textBox.Foreground = field.TrySetText(context, kit.Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
 
@@ -416,7 +359,7 @@ namespace VDrumExplorer.Wpf
                 {
                     Margin = new Thickness(2, 1, 0, 0),
                     Padding = new Thickness(0),
-                    Content = formatElement.Format(context, module.Data)
+                    Content = formatElement.Format(context, kit.Data)
                 };
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(value, 0);
@@ -429,7 +372,7 @@ namespace VDrumExplorer.Wpf
         private void EnterEditMode(object sender, RoutedEventArgs e)
         {
             editMode = true;
-            module.Data.Snapshot();
+            kit.Data.Snapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -437,7 +380,7 @@ namespace VDrumExplorer.Wpf
         private void CommitChanges(object sender, RoutedEventArgs e)
         {
             editMode = false;
-            module.Data.CommitSnapshot();
+            kit.Data.CommitSnapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -445,7 +388,7 @@ namespace VDrumExplorer.Wpf
         private void CancelChanges(object sender, RoutedEventArgs e)
         {
             editMode = false;
-            module.Data.RevertSnapshot();
+            kit.Data.RevertSnapshot();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -459,23 +402,23 @@ namespace VDrumExplorer.Wpf
 
         private async void CopyToDevice(object sender, RoutedEventArgs e)
         {
-            var node = (VisualTreeNode) detailsPanel.Tag;
-            if (node == null)
+            if (!int.TryParse(copyToDeviceKitNumber.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int kitToCopyTo))
             {
+                logger.Log("Invalid kit number");
                 return;
             }
 
-            // Find all the segments we need.
-            // We assume that each item of data is reflected in the details as a container
-            // rather than a formatted description either in the details page or in the tree.
-            // (Only containers have *editable* data anyway.)
-            // We can't just save "all containers under the fixed container" as instruments
-            // use several peer containers rather than "everything under one node".
-            var segments = node.DescendantNodesAndSelf()
-                .SelectMany(GetSegments)
-                .Distinct()
-                .OrderBy(segment => segment.Start)
-                .ToList();
+            if (!kit.Schema.KitRoots.TryGetValue(kitToCopyTo, out var targetKitRoot))
+            {
+                logger.Log("Unknown kit number");
+                return;
+            }
+
+            // It's simplest to clone our root node into a new ModuleData at the right place,
+            // then send all those segments. It does involve copying the data in memory
+            // twice, but that's much quicker than sending it to the kit anyway.
+            var clonedData = kit.KitRoot.Context.CloneData(kit.Data, targetKitRoot.Context.Address);
+            var segments = clonedData.GetSegments();
             logger.Log($"Writing {segments.Count} segments to the device.");
             foreach (var segment in segments)
             {
@@ -483,13 +426,6 @@ namespace VDrumExplorer.Wpf
                 await Task.Delay(40);
             }
             logger.Log($"Finished writing segments to the device.");
-
-            IEnumerable<DataSegment> GetSegments(VisualTreeNode treeNode) =>
-                treeNode.Details
-                    .Where(d => d.Container is object)
-                    .Select(d => d.FixContainer(treeNode.Context))
-                    .Where(fc => fc.Container.Loadable)
-                    .Select(fc => module.Data.GetSegment(fc.Address));
         }
 
         private void PlayNote(object sender, RoutedEventArgs e)
@@ -511,7 +447,7 @@ namespace VDrumExplorer.Wpf
             }
             var finalContext = node.MidiNoteField.GetFinalContext(node.Context);
             var field = node.MidiNoteField.FinalField;
-            return field.GetMidiNote(finalContext, module.Data);
+            return field.GetMidiNote(finalContext, kit.Data);
         }
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
@@ -530,7 +466,7 @@ namespace VDrumExplorer.Wpf
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
                 {
                     var vnode = (VisualTreeNode) treeViewItem.Tag;
-                    treeViewItem.Header = vnode.Description.Format(vnode.Context, module.Data);
+                    treeViewItem.Header = vnode.Description.Format(vnode.Context, kit.Data);
                 }
             }
 
@@ -546,12 +482,12 @@ namespace VDrumExplorer.Wpf
                     var detailContext = detail.FixContainer(context);
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
-                    var currentContainer = overlay.GetOverlaidContainer(detailContext, module.Data);
+                    var currentContainer = overlay.GetOverlaidContainer(detailContext, kit.Data);
                     if (currentContainer != previousContainer)
                     {
                         // As the container has changed, let's reset the values to sensible defaults.
                         // This will itself trigger a change notification event, but that's okay.
-                        currentContainer.Reset(detailContext, module.Data);
+                        currentContainer.Reset(detailContext, kit.Data);
                         groupBox.Content = FormatContainer(context, detail);
                     }
                 }
