@@ -13,12 +13,11 @@ namespace VDrumExplorer.Data.Proto
         private const string MagicString = "JLSVDRUM1";
         private static readonly byte[] MagicBytes = Encoding.UTF8.GetBytes(MagicString);
 
-        internal static void Write(Stream stream, Kit kit)
-        {
-        }
         internal static void Write(Stream stream, Data.Module module) =>
             Write(stream, new DrumFile { Module = Module.FromModel(module) });
 
+        internal static void Write(Stream stream, Data.Kit kit) =>
+            Write(stream, new DrumFile { Kit = Kit.FromModel(kit) });
 
         internal static void Write(Stream stream, DrumFile drumFile)
         {
@@ -36,6 +35,7 @@ namespace VDrumExplorer.Data.Proto
             var file = ReadDrumFile(stream);
             return file.FileCase switch
             {
+                DrumFile.FileOneofCase.Kit => (object) file.Kit.ToModel(),
                 DrumFile.FileOneofCase.Module => file.Module.ToModel(),
                 _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
             };
