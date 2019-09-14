@@ -4,4 +4,5 @@ layout: default
 
 Pages for demo code
 
-(Initially for [versioning results](Versioning).)
+- [Versioning results](Versioning)
+- [V-Drum Explorer](Drums)
