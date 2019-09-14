@@ -67,30 +67,6 @@
               "format": "{0}: {1} / {2}"
             },
             {
-              "description": "Pad Compressors",
-              "repeat": "$triggers",
-              "index": "trigger",
-              "formatPaths": [
-                "/lookups/triggers[$trigger]",
-                "KitPad[$trigger]/CompType",
-                "KitPad[$trigger]/CompSwitch"
-              ],
-              "format": "{0}: {1} ({2})"
-            },
-            {
-              "description": "Kit Multifx",
-              "repeat": "$mfx",
-              "index": "mfx",
-              "formatPaths": [
-                "KitMfx[$mfx]/Type"
-              ],
-              "format": "Multifx $mfx: {0}"
-            },
-            {
-              "description": "Kit Midi",
-              "path": "KitMidi"
-            },
-            {
               "description": "Kit Room",
               "path": "KitRoom"
             },
@@ -198,6 +174,16 @@
                       "path": "."
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "description": "Midi Settings",
+              "path": "KitMidi",
+              "details": [
+                {
+                  "description": "Midi Settings",
+                  "path": "."
                 }
               ]
             },
