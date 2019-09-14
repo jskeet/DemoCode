@@ -22,11 +22,6 @@ namespace VDrumExplorer.Data
             (Schema, Data) = (schema, data);
 
         /// <summary>
-        /// Loads module data, autodetecting the schema using the <see cref="SchemaRegistry"/>.
-        /// </summary>
-        public static Module FromStream(Stream stream) => ProtoIo.ReadModule(stream);
-
-        /// <summary>
         /// Validates that every field in the schema has a valid value.
         /// This will fail if only partial data has been loaded.
         /// </summary>

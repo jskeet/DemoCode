@@ -137,36 +137,49 @@ namespace VDrumExplorer.Wpf
 
         private void LoadFile(object sender, RoutedEventArgs e)
         {
-            string fileName;
             OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "VDrum Explorer files|*.vdrum" };
             if (dialog.ShowDialog() != true)
             {
                 return;
             }
-            fileName = dialog.FileName;
-
-            Module module;
+            object loaded;
             try
             {
-                using (var stream = File.OpenRead(fileName))
+                using (var stream = File.OpenRead(dialog.FileName))
                 {
-                    module = Module.FromStream(stream);
+                    loaded = SchemaRegistry.ReadStream(stream);
                 }
             }
             catch (Exception ex)
             {
-                logger.Log($"Error loading {fileName}", ex);
+                logger.Log($"Error loading {dialog.FileName}", ex);
                 return;
             }
-            logger.Log($"Validating fields");
-            var validation = module.Validate();
-            foreach (var error in validation.Errors)
+            // TODO: Potentially declare an IDrumData interface with the Schema property and Validate method.
+            switch (loaded)
             {
-                logger.Log($"Field {error.Path} error: {error.Message}");
+                case Module module:
+                {
+                    Validate(module.Validate);
+                    var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
+                    new ModuleExplorer(logger, module, client).Show();
+                    break;
+                }
+                default:
+                    logger.Log($"Unknown file data type");
+                    break;
             }
-            logger.Log($"Validation complete. Total fields: {validation.TotalFields}. Errors: {validation.Errors.Count}");
-            var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
-            new ModuleExplorer(logger, module, client).Show();
+
+            void Validate(Func<Data.Fields.ValidationResult> validationAction)
+            {
+                logger.Log($"Validating fields");
+                var validationResult = validationAction();
+                foreach (var error in validationResult.Errors)
+                {
+                    logger.Log($"Field {error.Path} error: {error.Message}");
+                }
+                logger.Log($"Validation complete. Total fields: {validationResult.TotalFields}. Errors: {validationResult.Errors.Count}");
+            }
         }
 
         private void LoadModuleFromDevice(object sender, RoutedEventArgs e)
