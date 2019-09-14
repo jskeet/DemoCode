@@ -2,6 +2,13 @@ Documentation for V-Drum Explorer
 
 All source code is in the [Drums directory of the GitHub repo](https://github.com/jskeet/DemoCode/tree/master/Drums).
 
+This is not a MIDI sequencer or anything similar; it's purely for
+fetching and manipulating information from Roland V-Drum kits.
+
+I'm very grateful to Roland for providing the [TD-17 MIDI
+implementation](https://www.roland.com/global/support/by_product/td-17/owners_manuals/b28f606f-fa2e-4cb3-b4ec-1d25ce06a918/) document which has been absolutely vital in
+writing this code.
+
 # Requirements
 
 - Windows 8.1 or Windows 10
@@ -23,9 +30,9 @@ create one unless there's demand.
 
 There are three windows in the application:
 
-- Module Loader
-- Module Explorer
-- Kit Explorer
+- [Module Loader](#module-loader)
+- [Module Explorer(#module-explorer)
+- [Kit Explorer](#kit-explorer)
 
 When the application is launched, the Module Loader will be shown.
 
@@ -43,7 +50,7 @@ detect a drum module. In the screenshot above, it's detected my TD-17.
 If no known module is detected, the second row of buttons will be
 disabled.
 
-## "Offline" functionality (no drum module required)
+### "Offline" functionality (no drum module required)
 
 Even without a drum module, you can still load and save
 files, and edit the data.
@@ -57,7 +64,7 @@ displayed in the Module Loader) to a text file. This is primarily to
 make it easy to report issues. Note that this single log is used for
 all logging, including for log entries created by other windows.
 
-## "Live" functionality (drum module on and connected via USB)
+### "Live" functionality (drum module on and connected via USB)
 
 If a module is detected, you can load data from it with the two
 buttons in the second row:
