@@ -27,7 +27,6 @@ namespace VDrumExplorer.Wpf
         private readonly ILogger logger;
         private readonly Module module;
         private readonly SysExClient midiClient;
-        private ViewMode viewMode;
         private bool editMode;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
@@ -48,24 +47,13 @@ namespace VDrumExplorer.Wpf
             }
             module.Data.DataChanged += HandleModuleDataChanged;            
             Title = $"Module explorer: {module.Schema.Identifier.Name}";
-            LoadView(ViewMode.Logical);
+            LoadView();
         }
 
         protected override void OnClosed(EventArgs e)
         {
             module.Data.DataChanged -= HandleModuleDataChanged;
             base.OnClosed(e);
-        }
-
-        private void SetViewFromMenu(object sender, EventArgs e)
-        {
-            var senderMenuItem = (MenuItem) sender;
-            var targetViewMode = (ViewMode) senderMenuItem.Tag;
-            if (targetViewMode == viewMode)
-            {
-                return;
-            }
-            LoadView(targetViewMode);
         }
 
         private void SaveFile(object sender, EventArgs e)
@@ -82,14 +70,11 @@ namespace VDrumExplorer.Wpf
             }
         }
 
-        private void LoadView(ViewMode viewMode)
+        private void LoadView()
         {
             var boundItems = new List<(TreeViewItem, ModuleAddress)>();
-            this.viewMode = viewMode;
-            logicalViewMenuItem.IsChecked = viewMode == ViewMode.Logical;
-            physicalViewMenuItem.IsChecked = viewMode == ViewMode.Physical;
 
-            var rootModelNode = viewMode == ViewMode.Logical ? module.Schema.LogicalRoot : module.Schema.PhysicalRoot;
+            var rootModelNode = module.Schema.LogicalRoot;
             var rootGuiNode = CreateNode(rootModelNode);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
@@ -195,17 +180,6 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
-        private bool ShouldDisplayField(FixedContainer context, IField field)
-        {
-            // In physical view, we display all fields, for schema debugging.
-            if (viewMode == ViewMode.Physical)
-            {
-                return true;
-            }
-            // In logical view, conditional fields may or may not be shown.
-            return field.IsEnabled(context, module.Data);
-        }
-
         private Grid FormatContainer(FixedContainer context, VisualTreeDetail detail)
         {
             var grid = new Grid();
@@ -217,7 +191,7 @@ namespace VDrumExplorer.Wpf
             context = detail.FixContainer(context);
 
             var fields = context.GetPrimitiveFields(module.Data)
-                .Where(f => ShouldDisplayField(context, f));
+                .Where(f => f.IsEnabled(context, module.Data));
 
             foreach (var primitive in fields)
             {
