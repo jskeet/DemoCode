@@ -2,9 +2,11 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,6 +29,7 @@ namespace VDrumExplorer.Wpf
         internal ILogger Logger { get; }
         protected SysExClient MidiClient { get; }
         protected VisualTreeNode RootNode { get; }
+        private readonly string saveFileFilter;
 
         private bool editMode;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
@@ -37,13 +40,15 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
         }
 
-        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient) : this()
+        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient,
+            string saveFileFilter) : this()
         {
             Logger = logger;
             Schema = schema;
             Data = data;
             MidiClient = midiClient;
             RootNode = rootNode;
+            this.saveFileFilter = saveFileFilter;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
@@ -58,7 +63,21 @@ namespace VDrumExplorer.Wpf
             base.OnClosed(e);
         }
 
-        protected virtual void SaveFile(object sender, EventArgs e)
+        protected void SaveFile(object sender, EventArgs e)
+        {
+            var dialog = new SaveFileDialog { Filter = saveFileFilter };
+            var result = dialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+            using (var stream = File.OpenWrite(dialog.FileName))
+            {
+                SaveToStream(stream);
+            }
+        }
+
+        protected virtual void SaveToStream(Stream stream)
         {
         }
 

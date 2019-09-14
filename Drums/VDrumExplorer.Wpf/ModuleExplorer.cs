@@ -2,12 +2,9 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Layout;
@@ -18,9 +15,10 @@ namespace VDrumExplorer.Wpf
     public class ModuleExplorer : DataExplorer
     {
         private readonly Module module;
+        private const string SaveFileFilter = "VDrum Explorer module files|*.vdrum";
 
         internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient)
-            : base(logger, module.Schema, module.Data, module.Schema.LogicalRoot, midiClient)
+            : base(logger, module.Schema, module.Data, module.Schema.LogicalRoot, midiClient, SaveFileFilter)
         {
             this.module = module;
             Title = $"Module explorer: {Schema.Identifier.Name}";
@@ -28,19 +26,7 @@ namespace VDrumExplorer.Wpf
             copyToDeviceKitNumber.Visibility = Visibility.Collapsed;
         }
 
-        protected override void SaveFile(object sender, EventArgs e)
-        {
-            var dialog = new SaveFileDialog { Filter = "VDrum Explorer module files|*.vdrum" };
-            var result = dialog.ShowDialog();
-            if (result != true)
-            {
-                return;
-            }
-            using (var stream = File.OpenWrite(dialog.FileName))
-            {
-                module.Save(stream);
-            }
-        }
+        protected override void SaveToStream(Stream stream) => module.Save(stream);
 
         protected override void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
         {
