@@ -31,7 +31,7 @@ create one unless there's demand.
 There are three windows in the application:
 
 - [Module Loader](#module-loader)
-- [Module Explorer(#module-explorer)
+- [Module Explorer](#module-explorer)
 - [Kit Explorer](#kit-explorer)
 
 When the application is launched, the Module Loader will be shown.
