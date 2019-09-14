@@ -27,6 +27,7 @@ namespace VDrumExplorer.Wpf
         private readonly ILogger logger;
         private readonly Module module;
         private readonly SysExClient midiClient;
+        private readonly VisualTreeNode rootNode;
         private bool editMode;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
@@ -44,6 +45,7 @@ namespace VDrumExplorer.Wpf
             this.logger = logger;
             this.module = module;
             this.midiClient = midiClient;
+            rootNode = Schema.LogicalRoot;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
@@ -77,11 +79,10 @@ namespace VDrumExplorer.Wpf
         {
             var boundItems = new List<(TreeViewItem, ModuleAddress)>();
 
-            var rootModelNode = Schema.LogicalRoot;
-            var rootGuiNode = CreateNode(rootModelNode);
+            var rootGuiNode = CreateNode(rootNode);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
-            detailsPanel.Tag = rootModelNode;
+            detailsPanel.Tag = rootNode;
             LoadDetailsPage();
             
             TreeViewItem CreateNode(VisualTreeNode vnode)

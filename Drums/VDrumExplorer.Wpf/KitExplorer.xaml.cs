@@ -27,6 +27,7 @@ namespace VDrumExplorer.Wpf
         private readonly ILogger logger;
         private readonly Kit kit;
         private readonly SysExClient midiClient;
+        private readonly VisualTreeNode rootNode;
         private bool editMode;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
@@ -44,6 +45,7 @@ namespace VDrumExplorer.Wpf
             this.logger = logger;
             this.kit = kit;
             this.midiClient = midiClient;
+            rootNode = kit.KitRoot;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
@@ -77,10 +79,10 @@ namespace VDrumExplorer.Wpf
         {
             var boundItems = new List<(TreeViewItem, ModuleAddress)>();
 
-            var rootGuiNode = CreateNode(kit.KitRoot);
+            var rootGuiNode = CreateNode(rootNode);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
-            detailsPanel.Tag = kit.KitRoot;
+            detailsPanel.Tag = rootNode;
             LoadDetailsPage();
             
             TreeViewItem CreateNode(VisualTreeNode vnode)
@@ -417,7 +419,7 @@ namespace VDrumExplorer.Wpf
             // It's simplest to clone our root node into a new ModuleData at the right place,
             // then send all those segments. It does involve copying the data in memory
             // twice, but that's much quicker than sending it to the kit anyway.
-            var clonedData = kit.KitRoot.Context.CloneData(Data, targetKitRoot.Context.Address);
+            var clonedData = rootNode.Context.CloneData(Data, targetKitRoot.Context.Address);
             var segments = clonedData.GetSegments();
             midiPanel.IsEnabled = false;
             try
