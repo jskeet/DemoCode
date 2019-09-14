@@ -36,17 +36,17 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
         }
 
-        internal KitExplorer(ILogger logger, Kit module, SysExClient midiClient) : this()
+        internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient) : this()
         {
             this.logger = logger;
-            this.kit = module;
+            this.kit = kit;
             this.midiClient = midiClient;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
             }
-            module.Data.DataChanged += HandleModuleDataChanged;
-            Title = $"Kit explorer: {module.Schema.Identifier.Name}";
+            kit.Data.DataChanged += HandleModuleDataChanged;
+            Title = $"Kit explorer: {kit.Schema.Identifier.Name}";
             LoadView();
         }
 
