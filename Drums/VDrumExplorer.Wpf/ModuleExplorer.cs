@@ -23,6 +23,7 @@ namespace VDrumExplorer.Wpf
             this.module = module;
             Title = $"Module explorer: {Schema.Identifier.Name}";
             kitNumberLabel.Visibility = Visibility.Collapsed;
+            copyToDeviceButton.Content = "Copy data to device";
             copyToDeviceKitNumber.Visibility = Visibility.Collapsed;
         }
 
