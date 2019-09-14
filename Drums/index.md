@@ -25,6 +25,7 @@ create one unless there's demand.
 - Download a zip file from one of the [releases](https://github.com/jskeet/DemoCode/releases) on GitHub
 - Unzip the zip file anywhere on your machine
 - Run VDrumExplorer.Wpf.exe
+- If Windows Defender SmartScreen pops up, click on "More info" then "Run anyway" - assuming you trust me.
 
 # Usage
 
@@ -215,6 +216,7 @@ which can be opened later in Module Loader.
 
 # Further work
 
+- Sign the application to remove the SmartScreen popup
 - An icon!
 - Cleaner user interface for loading or copying a single kit (the textbox is ugly)
 - Kit functionality within Module Explorer:
