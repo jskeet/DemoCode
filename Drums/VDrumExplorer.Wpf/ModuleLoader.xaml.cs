@@ -199,12 +199,20 @@ namespace VDrumExplorer.Wpf
             }
             var midi = detectedMidi.Value;
             var schema = midi.schema;
-            var dialog = new DeviceLoaderDialog(logger, midi.client, schema);
-            dialog.LoadDeviceData(schema.Root);
-            var result = dialog.ShowDialog();
-            if (result == true)
+            try
             {
-                new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client).Show();
+                var dialog = new DeviceLoaderDialog(logger, midi.client, schema);
+                dialog.LoadDeviceData(schema.Root);
+                midiPanel.IsEnabled = false;
+                var result = dialog.ShowDialog();
+                if (result == true)
+                {
+                    new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client).Show();
+                }
+            }
+            finally
+            {
+                midiPanel.IsEnabled = true;
             }
         }
 
@@ -228,14 +236,22 @@ namespace VDrumExplorer.Wpf
                 logger.Log("Unknown kit number");
                 return;
             }
-            var dialog = new DeviceLoaderDialog(logger, midi.client, schema);
-            dialog.LoadDeviceData(specifiedKitRoot.Context);
-            var result = dialog.ShowDialog();
-            if (result == true)
+            midiPanel.IsEnabled = false;
+            try
             {
-                var firstKitRoot = schema.KitRoots[1];
-                var clonedData = specifiedKitRoot.Context.CloneData(dialog.Data, firstKitRoot.Context.Address);
-                new KitExplorer(logger, new Kit(schema, clonedData), midi.client).Show();
+                var dialog = new DeviceLoaderDialog(logger, midi.client, schema);
+                dialog.LoadDeviceData(specifiedKitRoot.Context);
+                var result = dialog.ShowDialog();
+                if (result == true)
+                {
+                    var firstKitRoot = schema.KitRoots[1];
+                    var clonedData = specifiedKitRoot.Context.CloneData(dialog.Data, firstKitRoot.Context.Address);
+                    new KitExplorer(logger, new Kit(schema, clonedData), midi.client).Show();
+                }
+            }
+            finally
+            {
+                midiPanel.IsEnabled = true;
             }
         }
 
