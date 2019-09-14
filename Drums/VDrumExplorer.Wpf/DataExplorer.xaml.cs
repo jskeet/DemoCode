@@ -2,11 +2,9 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,38 +18,37 @@ using VDrumExplorer.Midi;
 namespace VDrumExplorer.Wpf
 {
     /// <summary>
-    /// Interaction logic for KitExplorer.xaml
+    /// Interaction logic for DataExplorer.xaml
     /// </summary>
-    public partial class KitExplorer : Window
+    public partial class DataExplorer : Window
     {
-        private readonly ILogger logger;
-        private readonly Kit kit;
-        private readonly SysExClient midiClient;
-        private readonly VisualTreeNode rootNode;
+        protected ModuleData Data { get; }
+        protected ModuleSchema Schema { get; }
+        internal ILogger Logger { get; }
+        protected SysExClient MidiClient { get; }
+        protected VisualTreeNode RootNode { get; }
+
         private bool editMode;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
-        private ModuleData Data => kit.Data;
-        private ModuleSchema Schema => kit.Schema;
-
-        public KitExplorer()
+        public DataExplorer()
         {
             InitializeComponent();
         }
 
-        internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient) : this()
+        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient) : this()
         {
-            this.logger = logger;
-            this.kit = kit;
-            this.midiClient = midiClient;
-            rootNode = kit.KitRoot;
+            Logger = logger;
+            Schema = schema;
+            Data = data;
+            MidiClient = midiClient;
+            RootNode = rootNode;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
             }
             Data.DataChanged += HandleModuleDataChanged;
-            Title = $"Kit explorer: {Schema.Identifier.Name}";
             LoadView();
         }
 
@@ -61,30 +58,24 @@ namespace VDrumExplorer.Wpf
             base.OnClosed(e);
         }
 
-        private void SaveFile(object sender, EventArgs e)
+        protected virtual void SaveFile(object sender, EventArgs e)
         {
-            var dialog = new SaveFileDialog { Filter = "VDrum Explorer kit files|*.vkit" };
-            var result = dialog.ShowDialog();
-            if (result != true)
-            {
-                return;
-            }
-            using (var stream = File.OpenWrite(dialog.FileName))
-            {
-                kit.Save(stream);
-            }
+        }
+
+        protected virtual void CopyToDevice(object sender, RoutedEventArgs e)
+        {
         }
 
         private void LoadView()
         {
             var boundItems = new List<(TreeViewItem, ModuleAddress)>();
 
-            var rootGuiNode = CreateNode(rootNode);
+            var rootGuiNode = CreateNode(RootNode);
             treeView.Items.Clear();
             treeView.Items.Add(rootGuiNode);
-            detailsPanel.Tag = rootNode;
+            detailsPanel.Tag = RootNode;
             LoadDetailsPage();
-            
+
             TreeViewItem CreateNode(VisualTreeNode vnode)
             {
                 var node = new TreeViewItem
@@ -115,7 +106,24 @@ namespace VDrumExplorer.Wpf
             LoadDetailsPage();
         }
 
-        private void LoadDetailsPage()
+        protected virtual void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private VisualTreeNode FindKitNode(VisualTreeNode currentNode)
+        {
+            while (currentNode != null)
+            {
+                if (currentNode.KitNumber != null)
+                {
+                    return currentNode;
+                }
+                currentNode = currentNode.Parent;
+            }
+            return null;
+        }
+
+        protected virtual void LoadDetailsPage()
         {
             var boundItems = new List<(GroupBox, ModuleAddress)>();
             var node = (VisualTreeNode) detailsPanel.Tag;
@@ -255,7 +263,7 @@ namespace VDrumExplorer.Wpf
                 textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
             return textBox;
         }
-        
+
         private FrameworkElement CreateInstrumentFieldElement(FixedContainer context, InstrumentField field)
         {
             // Instrument fields are really complicated:
@@ -265,13 +273,13 @@ namespace VDrumExplorer.Wpf
 
             const string presetBank = "Preset";
             const string samplesBank = "User sample";
-            
+
             var selected = field.GetInstrument(context, Data);
             var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
             var groupChoice = new ComboBox { ItemsSource = Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
             var userSampleTextBox = new TextBox { Width = 50, Text = selected.Id.ToString(CultureInfo.InvariantCulture), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
-            
+
             SetVisibility(selected.Group != null);
 
             userSampleTextBox.SelectionChanged += (sender, args) =>
@@ -321,7 +329,7 @@ namespace VDrumExplorer.Wpf
                         break;
                 }
             };
-            
+
             Grid.SetColumn(bankChoice, 0);
             Grid.SetColumn(groupChoice, 1);
             Grid.SetColumn(instrumentChoice, 2);
@@ -402,42 +410,6 @@ namespace VDrumExplorer.Wpf
             cancelChangesButton.IsEnabled = editMode;
         }
 
-        private async void CopyToDevice(object sender, RoutedEventArgs e)
-        {
-            if (!int.TryParse(copyToDeviceKitNumber.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int kitToCopyTo))
-            {
-                logger.Log("Invalid kit number");
-                return;
-            }
-
-            if (!Schema.KitRoots.TryGetValue(kitToCopyTo, out var targetKitRoot))
-            {
-                logger.Log("Unknown kit number");
-                return;
-            }
-
-            // It's simplest to clone our root node into a new ModuleData at the right place,
-            // then send all those segments. It does involve copying the data in memory
-            // twice, but that's much quicker than sending it to the kit anyway.
-            var clonedData = rootNode.Context.CloneData(Data, targetKitRoot.Context.Address);
-            var segments = clonedData.GetSegments();
-            midiPanel.IsEnabled = false;
-            try
-            {
-                logger.Log($"Writing {segments.Count} segments to the device.");
-                foreach (var segment in segments)
-                {
-                    midiClient.SendData(segment.Start.Value, segment.CopyData());
-                    await Task.Delay(40);
-                }
-                logger.Log($"Finished writing segments to the device.");
-            }
-            finally
-            {
-                midiPanel.IsEnabled = true;
-            }
-        }
-
         private void PlayNote(object sender, RoutedEventArgs e)
         {
             var node = detailsPanel.Tag as VisualTreeNode;
@@ -445,13 +417,13 @@ namespace VDrumExplorer.Wpf
             {
                 int attack = (int) attackSlider.Value;
                 int channel = int.Parse(midiChannelSelector.Text);
-                midiClient.PlayNote(channel, note, attack);
-            }            
+                MidiClient.PlayNote(channel, note, attack);
+            }
         }
 
         private int? GetMidiNote(VisualTreeNode node)
         {
-            if (midiClient is null || node?.MidiNoteField is null)
+            if (MidiClient is null || node?.MidiNoteField is null)
             {
                 return null;
             }
@@ -463,14 +435,14 @@ namespace VDrumExplorer.Wpf
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
         {
             Dispatcher.BeginInvoke((Action) HandleModuleDataChangedImpl);
-            
+
             void HandleModuleDataChangedImpl()
             {
                 var segment = e.ChangedSegment;
                 ReflectChangesInTree(segment);
                 ReflectChangesInDetails(segment);
             }
-            
+
             void ReflectChangesInTree(DataSegment segment)
             {
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
