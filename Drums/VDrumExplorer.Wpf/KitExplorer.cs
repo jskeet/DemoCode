@@ -59,21 +59,7 @@ namespace VDrumExplorer.Wpf
             // twice, but that's much quicker than sending it to the kit anyway.
             var clonedData = RootNode.Context.CloneData(Data, targetKitRoot.Context.Address);
             var segments = clonedData.GetSegments();
-            midiPanel.IsEnabled = false;
-            try
-            {
-                Logger.Log($"Writing {segments.Count} segments to the device.");
-                foreach (var segment in segments)
-                {
-                    MidiClient.SendData(segment.Start.Value, segment.CopyData());
-                    await Task.Delay(40);
-                }
-                Logger.Log($"Finished writing segments to the device.");
-            }
-            finally
-            {
-                midiPanel.IsEnabled = true;
-            }
+            await CopySegmentsToDeviceAsync(segments);
         }
     }
 }
