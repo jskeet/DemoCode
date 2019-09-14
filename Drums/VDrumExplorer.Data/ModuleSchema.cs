@@ -29,6 +29,7 @@ namespace VDrumExplorer.Data
         public IReadOnlyList<Instrument> PresetInstruments { get; }
         public IReadOnlyList<Instrument> UserSampleInstruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
+        public IReadOnlyDictionary<int, VisualTreeNode> KitRoots { get; }
         
         /// <summary>
         /// Root of the visual tree for the module using the logical layout.
@@ -73,6 +74,10 @@ namespace VDrumExplorer.Data
             Root = new FixedContainer(json.BuildRootContainer(this), new ModuleAddress(0));
             LogicalRoot = json.BuildLogicalRoot(Root);
             PhysicalRoot = VisualTreeNode.FromFixedContainer(null, Root);
+            KitRoots = LogicalRoot.DescendantNodesAndSelf()
+                .Where(node => node.KitNumber != null)
+                .ToDictionary(node => node.KitNumber!.Value)
+                .AsReadOnly();
         }
 
         public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
