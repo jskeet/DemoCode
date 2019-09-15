@@ -25,10 +25,21 @@
     {
       "offset": "0x05",
       "description": "Thickness",
-      "type": "range16",
+      "type": "enum16",
       "min": -5,
-      "max": 5,
-      "comment":  "This should sort of be an enum, but our enums are assumed to start at 0. We could implement valueOffset in NumericFieldBase instead..."
+      "values": [
+        "Thin-5",
+        "Thin-4",
+        "Thin-3",
+        "Thin-2",
+        "Thin-1",
+        "Standard",
+        "Thick+1",
+        "Thick+2",
+        "Thick+3",
+        "Thick+4",
+        "Thick+5"
+      ]
     }
   ]
 }

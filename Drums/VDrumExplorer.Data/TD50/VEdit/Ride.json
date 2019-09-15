@@ -13,9 +13,21 @@
     {
       "offset": "0x03",
       "description": "Thickness",
-      "type": "range16",
+      "type": "enum16",
       "min": -5,
-      "max": 5
+      "values": [
+        "Thin-5",
+        "Thin-4",
+        "Thin-3",
+        "Thin-2",
+        "Thin-1",
+        "Standard",
+        "Thick+1",
+        "Thick+2",
+        "Thick+3",
+        "Thick+4",
+        "Thick+5"
+      ]
     },
     {
       "offset": "0x05",
