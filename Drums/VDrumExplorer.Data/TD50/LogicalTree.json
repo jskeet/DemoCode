@@ -50,6 +50,7 @@
             "KitCommon/KitSubName"
           ],
           "format": "Kit $kit: {0}",
+          "kitOnlyFormat": "{0} / {1}",
           "details": [
             {
               "description": "Kit common",
