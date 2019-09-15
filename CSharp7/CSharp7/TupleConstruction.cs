@@ -24,7 +24,9 @@ namespace CSharp7
             (long a, int b) tuple4 = (1, 2);
 
             // No names in declaration, so names in construction are irrelevant
+            #pragma warning disable CS8123
             (int, int) tuple5 = (a: 1, b: 2);
+            #pragma warning restore CS8123
         }
     }
 }
