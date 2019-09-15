@@ -283,6 +283,10 @@ namespace VDrumExplorer.Wpf
             // - For preset instruments, we want to pick group and then instrument
             // - For user samples, we want a simple textbox for the sample number
 
+            // Instrument overlays are particularly complicated:
+            // - For most fields, the field doesn't reset unless the instrument group resets (like a normal overlay)
+            // - For cymbal/hi-hat fields, the size resets when the instrument is changed, because the size is part of the instrument.
+
             const string presetBank = "Preset";
             const string samplesBank = "User sample";
 
