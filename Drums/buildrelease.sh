@@ -11,5 +11,7 @@ cd tmp
 mkdir VDrumExplorer-$version
 cp ../VDrumExplorer.Wpf/bin/Release/net472/* VDrumExplorer-$version
 cp ../td17.vdrum VDrumExplorer-$version
+cp ../LICENSE* VDrumExplorer-$version
+cp ../README.md VDrumExplorer-$version
 zip -r VDrumExplorer-$version.zip VDrumExplorer-$version
 cd ..
