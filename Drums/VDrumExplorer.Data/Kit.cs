@@ -19,9 +19,10 @@ namespace VDrumExplorer.Data
         public ModuleSchema Schema { get; }
         public ModuleData Data { get; }
         public VisualTreeNode KitRoot { get; }
+        public int DefaultKitNumber { get; }
 
-        public Kit(ModuleSchema schema, ModuleData data) =>
-            (Schema, Data, KitRoot) = (schema, data, schema.KitRoots[1]);
+        public Kit(ModuleSchema schema, ModuleData data, int defaultKitNumber) =>
+            (Schema, Data, DefaultKitNumber, KitRoot) = (schema, data, defaultKitNumber, schema.KitRoots[1]);
 
         /// <summary>
         /// Validates that every field in the schema has a valid value.

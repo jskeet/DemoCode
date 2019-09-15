@@ -43,7 +43,7 @@ namespace VDrumExplorer.Wpf
             // We clone the data from kitNode downwards, but relocating it as if it were the first kit.
             var firstKitNode = Schema.KitRoots[1];
             var clonedData = kitNode.Context.CloneData(Data, firstKitNode.Context.Address);
-            var kit = new Kit(Schema, clonedData);
+            var kit = new Kit(Schema, clonedData, kitNode.KitNumber.Value);
             new KitExplorer(Logger, kit, MidiClient).Show();
         }
 
