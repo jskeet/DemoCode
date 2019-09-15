@@ -246,7 +246,8 @@ namespace VDrumExplorer.Wpf
                 {
                     var firstKitRoot = schema.KitRoots[1];
                     var clonedData = specifiedKitRoot.Context.CloneData(dialog.Data, firstKitRoot.Context.Address);
-                    new KitExplorer(logger, new Kit(schema, clonedData), midi.client).Show();
+                    var kit = new Kit(schema, clonedData, kitNumber);
+                    new KitExplorer(logger, kit, midi.client).Show();
                 }
             }
             finally

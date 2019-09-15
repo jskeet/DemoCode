@@ -45,4 +45,5 @@ message Kit
 {
     ModuleIdentifier identifier = 1;
 	repeated DataSegment segments = 2;
+	int32 default_kit_number = 3;
 }

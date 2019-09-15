@@ -30,10 +30,11 @@ namespace VDrumExplorer.Data.Proto {
             "KAUSEwoLZmFtaWx5X2NvZGUYAyABKAUSGgoSZmFtaWx5X251bWJlcl9jb2Rl",
             "GAQgASgFIioKC0RhdGFTZWdtZW50Eg0KBXN0YXJ0GAEgASgFEgwKBGRhdGEY",
             "AiABKAwiTwoGTW9kdWxlEiUKCmlkZW50aWZpZXIYASABKAsyES5Nb2R1bGVJ",
-            "ZGVudGlmaWVyEh4KCHNlZ21lbnRzGAIgAygLMgwuRGF0YVNlZ21lbnQiTAoD",
+            "ZGVudGlmaWVyEh4KCHNlZ21lbnRzGAIgAygLMgwuRGF0YVNlZ21lbnQiaAoD",
             "S2l0EiUKCmlkZW50aWZpZXIYASABKAsyES5Nb2R1bGVJZGVudGlmaWVyEh4K",
-            "CHNlZ21lbnRzGAIgAygLMgwuRGF0YVNlZ21lbnRCG6oCGFZEcnVtRXhwbG9y",
-            "ZXIuRGF0YS5Qcm90b2IGcHJvdG8z"));
+            "CHNlZ21lbnRzGAIgAygLMgwuRGF0YVNlZ21lbnQSGgoSZGVmYXVsdF9raXRf",
+            "bnVtYmVyGAMgASgFQhuqAhhWRHJ1bUV4cGxvcmVyLkRhdGEuUHJvdG9iBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -41,7 +42,7 @@ namespace VDrumExplorer.Data.Proto {
             new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.ModuleIdentifier), global::VDrumExplorer.Data.Proto.ModuleIdentifier.Parser, new[]{ "Name", "ModelId", "FamilyCode", "FamilyNumberCode" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.DataSegment), global::VDrumExplorer.Data.Proto.DataSegment.Parser, new[]{ "Start", "Data" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.Module), global::VDrumExplorer.Data.Proto.Module.Parser, new[]{ "Identifier", "Segments" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.Kit), global::VDrumExplorer.Data.Proto.Kit.Parser, new[]{ "Identifier", "Segments" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.Kit), global::VDrumExplorer.Data.Proto.Kit.Parser, new[]{ "Identifier", "Segments", "DefaultKitNumber" }, null, null, null)
           }));
     }
     #endregion
@@ -817,6 +818,7 @@ namespace VDrumExplorer.Data.Proto {
     public Kit(Kit other) : this() {
       identifier_ = other.identifier_ != null ? other.identifier_.Clone() : null;
       segments_ = other.segments_.Clone();
+      defaultKitNumber_ = other.defaultKitNumber_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -846,6 +848,17 @@ namespace VDrumExplorer.Data.Proto {
       get { return segments_; }
     }
 
+    /// <summary>Field number for the "default_kit_number" field.</summary>
+    public const int DefaultKitNumberFieldNumber = 3;
+    private int defaultKitNumber_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int DefaultKitNumber {
+      get { return defaultKitNumber_; }
+      set {
+        defaultKitNumber_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Kit);
@@ -861,6 +874,7 @@ namespace VDrumExplorer.Data.Proto {
       }
       if (!object.Equals(Identifier, other.Identifier)) return false;
       if(!segments_.Equals(other.segments_)) return false;
+      if (DefaultKitNumber != other.DefaultKitNumber) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -869,6 +883,7 @@ namespace VDrumExplorer.Data.Proto {
       int hash = 1;
       if (identifier_ != null) hash ^= Identifier.GetHashCode();
       hash ^= segments_.GetHashCode();
+      if (DefaultKitNumber != 0) hash ^= DefaultKitNumber.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -887,6 +902,10 @@ namespace VDrumExplorer.Data.Proto {
         output.WriteMessage(Identifier);
       }
       segments_.WriteTo(output, _repeated_segments_codec);
+      if (DefaultKitNumber != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(DefaultKitNumber);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -899,6 +918,9 @@ namespace VDrumExplorer.Data.Proto {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Identifier);
       }
       size += segments_.CalculateSize(_repeated_segments_codec);
+      if (DefaultKitNumber != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DefaultKitNumber);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -917,6 +939,9 @@ namespace VDrumExplorer.Data.Proto {
         Identifier.MergeFrom(other.Identifier);
       }
       segments_.Add(other.segments_);
+      if (other.DefaultKitNumber != 0) {
+        DefaultKitNumber = other.DefaultKitNumber;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -937,6 +962,10 @@ namespace VDrumExplorer.Data.Proto {
           }
           case 18: {
             segments_.AddEntriesFrom(input, _repeated_segments_codec);
+            break;
+          }
+          case 24: {
+            DefaultKitNumber = input.ReadInt32();
             break;
           }
         }

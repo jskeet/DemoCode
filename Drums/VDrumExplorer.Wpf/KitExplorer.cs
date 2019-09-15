@@ -22,6 +22,7 @@ namespace VDrumExplorer.Wpf
             openKitButton.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy kit to device";
             Title = $"Kit explorer: {Schema.Identifier.Name}";
+            copyToDeviceKitNumber.Text = kit.DefaultKitNumber.ToString(CultureInfo.InvariantCulture);
         }
 
         protected override void SaveToStream(Stream stream) => kit.Save(stream);
