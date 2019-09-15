@@ -15,7 +15,7 @@
             <Button x:Name="loadFromDeviceButton" Click="LoadModuleFromDevice" Margin="5" Padding="5,2">Load all data from device</Button>
             <Button Margin="5" Padding="5,2" Click="LoadKitFromDevice" x:Name="loadKitFromDeviceButton">Load single kit from device</Button>
             <Label Margin="5" Padding="0,2">Kit number:</Label>
-            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="loadKitFromDeviceKitNumber"></TextBox>
+            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="loadKitFromDeviceKitNumber">1</TextBox>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <GroupBox Header="Log" Margin="5">

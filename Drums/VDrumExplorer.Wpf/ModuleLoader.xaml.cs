@@ -5,7 +5,6 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,6 +29,8 @@ namespace VDrumExplorer.Wpf
             Loaded += OnLoaded;
             Loaded += LoadSchemaRegistry;
             Closed += OnClosed;
+            // We can't attach this event handler in XAML, as only instance members of the current class are allowed.
+            loadKitFromDeviceKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -226,16 +227,11 @@ namespace VDrumExplorer.Wpf
             var midi = detectedMidi.Value;
             var schema = midi.schema;
 
-            if (!int.TryParse(loadKitFromDeviceKitNumber.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var kitNumber))
+            if (!KitInputValidation.TryGetKitRoot(loadKitFromDeviceKitNumber.Text, schema, logger, out var specifiedKitRoot))
             {
-                logger.Log("Invalid kit number");
                 return;
             }
-            if (!schema.KitRoots.TryGetValue(kitNumber, out var specifiedKitRoot))
-            {
-                logger.Log("Unknown kit number");
-                return;
-            }
+
             midiPanel.IsEnabled = false;
             try
             {
@@ -246,7 +242,7 @@ namespace VDrumExplorer.Wpf
                 {
                     var firstKitRoot = schema.KitRoots[1];
                     var clonedData = specifiedKitRoot.Context.CloneData(dialog.Data, firstKitRoot.Context.Address);
-                    var kit = new Kit(schema, clonedData, kitNumber);
+                    var kit = new Kit(schema, clonedData, specifiedKitRoot.KitNumber.Value);
                     new KitExplorer(logger, kit, midi.client).Show();
                 }
             }
@@ -265,7 +261,6 @@ namespace VDrumExplorer.Wpf
                 return;
             }
             logger.SaveLog(dialog.FileName);
-
         }
     }
 }

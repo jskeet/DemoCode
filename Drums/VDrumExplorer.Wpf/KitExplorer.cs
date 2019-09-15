@@ -29,15 +29,8 @@ namespace VDrumExplorer.Wpf
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(copyToDeviceKitNumber.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int kitToCopyTo))
+            if (!KitInputValidation.TryGetKitRoot(copyToDeviceKitNumber.Text, Schema, Logger, out var targetKitRoot))
             {
-                Logger.Log("Invalid kit number");
-                return;
-            }
-
-            if (!Schema.KitRoots.TryGetValue(kitToCopyTo, out var targetKitRoot))
-            {
-                Logger.Log("Unknown kit number");
                 return;
             }
 
