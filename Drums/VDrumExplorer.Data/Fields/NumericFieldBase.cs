@@ -14,10 +14,11 @@ namespace VDrumExplorer.Data.Fields
     {
         public int Min { get; }
         public int Max { get; }
+        public int Default { get; }
 
-        private protected NumericFieldBase(FieldBase.Parameters common, int min, int max)
+        private protected NumericFieldBase(FieldBase.Parameters common, int min, int max, int @default)
             : base(common) =>
-            (Min, Max) = (min, max);
+            (Min, Max, Default) = (min, max, @default);
 
         private int GetRawValueUnvalidated(FixedContainer context, ModuleData data)
         {
@@ -74,7 +75,7 @@ namespace VDrumExplorer.Data.Fields
             data.SetData(GetAddress(context), bytes);
         }
 
-        public override void Reset(FixedContainer context, ModuleData data) => SetRawValue(context, data, Min);
+        public override void Reset(FixedContainer context, ModuleData data) => SetRawValue(context, data, Default);
 
         protected override bool ValidateData(FixedContainer context, ModuleData data, out string? error)
         {
