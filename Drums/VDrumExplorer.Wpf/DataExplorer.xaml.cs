@@ -103,7 +103,7 @@ namespace VDrumExplorer.Wpf
             {
                 var node = new TreeViewItem
                 {
-                    Header = vnode.Description.Format(vnode.Context, Data),
+                    Header = FormatNodeDescription(vnode),
                     Tag = vnode
                 };
                 foreach (var address in vnode.Description.GetSegmentAddresses(vnode.Context))
@@ -122,6 +122,9 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
+        protected virtual string FormatNodeDescription(VisualTreeNode node) =>
+            node.Description.Format(node.Context, Data);
+
         private void HandleTreeViewSelection(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var item = (TreeViewItem) e.NewValue;
@@ -131,19 +134,6 @@ namespace VDrumExplorer.Wpf
 
         protected virtual void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
         {
-        }
-
-        private VisualTreeNode FindKitNode(VisualTreeNode currentNode)
-        {
-            while (currentNode != null)
-            {
-                if (currentNode.KitNumber != null)
-                {
-                    return currentNode;
-                }
-                currentNode = currentNode.Parent;
-            }
-            return null;
         }
 
         protected virtual void LoadDetailsPage()
@@ -469,7 +459,7 @@ namespace VDrumExplorer.Wpf
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
                 {
                     var vnode = (VisualTreeNode) treeViewItem.Tag;
-                    treeViewItem.Header = vnode.Description.Format(vnode.Context, Data);
+                    treeViewItem.Header = FormatNodeDescription(vnode);
                 }
             }
 

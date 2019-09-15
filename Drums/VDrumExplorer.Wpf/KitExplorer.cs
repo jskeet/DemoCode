@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using VDrumExplorer.Data;
+using VDrumExplorer.Data.Layout;
 using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Wpf
@@ -26,6 +27,9 @@ namespace VDrumExplorer.Wpf
         }
 
         protected override void SaveToStream(Stream stream) => kit.Save(stream);
+
+        protected override string FormatNodeDescription(VisualTreeNode node) =>
+            (node.KitOnlyDescription ?? node.Description).Format(node.Context, Data);
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)
         {
