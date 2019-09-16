@@ -114,7 +114,7 @@ namespace VDrumExplorer.Midi
                 // TODO: See if Sanford MIDI can do this itself.
                 throw new ArgumentOutOfRangeException("Size must be in the range 0x1-0x17f, to avoid fragmentation");
             }
-            if (size > 0x100)
+            if (size >= 0x100)
             {
                 size -= 0x80;
             }
