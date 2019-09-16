@@ -22,10 +22,12 @@ namespace CSharp7
 
             // Names specified by declaration
             (long a, int b) tuple4 = (1, 2);
+            Console.WriteLine($"Tuple 4: a = {tuple4.a}, b = {tuple4.b}");
 
             // No names in declaration, so names in construction are irrelevant
             #pragma warning disable CS8123
             (int, int) tuple5 = (a: 1, b: 2);
+            Console.WriteLine($"Tuple 5: item 1 = {tuple5.Item1}, item 2 = {tuple5.Item2}");
             #pragma warning restore CS8123
         }
     }
