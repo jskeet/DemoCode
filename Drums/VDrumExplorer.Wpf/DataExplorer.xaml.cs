@@ -35,6 +35,11 @@ namespace VDrumExplorer.Wpf
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
+        // When we enter edit mode, we create a dictionary to remember transient
+        // overlay data. When we switch between overload containers, we reset to
+        // the previous values if we have any, instead of resetting to defaults.
+        private Dictionary<(ModuleAddress, Container), byte[]> savedOverlayEditData;
+
         protected VisualTreeNode CurrentNode { get; set; }
 
         public DataExplorer()
@@ -399,6 +404,7 @@ namespace VDrumExplorer.Wpf
         {
             editMode = true;
             Data.Snapshot();
+            savedOverlayEditData = new Dictionary<(ModuleAddress, Container), byte[]>();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -407,6 +413,7 @@ namespace VDrumExplorer.Wpf
         {
             editMode = false;
             Data.CommitSnapshot();
+            savedOverlayEditData = null;
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -415,6 +422,7 @@ namespace VDrumExplorer.Wpf
         {
             editMode = false;
             Data.RevertSnapshot();
+            savedOverlayEditData = null;
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -481,10 +489,21 @@ namespace VDrumExplorer.Wpf
                     var currentContainer = overlay.GetOverlaidContainer(detailContext, Data);
                     if (currentContainer != previousContainer)
                     {
-                        // As the container has changed, let's reset the values to sensible defaults.
+                        var overlayAddress = detailContext.Address + overlay.Offset;
+                        // Save the current container data in case we need to come back to it.
+                        savedOverlayEditData[(overlayAddress, previousContainer)] = Data.GetData(overlayAddress, overlay.Size);
+                        // As the container has changed, let's either reset the values to sensible defaults,
+                        // or to previous values if we have any.
                         // This will itself trigger a change notification event, but that's okay.
-                        currentContainer.Reset(detailContext, Data);
-                        groupBox.Content = FormatContainer(context, detail);
+                        if (savedOverlayEditData.TryGetValue((overlayAddress, currentContainer), out var data))
+                        {
+                            Data.GetSegment(overlayAddress).SetData(overlayAddress, data);
+                        }
+                        else
+                        {
+                            currentContainer.Reset(detailContext, Data);
+                        }
+                        groupBox.Content = FormatContainer(context, detail);                        
                     }
                 }
             }
