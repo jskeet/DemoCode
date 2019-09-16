@@ -185,6 +185,12 @@ namespace VDrumExplorer.Data
 
         public byte[] GetData(ModuleAddress address, int size)
         {
+            // Normal "we don't really mean it" sizing.
+            if (size >= 0x100)
+            {
+                size -= 0x80;
+            }
+
             var segment = GetSegment(address);
             byte[] ret = new byte[size];
             for (int i = 0; i < size; i++)
