@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
@@ -82,18 +83,31 @@ namespace VDrumExplorer.Wpf
             base.OnClosed(e);
         }
 
-        protected void SaveFile(object sender, EventArgs e)
+        protected void SaveFile(object sender, ExecutedRoutedEventArgs e) =>
+            SaveFile(fileName);
+
+        protected void SaveFileAs(object sender, ExecutedRoutedEventArgs e) =>
+            SaveFile(defaultFileName: null);
+
+        private void SaveFile(string defaultFileName)
         {
-            var dialog = new SaveFileDialog { Filter = saveFileFilter };
-            var result = dialog.ShowDialog();
-            if (result != true)
+            string newFileName = defaultFileName;
+            if (newFileName == null)
             {
-                return;
+                var dialog = new SaveFileDialog { Filter = saveFileFilter };
+                var result = dialog.ShowDialog();
+                if (result != true)
+                {
+                    return;
+                }
+                newFileName = dialog.FileName;
             }
-            using (var stream = File.OpenWrite(dialog.FileName))
+            using (var stream = File.OpenWrite(newFileName))
             {
                 SaveToStream(stream);
             }
+            fileName = newFileName;
+            UpdateTitle();
         }
 
         protected virtual void SaveToStream(Stream stream)
