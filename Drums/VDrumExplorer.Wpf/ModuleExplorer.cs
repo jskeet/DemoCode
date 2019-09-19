@@ -17,11 +17,10 @@ namespace VDrumExplorer.Wpf
         private readonly Module module;
         private const string SaveFileFilter = "VDrum Explorer module files|*.vdrum";
 
-        internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient)
-            : base(logger, module.Schema, module.Data, module.Schema.LogicalRoot, midiClient, SaveFileFilter)
+        internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient, string fileName)
+            : base(logger, module.Schema, module.Data, module.Schema.LogicalRoot, midiClient, fileName, SaveFileFilter, "Module explorer")
         {
             this.module = module;
-            Title = $"Module explorer: {Schema.Identifier.Name}";
             kitNumberLabel.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy data to device";
             copyToDeviceKitNumber.Visibility = Visibility.Collapsed;
@@ -44,7 +43,7 @@ namespace VDrumExplorer.Wpf
             var firstKitNode = Schema.KitRoots[1];
             var clonedData = kitNode.Context.CloneData(Data, firstKitNode.Context.Address);
             var kit = new Kit(Schema, clonedData, kitNode.KitNumber.Value);
-            new KitExplorer(Logger, kit, MidiClient).Show();
+            new KitExplorer(Logger, kit, MidiClient, fileName: null).Show();
         }
 
         private VisualTreeNode GetCurrentKitRootNode()
