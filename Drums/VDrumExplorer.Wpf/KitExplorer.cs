@@ -16,13 +16,12 @@ namespace VDrumExplorer.Wpf
         private readonly Kit kit;
         private const string SaveFileFilter = "VDrum Explorer kit files|*.vkit";
 
-        internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient)
-            : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, SaveFileFilter)
+        internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient, string fileName)
+            : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, fileName, SaveFileFilter, "Kit explorer")
         {
             this.kit = kit;
             openKitButton.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy kit to device";
-            Title = $"Kit explorer: {Schema.Identifier.Name}";
             copyToDeviceKitNumber.Text = kit.DefaultKitNumber.ToString(CultureInfo.InvariantCulture);
         }
 

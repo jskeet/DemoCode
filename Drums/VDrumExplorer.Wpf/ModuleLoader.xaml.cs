@@ -164,14 +164,14 @@ namespace VDrumExplorer.Wpf
                 {
                     Validate(kit.Validate);
                     var client = detectedMidi?.schema == kit.Schema ? detectedMidi?.client : null;
-                    new KitExplorer(logger, kit, client).Show();
+                    new KitExplorer(logger, kit, client, dialog.FileName).Show();
                     break;
                 }
                 case Module module:
                 {
                     Validate(module.Validate);
                     var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
-                    new ModuleExplorer(logger, module, client).Show();
+                    new ModuleExplorer(logger, module, client, dialog.FileName).Show();
                     break;
                 }
                 default:
@@ -208,7 +208,7 @@ namespace VDrumExplorer.Wpf
                 var result = dialog.ShowDialog();
                 if (result == true)
                 {
-                    new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client).Show();
+                    new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client, fileName: null).Show();
                 }
             }
             finally
@@ -243,7 +243,7 @@ namespace VDrumExplorer.Wpf
                     var firstKitRoot = schema.KitRoots[1];
                     var clonedData = specifiedKitRoot.Context.CloneData(dialog.Data, firstKitRoot.Context.Address);
                     var kit = new Kit(schema, clonedData, specifiedKitRoot.KitNumber.Value);
-                    new KitExplorer(logger, kit, midi.client).Show();
+                    new KitExplorer(logger, kit, midi.client, fileName: null).Show();
                 }
             }
             finally

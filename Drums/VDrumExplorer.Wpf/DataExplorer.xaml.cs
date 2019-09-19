@@ -29,9 +29,11 @@ namespace VDrumExplorer.Wpf
         internal ILogger Logger { get; }
         protected SysExClient MidiClient { get; }
         protected VisualTreeNode RootNode { get; }
+        private readonly string explorerName;
         private readonly string saveFileFilter;
 
         private bool editMode;
+        private string fileName;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
 
@@ -49,8 +51,8 @@ namespace VDrumExplorer.Wpf
             copyToDeviceKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
         }
 
-        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient,
-            string saveFileFilter) : this()
+        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient, string fileName,
+            string saveFileFilter, string explorerName) : this()
         {
             Logger = logger;
             Schema = schema;
@@ -58,13 +60,21 @@ namespace VDrumExplorer.Wpf
             MidiClient = midiClient;
             RootNode = rootNode;
             this.saveFileFilter = saveFileFilter;
+            this.explorerName = explorerName;
+            this.fileName = fileName;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
             }
             Data.DataChanged += HandleModuleDataChanged;
             LoadView();
+            UpdateTitle();
         }
+
+        private void UpdateTitle() =>
+            Title = fileName == null
+            ? $"{explorerName} ({Schema.Identifier.Name})"
+            : $"{explorerName} ({Schema.Identifier.Name}) - {fileName}";
 
         protected override void OnClosed(EventArgs e)
         {
