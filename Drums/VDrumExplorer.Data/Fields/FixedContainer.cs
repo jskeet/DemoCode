@@ -97,5 +97,20 @@ namespace VDrumExplorer.Data.Fields
             }
             return new ValidationResult(count, errors.AsReadOnly());
         }
+
+        public IEnumerable<FixedContainer> DescendantsAndSelf()
+        {
+            var queue = new Queue<FixedContainer>();
+            queue.Enqueue(this);
+            while (queue.Count != 0)
+            {
+                var current = queue.Dequeue();
+                yield return current;
+                foreach (var container in current.Container.Fields.OfType<Container>())
+                {
+                    queue.Enqueue(current.ToChildContext(container));
+                }
+            }
+        }
     }
 }
