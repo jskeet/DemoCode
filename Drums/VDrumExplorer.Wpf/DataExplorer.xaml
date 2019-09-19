@@ -6,10 +6,15 @@
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
         Title="KitExplorer" Height="450" Width="800">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveFile" />
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveFileAs" />
+    </Window.CommandBindings>
     <DockPanel x:Name="mainPanel">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Save" Click="SaveFile" />
+                <MenuItem Command="ApplicationCommands.Save" />
+                <MenuItem Command="ApplicationCommands.SaveAs" />
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
