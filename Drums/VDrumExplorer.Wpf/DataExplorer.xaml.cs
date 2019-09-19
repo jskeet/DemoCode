@@ -536,6 +536,7 @@ namespace VDrumExplorer.Wpf
         protected async Task CopySegmentsToDeviceAsync(List<DataSegment> segments)
         {
             midiPanel.IsEnabled = false;
+            int written = 0;
             try
             {
                 Logger.Log($"Writing {segments.Count} segments to the device.");
@@ -543,8 +544,15 @@ namespace VDrumExplorer.Wpf
                 {
                     MidiClient.SendData(segment.Start.Value, segment.CopyData());
                     await Task.Delay(40);
+                    written++;
                 }
                 Logger.Log($"Finished writing segments to the device.");
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Failed while writing data to the device.");
+                Logger.Log($"Segments successfully written: {written}");
+                Logger.Log($"Error: {e}");
             }
             finally
             {
