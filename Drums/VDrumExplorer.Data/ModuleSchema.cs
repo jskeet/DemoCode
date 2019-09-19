@@ -41,6 +41,12 @@ namespace VDrumExplorer.Data
         /// </summary>
         public VisualTreeNode PhysicalRoot { get; }
 
+        /// <summary>
+        /// A map from a module address to the loadable container at that address.
+        /// (This map doesn't include containers that only contain other containers.)
+        /// </summary>
+        public IReadOnlyDictionary<ModuleAddress, Container> LoadableContainersByAddress { get; }
+
         // Note: this used to be in ModuleJson.ToModuleSchema(), but it turns out it's really useful for
         // a field to have access to the schema it's part of... which is tricky when everything is immutable
         // and the schema also has to have references to the fields. So this code is ugly - and makes field testing
@@ -77,6 +83,11 @@ namespace VDrumExplorer.Data
             KitRoots = LogicalRoot.DescendantNodesAndSelf()
                 .Where(node => node.KitNumber != null)
                 .ToDictionary(node => node.KitNumber!.Value)
+                .AsReadOnly();
+            LoadableContainersByAddress = Root
+                .DescendantsAndSelf()
+                .Where(context => context.Container.Loadable)
+                .ToDictionary(context => context.Address, context => context.Container)
                 .AsReadOnly();
         }
 
