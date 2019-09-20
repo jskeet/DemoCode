@@ -9,11 +9,16 @@ I'm very grateful to Roland for providing the [TD-17 MIDI
 implementation](https://www.roland.com/global/support/by_product/td-17/owners_manuals/b28f606f-fa2e-4cb3-b4ec-1d25ce06a918/) document which has been absolutely vital in
 writing this code.
 
+Feedback is very welcome - it's still early days, but please email
+skeet@pobox.com or [file an
+issue](https://github.com/jskeet/DemoCode/issues/new) to let me know
+how you get on with this.
+
 # Requirements
 
 - Windows 8.1 or Windows 10
 - .NET 4.7.2 or later (I'll publish a .NET Core 3.0 build when Core 3.0 goes GA)
-- To be genuinely useful, a Roland TD-17 or TD-50 V-Drums drum kit, turned on and connected via USB 
+- To be genuinely useful, a Roland TD-17 or TD-50 V-Drums drum kit, turned on and connected via USB (see later for details)
 
 # Installation
 
@@ -26,6 +31,13 @@ create one unless there's demand.
 - Unzip the zip file anywhere on your machine
 - Run VDrumExplorer.Wpf.exe
 - If Windows Defender SmartScreen pops up, click on "More info" then "Run anyway" - assuming you trust me.
+
+**Important note for drum kit connection**
+
+The USB Driver Mode must be "vendor" for the V-Drum Explorer to
+detect it. The "generic" USB mode is the factory default, so you'll
+need to change this (which includes a drum kit reboot) before
+starting the Explorer.
 
 # Usage
 
@@ -197,10 +209,6 @@ operates on a single kit instead of the data for a whole module.
 
 ![Kit Explorer](kit-explorer.png)
 
-Note that the kit will always be shown as "Kit 1" regardless of
-which kit number it originally came from. Once loaded in Kit
-Explorer, a kit doesn't really have a number - it's just "a kit".
-
 ### Copying the kit to the device
 
 The "Copy kit to device" button will copy the kit data
@@ -221,9 +229,8 @@ which can be opened later in Module Loader.
 - Cleaner user interface for loading or copying a single kit (the textbox is ugly)
 - Kit functionality within Module Explorer:
   - Import a single kit
-  - Export a single kit (equivalent to "open in kit explorer, save"
+  - Export a single kit (equivalent to "open in kit explorer, save")
   - Copy a kit to another slot
 - Potentially remember the file that was loaded, so it's easier to save over it
 - Better default values when overlaid fields are reset, or
   potentially remembering previously-used values
-- Stop Kit Explorer from showing "Kit 1" which is misleading
