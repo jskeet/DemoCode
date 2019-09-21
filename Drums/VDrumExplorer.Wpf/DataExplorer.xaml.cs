@@ -475,14 +475,13 @@ namespace VDrumExplorer.Wpf
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke((Action) HandleModuleDataChangedImpl);
-
-            void HandleModuleDataChangedImpl()
-            {
-                var segment = e.ChangedSegment;
-                ReflectChangesInTree(segment);
-                ReflectChangesInDetails(segment);
-            }
+            // Note: this is *not* thread-safe. We assume that only the UI is making changes
+            // to the data it's responsible for. This allows us to handle data changes synchronously,
+            // which greatly simplifies ordering aspects when changing an instrument group -
+            // we first need to reset the vedit overlay, then set the size etc.
+            var segment = e.ChangedSegment;
+            ReflectChangesInTree(segment);
+            ReflectChangesInDetails(segment);
 
             void ReflectChangesInTree(DataSegment segment)
             {
