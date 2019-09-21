@@ -19,7 +19,7 @@ namespace VDrumExplorer.Data
         public ModuleSchema Schema { get; }
         public ModuleData Data { get; }
         public VisualTreeNode KitRoot { get; }
-        public int DefaultKitNumber { get; }
+        public int DefaultKitNumber { get; set; }
 
         public Kit(ModuleSchema schema, ModuleData data, int defaultKitNumber) =>
             (Schema, Data, DefaultKitNumber, KitRoot) = (schema, data, defaultKitNumber, schema.KitRoots[1]);

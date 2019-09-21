@@ -48,8 +48,9 @@ namespace VDrumExplorer.Wpf
         public DataExplorer()
         {
             InitializeComponent();
-            // We can't attach this event handler in XAML, as only instance members of the current class are allowed.
+            // We can't attach these event handlers in XAML, as only instance members of the current class are allowed.
             copyToDeviceKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
+            defaultKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
         }
 
         internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient, string fileName,

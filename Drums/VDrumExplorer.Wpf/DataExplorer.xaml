@@ -17,6 +17,10 @@
                 <MenuItem Command="ApplicationCommands.SaveAs" />
             </MenuItem>
         </Menu>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="defaultKitPanel">
+            <Label Margin="5" Padding="0,2">Default kit number:</Label>
+            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="defaultKitNumber"></TextBox>
+        </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Margin="5" Padding="5,2" Click="EnterEditMode" x:Name="editModeButton">Edit mode</Button>
             <Button Margin="5" Padding="5,2" Click="CommitChanges" IsEnabled="False" x:Name="commitChangesButton">Commit changes</Button>
@@ -25,7 +29,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel">
             <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton"></Button>
-            <Label Margin="5" Padding="0,2" x:Name="kitNumberLabel">Kit number:</Label>
+            <Label Margin="5" Padding="0,2" x:Name="kitNumberLabel">Kit to copy to:</Label>
             <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="copyToDeviceKitNumber"></TextBox>
             <Button Margin="5" Padding="5,2" Click="PlayNote" x:Name="playNoteButton">Play note</Button>
             <Label Margin="5" Padding="5,2">Midi Channel:</Label>

@@ -24,6 +24,7 @@ namespace VDrumExplorer.Wpf
             kitNumberLabel.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy data to device";
             copyToDeviceKitNumber.Visibility = Visibility.Collapsed;
+            defaultKitPanel.Visibility = Visibility.Collapsed;
         }
 
         protected override void SaveToStream(Stream stream) => module.Save(stream);
