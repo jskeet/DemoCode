@@ -179,7 +179,7 @@ namespace VDrumExplorer.Wpf
             var context = CurrentNode.Context;
             foreach (var detail in CurrentNode.Details)
             {
-                var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(context, detail);
+                var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(detail.Container);
                 var groupBox = new GroupBox
                 {
                     Header = new TextBlock { FontWeight = FontWeights.SemiBold, Text = detail.Description },
@@ -190,9 +190,7 @@ namespace VDrumExplorer.Wpf
 
                 if (grid.Tag is (DynamicOverlay overlay, Container currentContainer))
                 {
-                    var container = detail.Container.FinalField;
-                    var detailContext = detail.FixContainer(context);
-                    var segmentStart = Data.GetSegment(detailContext.Address + overlay.SwitchContainerOffset).Start;
+                    var segmentStart = Data.GetSegment(detail.Container.Address + overlay.SwitchContainerOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
             }
@@ -200,14 +198,11 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
-        private Grid FormatContainer(FixedContainer context, VisualTreeDetail detail)
+        private Grid FormatContainer(FixedContainer context)
         {
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-            // Find the real context based on the container.
-            context = detail.FixContainer(context);
 
             var fields = context.GetPrimitiveFields(Data)
                 .Where(f => f.IsEnabled(context, Data));
@@ -500,12 +495,11 @@ namespace VDrumExplorer.Wpf
 
             void ReflectChangesInDetails(DataSegment segment)
             {
-                var context = CurrentNode.Context;
                 foreach (var groupBox in detailGroupsToUpdateBySegmentStart[segment.Start])
                 {
                     var detail = (VisualTreeDetail) groupBox.Tag;
 
-                    var detailContext = detail.FixContainer(context);
+                    var detailContext = detail.Container;
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
                     var currentContainer = overlay.GetOverlaidContainer(detailContext, Data);
@@ -525,7 +519,7 @@ namespace VDrumExplorer.Wpf
                         {
                             currentContainer.Reset(detailContext, Data);
                         }
-                        groupBox.Content = FormatContainer(context, detail);
+                        groupBox.Content = FormatContainer(detailContext);
                     }
                 }
             }

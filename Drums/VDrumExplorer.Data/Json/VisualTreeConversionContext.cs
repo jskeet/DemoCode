@@ -50,24 +50,21 @@ namespace VDrumExplorer.Data.Json
             return new VisualTreeConversionContext(moduleJson, ContainerContext, lookupsByPath, newIndexes);
         }
 
-        internal FieldChain<Container?> GetContainer(string relativePath) =>
-            relativePath == "."
-            ? FieldChain<Container?>.EmptyChain(null)
-            : FieldChain<Container?>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
+        internal FixedContainer GetContext(string relativePath)
+        {
+            if (relativePath == ".")
+            {
+                return ContainerContext;
+            }
+            var chain = FieldChain<Container>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
+            return chain.GetFinalContext(ContainerContext).ToChildContext(chain.FinalField);
+        }
 
         internal FieldChain<MidiNoteField> GetMidiNoteField(string relativePath) =>
             FieldChain<MidiNoteField>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
 
-        internal VisualTreeConversionContext WithPath(string relativePath)
-        {
-            if (relativePath == ".")
-            {
-                return this;
-            }
-            var chain = FieldChain<Container>.Create(ContainerContext.Container, ReplaceIndexes(relativePath));
-            var newContainerContext = chain.GetFinalContext(ContainerContext).ToChildContext(chain.FinalField);
-            return new VisualTreeConversionContext(moduleJson, newContainerContext, lookupsByPath, indexes);
-        }
+        internal VisualTreeConversionContext WithContextFromPath(string relativePath) =>
+            new VisualTreeConversionContext(moduleJson, GetContext(relativePath), lookupsByPath, indexes);
 
         internal int? GetRepeat(string? repeat) => moduleJson.GetCount(repeat);
 
