@@ -154,7 +154,14 @@ namespace VDrumExplorer.Data.Json
         /// If set, the condition for the field to be enabled.
         /// </summary>
         public FieldConditionJson? Condition { get; set; }
-        
+
+        /// <summary>
+        /// The offset from the start of the parent container of this field,
+        /// to the container with vedit details (tuning, muffling etc). This is
+        /// only relevant for instrument fields.
+        /// </summary>
+        public HexInt32? VeditOffset { get; set; }
+
         public override string ToString() => Description ?? "(No description)";
 
         internal IEnumerable<IField> ToFields(ModuleSchema schema, ModuleJson module)
@@ -242,7 +249,9 @@ namespace VDrumExplorer.Data.Json
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
                 "dynamicOverlay" => BuildDynamicOverlay(),
-                "instrument" => new InstrumentField(BuildCommon(4), ValidateNotNull(BankOffset, nameof(BankOffset)).Value),
+                "instrument" => new InstrumentField(BuildCommon(4), 
+                    ValidateNotNull(BankOffset, nameof(BankOffset)).Value,
+                    ValidateNotNull(VeditOffset, nameof(VeditOffset)).Value),
                 "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0, 0),
                 "volume32" => new NumericField(BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "INF")),
                 "string" => BuildStringField(1),

@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System.Collections.Generic;
+
 namespace VDrumExplorer.Data
 {
     /// <summary>
@@ -25,14 +27,19 @@ namespace VDrumExplorer.Data
         /// </summary>
         public InstrumentGroup? Group { get; }
 
-        private Instrument(int id, string name, InstrumentGroup? group) =>
-            (Id, Name, Group) = (id, name, group);
+        /// <summary>
+        /// Default values for Vedit fields (e.g. Size), or null if there are no defaults to apply.
+        /// </summary>
+        public IReadOnlyDictionary<string, int>? DefaultFieldValues { get; }
 
-        internal static Instrument FromPreset(int id, string name, InstrumentGroup group) =>
-            new Instrument(id, name, group);
+        private Instrument(int id, string name, InstrumentGroup? group, IReadOnlyDictionary<string, int>? defaultFieldValues) =>
+            (Id, Name, Group, DefaultFieldValues) = (id, name, group, defaultFieldValues);
+
+        internal static Instrument FromPreset(int id, string name, InstrumentGroup group, IReadOnlyDictionary<string, int>? defaultFieldValues) =>
+            new Instrument(id, name, group, defaultFieldValues);
 
         internal static Instrument FromUserSample(int id) =>
-            new Instrument(id, $"User sample {id + 1}", null);
+            new Instrument(id, $"User sample {id + 1}", null, null);
 
         public override string ToString() => Name;
     }

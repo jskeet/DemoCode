@@ -2,10 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace VDrumExplorer.Data
 {
@@ -21,15 +19,32 @@ namespace VDrumExplorer.Data
         public int Index { get; }
         public IReadOnlyList<Instrument> Instruments { get; }
 
-        internal InstrumentGroup(string description, int index, Dictionary<int, string> instruments)
+        internal InstrumentGroup(string description, int index,
+            Dictionary<int, string> instruments,
+            Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults)
         {
             Description = description;
             Index = index;
             Instruments = instruments
-                .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, this))
+                .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, this, BuildInstrumentDefaults(instrumentFieldDefaults, pair.Key)))
                 .OrderBy(i => i.Id)
                 .ToList()
                 .AsReadOnly();
+        }
+
+        private IReadOnlyDictionary<string, int>? BuildInstrumentDefaults(
+            Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults, int instrumentId)
+        {
+            if (instrumentFieldDefaults == null)
+            {
+                return null;
+            }
+            var fieldsForInstrument = instrumentFieldDefaults
+                .Where(pair => pair.Value.ContainsKey(instrumentId))
+                .ToDictionary(pair => pair.Key, pair => pair.Value[instrumentId]);
+            return fieldsForInstrument.Count == 0
+                ? null
+                : fieldsForInstrument.AsReadOnly();
         }
 
         public override string ToString() => Description;
