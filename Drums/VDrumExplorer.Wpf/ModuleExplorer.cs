@@ -89,7 +89,7 @@ namespace VDrumExplorer.Wpf
             IEnumerable<DataSegment> GetSegments(VisualTreeNode treeNode) =>
                 treeNode.Details
                     .Where(d => d.Container is object)
-                    .Select(d => d.FixContainer(treeNode.Context))
+                    .Select(d => d.Container)
                     .Where(fc => fc.Container.Loadable)
                     .Select(fc => Data.GetSegment(fc.Address));
         }

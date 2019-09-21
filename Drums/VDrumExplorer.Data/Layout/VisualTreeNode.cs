@@ -55,7 +55,7 @@ namespace VDrumExplorer.Data.Layout
             var container = context.Container;
             Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider = newNode =>
                 container.Fields.OfType<Container>().Select(c => FromFixedContainer(newNode, new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
-            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, FieldChain<Container?>.EmptyChain(container)) }.AsReadOnly();
+            var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, context) }.AsReadOnly();
             return new VisualTreeNode(parent, context, childrenProvider, details, new FormattableDescription(container.Description, null), null, null, null);
         }
 

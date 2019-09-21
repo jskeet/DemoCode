@@ -32,7 +32,7 @@ namespace VDrumExplorer.Data.Json
             var relativePath = ValidateNotNull(Path, nameof(Path));
             if (repeat == null)
             {
-                var context = parentContext.WithPath(relativePath);
+                var context = parentContext.WithContextFromPath(relativePath);
                 yield return ToVisualTreeNode(context);
             }
             else
@@ -40,7 +40,7 @@ namespace VDrumExplorer.Data.Json
                 var index = ValidateNotNull(Index, nameof(Index));
                 for (int i = 1; i <= repeat; i++)
                 {
-                    var context = parentContext.WithIndex(index, i).WithPath(relativePath);
+                    var context = parentContext.WithIndex(index, i).WithContextFromPath(relativePath);
                     yield return ToVisualTreeNode(context);
                 }
             }
