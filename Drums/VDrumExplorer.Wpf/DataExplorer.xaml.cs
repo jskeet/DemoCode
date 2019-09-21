@@ -221,7 +221,6 @@ namespace VDrumExplorer.Wpf
                 {
                     value = CreateReadWriteFieldElement(context, primitive);
                     value.Margin = new Thickness(5, 1, 0, 0);
-
                 }
                 else
                 {

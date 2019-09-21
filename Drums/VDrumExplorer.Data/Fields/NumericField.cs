@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Globalization;
 using static System.FormattableString;
 
@@ -27,7 +26,8 @@ namespace VDrumExplorer.Data.Fields
         internal NumericField(FieldBase.Parameters common, int min, int max, int @default,
             int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting)
             : base(common, min, max, @default) =>
-            (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) = (divisor, multiplier, valueOffset, suffix, customValueFormatting);
+            (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) =
+            (divisor, multiplier, valueOffset, suffix, customValueFormatting);
 
         public override string GetText(FixedContainer context, ModuleData data)
         {
