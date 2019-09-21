@@ -347,7 +347,13 @@ namespace VDrumExplorer.Wpf
                 {
                     return;
                 }
+                // Note: this updates the vedit fields if necessary too. (Size for cymbals etc.)
                 field.SetInstrument(context, Data, instrument);
+                // Update the vedit if necessary.
+                // FIXME: This is really hacky, but working out exactly what should trigger when is harder.
+                // We don't really need to recreate the fields - we'd just like to modify the content. But
+                // that's tricky too.
+                UpdateVeditGroupBox();
             };
             bankChoice.SelectionChanged += (sender, args) =>
             {
@@ -385,6 +391,18 @@ namespace VDrumExplorer.Wpf
                 userSampleTextBox.Visibility = preset ? Visibility.Collapsed : Visibility.Visible;
                 groupChoice.Visibility = preset ? Visibility.Visible : Visibility.Collapsed;
                 instrumentChoice.Visibility = preset ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            void UpdateVeditGroupBox()
+            {
+                var veditAddress = context.Address + field.VeditOffset;
+                foreach (var groupBox in detailsPanel.Children.OfType<GroupBox>())
+                {
+                    if (groupBox.Tag is VisualTreeDetail detail && detail.Container?.Address.Value == veditAddress.Value)
+                    {
+                        groupBox.Content = FormatContainer(detail.Container);
+                    }
+                }
             }
         }
 

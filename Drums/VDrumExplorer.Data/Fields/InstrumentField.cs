@@ -15,8 +15,13 @@ namespace VDrumExplorer.Data.Fields
         /// </summary>
         private readonly int bankOffset;
 
-        internal InstrumentField(Parameters common, int bankOffset) : base(common) =>
-            this.bankOffset = bankOffset;
+        /// <summary>
+        /// The offset of the vedit container relative to the parent container.
+        /// </summary>
+        public int VeditOffset { get; }
+
+        internal InstrumentField(Parameters common, int bankOffset, int veditOffset) : base(common) =>
+            (this.bankOffset, VeditOffset) = (bankOffset, veditOffset);
 
         public override string GetText(FixedContainer context, ModuleData data)
         {
@@ -65,8 +70,25 @@ namespace VDrumExplorer.Data.Fields
                 (byte) ((instrument.Id >> 4) & 0xf),
                 (byte) ((instrument.Id >> 0) & 0xf)
             };
+            // Set everything to do with the instrument itself in one set operation.
             byte[] bankBytes = new[] { instrument.Group != null ? (byte) 0 : (byte) 1 };
             data.SetMultipleData((instrumentAddress, idBytes), (bankAddress, bankBytes));
+
+            // Then set any appropriate vedit information separately.
+            // (We may want to do this all in one go, but it doesn't matter too much.)
+            if (instrument.DefaultFieldValues != null)
+            {
+                var veditAddress = context.Address + VeditOffset;
+                var veditContainer = Schema.LoadableContainersByAddress[veditAddress];
+                var veditContext = new FixedContainer(veditContainer, veditAddress);
+                foreach (var field in veditContext.GetChildren(data).OfType<NumericField>())
+                {
+                    if (instrument.DefaultFieldValues.TryGetValue(field.Name, out int value))
+                    {
+                        field.SetRawValue(veditContext, data, value);
+                    }
+                }
+            }
         }
 
         public override void Reset(FixedContainer context, ModuleData data) => SetInstrument(context, data, Schema.PresetInstruments.First());

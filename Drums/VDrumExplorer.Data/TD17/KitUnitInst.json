@@ -5,7 +5,8 @@
       "offset": "0x00",
       "description": "Instrument",
       "type": "instrument",
-      "bankOffset": "0x08"
+      "bankOffset": "0x08",
+      "veditOffset": "0xC000"
     },
     {
       "offset": "0x04",
