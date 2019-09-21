@@ -207,7 +207,6 @@ namespace VDrumExplorer.Wpf
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             // Find the real context based on the container.
-            var container = detail.Container.FinalField;
             context = detail.FixContainer(context);
 
             var fields = context.GetPrimitiveFields(Data)
@@ -506,7 +505,6 @@ namespace VDrumExplorer.Wpf
                 {
                     var detail = (VisualTreeDetail) groupBox.Tag;
 
-                    var container = detail.Container.FinalField;
                     var detailContext = detail.FixContainer(context);
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
@@ -527,7 +525,7 @@ namespace VDrumExplorer.Wpf
                         {
                             currentContainer.Reset(detailContext, Data);
                         }
-                        groupBox.Content = FormatContainer(context, detail);                        
+                        groupBox.Content = FormatContainer(context, detail);
                     }
                 }
             }
