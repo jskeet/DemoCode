@@ -267,14 +267,15 @@ namespace VDrumExplorer.Data.Json
                 // Offsets within each container are relative to the parent container of this field,
                 // not relative to this field itself.
                 var overlay = ValidateNotNull(DynamicOverlay, nameof(DynamicOverlay));
-                var switchOffset = ValidateNotNull(overlay.SwitchOffset, nameof(overlay.SwitchOffset)).Value;
+                var switchContainerOffset = ValidateNotNull(overlay.SwitchContainerOffset, nameof(overlay.SwitchContainerOffset)).Value;
+                var switchField = ValidateNotNull(overlay.SwitchField, nameof(overlay.SwitchField));
                 var containers = ValidateNotNull(overlay.Containers, nameof(overlay.Containers))
                     .Select((json, index) => json.ToContainer(schema, module, Invariant($"Overlay[{index}]"), 0, description, condition: null))
                     .ToList()
                     .AsReadOnly();
                 var size = ValidateNotNull(overlay.Size, nameof(overlay.Size));
                 var common = new FieldBase.Parameters(schema, name, offset, size.Value, description, condition: null);
-                return new DynamicOverlay(common, switchOffset, overlay.SwitchTransform, containers);
+                return new DynamicOverlay(common, switchContainerOffset, switchField, containers);
             }
 
             Container BuildContainer()

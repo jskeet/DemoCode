@@ -54,7 +54,8 @@
       "type": "dynamicOverlay",
       "dynamicOverlay": {
         "size": "0x01_00",
-        "switchOffset": "0x00",
+        "switchContainerOffset": "0x00",
+        "switchField": "Type",
         "containers": [
           "$resource:MultiFx/Delay.json",
           "$resource:MultiFx/TapeEcho.json",

@@ -192,7 +192,7 @@ namespace VDrumExplorer.Wpf
                 {
                     var container = detail.Container.FinalField;
                     var detailContext = detail.FixContainer(context);
-                    var segmentStart = Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
+                    var segmentStart = Data.GetSegment(detailContext.Address + overlay.SwitchContainerOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
             }

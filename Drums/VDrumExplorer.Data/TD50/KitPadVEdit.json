@@ -8,8 +8,8 @@
       "dynamicOverlay": {
         "size": "0x21",
         "comment": "This is an offset into a different container, to get at the instrument and then its group",
-        "switchOffset": "-0xC000",
-        "switchTransform": "instrumentGroup",
+        "switchContainerOffset": "-0xC000",
+        "switchField": "Instrument",
         "containers": [
           "$resource:VEdit/Off.json",
           "$resource:VEdit/KickA.json",
