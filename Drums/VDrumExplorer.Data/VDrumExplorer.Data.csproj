@@ -4,9 +4,6 @@
     <!-- FIXME: We should be able to use netstandard2.1... -->
     <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
     <LangVersion>preview</LangVersion>
-    <!-- Nullable option for VS... (FIXME: Remove!) -->
-    <NullableContextOptions>enable</NullableContextOptions>
-    <!-- And for the command line... --> 
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
