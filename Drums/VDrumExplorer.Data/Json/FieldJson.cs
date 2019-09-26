@@ -253,7 +253,7 @@ namespace VDrumExplorer.Data.Json
                     ValidateNotNull(BankOffset, nameof(BankOffset)).Value,
                     ValidateNotNull(VeditOffset, nameof(VeditOffset)).Value),
                 "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0, 0),
-                "volume32" => new NumericField(BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "INF")),
+                "volume32" => new NumericField(BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "-INF")),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
                 "midi32" => new MidiNoteField(BuildCommon(4)),
