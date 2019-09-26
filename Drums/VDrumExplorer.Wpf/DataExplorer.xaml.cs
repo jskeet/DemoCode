@@ -25,6 +25,9 @@ namespace VDrumExplorer.Wpf
     /// </summary>
     public partial class DataExplorer : Window
     {
+        // Not const just to avoid unreadable code warnings.
+        private static readonly bool UseSliders = true;
+
         protected ModuleData Data { get; }
         protected ModuleSchema Schema { get; }
         internal ILogger Logger { get; }
@@ -410,10 +413,47 @@ namespace VDrumExplorer.Wpf
         private static readonly Brush errorBrush = new SolidColorBrush(Colors.Red);
         private FrameworkElement CreateNumericFieldElement(FixedContainer context, NumericField field)
         {
-            var textBox = new TextBox { Text = field.GetText(context, Data), Padding = new Thickness(0) };
-            textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
-            return textBox;
+            if (UseSliders)
+            {
+                var slider = new Slider
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(2, 1, 0, 0),
+                    Minimum = field.Min,
+                    Maximum = field.Max,
+                    Value = field.GetRawValue(context, Data),
+                    SmallChange = 1,
+                    LargeChange = Math.Max((field.Max - field.Min) / 10, 1),
+                    Width = 150                    
+                };
+                
+                var label = new Label
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(2, 1, 0, 0),
+                    Content = field.GetText(context, Data),
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
+
+                slider.ValueChanged += (sender, args) =>
+                {
+                    field.SetRawValue(context, Data, (int) args.NewValue);
+                    label.Content = field.GetText(context, Data);
+                };
+
+                return new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Children = { slider, label }
+                };
+            }
+            else
+            {
+                var textBox = new TextBox { Text = field.GetText(context, Data), Padding = new Thickness(0) };
+                textBox.TextChanged += (sender, args) =>
+                    textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                return textBox;
+            }
         }
 
         private Grid FormatDescriptions(FixedContainer context, VisualTreeDetail detail)

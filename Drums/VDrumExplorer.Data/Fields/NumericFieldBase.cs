@@ -37,7 +37,7 @@ namespace VDrumExplorer.Data.Fields
             };
         }
 
-        internal int GetRawValue(FixedContainer context, ModuleData data)
+        public int GetRawValue(FixedContainer context, ModuleData data)
         {
             var value = GetRawValueUnvalidated(context, data);
             if (value < Min || value > Max)
@@ -47,7 +47,7 @@ namespace VDrumExplorer.Data.Fields
             return value;
         }
 
-        internal void SetRawValue(FixedContainer context, ModuleData data, int newValue)
+        public void SetRawValue(FixedContainer context, ModuleData data, int newValue)
         {
             if (newValue < Min || newValue > Max)
             {
