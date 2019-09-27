@@ -25,10 +25,13 @@ how you get on with this.
 There's currently no Windows installer. I may produce one if I get a chance.
 
 - Download a zip file from one of the [releases](https://github.com/jskeet/DemoCode/releases) on GitHub.
-  Separate zip files are available for the .NET desktop framework and .NET Core.
+  You'll need to expand the "Assets" part of the given release. Separate zip files are available for the .NET desktop framework and .NET Core.
   If you aren't sure, you probably want the "desktop" version.
 - Unzip the zip file anywhere on your machine
+- Go into the directory created for you
 - Run VDrumExplorer.Wpf.exe
+- If Windows SmartScreen gives a warning, click on "More Info", check that it is signed
+  by me ("Jonathan Skeet") and then choose the option to run it.
 
 **Important note for drum kit connection**
 
