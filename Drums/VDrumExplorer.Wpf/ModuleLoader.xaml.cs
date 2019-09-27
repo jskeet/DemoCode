@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using VDrumExplorer.Data;
@@ -26,11 +27,25 @@ namespace VDrumExplorer.Wpf
         {
             InitializeComponent();
             logger = new TextBlockLogger(logPanel);
+            LogVersion();
             Loaded += OnLoaded;
             Loaded += LoadSchemaRegistry;
             Closed += OnClosed;
             // We can't attach this event handler in XAML, as only instance members of the current class are allowed.
             loadKitFromDeviceKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
+        }
+
+        private void LogVersion()
+        {
+            var version = typeof(ModuleLoader).Assembly.GetCustomAttributes().OfType<AssemblyInformationalVersionAttribute>().FirstOrDefault();
+            if (version != null)
+            {
+                logger.Log($"V-Drum Explorer version {version.InformationalVersion}");
+            }            
+            else
+            {
+                logger.Log($"Version attribute not found.");
+            }
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -167,7 +182,7 @@ namespace VDrumExplorer.Wpf
                     new KitExplorer(logger, kit, client, dialog.FileName).Show();
                     break;
                 }
-                case Module module:
+                case Data.Module module:
                 {
                     Validate(module.Validate);
                     var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
@@ -208,7 +223,7 @@ namespace VDrumExplorer.Wpf
                 var result = dialog.ShowDialog();
                 if (result == true)
                 {
-                    new ModuleExplorer(logger, new Module(schema, dialog.Data), midi.client, fileName: null).Show();
+                    new ModuleExplorer(logger, new Data.Module(schema, dialog.Data), midi.client, fileName: null).Show();
                 }
             }
             finally
