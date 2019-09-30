@@ -5,7 +5,9 @@
     <TargetFrameworks>netcoreapp3.0;net472</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <LangVersion>preview</LangVersion>
-    <Version>1.0.0-alpha01</Version>
+    <Version>1.0.0-alpha02</Version>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
