@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="cmp2B62C064A3ED6A94B47BE64C5EB82D9E" Guid="{78A212A7-774F-4E86-A8CD-C52F1F506CF1}">
+                <File Id="fil627F933A2694B1BED9FD06B5FDD52C93" KeyPath="yes" Source="$(var.BasePath)\Google.Protobuf.dll" />
+            </Component>
+            <Component Id="cmp209D34F85FB6AC988EEFC2B207C52AD2" Guid="{0FE0542B-0C47-4BA9-818B-F17718B1870F}">
+                <File Id="filAC16A79A5A968897E8EFE611954F5159" KeyPath="yes" Source="$(var.BasePath)\MiscUtil.dll" />
+            </Component>
+            <Component Id="cmpBC4FC00A26E7D32479D42D3411317FC5" Guid="{A8C03656-331B-4F5F-B6C0-2C8B68A0F848}">
+                <File Id="fil90A8AAD9FC612906D405476D61CEA3F4" KeyPath="yes" Source="$(var.BasePath)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="cmpCFA1EE8745B9FAAD14B01CEA9CAD8607" Guid="{DF21D377-2F1B-4E48-80C7-18D9C3ADCC46}">
+                <File Id="filCEEF4564F3A596A8E31FD34D1291AAF0" KeyPath="yes" Source="$(var.BasePath)\Sanford.Multimedia.Midi.dll" />
+            </Component>
+            <Component Id="cmp95FF04D6E75040DECAFDBE3D800F2473" Guid="{70CA52E4-5B64-4C3A-9BDC-457CAA7ADED0}">
+                <File Id="filA566252FDC0A51A08FEF8009582A8636" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Data.dll" />
+            </Component>
+            <Component Id="cmpF31B38BE7D028D65BC2DDC5824D79AA9" Guid="{EE7D96DC-5DDE-45F0-9913-0073873D9800}">
+                <File Id="fil234D9507136A7DF0DBB0B8F013013E96" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Data.pdb" />
+            </Component>
+            <Component Id="cmpEB4D625AA854E52F0FA00F9E32944CE7" Guid="{DBD06A91-2312-483A-B4EA-15E856618AF6}">
+                <File Id="fil065452E6CE830D9997509BB23151F0B9" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Midi.dll" />
+            </Component>
+            <Component Id="cmp207603EA02A41C2C218B0A4E708EEC0D" Guid="{E4B5199A-C4B4-4E36-A444-5CA09D4807F4}">
+                <File Id="fil636C74BDDE1675C6529BD52C8AF8D915" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Midi.pdb" />
+            </Component>
+            <Component Id="cmp2070FABEA63767AF5CFA69DB4CBE3270" Guid="{45DCBCBF-5138-4E49-B9D0-A73EBF239352}">
+                <File Id="fil19E91419AEC996E504BB015BDB46A45D" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Wpf.exe" />
+            </Component>
+            <Component Id="cmp251AFF72F263ABDD81F6FC28B1F55DDF" Guid="{78CF24A4-2878-43FE-91AA-2C2E8D61A7D0}">
+                <File Id="filC1CDAA6DD9A00B008EF44952A3E8A9F2" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Wpf.exe.config" />
+            </Component>
+            <Component Id="cmp61AF1959BFCA688BB762FD535DBDCAF3" Guid="{64AE1D71-5448-414E-9A29-99DFF6EA9912}">
+                <File Id="fil57B04229EBC90396BB48162AE57C4D59" KeyPath="yes" Source="$(var.BasePath)\VDrumExplorer.Wpf.pdb" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="PublishedComponents">
+            <ComponentRef Id="cmp2B62C064A3ED6A94B47BE64C5EB82D9E" />
+            <ComponentRef Id="cmp209D34F85FB6AC988EEFC2B207C52AD2" />
+            <ComponentRef Id="cmpBC4FC00A26E7D32479D42D3411317FC5" />
+            <ComponentRef Id="cmpCFA1EE8745B9FAAD14B01CEA9CAD8607" />
+            <ComponentRef Id="cmp95FF04D6E75040DECAFDBE3D800F2473" />
+            <ComponentRef Id="cmpF31B38BE7D028D65BC2DDC5824D79AA9" />
+            <ComponentRef Id="cmpEB4D625AA854E52F0FA00F9E32944CE7" />
+            <ComponentRef Id="cmp207603EA02A41C2C218B0A4E708EEC0D" />
+            <ComponentRef Id="cmp2070FABEA63767AF5CFA69DB4CBE3270" />
+            <ComponentRef Id="cmp251AFF72F263ABDD81F6FC28B1F55DDF" />
+            <ComponentRef Id="cmp61AF1959BFCA688BB762FD535DBDCAF3" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>
