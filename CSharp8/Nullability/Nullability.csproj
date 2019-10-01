@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>    
     <LangVersion>preview</LangVersion>
     <OutputType>Exe</OutputType>
-    <NullableContextOptions>enable</NullableContextOptions>
     <Nullable>enable</Nullable>
     <StartupObject>Nullability.Program</StartupObject>
   </PropertyGroup>
