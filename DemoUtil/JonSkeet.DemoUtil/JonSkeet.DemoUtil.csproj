@@ -9,10 +9,10 @@
     <Product />
     <Description>Utilities that are useful when demonstrating code.
 (e.g. for books, articles, conferences)</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jskeet/democode</PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
+    <RepositoryUrl>https://github.com/jskeet/democode</RepositoryUrl>
     <PackageTags>demo utility</PackageTags>
-    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <Copyright>Jon Skeet</Copyright>
   </PropertyGroup>
 
