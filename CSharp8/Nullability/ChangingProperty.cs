@@ -14,7 +14,7 @@ namespace Nullability
 
         public void PrintNameLength()
         {
-            if (Name != null)
+            if (Name is object)
             {
                 Console.WriteLine(Name.Length);
             }

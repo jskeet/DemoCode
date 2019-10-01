@@ -15,8 +15,6 @@ namespace Nullability
             // This is less so. The NotNull attribute implies that the
             // method will be validating the input, so the method
             // won't return if the value is null.
-            // It's possible this isn't actually intentional/desirable.
-            // See https://github.com/dotnet/roslyn/issues/37544
             Console.WriteLine(text.Length);
         }
 
