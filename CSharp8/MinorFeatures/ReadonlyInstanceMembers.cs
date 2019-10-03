@@ -65,7 +65,7 @@ namespace MinorFeatures
 
             // ldarg.0
             // ldflda valuetype MinorFeatures.Struct2 MinorFeatures.ReadonlyInstanceMembers::field2
-            // call instance int32 MinorFeatures.Struct2::get_Value()
+            // call instance int32 MinorFeatures.Struct2::get_Value2()
             tmp = field2.Value2;
 
             // ldarg.0
