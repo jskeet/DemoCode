@@ -13,3 +13,7 @@ library is licensed under the MIT License. See
 The [Google.Protobuf](https://github.com/protocolbuffers/protobuf)
 library is licensed under the BSD 2.0 license. See
 [LICENSE.Protobuf.txt](LICENSE.Protobuf.txt) for details.
+
+The [NAudio]
+library is licensed under the Microsoft Public License (Ms-PL).
+See [LICENSE.NAudio.txt](LICENSE.NAudio.txt) for details.
