@@ -38,6 +38,11 @@ namespace VDrumExplorer.Data.Layout
         /// </summary>
         public int? KitNumber { get; }
 
+        /// <summary>
+        /// The instrument number for which this is the root node within this kit, if any.
+        /// </summary>
+        public int? InstrumentNumber { get; }
+
         internal VisualTreeNode(
             VisualTreeNode? parent,
             FixedContainer context,
@@ -46,9 +51,10 @@ namespace VDrumExplorer.Data.Layout
             FormattableDescription description,
             FormattableDescription? kitOnlyDescription,
             FieldChain<MidiNoteField>? midiNoteField,
-            int? kitNumber) =>
-            (Parent, Context, Children, Details, Description, KitOnlyDescription, MidiNoteField, KitNumber) =
-            (parent, context, childrenProvider(this), details, description, kitOnlyDescription, midiNoteField, kitNumber);
+            int? kitNumber,
+            int? instrumentNumber) =>
+            (Parent, Context, Children, Details, Description, KitOnlyDescription, MidiNoteField, KitNumber, InstrumentNumber) =
+            (parent, context, childrenProvider(this), details, description, kitOnlyDescription, midiNoteField, kitNumber, instrumentNumber);
 
         internal static VisualTreeNode FromFixedContainer(VisualTreeNode? parent, FixedContainer context)
         {
@@ -56,7 +62,7 @@ namespace VDrumExplorer.Data.Layout
             Func<VisualTreeNode?, IReadOnlyList<VisualTreeNode>> childrenProvider = newNode =>
                 container.Fields.OfType<Container>().Select(c => FromFixedContainer(newNode, new FixedContainer(c, context.Address + c.Offset))).ToList().AsReadOnly();
             var details = new List<VisualTreeDetail> { new VisualTreeDetail(container.Description, context) }.AsReadOnly();
-            return new VisualTreeNode(parent, context, childrenProvider, details, new FormattableDescription(container.Description, null), null, null, null);
+            return new VisualTreeNode(parent, context, childrenProvider, details, new FormattableDescription(container.Description, null), null, null, null, null);
         }
 
         public IEnumerable<VisualTreeNode> DescendantNodesAndSelf()
