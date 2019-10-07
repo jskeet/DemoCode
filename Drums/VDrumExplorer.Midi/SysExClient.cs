@@ -34,11 +34,29 @@ namespace VDrumExplorer.Midi
 
         public void PlayNote(int channel, int note, int velocity)
         {
-            var builder = new ChannelMessageBuilder { MidiChannel = channel - 1, Data1 = note, Data2 = velocity, Command = ChannelCommand.NoteOn };
+            var builder = new ChannelMessageBuilder
+            { 
+                MidiChannel = channel - 1,
+                Data1 = note,
+                Data2 = velocity,
+                Command = ChannelCommand.NoteOn
+            };
             builder.Build();
             output.Send(builder.Result);
             builder.Command = ChannelCommand.NoteOff;
             builder.Data2 = 0x64;
+            builder.Build();
+            output.Send(builder.Result);
+        }
+
+        public void Silence(int channel)
+        {
+            var builder = new ChannelMessageBuilder
+            { 
+                MidiChannel = channel - 1,
+                Command = ChannelCommand.Controller,
+                Data1 = (int) ControllerType.AllSoundOff
+            };
             builder.Build();
             output.Send(builder.Result);
         }
