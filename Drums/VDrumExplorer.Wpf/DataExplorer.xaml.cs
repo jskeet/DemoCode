@@ -52,8 +52,8 @@ namespace VDrumExplorer.Wpf
         {
             InitializeComponent();
             // We can't attach these event handlers in XAML, as only instance members of the current class are allowed.
-            copyToDeviceKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
-            defaultKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
+            copyToDeviceKitNumber.PreviewTextInput += TextConversions.CheckDigits;
+            defaultKitNumber.PreviewTextInput += TextConversions.CheckDigits;
         }
 
         internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient, string fileName,
@@ -320,13 +320,13 @@ namespace VDrumExplorer.Wpf
             var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
             var groupChoice = new ComboBox { ItemsSource = Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
-            var userSampleTextBox = new TextBox { Width = 50, Text = selected.Id.ToString(CultureInfo.InvariantCulture), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
+            var userSampleTextBox = new TextBox { Width = 50, Text = TextConversions.Format(selected.Id), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
 
             SetVisibility(selected.Group != null);
 
             userSampleTextBox.SelectionChanged += (sender, args) =>
             {
-                bool valid = int.TryParse(userSampleTextBox.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int sample)
+                bool valid = TextConversions.TryParseInt32(userSampleTextBox.Text, out int sample)
                     && sample >= 1 && sample <= Schema.UserSampleInstruments.Count;
                 if (valid)
                 {
