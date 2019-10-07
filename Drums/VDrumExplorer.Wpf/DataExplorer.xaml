@@ -53,6 +53,7 @@
             </ComboBox>
             <Label Margin="5" Padding="5,2">Attack:</Label>
             <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider"/>
+            <Label Margin="5" Padding="0,2" HorizontalAlignment="Left" Content="{Binding ElementName=attackSlider, Path=Value}"/>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <Grid>
@@ -64,7 +65,7 @@
             <TreeView x:Name="treeView" Grid.Column="0" SelectedItemChanged="HandleTreeViewSelection" BorderThickness="0" />
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
-                <StackPanel Margin="5,0,5,0" x:Name="detailsPanel" Grid.Column="2" />
+                <StackPanel Margin="5,0,5,0" x:Name="detailsPanel" />
             </ScrollViewer>
         </Grid>
     </DockPanel>
