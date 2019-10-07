@@ -15,7 +15,7 @@ namespace VDrumExplorer.Wpf
     public class ModuleExplorer : DataExplorer
     {
         private readonly Module module;
-        private const string SaveFileFilter = "VDrum Explorer module files|*.vdrum";
+        private const string SaveFileFilter = "V-Drum Explorer module files|*.vdrum";
 
         internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient, string fileName)
             : base(logger, module.Schema, module.Data, module.Schema.LogicalRoot, midiClient, fileName, SaveFileFilter, "Module explorer")

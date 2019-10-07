@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="VDrum Module Loader" Height="450" Width="800">
+        Title="V-Drum Module Loader" Height="450" Width="800">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Click="LoadFile" Margin="5" Padding="5,2">Load file</Button>
