@@ -19,6 +19,9 @@ namespace VDrumExplorer.Data.Proto
         internal static void Write(Stream stream, Data.Kit kit) =>
             Write(stream, new DrumFile { Kit = Kit.FromModel(kit) });
 
+        internal static void Write(Stream stream, Audio.ModuleAudio audio) =>
+            Write(stream, new DrumFile { ModuleAudio = ModuleAudio.FromModel(audio) });
+
         internal static void Write(Stream stream, DrumFile drumFile)
         {
             stream.Write(MagicBytes, 0, MagicBytes.Length);
@@ -37,6 +40,7 @@ namespace VDrumExplorer.Data.Proto
             {
                 DrumFile.FileOneofCase.Kit => (object) file.Kit.ToModel(),
                 DrumFile.FileOneofCase.Module => file.Module.ToModel(),
+                DrumFile.FileOneofCase.ModuleAudio => file.ModuleAudio.ToModel(),
                 _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
             };
         }
