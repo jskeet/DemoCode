@@ -10,8 +10,7 @@ fi
 
 # Build executables
 dotnet build -c Release -v quiet VDrumExplorer.Wpf
-# Sign executables in-place
-signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer.Wpf/bin/Release/netcoreapp3.0/VDrumExplorer.Wpf.exe
+# Sign executable in-place
 signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer.Wpf/bin/Release/net472/VDrumExplorer.Wpf.exe
 
 version=$(grep \<Version\> VDrumExplorer.Wpf/VDrumExplorer.Wpf.csproj | sed s/\<[^\>]*\>//g | sed 's/ //g')
@@ -20,14 +19,7 @@ rm -rf tmp
 mkdir tmp
 cd tmp
 
-# .NET Core
-release_dir=VDrumExplorer-DotNetCore-$version
-mkdir $release_dir
-cp ../VDrumExplorer.Wpf/bin/Release/netcoreapp3.0/* $release_dir
-cp ../td17.vdrum $release_dir
-cp ../LICENSE* $release_dir
-cp ../README.md $release_dir
-zip -rq VDrumExplorer-DotNetCore-$version.zip $release_dir
+# .NET Core build has been removed due to NAudio requirements
 
 # Desktop
 release_dir=VDrumExplorer-Desktop-$version
