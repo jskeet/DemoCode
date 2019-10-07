@@ -74,6 +74,7 @@
           ],
           "children": [
             {
+              "instrumentIndex": "instrument",
               "repeat": "$instruments",
               "index": "instrument",
               "formatPaths": [
