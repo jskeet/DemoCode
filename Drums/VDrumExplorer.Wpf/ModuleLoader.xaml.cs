@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using VDrumExplorer.Data;
+using VDrumExplorer.Data.Audio;
 using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Wpf
@@ -154,7 +155,7 @@ namespace VDrumExplorer.Wpf
 
         private void LoadFile(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "All explorer files|*.vdrum;*.vkit|Module files|*.vdrum|Kit files|*.vkit" };
+            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "All explorer files|*.vdrum;*.vkit;*.vaudio|Module files|*.vdrum|Kit files|*.vkit|Module audio files|*.vaudio" };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -187,6 +188,11 @@ namespace VDrumExplorer.Wpf
                     Validate(module.Validate);
                     var client = detectedMidi?.schema == module.Schema ? detectedMidi?.client : null;
                     new ModuleExplorer(logger, module, client, dialog.FileName).Show();
+                    break;
+                }
+                case ModuleAudio audio:
+                {
+                    new InstrumentAudioExplorer(logger, audio).Show();
                     break;
                 }
                 default:
@@ -265,6 +271,13 @@ namespace VDrumExplorer.Wpf
             {
                 midiPanel.IsEnabled = true;
             }
+        }
+
+        private void RecordInstrumentsFromDevice(object sender, RoutedEventArgs e)
+        {
+            var schema = detectedMidi.Value.schema;
+            var client = detectedMidi.Value.client;
+            new SoundRecorderDialog(logger, schema, client).ShowDialog();
         }
 
         private void SaveLog(object sender, RoutedEventArgs e)
