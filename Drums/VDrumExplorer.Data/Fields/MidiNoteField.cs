@@ -16,6 +16,6 @@ namespace VDrumExplorer.Data.Fields
         {
             var note = GetRawValue(context, data);
             return note == 128 ? default(int?) : note;
-        }            
+        }
     }
 }
