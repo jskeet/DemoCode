@@ -22,13 +22,13 @@ cd tmp
 # .NET Core build has been removed due to NAudio requirements
 
 # Desktop
-release_dir=VDrumExplorer-Desktop-$version
+release_dir=VDrumExplorer-$version
 mkdir $release_dir
 cp ../VDrumExplorer.Wpf/bin/Release/net472/* $release_dir
 cp ../td17.vdrum $release_dir
 cp ../LICENSE* $release_dir
 cp ../README.md $release_dir
-zip -rq VDrumExplorer-Desktop-$version.zip $release_dir
+zip -rq VDrumExplorer-$version.zip $release_dir
 
 # Setup
 msbuild.exe -property:Configuration=Release -verbosity:quiet ../VDrumExplorer.Setup

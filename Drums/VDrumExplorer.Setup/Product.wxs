@@ -55,6 +55,7 @@
     <!-- Shortcut installation. -->
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <ComponentRef Id="MainAppShortcut"/>
+      <ComponentRef Id="SampleModule"/>
       <ComponentGroupRef Id="PublishedComponents"/>
 		</ComponentGroup>
 
@@ -78,6 +79,12 @@
         <RemoveFolder Id="RemoveStartMenu" Directory="InstallProgramMenuFolder" On="uninstall" />
       </Component>
     </DirectoryRef>
-    
+
+    <!-- It's not great putting the sample file in Program Files, but it's simpler than alternatives. -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="SampleModule" Guid="{B9E4023F-09E0-4C85-8946-EB325ABC78EB}">
+        <File Id="SampleModule" KeyPath="yes" Source="..\td17.vdrum" />
+      </Component>
+    </DirectoryRef>
   </Fragment>
 </Wix>
