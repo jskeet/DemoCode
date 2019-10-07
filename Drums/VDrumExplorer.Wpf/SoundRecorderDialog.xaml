@@ -1,0 +1,103 @@
+﻿<Window x:Class="VDrumExplorer.Wpf.SoundRecorderDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VDrumExplorer.Wpf"
+        mc:Ignorable="d"
+        Title="Record Instruments From Device" SizeToContent="WidthAndHeight"
+        Closing="HandleClosing">
+    <DockPanel VerticalAlignment="Top">
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <!-- Recording duration -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="0">Time to record each instrument:</Label>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                <TextBox Margin="5" Width="30" HorizontalAlignment="Left" x:Name="recordingTime">2.5</TextBox>
+                <Label Margin="0,5" Padding="0,2" HorizontalAlignment="Left">(seconds)</Label>
+            </StackPanel>
+            <!-- User samples -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="1">User samples to record:</Label>
+            <TextBox Margin="5" Width="30" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" x:Name="userSamples">0</TextBox>
+
+            <!-- Device selection -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="2">Input Device:</Label>
+            <ComboBox Margin="5" Grid.Column="1" Grid.Row="2" x:Name="inputDevice" SelectionChanged="InputDeviceChanged" HorizontalAlignment="Left" />
+
+            <!-- Kit selection -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="3">Kit to use:</Label>
+            <TextBox Margin="5" Width="30" Grid.Column="1" Grid.Row="3" x:Name="kitNumber" TextChanged="KitNumberChanged" HorizontalAlignment="Left"></TextBox>
+                
+            <!-- Midi channel -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="4">Midi Channel:</Label>
+            <ComboBox Margin="5" Padding="5,2" x:Name="midiChannelSelector" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left">
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem>3</ComboBoxItem>
+                <ComboBoxItem>4</ComboBoxItem>
+                <ComboBoxItem>5</ComboBoxItem>
+                <ComboBoxItem>6</ComboBoxItem>
+                <ComboBoxItem>7</ComboBoxItem>
+                <ComboBoxItem>8</ComboBoxItem>
+                <ComboBoxItem>9</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">10</ComboBoxItem>
+                <ComboBoxItem>11</ComboBoxItem>
+                <ComboBoxItem>12</ComboBoxItem>
+                <ComboBoxItem>13</ComboBoxItem>
+                <ComboBoxItem>14</ComboBoxItem>
+                <ComboBoxItem>15</ComboBoxItem>
+                <ComboBoxItem>16</ComboBoxItem>
+            </ComboBox>
+
+            <!-- Attack -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="5">Attack:</Label>
+            <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Horizontal">
+                <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100" x:Name="attackSlider" IsSnapToTickEnabled="True" TickFrequency="1" />
+                <Label Margin="5" Padding="0,2" HorizontalAlignment="Left" Content="{Binding ElementName=attackSlider, Path=Value}"/>
+            </StackPanel>
+
+            <!-- Output file -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="6">Output File:</Label>
+            <Label Margin="5" Padding="0,2" Grid.Column="1" Grid.Row="6" x:Name="fileLabel" HorizontalAlignment="Left">(Not set)</Label>
+            <Button Padding="5,2" Margin="5" Grid.Column="2" Grid.Row="6" Click="SelectFile" HorizontalAlignment="Left">Select file</Button>
+
+            <!-- Start! -->
+            <Button Padding="5,2" Margin="5" Grid.Column="0" Grid.Row="7" HorizontalAlignment="Left" Click="StartRecording" x:Name="recordButton" IsEnabled="False">Start recording</Button>
+        </Grid>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+        </StackPanel>
+        <Separator DockPanel.Dock="Top" />
+        <StackPanel DockPanel.Dock="Top">
+            <Label Margin="5,8,5,0" Padding="0" x:Name="progressLabel">Progress</Label>
+            <Grid Margin="5,8,5,8" Height="23">
+                <ProgressBar x:Name="progress" />
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{} {0} / {1}">
+                            <Binding ElementName="progress" Path="Value" />
+                            <Binding ElementName="progress" Path="Maximum" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+        </StackPanel>
+        <StackPanel Height="auto">
+            <Button Padding="5,2" Margin="5,8,5,8" Click="Cancel" HorizontalAlignment="Left">Cancel</Button>
+        </StackPanel>
+    </DockPanel>
+</Window>
