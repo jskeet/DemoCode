@@ -32,7 +32,7 @@ namespace VDrumExplorer.Wpf
             Loaded += LoadSchemaRegistry;
             Closed += OnClosed;
             // We can't attach this event handler in XAML, as only instance members of the current class are allowed.
-            loadKitFromDeviceKitNumber.PreviewTextInput += KitInputValidation.CheckDigits;
+            loadKitFromDeviceKitNumber.PreviewTextInput += TextConversions.CheckDigits;
         }
 
         private void LogVersion()
@@ -242,7 +242,7 @@ namespace VDrumExplorer.Wpf
             var midi = detectedMidi.Value;
             var schema = midi.schema;
 
-            if (!KitInputValidation.TryGetKitRoot(loadKitFromDeviceKitNumber.Text, schema, logger, out var specifiedKitRoot))
+            if (!TextConversions.TryGetKitRoot(loadKitFromDeviceKitNumber.Text, schema, logger, out var specifiedKitRoot))
             {
                 return;
             }

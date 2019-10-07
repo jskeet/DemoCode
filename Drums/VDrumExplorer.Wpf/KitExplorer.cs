@@ -22,13 +22,13 @@ namespace VDrumExplorer.Wpf
             this.kit = kit;
             openKitButton.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy kit to device";
-            defaultKitNumber.Text = kit.DefaultKitNumber.ToString(CultureInfo.InvariantCulture);
+            defaultKitNumber.Text = TextConversions.Format(kit.DefaultKitNumber);
             copyToDeviceKitNumber.Text = defaultKitNumber.Text;
         }
 
         protected override void SaveToStream(Stream stream)
         {
-            if (!KitInputValidation.TryGetKitRoot(defaultKitNumber.Text, Schema, Logger, out var targetKitRoot))
+            if (!TextConversions.TryGetKitRoot(defaultKitNumber.Text, Schema, Logger, out var targetKitRoot))
             {
                 MessageBox.Show("The default kit number is invalid; please correct before saving.", "Invalid kit number");
                 return;
@@ -42,7 +42,7 @@ namespace VDrumExplorer.Wpf
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)
         {
-            if (!KitInputValidation.TryGetKitRoot(copyToDeviceKitNumber.Text, Schema, Logger, out var targetKitRoot))
+            if (!TextConversions.TryGetKitRoot(copyToDeviceKitNumber.Text, Schema, Logger, out var targetKitRoot))
             {
                 return;
             }
