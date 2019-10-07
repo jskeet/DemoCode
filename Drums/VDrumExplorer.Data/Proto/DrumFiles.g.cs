@@ -24,25 +24,37 @@ namespace VDrumExplorer.Data.Proto {
     static DrumFilesReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9EcnVtRmlsZXMucHJvdG8iQgoIRHJ1bUZpbGUSGQoGbW9kdWxlGAEgASgL",
-            "MgcuTW9kdWxlSAASEwoDa2l0GAIgASgLMgQuS2l0SABCBgoEZmlsZSJjChBN",
-            "b2R1bGVJZGVudGlmaWVyEgwKBG5hbWUYASABKAkSEAoIbW9kZWxfaWQYAiAB",
-            "KAUSEwoLZmFtaWx5X2NvZGUYAyABKAUSGgoSZmFtaWx5X251bWJlcl9jb2Rl",
-            "GAQgASgFIioKC0RhdGFTZWdtZW50Eg0KBXN0YXJ0GAEgASgFEgwKBGRhdGEY",
-            "AiABKAwiTwoGTW9kdWxlEiUKCmlkZW50aWZpZXIYASABKAsyES5Nb2R1bGVJ",
-            "ZGVudGlmaWVyEh4KCHNlZ21lbnRzGAIgAygLMgwuRGF0YVNlZ21lbnQiaAoD",
-            "S2l0EiUKCmlkZW50aWZpZXIYASABKAsyES5Nb2R1bGVJZGVudGlmaWVyEh4K",
-            "CHNlZ21lbnRzGAIgAygLMgwuRGF0YVNlZ21lbnQSGgoSZGVmYXVsdF9raXRf",
-            "bnVtYmVyGAMgASgFQhuqAhhWRHJ1bUV4cGxvcmVyLkRhdGEuUHJvdG9iBnBy",
-            "b3RvMw=="));
+            "Cg9EcnVtRmlsZXMucHJvdG8aHmdvb2dsZS9wcm90b2J1Zi9kdXJhdGlvbi5w",
+            "cm90byJoCghEcnVtRmlsZRIZCgZtb2R1bGUYASABKAsyBy5Nb2R1bGVIABIT",
+            "CgNraXQYAiABKAsyBC5LaXRIABIkCgxtb2R1bGVfYXVkaW8YAyABKAsyDC5N",
+            "b2R1bGVBdWRpb0gAQgYKBGZpbGUiYwoQTW9kdWxlSWRlbnRpZmllchIMCgRu",
+            "YW1lGAEgASgJEhAKCG1vZGVsX2lkGAIgASgFEhMKC2ZhbWlseV9jb2RlGAMg",
+            "ASgFEhoKEmZhbWlseV9udW1iZXJfY29kZRgEIAEoBSIqCgtEYXRhU2VnbWVu",
+            "dBINCgVzdGFydBgBIAEoBRIMCgRkYXRhGAIgASgMIk8KBk1vZHVsZRIlCgpp",
+            "ZGVudGlmaWVyGAEgASgLMhEuTW9kdWxlSWRlbnRpZmllchIeCghzZWdtZW50",
+            "cxgCIAMoCzIMLkRhdGFTZWdtZW50ImgKA0tpdBIlCgppZGVudGlmaWVyGAEg",
+            "ASgLMhEuTW9kdWxlSWRlbnRpZmllchIeCghzZWdtZW50cxgCIAMoCzIMLkRh",
+            "dGFTZWdtZW50EhoKEmRlZmF1bHRfa2l0X251bWJlchgDIAEoBSJACgtBdWRp",
+            "b0Zvcm1hdBIQCghjaGFubmVscxgBIAEoBRIMCgRiaXRzGAIgASgFEhEKCWZy",
+            "ZXF1ZW5jeRgDIAEoBSK9AQoLTW9kdWxlQXVkaW8SJQoKaWRlbnRpZmllchgB",
+            "IAEoCzIRLk1vZHVsZUlkZW50aWZpZXISHAoGZm9ybWF0GAIgASgLMgwuQXVk",
+            "aW9Gb3JtYXQSOgoXZHVyYXRpb25fcGVyX2luc3RydW1lbnQYAyABKAsyGS5n",
+            "b29nbGUucHJvdG9idWYuRHVyYXRpb24SLQoTaW5zdHJ1bWVudF9jYXB0dXJl",
+            "cxgEIAMoCzIQLkluc3RydW1lbnRBdWRpbyJMCg9JbnN0cnVtZW50QXVkaW8S",
+            "FQoNaW5zdHJ1bWVudF9pZBgBIAEoBRIOCgZwcmVzZXQYAiABKAgSEgoKYXVk",
+            "aW9fZGF0YRgDIAEoDEIbqgIYVkRydW1FeHBsb3Jlci5EYXRhLlByb3RvYgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.DrumFile), global::VDrumExplorer.Data.Proto.DrumFile.Parser, new[]{ "Module", "Kit" }, new[]{ "File" }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.DrumFile), global::VDrumExplorer.Data.Proto.DrumFile.Parser, new[]{ "Module", "Kit", "ModuleAudio" }, new[]{ "File" }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.ModuleIdentifier), global::VDrumExplorer.Data.Proto.ModuleIdentifier.Parser, new[]{ "Name", "ModelId", "FamilyCode", "FamilyNumberCode" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.DataSegment), global::VDrumExplorer.Data.Proto.DataSegment.Parser, new[]{ "Start", "Data" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.Module), global::VDrumExplorer.Data.Proto.Module.Parser, new[]{ "Identifier", "Segments" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.Kit), global::VDrumExplorer.Data.Proto.Kit.Parser, new[]{ "Identifier", "Segments", "DefaultKitNumber" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.Kit), global::VDrumExplorer.Data.Proto.Kit.Parser, new[]{ "Identifier", "Segments", "DefaultKitNumber" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.AudioFormat), global::VDrumExplorer.Data.Proto.AudioFormat.Parser, new[]{ "Channels", "Bits", "Frequency" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.ModuleAudio), global::VDrumExplorer.Data.Proto.ModuleAudio.Parser, new[]{ "Identifier", "Format", "DurationPerInstrument", "InstrumentCaptures" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::VDrumExplorer.Data.Proto.InstrumentAudio), global::VDrumExplorer.Data.Proto.InstrumentAudio.Parser, new[]{ "InstrumentId", "Preset", "AudioData" }, null, null, null)
           }));
     }
     #endregion
@@ -81,6 +93,9 @@ namespace VDrumExplorer.Data.Proto {
         case FileOneofCase.Kit:
           Kit = other.Kit.Clone();
           break;
+        case FileOneofCase.ModuleAudio:
+          ModuleAudio = other.ModuleAudio.Clone();
+          break;
       }
 
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -113,12 +128,24 @@ namespace VDrumExplorer.Data.Proto {
       }
     }
 
+    /// <summary>Field number for the "module_audio" field.</summary>
+    public const int ModuleAudioFieldNumber = 3;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::VDrumExplorer.Data.Proto.ModuleAudio ModuleAudio {
+      get { return fileCase_ == FileOneofCase.ModuleAudio ? (global::VDrumExplorer.Data.Proto.ModuleAudio) file_ : null; }
+      set {
+        file_ = value;
+        fileCase_ = value == null ? FileOneofCase.None : FileOneofCase.ModuleAudio;
+      }
+    }
+
     private object file_;
     /// <summary>Enum of possible cases for the "file" oneof.</summary>
     public enum FileOneofCase {
       None = 0,
       Module = 1,
       Kit = 2,
+      ModuleAudio = 3,
     }
     private FileOneofCase fileCase_ = FileOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -147,6 +174,7 @@ namespace VDrumExplorer.Data.Proto {
       }
       if (!object.Equals(Module, other.Module)) return false;
       if (!object.Equals(Kit, other.Kit)) return false;
+      if (!object.Equals(ModuleAudio, other.ModuleAudio)) return false;
       if (FileCase != other.FileCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -156,6 +184,7 @@ namespace VDrumExplorer.Data.Proto {
       int hash = 1;
       if (fileCase_ == FileOneofCase.Module) hash ^= Module.GetHashCode();
       if (fileCase_ == FileOneofCase.Kit) hash ^= Kit.GetHashCode();
+      if (fileCase_ == FileOneofCase.ModuleAudio) hash ^= ModuleAudio.GetHashCode();
       hash ^= (int) fileCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -178,6 +207,10 @@ namespace VDrumExplorer.Data.Proto {
         output.WriteRawTag(18);
         output.WriteMessage(Kit);
       }
+      if (fileCase_ == FileOneofCase.ModuleAudio) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ModuleAudio);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -191,6 +224,9 @@ namespace VDrumExplorer.Data.Proto {
       }
       if (fileCase_ == FileOneofCase.Kit) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Kit);
+      }
+      if (fileCase_ == FileOneofCase.ModuleAudio) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ModuleAudio);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -215,6 +251,12 @@ namespace VDrumExplorer.Data.Proto {
             Kit = new global::VDrumExplorer.Data.Proto.Kit();
           }
           Kit.MergeFrom(other.Kit);
+          break;
+        case FileOneofCase.ModuleAudio:
+          if (ModuleAudio == null) {
+            ModuleAudio = new global::VDrumExplorer.Data.Proto.ModuleAudio();
+          }
+          ModuleAudio.MergeFrom(other.ModuleAudio);
           break;
       }
 
@@ -245,6 +287,15 @@ namespace VDrumExplorer.Data.Proto {
             }
             input.ReadMessage(subBuilder);
             Kit = subBuilder;
+            break;
+          }
+          case 26: {
+            global::VDrumExplorer.Data.Proto.ModuleAudio subBuilder = new global::VDrumExplorer.Data.Proto.ModuleAudio();
+            if (fileCase_ == FileOneofCase.ModuleAudio) {
+              subBuilder.MergeFrom(ModuleAudio);
+            }
+            input.ReadMessage(subBuilder);
+            ModuleAudio = subBuilder;
             break;
           }
         }
@@ -966,6 +1017,639 @@ namespace VDrumExplorer.Data.Proto {
           }
           case 24: {
             DefaultKitNumber = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// The format of an audio sample. We assume it's always raw data, but
+  /// this specifies mono/stereo, the bits per sample, and the frequency.
+  /// </summary>
+  internal sealed partial class AudioFormat : pb::IMessage<AudioFormat> {
+    private static readonly pb::MessageParser<AudioFormat> _parser = new pb::MessageParser<AudioFormat>(() => new AudioFormat());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<AudioFormat> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::VDrumExplorer.Data.Proto.DrumFilesReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AudioFormat() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AudioFormat(AudioFormat other) : this() {
+      channels_ = other.channels_;
+      bits_ = other.bits_;
+      frequency_ = other.frequency_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AudioFormat Clone() {
+      return new AudioFormat(this);
+    }
+
+    /// <summary>Field number for the "channels" field.</summary>
+    public const int ChannelsFieldNumber = 1;
+    private int channels_;
+    /// <summary>
+    /// The number of channels; 1 for mono, 2 for stereo.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Channels {
+      get { return channels_; }
+      set {
+        channels_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "bits" field.</summary>
+    public const int BitsFieldNumber = 2;
+    private int bits_;
+    /// <summary>
+    /// The number of bits per sample; typically 16.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Bits {
+      get { return bits_; }
+      set {
+        bits_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "frequency" field.</summary>
+    public const int FrequencyFieldNumber = 3;
+    private int frequency_;
+    /// <summary>
+    /// The number of samples recorded per second.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Frequency {
+      get { return frequency_; }
+      set {
+        frequency_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as AudioFormat);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(AudioFormat other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Channels != other.Channels) return false;
+      if (Bits != other.Bits) return false;
+      if (Frequency != other.Frequency) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Channels != 0) hash ^= Channels.GetHashCode();
+      if (Bits != 0) hash ^= Bits.GetHashCode();
+      if (Frequency != 0) hash ^= Frequency.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Channels != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Channels);
+      }
+      if (Bits != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Bits);
+      }
+      if (Frequency != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Frequency);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Channels != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Channels);
+      }
+      if (Bits != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Bits);
+      }
+      if (Frequency != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frequency);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(AudioFormat other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Channels != 0) {
+        Channels = other.Channels;
+      }
+      if (other.Bits != 0) {
+        Bits = other.Bits;
+      }
+      if (other.Frequency != 0) {
+        Frequency = other.Frequency;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Channels = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Bits = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            Frequency = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// A collection of audio captures for the instruments in a module.
+  /// </summary>
+  internal sealed partial class ModuleAudio : pb::IMessage<ModuleAudio> {
+    private static readonly pb::MessageParser<ModuleAudio> _parser = new pb::MessageParser<ModuleAudio>(() => new ModuleAudio());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ModuleAudio> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::VDrumExplorer.Data.Proto.DrumFilesReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ModuleAudio() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ModuleAudio(ModuleAudio other) : this() {
+      identifier_ = other.identifier_ != null ? other.identifier_.Clone() : null;
+      format_ = other.format_ != null ? other.format_.Clone() : null;
+      durationPerInstrument_ = other.durationPerInstrument_ != null ? other.durationPerInstrument_.Clone() : null;
+      instrumentCaptures_ = other.instrumentCaptures_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ModuleAudio Clone() {
+      return new ModuleAudio(this);
+    }
+
+    /// <summary>Field number for the "identifier" field.</summary>
+    public const int IdentifierFieldNumber = 1;
+    private global::VDrumExplorer.Data.Proto.ModuleIdentifier identifier_;
+    /// <summary>
+    /// The module that was recorded.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::VDrumExplorer.Data.Proto.ModuleIdentifier Identifier {
+      get { return identifier_; }
+      set {
+        identifier_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "format" field.</summary>
+    public const int FormatFieldNumber = 2;
+    private global::VDrumExplorer.Data.Proto.AudioFormat format_;
+    /// <summary>
+    /// The format of the audio captures.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::VDrumExplorer.Data.Proto.AudioFormat Format {
+      get { return format_; }
+      set {
+        format_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "duration_per_instrument" field.</summary>
+    public const int DurationPerInstrumentFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Duration durationPerInstrument_;
+    /// <summary>
+    /// The duration of audio captured per instrument.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.WellKnownTypes.Duration DurationPerInstrument {
+      get { return durationPerInstrument_; }
+      set {
+        durationPerInstrument_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "instrument_captures" field.</summary>
+    public const int InstrumentCapturesFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::VDrumExplorer.Data.Proto.InstrumentAudio> _repeated_instrumentCaptures_codec
+        = pb::FieldCodec.ForMessage(34, global::VDrumExplorer.Data.Proto.InstrumentAudio.Parser);
+    private readonly pbc::RepeatedField<global::VDrumExplorer.Data.Proto.InstrumentAudio> instrumentCaptures_ = new pbc::RepeatedField<global::VDrumExplorer.Data.Proto.InstrumentAudio>();
+    /// <summary>
+    /// The audio captures for instruments.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::VDrumExplorer.Data.Proto.InstrumentAudio> InstrumentCaptures {
+      get { return instrumentCaptures_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ModuleAudio);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ModuleAudio other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Identifier, other.Identifier)) return false;
+      if (!object.Equals(Format, other.Format)) return false;
+      if (!object.Equals(DurationPerInstrument, other.DurationPerInstrument)) return false;
+      if(!instrumentCaptures_.Equals(other.instrumentCaptures_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (identifier_ != null) hash ^= Identifier.GetHashCode();
+      if (format_ != null) hash ^= Format.GetHashCode();
+      if (durationPerInstrument_ != null) hash ^= DurationPerInstrument.GetHashCode();
+      hash ^= instrumentCaptures_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (identifier_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Identifier);
+      }
+      if (format_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Format);
+      }
+      if (durationPerInstrument_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(DurationPerInstrument);
+      }
+      instrumentCaptures_.WriteTo(output, _repeated_instrumentCaptures_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (identifier_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Identifier);
+      }
+      if (format_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Format);
+      }
+      if (durationPerInstrument_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DurationPerInstrument);
+      }
+      size += instrumentCaptures_.CalculateSize(_repeated_instrumentCaptures_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ModuleAudio other) {
+      if (other == null) {
+        return;
+      }
+      if (other.identifier_ != null) {
+        if (identifier_ == null) {
+          Identifier = new global::VDrumExplorer.Data.Proto.ModuleIdentifier();
+        }
+        Identifier.MergeFrom(other.Identifier);
+      }
+      if (other.format_ != null) {
+        if (format_ == null) {
+          Format = new global::VDrumExplorer.Data.Proto.AudioFormat();
+        }
+        Format.MergeFrom(other.Format);
+      }
+      if (other.durationPerInstrument_ != null) {
+        if (durationPerInstrument_ == null) {
+          DurationPerInstrument = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        DurationPerInstrument.MergeFrom(other.DurationPerInstrument);
+      }
+      instrumentCaptures_.Add(other.instrumentCaptures_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (identifier_ == null) {
+              Identifier = new global::VDrumExplorer.Data.Proto.ModuleIdentifier();
+            }
+            input.ReadMessage(Identifier);
+            break;
+          }
+          case 18: {
+            if (format_ == null) {
+              Format = new global::VDrumExplorer.Data.Proto.AudioFormat();
+            }
+            input.ReadMessage(Format);
+            break;
+          }
+          case 26: {
+            if (durationPerInstrument_ == null) {
+              DurationPerInstrument = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(DurationPerInstrument);
+            break;
+          }
+          case 34: {
+            instrumentCaptures_.AddEntriesFrom(input, _repeated_instrumentCaptures_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Captured audio for a single instrument.
+  /// </summary>
+  internal sealed partial class InstrumentAudio : pb::IMessage<InstrumentAudio> {
+    private static readonly pb::MessageParser<InstrumentAudio> _parser = new pb::MessageParser<InstrumentAudio>(() => new InstrumentAudio());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<InstrumentAudio> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::VDrumExplorer.Data.Proto.DrumFilesReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public InstrumentAudio() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public InstrumentAudio(InstrumentAudio other) : this() {
+      instrumentId_ = other.instrumentId_;
+      preset_ = other.preset_;
+      audioData_ = other.audioData_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public InstrumentAudio Clone() {
+      return new InstrumentAudio(this);
+    }
+
+    /// <summary>Field number for the "instrument_id" field.</summary>
+    public const int InstrumentIdFieldNumber = 1;
+    private int instrumentId_;
+    /// <summary>
+    /// The ID of the instrument.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InstrumentId {
+      get { return instrumentId_; }
+      set {
+        instrumentId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "preset" field.</summary>
+    public const int PresetFieldNumber = 2;
+    private bool preset_;
+    /// <summary>
+    /// True for preset instruments; false for user samples.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Preset {
+      get { return preset_; }
+      set {
+        preset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "audio_data" field.</summary>
+    public const int AudioDataFieldNumber = 3;
+    private pb::ByteString audioData_ = pb::ByteString.Empty;
+    /// <summary>
+    /// The audio data for the instrument.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString AudioData {
+      get { return audioData_; }
+      set {
+        audioData_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as InstrumentAudio);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(InstrumentAudio other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (InstrumentId != other.InstrumentId) return false;
+      if (Preset != other.Preset) return false;
+      if (AudioData != other.AudioData) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (InstrumentId != 0) hash ^= InstrumentId.GetHashCode();
+      if (Preset != false) hash ^= Preset.GetHashCode();
+      if (AudioData.Length != 0) hash ^= AudioData.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (InstrumentId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(InstrumentId);
+      }
+      if (Preset != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Preset);
+      }
+      if (AudioData.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(AudioData);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (InstrumentId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InstrumentId);
+      }
+      if (Preset != false) {
+        size += 1 + 1;
+      }
+      if (AudioData.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(AudioData);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(InstrumentAudio other) {
+      if (other == null) {
+        return;
+      }
+      if (other.InstrumentId != 0) {
+        InstrumentId = other.InstrumentId;
+      }
+      if (other.Preset != false) {
+        Preset = other.Preset;
+      }
+      if (other.AudioData.Length != 0) {
+        AudioData = other.AudioData;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            InstrumentId = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Preset = input.ReadBool();
+            break;
+          }
+          case 26: {
+            AudioData = input.ReadBytes();
             break;
           }
         }
