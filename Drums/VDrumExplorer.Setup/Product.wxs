@@ -21,7 +21,7 @@
              Keywords="!(loc.Keywords)"
              />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of !(loc.ProductName) is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
 		<Feature Id="ProductFeature" Title="VDrumExplorer.Setup" Level="1">
