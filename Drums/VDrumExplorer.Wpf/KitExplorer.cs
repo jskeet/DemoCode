@@ -13,7 +13,7 @@ namespace VDrumExplorer.Wpf
     public class KitExplorer : DataExplorer
     {
         private readonly Kit kit;
-        private const string SaveFileFilter = "V-Drum Explorer kit files|*.vkit";
+        internal const string SaveFileFilter = "V-Drum Explorer kit files|*.vkit";
 
         internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient, string fileName)
             : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, fileName, SaveFileFilter, "Kit explorer")

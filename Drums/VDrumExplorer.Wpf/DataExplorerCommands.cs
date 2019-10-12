@@ -11,5 +11,6 @@ namespace VDrumExplorer.Wpf
         public static RoutedCommand OpenCopyInKitExplorer { get; } = new RoutedCommand(nameof(OpenCopyInKitExplorer), typeof(DataExplorerCommands));
         public static RoutedCommand CopyKit { get; } = new RoutedCommand(nameof(CopyKit), typeof(DataExplorerCommands));
         public static RoutedCommand ImportKitFromFile { get; } = new RoutedCommand(nameof(ImportKitFromFile), typeof(DataExplorerCommands));
+        public static RoutedCommand ExportKit { get; } = new RoutedCommand(nameof(ExportKit), typeof(DataExplorerCommands));
     }
 }
