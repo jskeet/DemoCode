@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Layout;
 using VDrumExplorer.Midi;
@@ -25,46 +27,59 @@ namespace VDrumExplorer.Wpf
             copyToDeviceButton.Content = "Copy data to device";
             copyToDeviceKitNumber.Visibility = Visibility.Collapsed;
             defaultKitPanel.Visibility = Visibility.Collapsed;
+            AddKitContextMenus();
+            CommandBindings.Add(new CommandBinding(DataExplorerCommands.OpenCopyInKitExplorer, OpenCopyInKitExplorer));
+        }
+
+        private void AddKitContextMenus()
+        {
+            foreach (var item in treeView.Items.Cast<TreeViewItem>())
+            {
+                AddContextMenusRecursively(item);
+            }
+
+            void AddContextMenusRecursively(TreeViewItem node)
+            {
+                if (!(node.Tag is VisualTreeNode vtn))
+                {
+                    return;
+                }
+                if (vtn.KitNumber is null)
+                {
+                    foreach (var item in node.Items.Cast<TreeViewItem>())
+                    {
+                        AddContextMenusRecursively(item);
+                    }
+                }
+                else
+                {
+                    AddKitMenu(node, vtn);
+                }
+            }
+
+            void AddKitMenu(TreeViewItem node, VisualTreeNode vtn)
+            {
+                node.ContextMenu = new ContextMenu
+                {
+                    Items =
+                    {
+                        new MenuItem { Header = "Open copy in Kit Explorer", Command = DataExplorerCommands.OpenCopyInKitExplorer, CommandParameter = vtn  },
+                    }
+                };
+            }
         }
 
         protected override void SaveToStream(Stream stream) => module.Save(stream);
 
-        protected override void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
+        private void OpenCopyInKitExplorer(object sender, ExecutedRoutedEventArgs e)
         {
-            var kitNode = GetCurrentKitRootNode();
-
-            // We try to protect against this in terms of enabling/disabling the button, but
-            // let's be cautious anyway.
-            if (kitNode == null)
-            {
-                return;
-            }
+            var kitNode = (VisualTreeNode) e.Parameter;
 
             // We clone the data from kitNode downwards, but relocating it as if it were the first kit.
             var firstKitNode = Schema.KitRoots[1];
             var clonedData = kitNode.Context.CloneData(Data, firstKitNode.Context.Address);
             var kit = new Kit(Schema, clonedData, kitNode.KitNumber.Value);
             new KitExplorer(Logger, kit, MidiClient, fileName: null).Show();
-        }
-
-        private VisualTreeNode GetCurrentKitRootNode()
-        {
-            var node = CurrentNode;
-            while (node != null)
-            {
-                if (node.KitNumber != null)
-                {
-                    return node;
-                }
-                node = node.Parent;
-            }
-            return null;
-        }
-
-        protected override void LoadDetailsPage()
-        {
-            base.LoadDetailsPage();
-            openKitButton.IsEnabled = GetCurrentKitRootNode() is object;
         }
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)

@@ -20,7 +20,6 @@ namespace VDrumExplorer.Wpf
             : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, fileName, SaveFileFilter, "Kit explorer")
         {
             this.kit = kit;
-            openKitButton.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy kit to device";
             defaultKitNumber.Text = TextConversions.Format(kit.DefaultKitNumber);
             copyToDeviceKitNumber.Text = defaultKitNumber.Text;
