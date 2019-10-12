@@ -238,5 +238,19 @@ namespace VDrumExplorer.Data
             }
             DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
         }
+
+        /// <summary>
+        /// Overwrites data in this module with all data from the given module.
+        /// No change events are raised.
+        /// </summary>
+        public void OverwriteWithDataFrom(ModuleData data)
+        {
+            // TODO: What if segments are missing or have different lengths?
+            foreach (var segment in data.GetSegments())
+            {
+                var targetSegment = GetSegment(segment.Start);
+                targetSegment.SetData(segment.Start, segment.CopyData());
+            }
+        }
     }
 }

@@ -155,6 +155,21 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
+        protected void RefreshTreeNodeAndDescendants(TreeViewItem node)
+        {
+            RefreshTreeNodeText(node);
+            foreach (TreeViewItem child in node.Items)
+            {
+                RefreshTreeNodeAndDescendants(child);
+            }
+        }
+
+        protected void RefreshTreeNodeText(TreeViewItem node)
+        {
+            var vnode = (VisualTreeNode) node.Tag;
+            node.Header = FormatNodeDescription(vnode);
+        }
+
         protected virtual string FormatNodeDescription(VisualTreeNode node) =>
             node.Description.Format(node.Context, Data);
 
@@ -541,8 +556,7 @@ namespace VDrumExplorer.Wpf
             {
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
                 {
-                    var vnode = (VisualTreeNode) treeViewItem.Tag;
-                    treeViewItem.Header = FormatNodeDescription(vnode);
+                    RefreshTreeNodeText(treeViewItem);
                 }
             }
 
