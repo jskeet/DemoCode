@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +31,7 @@ namespace VDrumExplorer.Wpf
             defaultKitPanel.Visibility = Visibility.Collapsed;
             AddKitContextMenus();
             CommandBindings.Add(new CommandBinding(DataExplorerCommands.OpenCopyInKitExplorer, OpenCopyInKitExplorer));
+            CommandBindings.Add(new CommandBinding(DataExplorerCommands.ImportKitFromFile, ImportKitFromFile));
         }
 
         private void AddKitContextMenus()
@@ -64,6 +67,7 @@ namespace VDrumExplorer.Wpf
                     Items =
                     {
                         new MenuItem { Header = "Open copy in Kit Explorer", Command = DataExplorerCommands.OpenCopyInKitExplorer, CommandParameter = vtn  },
+                        new MenuItem { Header = "Import from file", Command = DataExplorerCommands.ImportKitFromFile, CommandParameter = node },
                     }
                 };
             }
@@ -80,6 +84,48 @@ namespace VDrumExplorer.Wpf
             var clonedData = kitNode.Context.CloneData(Data, firstKitNode.Context.Address);
             var kit = new Kit(Schema, clonedData, kitNode.KitNumber.Value);
             new KitExplorer(Logger, kit, MidiClient, fileName: null).Show();
+        }
+
+        private void ImportKitFromFile(object sender, ExecutedRoutedEventArgs e)
+        {
+            var treeNode = (TreeViewItem) e.Parameter;
+            var targetKitNode = (VisualTreeNode) treeNode.Tag;
+
+            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "Kit files|*.vkit" };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+            object loaded;
+            try
+            {
+                using (var stream = File.OpenRead(dialog.FileName))
+                {
+                    loaded = SchemaRegistry.ReadStream(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Error loading {dialog.FileName}", ex);
+                return;
+            }
+            if (!(loaded is Kit kit))
+            {
+                Logger.Log("Loaded file was not a kit");
+                return;
+            }
+            if (!kit.Schema.Identifier.Equals(Schema.Identifier))
+            {
+                Logger.Log($"Kit was from {kit.Schema.Identifier.Name}; this module is {Schema.Identifier.Name}");
+                return;
+            }
+            var clonedData = kit.KitRoot.Context.CloneData(kit.Data, targetKitNode.Context.Address);
+            Data.OverwriteWithDataFrom(clonedData);
+            // OverwriteWithDataFrom doesn't doesn't (currently) raise any events.
+            // We assume that no other ancestor tree nodes will have text based on the kit details,
+            // so just refresh from here downwards.
+            RefreshTreeNodeAndDescendants(treeNode);
+            LoadDetailsPage();
         }
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)

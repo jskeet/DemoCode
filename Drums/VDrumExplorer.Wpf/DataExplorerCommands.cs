@@ -9,5 +9,6 @@ namespace VDrumExplorer.Wpf
     public static class DataExplorerCommands
     {
         public static RoutedCommand OpenCopyInKitExplorer { get; } = new RoutedCommand(nameof(OpenCopyInKitExplorer), typeof(DataExplorerCommands));
+        public static RoutedCommand ImportKitFromFile { get; } = new RoutedCommand(nameof(ImportKitFromFile), typeof(DataExplorerCommands));
     }
 }
