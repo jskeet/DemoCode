@@ -33,6 +33,7 @@ namespace VDrumExplorer.Wpf
             CommandBindings.Add(new CommandBinding(DataExplorerCommands.OpenCopyInKitExplorer, OpenCopyInKitExplorer));
             CommandBindings.Add(new CommandBinding(DataExplorerCommands.ImportKitFromFile, ImportKitFromFile));
             CommandBindings.Add(new CommandBinding(DataExplorerCommands.CopyKit, CopyKit));
+            CommandBindings.Add(new CommandBinding(DataExplorerCommands.ExportKit, ExportKit));
         }
 
         private void AddKitContextMenus()
@@ -68,8 +69,9 @@ namespace VDrumExplorer.Wpf
                     Items =
                     {
                         new MenuItem { Header = "Open copy in Kit Explorer", Command = DataExplorerCommands.OpenCopyInKitExplorer, CommandParameter = vtn  },
-                        new MenuItem { Header = "Import from file", Command = DataExplorerCommands.ImportKitFromFile, CommandParameter = node },
                         new MenuItem { Header = "Copy to another kit", Command = DataExplorerCommands.CopyKit, CommandParameter = vtn },
+                        new MenuItem { Header = "Import from file", Command = DataExplorerCommands.ImportKitFromFile, CommandParameter = node },
+                        new MenuItem { Header = "Export to file", Command = DataExplorerCommands.ExportKit, CommandParameter = vtn },
                     }
                 };
             }
@@ -79,13 +81,31 @@ namespace VDrumExplorer.Wpf
 
         private void OpenCopyInKitExplorer(object sender, ExecutedRoutedEventArgs e)
         {
-            var kitNode = (VisualTreeNode) e.Parameter;
+            var kit = CreateKit((VisualTreeNode) e.Parameter);
+            new KitExplorer(Logger, kit, MidiClient, fileName: null).Show();
+        }
 
+        private void ExportKit(object sender, ExecutedRoutedEventArgs e)
+        {
+            var kit = CreateKit((VisualTreeNode) e.Parameter);
+            var dialog = new SaveFileDialog { Filter = KitExplorer.SaveFileFilter };
+            var result = dialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+            using (var stream = File.Create(dialog.FileName))
+            {
+                kit.Save(stream);
+            }
+        }
+
+        private Kit CreateKit(VisualTreeNode kitRoot)
+        {
             // We clone the data from kitNode downwards, but relocating it as if it were the first kit.
             var firstKitNode = Schema.KitRoots[1];
-            var clonedData = kitNode.Context.CloneData(Data, firstKitNode.Context.Address);
-            var kit = new Kit(Schema, clonedData, kitNode.KitNumber.Value);
-            new KitExplorer(Logger, kit, MidiClient, fileName: null).Show();
+            var clonedData = kitRoot.Context.CloneData(Data, firstKitNode.Context.Address);
+            return new Kit(Schema, clonedData, kitRoot.KitNumber.Value);
         }
 
         private void ImportKitFromFile(object sender, ExecutedRoutedEventArgs e)
