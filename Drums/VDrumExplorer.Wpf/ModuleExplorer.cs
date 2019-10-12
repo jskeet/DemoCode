@@ -32,6 +32,7 @@ namespace VDrumExplorer.Wpf
             AddKitContextMenus();
             CommandBindings.Add(new CommandBinding(DataExplorerCommands.OpenCopyInKitExplorer, OpenCopyInKitExplorer));
             CommandBindings.Add(new CommandBinding(DataExplorerCommands.ImportKitFromFile, ImportKitFromFile));
+            CommandBindings.Add(new CommandBinding(DataExplorerCommands.CopyKit, CopyKit));
         }
 
         private void AddKitContextMenus()
@@ -68,6 +69,7 @@ namespace VDrumExplorer.Wpf
                     {
                         new MenuItem { Header = "Open copy in Kit Explorer", Command = DataExplorerCommands.OpenCopyInKitExplorer, CommandParameter = vtn  },
                         new MenuItem { Header = "Import from file", Command = DataExplorerCommands.ImportKitFromFile, CommandParameter = node },
+                        new MenuItem { Header = "Copy to another kit", Command = DataExplorerCommands.CopyKit, CommandParameter = vtn },
                     }
                 };
             }
@@ -125,6 +127,23 @@ namespace VDrumExplorer.Wpf
             // We assume that no other ancestor tree nodes will have text based on the kit details,
             // so just refresh from here downwards.
             RefreshTreeNodeAndDescendants(treeNode);
+            LoadDetailsPage();
+        }
+
+        private void CopyKit(object sender, ExecutedRoutedEventArgs e)
+        {
+            var sourceKitNode = (VisualTreeNode) e.Parameter;
+            var dialog = new CopyKitTargetDialog(Schema, Data, sourceKitNode);
+            var result = dialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+            var targetKit = dialog.SelectedKit;
+            var clonedData = sourceKitNode.Context.CloneData(Data, targetKit.Context.Address);
+            Data.OverwriteWithDataFrom(clonedData);
+            // We assume there's a single tree view root node.
+            RefreshTreeNodeAndDescendants((TreeViewItem) treeView.Items[0]);
             LoadDetailsPage();
         }
 
