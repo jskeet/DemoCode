@@ -165,10 +165,6 @@ namespace VDrumExplorer.Wpf
             LoadDetailsPage();
         }
 
-        protected virtual void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
-        {
-        }
-
         protected virtual void LoadDetailsPage()
         {
             var boundItems = new List<(GroupBox, ModuleAddress)>();

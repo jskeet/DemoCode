@@ -25,7 +25,6 @@
             <Button Margin="5" Padding="5,2" Click="EnterEditMode" x:Name="editModeButton">Edit mode</Button>
             <Button Margin="5" Padding="5,2" Click="CommitChanges" IsEnabled="False" x:Name="commitChangesButton">Commit changes</Button>
             <Button Margin="5" Padding="5,2" Click="CancelChanges" IsEnabled="False" x:Name="cancelChangesButton">Cancel changes</Button>
-            <Button Margin="5" Padding="5,2" Click="OpenKitInKitExplorer" IsEnabled="False" x:Name="openKitButton">Open copy in Kit Explorer</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel">
             <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton"></Button>
