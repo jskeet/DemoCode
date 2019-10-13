@@ -17,21 +17,23 @@ how you get on with this.
 # Requirements
 
 - Windows 8.1 or Windows 10
-- .NET 4.7.2 or later or .NET Core 3.0
+- .NET 4.7.2 or later
 - To be genuinely useful, a Roland TD-17 or TD-50 V-Drums drum kit, turned on and connected via USB (see later for details)
 
 # Installation
 
-There's currently no Windows installer. I may produce one if I get a chance.
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha02/VDrumExplorer-Setup.msi)
 
-- Download a zip file from one of the [releases](https://github.com/jskeet/DemoCode/releases) on GitHub.
-  You'll need to expand the "Assets" part of the given release. Separate zip files are available for the .NET desktop framework and .NET Core.
-  If you aren't sure, you probably want the "desktop" version.
-- Unzip the zip file anywhere on your machine
-- Go into the directory created for you
-- Run VDrumExplorer.Wpf.exe
-- If Windows SmartScreen gives a warning, click on "More Info", check that it is signed
-  by me ("Jonathan Skeet") and then choose the option to run it.
+As of 1.0.0-alpha02, there's a Windows installer. Download the
+latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
+on GitHub. If you use GitHub, you'll need to expand the "Assets" part of the given release. If
+you'd prefer not to run the installer, there's a zip file as well.
+
+The application that's installed is called "V-Drum Explorer"; if
+you're using the zip file, you want to run VDrumExplorer.Wpf.exe.
+
+If Windows SmartScreen gives a warning, click on "More Info", check that it is signed
+by me ("Jonathan Skeet") and then choose the option to run it.
 
 **Important note for drum kit connection**
 
@@ -42,11 +44,12 @@ starting the Explorer.
 
 # Usage
 
-There are three windows in the application:
+There are four windows in the application:
 
 - [Module Loader](#module-loader)
 - [Module Explorer](#module-explorer)
 - [Kit Explorer](#kit-explorer)
+- [Instrument Audio Explorer](#instrument-audio-explorer)
 
 When the application is launched, the Module Loader will be shown.
 
@@ -69,10 +72,14 @@ disabled.
 Even without a drum module, you can still load and save
 files, and edit the data.
 
-Click on "Load module/kit file" to load a file. The application will
+Click on "Load file" to load a file. The application will
 detect whether it contains data for a whole module or a single kit,
-and display the appropriate window, as described later. A sample
-file (td17.vdrum) is provided in the zip file with the application.
+or instrument audio, and display the appropriate window, as described later. A sample
+file (td17.vdrum) is provided with the application. (If you run the
+Windows installer, the file is installed in
+'Program Files (x86)\VDrumExplorer' - I know that's a little odd as
+it isn't a binary, but it simplifies things while I'm learning about
+Windows installers and WiX.)
 
 Click on "Save log file" to simply save the contents of the log (as
 displayed in the Module Loader) to a text file. This is primarily to
@@ -84,8 +91,8 @@ all logging, including for log entries created by other windows.
 If a module is detected, you can load data from it with the two
 buttons in the second row:
 
-- Load the complete data for a module with the "Load all data from device" button
-- Load a single kit by entering the kit number and clicking "Load single kit from device"
+- Load the complete data for a module with the "Load all data" button
+- Load a single kit by entering the kit number and clicking "Load single"
 
 When loading a single kit, the value in the "Kit number" textbox
 should be an integer between 1 and 100. (If other modules are ever
@@ -171,13 +178,27 @@ data (from "Root" downwards) will take a very long time.
 Note that in edit mode, the data copied is what you currently see,
 including any changes you've made.
 
-### Opening a kit in Kit Explorer
+### Kit context options
 
-If the currently selected tree node is within a kit, the "Open copy
-in Kit Explorer" button will be enabled. This does exactly what it
-says: it creates an independent copy of all the data for the kit
-(including any in-progress changes, if you're in edit mode) and
-opens up a new Kit Explorer window.
+Right-clicking on a the root node of a kit within the tree will open
+a context menu like this:
+
+![Kit context menu](module-explorer-3.png)
+
+This currently provides four options:
+
+- Create an independent copy of the kit in memory, and open it in
+  Kit Explorer
+- Copy the kit to another slot in the module (overwriting the
+  current kit there)
+- Import data from a .vkit file (overwriting the data in the current
+  kit)
+- Export the current kit data to a .vkit file
+
+For the second of these options, a dialog box opens asking you which
+kit you would like to copy the selected one to:
+
+![Kit copy selection dialog](kit-copy-selection.png)
 
 ### Saving to disk
 
@@ -210,24 +231,141 @@ you most often use on the device for that kit.
 The File/Save menu item allows you to save the kit to a .vkit file,
 which can be opened later in Module Loader.
 
+## Instrument Audio Explorer
+
+Playing an instrument within the Kit Explorer or Module Explorer
+requires you to have the module connected, with the right instrument
+on the currently selected kit. That makes it hard to edit a kit on
+the move, unless you know exactly what each instrument sounds like.
+
+V-Drum Explorer allows you to record all the instruments from your
+module via the audio connection to your computer, save the data to a
+file, then load the file again later to allow you to play each
+instrument without the module being present.
+
+### Recording instruments
+
+To take advantage of this functionality, first you need to record
+the audio data. Start V-Drum Explorer with the module connected and
+turned on, then click on "Record instruments" in the Module Loader.
+
+The instrument recording dialog will be displayed:
+
+![Instrument recording dialog](instrument-recorder-dialog.png)
+
+Before recording, there are some things to check:
+
+- Make sure your USB audio output is set appropriately. The default
+  setting on the TD-17 is very quiet, for example. In the TD-17, on
+  the module, press the Setup button, select the USB option, and set
+  the "USB Output Gain" option. I had success with a setting of +20dB.
+- Select how many user samples you wish to record. There's no point in
+  recording more samples than are populated on your module, but the
+  explorer can't determine how many there are. Also, you may not wish
+  to record the samples anyway.
+- Select the relevant audio device in the dialog. (In the above
+  example, my audio device is "IN (3- TD-17)".)
+- Make sure your module has the same kit selected as is shown in the
+  dialog box. You can edit this; I'd recommend using a "user" kit that
+  is still untouched, for two reasons:
+  - It won't have any MultiFX etc applied to it, so you'll get a
+    fairly vanilla recording.
+  - If the explorer crashes while recording, you won't have lost any
+    useful data. (See notes below for what the process involves.)
+- Choose a file to save the data to. Note that the files can be
+  quite large (e.g. around 75MB for a TD-17 with 7 user samples and
+  the default 2.5s recording duration) so make sure there is enough
+  disk space wherever you're saving to.
+- Make sure the Midi channel is correct for your kit. (This is the
+  same channel used to play instruments in the Module Explorer and Kit
+  Explorer, so that's an easy way to test it.)
+- Optionally change the recording duration per instrument and the
+  attack with which each instrument is struck. The defaults should be
+  fine in most cases.
+
+Once you're ready, click "Start recording". Importantly, you need to
+leave the drum set alone at this point: if you change settings on
+the module, or strike the pads, you could end up with undesirable
+results.
+
+**Note:** Recording all the samples takes a long time, particularly
+on the TD-50 with over 400 instruments. As well as the recording
+time itself, there's a little overhead while the instrument is
+changed etc. So on a TD-50, recording 2.5s of audio per instrument
+could take over 20 minutes. Please be patient! (The progress bar
+will show you how it's doing, of course.)
+
+The process works as follows:
+
+- Load the data for instrument 1 (typically the kick drum) from the
+  kit, so it can be restored later.
+- For each available instrument:
+  - Silence the module (to stop the previous instrument sound)
+  - Change the assigned instrument for instrument 1 on the module
+  - Start recording in memory
+  - Play the note
+  - Stop recording after the configured duration
+- Save the file containing all the audio captures
+- Restore the original data, including if an error occurs
+
+The last part about data restoration can fail in some situations - for
+example if you disconnect the USB cable while recording. For this
+reason, I recommend backing up the kit first if you've made any
+modifications to it, or (preferably) using a kit you haven't modified.
+
+When recording is complete, the dialog will close automatically.
+
+### Opening the Instrument Audio Explorer
+
+In order to open the Instrument Audio Explorer, click on "Load File"
+in the Module Loader and open a previously-saved audio recording
+.vaudio file. This will open up the Instrument Audio Explorer:
+
+![Instrument Audio Explorer](instrument-audio-explorer.png)
+
+Select an output device from the drop-down ("Speakers (Surface
+Dock)" in the screenshot above) and then click on one of the
+instrument groups on the left hand side. The recorded instruments
+will be shown on the right hand side, with Play buttons. Clicking on
+a Play button will play the recorded sample from the file.
+
+Note that you can have an Instrument Audio Explorer window open at
+the same time as a Kit Explorer or Module Explorer window, and this
+is the recommended approach if you're trying to work out which
+instruments to include in a new kit.
+
+**Quality note:** When developing the feature, some recordings ended
+up being cut off when playing back. This is definitely a problem
+with the recording side rather than the playback side. I *believe*
+I've fixed it, but I can't be sure. It's most noticeable on
+percussion and sound FX instruments. If you run into this problem,
+please let me know (skeet@pobox.com) - you may well find that just
+re-recording the file fixes it, but I'd like to know anyway. (And
+apologies in advance.)
+
 # Further work
 
-- Maybe a WiX installer after all
-  - May simplify uses of settings, kit files etc
+- Selective instrument recording, and possibly audio format selection
+- Change kit (and back) when recording instruments
+- Make the Instrument Audio Explorer prettier (do we really need so
+  many Play buttons?)
 - An icon!
 - Cleaner user interface for loading or copying a single kit (the textbox is ugly)
-- Ability to change default kit number
-- Kit functionality within Module Explorer:
-  - Import a single kit
-  - Export a single kit (equivalent to "open in kit explorer, save")
-  - Copy a kit to another slot
 - Defaults for TD-50 instruments (e.g. size for cymbals)
 - UI options, e.g. whether to use sliders
-- Generate sound files from the module, for easy instrument picking
 - Load/save/overlay masked instrument settings
-- (Internal) Consider generating C# code from schema to have a cleaner model
+- (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha02
+
+- Ability to record instrument sounds and then open the Instrument Audio Explorer
+- Windows installer
+- Moved "Open copy in Kit Explorer" to context menu
+- Added "Copy kit" feature (in context menu)
+- Added "Import kit from file" feature (in context menu)
+- Added "Export kit to file" feature (in context menu)
 
 ## Version 1.0.0-alpha01
 
@@ -245,6 +383,7 @@ which can be opened later in Module Loader.
 - Fix the Ride vedit overlay for the TD-50
 - Introduce a "default kit number" in kit files, and allow it to be edited
 - Improve display of the root node in Kit Explorer (no more "Kit 1")
+- The use of sliders for numeric fields
 
 ## Version 0.1, 2019-09-15
 
