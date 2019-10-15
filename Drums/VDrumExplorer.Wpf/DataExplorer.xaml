@@ -51,7 +51,7 @@
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
             <Label Margin="5" Padding="5,2">Attack:</Label>
-            <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider"/>
+            <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider" IsSnapToTickEnabled="True" TickFrequency="1" />
             <Label Margin="5" Padding="0,2" HorizontalAlignment="Left" Content="{Binding ElementName=attackSlider, Path=Value}"/>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
