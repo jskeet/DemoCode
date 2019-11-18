@@ -30,7 +30,7 @@ namespace VDrumExplorer.Wpf
         protected ModuleData Data { get; }
         protected ModuleSchema Schema { get; }
         internal ILogger Logger { get; }
-        protected SysExClient MidiClient { get; }
+        protected RolandMidiClient MidiClient { get; }
         protected VisualTreeNode RootNode { get; }
         private readonly string explorerName;
         private readonly string saveFileFilter;
@@ -55,7 +55,7 @@ namespace VDrumExplorer.Wpf
             defaultKitNumber.PreviewTextInput += TextConversions.CheckDigits;
         }
 
-        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient, string fileName,
+        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, RolandMidiClient midiClient, string fileName,
             string saveFileFilter, string explorerName) : this()
         {
             Logger = logger;

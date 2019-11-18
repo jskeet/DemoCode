@@ -5,9 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JonSkeet.MiscUtil" Version="0.2.0">
-      <NoWarn>NU1701</NoWarn>
-    </PackageReference>
     <PackageReference Include="Sanford.Multimedia.Midi" Version="6.6.0">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>

@@ -27,7 +27,7 @@ namespace VDrumExplorer.Wpf
     {
         private readonly ILogger logger;
         private readonly ModuleSchema schema;
-        private readonly SysExClient midiClient;
+        private readonly RolandMidiClient midiClient;
         private readonly CancellationTokenSource cancellationTokenSource;
         private CancellationToken CancellationToken => cancellationTokenSource.Token;
 
@@ -38,7 +38,7 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
         }
 
-        internal SoundRecorderDialog(ILogger logger, ModuleSchema schema, SysExClient midiClient)
+        internal SoundRecorderDialog(ILogger logger, ModuleSchema schema, RolandMidiClient midiClient)
             : this()
         {
             this.logger = logger;

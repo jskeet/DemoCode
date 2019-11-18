@@ -20,7 +20,7 @@ namespace VDrumExplorer.Wpf
     public partial class DeviceLoaderDialog : Window
     {
         private readonly ILogger logger;
-        private readonly SysExClient client;
+        private readonly RolandMidiClient client;
         private readonly ModuleSchema schema;
         private readonly CancellationTokenSource cancellationTokenSource;
         
@@ -31,7 +31,7 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
         }
 
-        internal DeviceLoaderDialog(ILogger logger, SysExClient client, ModuleSchema schema) : this()
+        internal DeviceLoaderDialog(ILogger logger, RolandMidiClient client, ModuleSchema schema) : this()
         {
             this.logger = logger;
             this.client = client;
@@ -42,7 +42,8 @@ namespace VDrumExplorer.Wpf
         internal async void LoadDeviceData(FixedContainer root)
         {
             var data = new ModuleData();
-            client.UnconsumedMessageHandler += LogUnconsumedMessage;
+            // TODO: Possibly reinstate this in RolandMidiClient.
+            // client.UnconsumedMessageHandler += LogUnconsumedMessage;
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
@@ -73,11 +74,13 @@ namespace VDrumExplorer.Wpf
             }
             finally
             {
-                client.UnconsumedMessageHandler -= LogUnconsumedMessage;
+                //client.UnconsumedMessageHandler -= LogUnconsumedMessage;
             }
 
+            /*
             void LogUnconsumedMessage(object sender, DataResponseMessage message) =>
                 logger.Log($"Unexpected data response. Address: {message.Address:x8}; Length: {message.Length:x8}");
+            */
         }
 
         private async Task PopulateSegment(ModuleData data, AnnotatedContainer annotatedContainer, CancellationToken token)
