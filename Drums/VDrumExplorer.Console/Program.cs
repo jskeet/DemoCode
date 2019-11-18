@@ -24,58 +24,28 @@ namespace VDrumExplorer.ConsoleDemo
             await Task.Yield();
             try
             {
-                using (var client = CreateClientForTd17())
+                var inputs = MidiDevices.ListInputDevices();
+                foreach (var input in inputs)
                 {
-                    int channel = 1;
-                    Console.WriteLine("Playing notes");
-                    client.PlayNote(channel, 36, 10);
-                    Console.WriteLine("Played note 1");
-                    await Task.Delay(500);
-
-                    client.PlayNote(channel, 36, 50);
-                    Console.WriteLine("Played note 2");
-                    await Task.Delay(500);
-
-                    client.PlayNote(channel, 36, 100);
-                    Console.WriteLine("Played note 3");
-                    await Task.Delay(500);
-
-                    client.PlayNote(channel, 38, 10);
-                    Console.WriteLine("Played note 4");
-                    await Task.Delay(500);
-
-                    client.PlayNote(channel, 38, 50);
-                    Console.WriteLine("Played note 5");
-                    await Task.Delay(500);
-
-                    client.PlayNote(channel, 38, 100);
-                    Console.WriteLine("Played note 6");
-                    await Task.Delay(500);
+                    Console.WriteLine($"Input: {input}");
+                }
+                var outputs = MidiDevices.ListOutputDevices();
+                foreach (var output in outputs)
+                {
+                    Console.WriteLine($"Output: {output}");
+                }
+                var myInput = inputs.Single(input => input.Name == "2- TD-17");
+                var myOutput = outputs.Single(output => output.Name == "2- TD-17");
+                var identities = await MidiDevices.ListDeviceIdentities(myInput, myOutput, TimeSpan.FromSeconds(0.5));
+                foreach (var identity in identities)
+                {
+                    Console.WriteLine(identity);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-        }
-
-        private static SysExClient CreateClientForTd17()
-        {
-            int inputId = FindId(InputDevice.DeviceCount, i => InputDevice.GetDeviceCapabilities(i).name, "3- TD-17");
-            int outputId = FindId(OutputDeviceBase.DeviceCount, i => OutputDeviceBase.GetDeviceCapabilities(i).name, "3- TD-17");
-            return new SysExClient(inputId, outputId, modelId: 0x4b, deviceId: 17);
-        }
-
-        private static int FindId(int count, Func<int, string> nameFetcher, string name)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                if (nameFetcher(i) == name)
-                {
-                    return i;
-                }
-            }
-            throw new ArgumentException($"Unable to find device {name}");
         }
     }
 }

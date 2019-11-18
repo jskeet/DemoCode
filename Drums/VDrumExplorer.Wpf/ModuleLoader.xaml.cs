@@ -22,7 +22,7 @@ namespace VDrumExplorer.Wpf
     public partial class ModuleLoader : Window
     {
         private readonly TextBlockLogger logger;
-        private (SysExClient client, ModuleSchema schema)? detectedMidi;
+        private (RolandMidiClient client, ModuleSchema schema)? detectedMidi;
 
         public ModuleLoader()
         {
@@ -73,21 +73,21 @@ namespace VDrumExplorer.Wpf
             detectedMidi?.client.Dispose();
         }
 
-        private async Task<(SysExClient client, ModuleSchema schema)?> DetectMidiDeviceAsync()
+        private async Task<(RolandMidiClient client, ModuleSchema schema)?> DetectMidiDeviceAsync()
         {
-            var inputDevices = DeviceInfo.GetInputDevices();
-            var outputDevices = DeviceInfo.GetOutputDevices();
+            var inputDevices = MidiDevices.ListInputDevices();
+            var outputDevices = MidiDevices.ListOutputDevices();
 
             logger.Log($"Detecting MIDI ports");
             logger.Log($"Input ports:");
-            foreach (var input in inputDevices)
+            foreach (var inputDevice in inputDevices)
             {
-                logger.Log($"{input.LocalDeviceId}: {input.Name}");
+                logger.Log(inputDevice.ToString());
             }
             logger.Log($"Output ports:");
-            foreach (var output in outputDevices)
+            foreach (var outputDevice in outputDevices)
             {
-                logger.Log($"{output.LocalDeviceId}: {output.Name}");
+                logger.Log(outputDevice.ToString());
             }
             var commonNames = inputDevices.Select(input => input.Name).Intersect(outputDevices.Select(output => output.Name)).OrderBy(x => x).ToList();
             if (commonNames.Count == 0)
@@ -110,31 +110,24 @@ namespace VDrumExplorer.Wpf
             }
             logger.Log($"Using MIDI ports with name {name}. Detecting devices using Roland identity requests.");
 
-            var inputId = matchedInputs[0].LocalDeviceId;
-            var outputId = matchedOutputs[0].LocalDeviceId;
+            var input = matchedInputs[0];
+            var output = matchedOutputs[0];
+            var deviceIdentities = await MidiDevices.ListDeviceIdentities(input, output, TimeSpan.FromSeconds(0.5));
 
-            ConcurrentBag<IdentityResponse> responses = new ConcurrentBag<IdentityResponse>();
-            using (var identityClient = new IdentityClient(inputId, outputId))
-            {
-                identityClient.IdentityReceived += response => responses.Add(response);
-                identityClient.SendRequests();
-                // Half a second should be plenty of time.
-                await Task.Delay(500);
-            }
             var schemaKeys = SchemaRegistry.KnownSchemas.Keys;
-            var responseList = responses.OrderBy(r => r.DeviceId).ToList();
+            var responseList = deviceIdentities.OrderBy(r => r.DisplayDeviceId).ToList();
             ModuleIdentifier matchedIdentifier = null;
-            IdentityResponse matchedResponse = null;
+            DeviceIdentity matchedIdentity = null;
             int matchCount = 0;
             foreach (var response in responseList)
             {
                 var match = schemaKeys.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
                 string matchLog = match == null ? "No matching schema" : $"Matches schema {match.Name}";
-                logger.Log($"Detected device ID {response.DeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
+                logger.Log($"Detected device ID {response.DisplayDeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
                 if (match != null)
                 {
                     matchedIdentifier = match;
-                    matchedResponse = response;
+                    matchedIdentity = response;
                     matchCount++;
                 }
             }
@@ -144,9 +137,9 @@ namespace VDrumExplorer.Wpf
                     logger.Log($"No devices with a known schema. Abandoning MIDI detection.");
                     return null;
                 case 1:
-                    logger.Log($"Using device {matchedResponse.DeviceId} with schema {matchedIdentifier.Name}.");
+                    logger.Log($"Using device {matchedIdentity.DisplayDeviceId} with schema {matchedIdentifier.Name}.");
                     var schema = SchemaRegistry.KnownSchemas[matchedIdentifier].Value;
-                    return (new SysExClient(inputId, outputId, matchedIdentifier.ModelId, matchedResponse.DeviceId), schema);
+                    return (MidiDevices.CreateRolandMidiClient(input, output, matchedIdentity, matchedIdentifier.ModelId), schema);
                 default:
                     logger.Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
                     return null;

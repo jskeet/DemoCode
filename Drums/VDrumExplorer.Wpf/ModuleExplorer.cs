@@ -21,7 +21,7 @@ namespace VDrumExplorer.Wpf
         private readonly Module module;
         private const string SaveFileFilter = "V-Drum Explorer module files|*.vdrum";
 
-        internal ModuleExplorer(ILogger logger, Module module, SysExClient midiClient, string fileName)
+        internal ModuleExplorer(ILogger logger, Module module, RolandMidiClient midiClient, string fileName)
             : base(logger, module.Schema, module.Data, module.Schema.LogicalRoot, midiClient, fileName, SaveFileFilter, "Module explorer")
         {
             this.module = module;
