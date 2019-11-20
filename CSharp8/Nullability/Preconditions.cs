@@ -18,9 +18,9 @@ namespace Nullability
             Console.WriteLine(text.Length);
         }
 
-        static T CheckNotNull<T>([NotNull] T? input) where T : class =>
+        internal static T CheckNotNull<T>([NotNull] T? input) where T : class =>
             input ?? throw new ArgumentNullException();
 
-        static string? MaybeNull() => DateTime.UtcNow.Second == 0 ? null : "not null";
+        internal static string? MaybeNull() => DateTime.UtcNow.Second == 0 ? null : "not null";
     }
 }
