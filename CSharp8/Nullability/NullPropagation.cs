@@ -24,6 +24,6 @@ namespace Nullability
         // Side issue: it would be nice to be able to use nameof here.
         [return: NotNullIfNotNull("input")]
         static string? NullOrDouble(string? input) =>
-            input == null ? null : input + input;    
+            input is null ? null : input + input;    
     }
 }
