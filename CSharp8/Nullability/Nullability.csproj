@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="JonSkeet.DemoUtil" Version="1.1.1" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
