@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Nullability
 {
-    class Precondition
+    class Preconditions
     {
         static void Main()
         {
