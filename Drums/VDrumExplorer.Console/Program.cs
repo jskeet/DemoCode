@@ -2,17 +2,11 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Sanford.Multimedia.Midi;
+using Commons.Music.Midi;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Midi;
-using VDrumExplorer.Data;
-using VDrumExplorer.Data.Fields;
 
 namespace VDrumExplorer.ConsoleDemo
 {
@@ -22,6 +16,7 @@ namespace VDrumExplorer.ConsoleDemo
         {
             // Just so we can write synchronous code when we want to
             await Task.Yield();
+
             try
             {
                 var inputs = MidiDevices.ListInputDevices();
@@ -34,9 +29,10 @@ namespace VDrumExplorer.ConsoleDemo
                 {
                     Console.WriteLine($"Output: {output}");
                 }
-                var myInput = inputs.Single(input => input.Name == "2- TD-17");
-                var myOutput = outputs.Single(output => output.Name == "2- TD-17");
-                var identities = await MidiDevices.ListDeviceIdentities(myInput, myOutput, TimeSpan.FromSeconds(0.5));
+                var td17Input = inputs.Single(input => input.Name == "2- TD-17");
+                var td17Output = outputs.Single(output => output.Name == "2- TD-17");
+
+                var identities = await MidiDevices.ListDeviceIdentities(td17Input, td17Output, TimeSpan.FromSeconds(0.5));
                 foreach (var identity in identities)
                 {
                     Console.WriteLine(identity);
@@ -46,6 +42,11 @@ namespace VDrumExplorer.ConsoleDemo
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private static void Input_MessageReceived(object sender, MidiReceivedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

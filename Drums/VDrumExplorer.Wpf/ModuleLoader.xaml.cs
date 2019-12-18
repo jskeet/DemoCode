@@ -139,7 +139,7 @@ namespace VDrumExplorer.Wpf
                 case 1:
                     logger.Log($"Using device {matchedIdentity.DisplayDeviceId} with schema {matchedIdentifier.Name}.");
                     var schema = SchemaRegistry.KnownSchemas[matchedIdentifier].Value;
-                    return (MidiDevices.CreateRolandMidiClient(input, output, matchedIdentity, matchedIdentifier.ModelId), schema);
+                    return (await MidiDevices.CreateRolandMidiClientAsync(input, output, matchedIdentity, matchedIdentifier.ModelId), schema);
                 default:
                     logger.Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
                     return null;
