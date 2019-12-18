@@ -12,7 +12,7 @@ namespace VDrumExplorer.Midi
         /// <summary>
         /// Local device ID, used to create an InputDevice/OutputDevice.
         /// </summary>
-        internal int SystemDeviceId { get; }
+        internal string SystemDeviceId { get; }
 
         /// <summary>
         /// Human-readable device name
@@ -20,19 +20,14 @@ namespace VDrumExplorer.Midi
         public string Name { get; }
 
         /// <summary>
-        /// Midi manufacturer ID; this appears to always return 1, so is not reliable.
+        /// MIDI manufacturer.
         /// </summary>
-        internal ManufacturerId ManufacturerId { get; }
+        internal string Manufacturer { get; }
 
-        /// <summary>
-        /// Midi product ID.
-        /// </summary>
-        internal short ProductId { get; }
+        protected MidiDeviceBase(string systemDeviceId, string name, string manufacturer) =>
+            (SystemDeviceId, Name, Manufacturer) = (systemDeviceId, name, manufacturer);
 
-        protected MidiDeviceBase(int systemDeviceId, string name, ManufacturerId manufacturerId, short productId) =>
-            (SystemDeviceId, Name, ManufacturerId, ProductId) = (systemDeviceId, name, manufacturerId, productId);
-
-        public override string ToString() => $"{SystemDeviceId}: {Name} ({ManufacturerId} - {ProductId})";
+        public override string ToString() => $"{SystemDeviceId}: {Name} ({Manufacturer})";
     }
 
     /// <summary>
@@ -40,8 +35,8 @@ namespace VDrumExplorer.Midi
     /// </summary>
     public sealed class MidiInputDevice : MidiDeviceBase
     {
-        internal MidiInputDevice(int localDeviceId, string name, ManufacturerId manufacturerId, short productId)
-            : base(localDeviceId, name, manufacturerId, productId)
+        internal MidiInputDevice(string systemDeviceId, string name, string manufacturer)
+            : base(systemDeviceId, name, manufacturer)
         {
         }
     }
@@ -51,8 +46,8 @@ namespace VDrumExplorer.Midi
     /// </summary>
     public sealed class MidiOutputDevice : MidiDeviceBase
     {
-        internal MidiOutputDevice(int localDeviceId, string name, ManufacturerId manufacturerId, short productId)
-            : base(localDeviceId, name, manufacturerId, productId)
+        internal MidiOutputDevice(string systemDeviceId, string name, string manufacturer)
+            : base(systemDeviceId, name, manufacturer)
         {
         }
     }

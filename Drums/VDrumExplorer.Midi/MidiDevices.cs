@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Sanford.Multimedia.Midi;
+using Commons.Music.Midi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +18,23 @@ namespace VDrumExplorer.Midi
         /// <summary>
         /// Lists all the currently-connected input devices.
         /// </summary>
-        public static IReadOnlyList<MidiInputDevice> ListInputDevices() => Enumerable
-            .Range(0, InputDevice.DeviceCount)
-            .Select(InputDevice.GetDeviceCapabilities)
-            .Select((caps, localId) => new MidiInputDevice(localId, caps.name, (ManufacturerId) caps.mid, caps.pid))
+        public static IReadOnlyList<MidiInputDevice> ListInputDevices() => MidiAccessManager.Default.Inputs
+            .Select(port => new MidiInputDevice(port.Id, port.Name, port.Manufacturer))
             .ToList()
             .AsReadOnly();
 
         /// <summary>
         /// Lists all the currently-connected output devices.
         /// </summary>
-        public static IReadOnlyList<MidiOutputDevice> ListOutputDevices() => Enumerable
-            .Range(0, OutputDeviceBase.DeviceCount)
-            .Select(OutputDeviceBase.GetDeviceCapabilities)
-            .Select((caps, localId) => new MidiOutputDevice(localId, caps.name, (ManufacturerId) caps.mid, caps.pid))
+        public static IReadOnlyList<MidiOutputDevice> ListOutputDevices() => MidiAccessManager.Default.Outputs
+            .Select(port => new MidiOutputDevice(port.Id, port.Name, port.Manufacturer))
             .ToList()
             .AsReadOnly();
 
         public static async Task<IReadOnlyList<DeviceIdentity>> ListDeviceIdentities(MidiInputDevice input, MidiOutputDevice output, TimeSpan timeout)
         {
             List<DeviceIdentity> identities = new List<DeviceIdentity>();
-            using (var client = new RawMidiClient(input, output, HandleMessage))
+            using (var client = await RawMidiClient.CreateAsync(input, output, HandleMessage))
             {
                 // Identity request message for all devices IDs.
                 client.Send(new RawMidiMessage(new byte[] { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }));
@@ -66,7 +62,7 @@ namespace VDrumExplorer.Midi
             }
         }
 
-        public static RolandMidiClient CreateRolandMidiClient(MidiInputDevice input, MidiOutputDevice output, DeviceIdentity deviceIdentity, int modelId) =>
-            new RolandMidiClient(input, output, deviceIdentity.RawDeviceId, modelId);
+        public static Task<RolandMidiClient> CreateRolandMidiClientAsync(MidiInputDevice input, MidiOutputDevice output, DeviceIdentity deviceIdentity, int modelId) =>
+            RolandMidiClient.CreateAsync(input, output, deviceIdentity.RawDeviceId, modelId);
     }
 }

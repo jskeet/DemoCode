@@ -2,8 +2,10 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Sanford.Multimedia.Midi;
+using Commons.Music.Midi;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace VDrumExplorer.Midi
 {
@@ -12,47 +14,38 @@ namespace VDrumExplorer.Midi
     /// </summary>
     internal sealed class RawMidiClient : IDisposable
     {
-        private readonly InputDevice input;
-        private readonly OutputDevice output;
+        private readonly IMidiInput input;
+        private readonly IMidiOutput output;
 
-        internal RawMidiClient(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, Action<RawMidiMessage> messageHandler)
+        private RawMidiClient(IMidiInput input, IMidiOutput output, Action<RawMidiMessage> messageHandler)
         {
-            input = new InputDevice(inputDevice.SystemDeviceId);
-            output = new OutputDevice(outputDevice.SystemDeviceId);
-            input.MessageReceived += message => messageHandler(new RawMidiMessage(message.GetBytes()));
-            input.StartRecording();
+            this.input = input;
+            this.output = output;
+            input.MessageReceived += (sender, args) => messageHandler(ConvertMessage(args));
+        }
+
+        private static RawMidiMessage ConvertMessage(MidiReceivedEventArgs args) =>
+            args.Length == args.Data.Length && args.Start == 0
+            ? new RawMidiMessage(args.Data)
+            : new RawMidiMessage(args.Data.Skip(args.Start).Take(args.Length).ToArray());
+
+        internal static async Task<RawMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, Action<RawMidiMessage> messageHandler)
+        {
+            var input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.SystemDeviceId);
+            var output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.SystemDeviceId);
+            return new RawMidiClient(input, output, messageHandler);
         }
 
         internal void Send(RawMidiMessage message)
         {
-            var status = message.Status;
-            if (message.Status >= 0x80 && message.Status < 0xf0)
-            {
-                var command = (ChannelCommand) (status & 0xf0);
-                var channel = status & 0xf;
-                if (message.Data.Length == 3)
-                {
-                    output.Send(new ChannelMessage(command, channel, message.Data[1], message.Data[2]));
-                    return;
-                }
-                else if (message.Data.Length == 2)
-                {
-                    output.Send(new ChannelMessage(command, channel, message.Data[1]));
-                    return;
-                }
-            }
-            if (message.Status == 0xf0)
-            {
-                output.Send(new SysExMessage(message.Data));
-                return;
-            }
-            throw new ArgumentException($"Invalid or unhandled data: {BitConverter.ToString(message.Data)}");
+            output.Send(message.Data, 0, message.Data.Length, 0L);
         }
 
         public void Dispose()
         {
-            input.Dispose();
-            output.Dispose();
+            // FIXME
+            input.CloseAsync();
+            output.CloseAsync();
         }
     }
 }

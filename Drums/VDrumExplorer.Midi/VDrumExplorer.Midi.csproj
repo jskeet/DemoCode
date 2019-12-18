@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sanford.Multimedia.Midi" Version="6.6.0">
-      <NoWarn>NU1701</NoWarn>
-    </PackageReference>
+    <PackageReference Include="managed-midi" Version="1.9.13" />
   </ItemGroup>
 
 </Project>
