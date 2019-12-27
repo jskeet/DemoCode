@@ -35,6 +35,11 @@ namespace VDrumExplorer.Wpf
         private readonly string explorerName;
         private readonly string saveFileFilter;
 
+        /// <summary>
+        /// Used to avoid recursion when changing fields. See <see cref="HandleModuleDataChanged"/> for details.
+        /// </summary>
+        private bool currentlyHandlingChanges;
+
         private bool editMode;
         private string fileName;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
@@ -543,13 +548,27 @@ namespace VDrumExplorer.Wpf
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
         {
-            // Note: this is *not* thread-safe. We assume that only the UI is making changes
-            // to the data it's responsible for. This allows us to handle data changes synchronously,
-            // which greatly simplifies ordering aspects when changing an instrument group -
-            // we first need to reset the vedit overlay, then set the size etc.
-            var segment = e.ChangedSegment;
-            ReflectChangesInTree(segment);
-            ReflectChangesInDetails(segment);
+            // Avoid recusive calls when handling data changes. This is a little messy, but effective.
+            // Using a proper ViewModel would probably fix this.
+            if (currentlyHandlingChanges)
+            {
+                return;
+            }
+            try
+            {
+                currentlyHandlingChanges = true;
+                // Note: this is *not* thread-safe. We assume that only the UI is making changes
+                // to the data it's responsible for. This allows us to handle data changes synchronously,
+                // which greatly simplifies ordering aspects when changing an instrument group -
+                // we first need to reset the vedit overlay, then set the size etc.
+                var segment = e.ChangedSegment;
+                ReflectChangesInTree(segment);
+                ReflectChangesInDetails(segment);
+            }
+            finally
+            {
+                currentlyHandlingChanges = false;
+            }
 
             void ReflectChangesInTree(DataSegment segment)
             {
