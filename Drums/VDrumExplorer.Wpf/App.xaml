@@ -5,6 +5,10 @@
              StartupUri="ModuleLoader.xaml"
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <Style x:Key="WindowStyle" TargetType="Window">
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
