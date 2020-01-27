@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
         Title="Select Destination Kit"
-        SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight"
+        Style="{StaticResource WindowStyle}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />

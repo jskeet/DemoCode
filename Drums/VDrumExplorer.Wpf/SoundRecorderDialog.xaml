@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
         Title="Record Instruments From Device" SizeToContent="WidthAndHeight"
-        Closing="HandleClosing">
+        Closing="HandleClosing"
+        Style="{StaticResource WindowStyle}">
     <DockPanel VerticalAlignment="Top">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
