@@ -4,8 +4,9 @@ syntax = "proto3";
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-
 option csharp_namespace = "VDrumExplorer.Data.Proto";
+
+import "google/protobuf/duration.proto";
 
 message DrumFile
 {
@@ -13,6 +14,7 @@ message DrumFile
 	{
 	    Module module = 1;
 		Kit kit = 2;
+		ModuleAudio module_audio = 3;
 	}
 }
 
@@ -45,4 +47,48 @@ message Kit
 {
     ModuleIdentifier identifier = 1;
 	repeated DataSegment segments = 2;
+	int32 default_kit_number = 3;
+}
+
+// The format of an audio sample. We assume it's always raw data, but
+// this specifies mono/stereo, the bits per sample, and the frequency.
+message AudioFormat
+{
+    // The number of channels; 1 for mono, 2 for stereo.
+	int32 channels = 1;
+
+	// The number of bits per sample; typically 16.
+	int32 bits = 2;
+
+	// The number of samples recorded per second.
+	int32 frequency = 3;
+}
+
+// A collection of audio captures for the instruments in a module.
+message ModuleAudio
+{
+    // The module that was recorded.
+	ModuleIdentifier identifier = 1;
+
+	// The format of the audio captures.
+	AudioFormat format = 2;
+
+	// The duration of audio captured per instrument.
+	google.protobuf.Duration duration_per_instrument = 3;
+
+	// The audio captures for instruments.
+	repeated InstrumentAudio instrument_captures = 4;
+}
+
+// Captured audio for a single instrument.
+message InstrumentAudio
+{
+    // The ID of the instrument.
+    int32 instrument_id = 1;
+
+	// True for preset instruments; false for user samples.
+	bool preset = 2;
+
+	// The audio data for the instrument.
+	bytes audio_data = 3;
 }

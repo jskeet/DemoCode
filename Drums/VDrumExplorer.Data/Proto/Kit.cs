@@ -9,13 +9,14 @@ namespace VDrumExplorer.Data.Proto
     internal partial class Kit
     {
         internal Data.Kit ToModel() =>
-            new Data.Kit(Identifier.GetSchema(), DataSegment.LoadData(Segments));
+            new Data.Kit(Identifier.GetSchema(), DataSegment.LoadData(Segments), DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
 
         internal static Kit FromModel(Data.Kit kit) =>
             new Kit
             {
                 Identifier = ModuleIdentifier.FromModel(kit.Schema.Identifier),
-                Segments = { kit.Data.GetSegments().Select(DataSegment.FromModel) }
+                Segments = { kit.Data.GetSegments().Select(DataSegment.FromModel) },
+                DefaultKitNumber = kit.DefaultKitNumber
             };
     }
 }

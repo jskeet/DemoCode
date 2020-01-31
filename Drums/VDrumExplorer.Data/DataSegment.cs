@@ -54,7 +54,7 @@ namespace VDrumExplorer.Data
             }
         }
 
-        internal void SetData(ModuleAddress address, byte[] bytes)
+        public void SetData(ModuleAddress address, byte[] bytes)
         {
             for (int i = 0; i < bytes.Length; i++)
             {

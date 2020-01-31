@@ -7,7 +7,7 @@ namespace VDrumExplorer.Data.Fields
     public class MidiNoteField : NumericField
     {
         internal MidiNoteField(Parameters common) : base(common,
-            min: 0, max: 128, divisor: null, multiplier: null, valueOffset: null, suffix: null,
+            min: 0, max: 128, @default: 0, divisor: null, multiplier: null, valueOffset: null, suffix: null,
             customValueFormatting: (128, "Off"))
         {
         }
@@ -16,6 +16,6 @@ namespace VDrumExplorer.Data.Fields
         {
             var note = GetRawValue(context, data);
             return note == 128 ? default(int?) : note;
-        }            
+        }
     }
 }

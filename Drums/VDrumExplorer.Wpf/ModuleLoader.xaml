@@ -5,17 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="VDrum Module Loader" Height="450" Width="800">
+        Title="V-Drum Module Loader" Height="600"
+        SizeToContent="Width"
+        Style="{StaticResource WindowStyle}">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Click="LoadFile" Margin="5" Padding="5,2">Load module/kit file</Button>
+            <Button Click="LoadFile" Margin="5" Padding="5,2">Load file</Button>
             <Button x:Name="saveLogButton" Click="SaveLog" Margin="5" Padding="5,2">Save log file</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel" IsEnabled="False">
-            <Button x:Name="loadFromDeviceButton" Click="LoadModuleFromDevice" Margin="5" Padding="5,2">Load all data from device</Button>
-            <Button Margin="5" Padding="5,2" Click="LoadKitFromDevice" x:Name="loadKitFromDeviceButton">Load single kit from device</Button>
+            <Label Margin="5" Padding="0,2">Device options:</Label>
+            <Button x:Name="loadFromDeviceButton" Click="LoadModuleFromDevice" Margin="5" Padding="5,2">Load all data</Button>
+            <Button Margin="5" Padding="5,2" Click="LoadKitFromDevice" x:Name="loadKitFromDeviceButton">Load single kit</Button>
             <Label Margin="5" Padding="0,2">Kit number:</Label>
-            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="loadKitFromDeviceKitNumber"></TextBox>
+            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="loadKitFromDeviceKitNumber">1</TextBox>
+            <Button Margin="5" Padding="5,2" Click="RecordInstrumentsFromDevice" x:Name="recordInstrumentsFromDeviceButton">Record instruments</Button>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <GroupBox Header="Log" Margin="5">

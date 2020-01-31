@@ -5,12 +5,12 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
@@ -24,26 +24,44 @@ namespace VDrumExplorer.Wpf
     /// </summary>
     public partial class DataExplorer : Window
     {
+        // Not const just to avoid unreadable code warnings.
+        private static readonly bool UseSliders = true;
+
         protected ModuleData Data { get; }
         protected ModuleSchema Schema { get; }
         internal ILogger Logger { get; }
-        protected SysExClient MidiClient { get; }
+        protected RolandMidiClient MidiClient { get; }
         protected VisualTreeNode RootNode { get; }
+        private readonly string explorerName;
         private readonly string saveFileFilter;
 
+        /// <summary>
+        /// Used to avoid recursion when changing fields. See <see cref="HandleModuleDataChanged"/> for details.
+        /// </summary>
+        private bool currentlyHandlingChanges;
+
         private bool editMode;
+        private string fileName;
         private ILookup<ModuleAddress, TreeViewItem> treeViewItemsToUpdateBySegmentStart;
         private ILookup<ModuleAddress, GroupBox> detailGroupsToUpdateBySegmentStart;
+
+        // When we enter edit mode, we create a dictionary to remember transient
+        // overlay data. When we switch between overload containers, we reset to
+        // the previous values if we have any, instead of resetting to defaults.
+        private Dictionary<(ModuleAddress, Container), byte[]> savedOverlayEditData;
 
         protected VisualTreeNode CurrentNode { get; set; }
 
         public DataExplorer()
         {
             InitializeComponent();
+            // We can't attach these event handlers in XAML, as only instance members of the current class are allowed.
+            copyToDeviceKitNumber.PreviewTextInput += TextConversions.CheckDigits;
+            defaultKitNumber.PreviewTextInput += TextConversions.CheckDigits;
         }
 
-        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, SysExClient midiClient,
-            string saveFileFilter) : this()
+        internal DataExplorer(ILogger logger, ModuleSchema schema, ModuleData data, VisualTreeNode rootNode, RolandMidiClient midiClient, string fileName,
+            string saveFileFilter, string explorerName) : this()
         {
             Logger = logger;
             Schema = schema;
@@ -51,13 +69,21 @@ namespace VDrumExplorer.Wpf
             MidiClient = midiClient;
             RootNode = rootNode;
             this.saveFileFilter = saveFileFilter;
+            this.explorerName = explorerName;
+            this.fileName = fileName;
             if (midiClient == null)
             {
                 mainPanel.Children.Remove(midiPanel);
             }
             Data.DataChanged += HandleModuleDataChanged;
             LoadView();
+            UpdateTitle();
         }
+
+        private void UpdateTitle() =>
+            Title = fileName == null
+            ? $"{explorerName} ({Schema.Identifier.Name})"
+            : $"{explorerName} ({Schema.Identifier.Name}) - {fileName}";
 
         protected override void OnClosed(EventArgs e)
         {
@@ -65,18 +91,31 @@ namespace VDrumExplorer.Wpf
             base.OnClosed(e);
         }
 
-        protected void SaveFile(object sender, EventArgs e)
+        protected void SaveFile(object sender, ExecutedRoutedEventArgs e) =>
+            SaveFile(fileName);
+
+        protected void SaveFileAs(object sender, ExecutedRoutedEventArgs e) =>
+            SaveFile(defaultFileName: null);
+
+        private void SaveFile(string defaultFileName)
         {
-            var dialog = new SaveFileDialog { Filter = saveFileFilter };
-            var result = dialog.ShowDialog();
-            if (result != true)
+            string newFileName = defaultFileName;
+            if (newFileName == null)
             {
-                return;
+                var dialog = new SaveFileDialog { Filter = saveFileFilter };
+                var result = dialog.ShowDialog();
+                if (result != true)
+                {
+                    return;
+                }
+                newFileName = dialog.FileName;
             }
-            using (var stream = File.OpenWrite(dialog.FileName))
+            using (var stream = File.OpenWrite(newFileName))
             {
                 SaveToStream(stream);
             }
+            fileName = newFileName;
+            UpdateTitle();
         }
 
         protected virtual void SaveToStream(Stream stream)
@@ -101,7 +140,7 @@ namespace VDrumExplorer.Wpf
             {
                 var node = new TreeViewItem
                 {
-                    Header = vnode.Description.Format(vnode.Context, Data),
+                    Header = FormatNodeDescription(vnode),
                     Tag = vnode
                 };
                 foreach (var address in vnode.Description.GetSegmentAddresses(vnode.Context))
@@ -120,28 +159,29 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
+        protected void RefreshTreeNodeAndDescendants(TreeViewItem node)
+        {
+            RefreshTreeNodeText(node);
+            foreach (TreeViewItem child in node.Items)
+            {
+                RefreshTreeNodeAndDescendants(child);
+            }
+        }
+
+        protected void RefreshTreeNodeText(TreeViewItem node)
+        {
+            var vnode = (VisualTreeNode) node.Tag;
+            node.Header = FormatNodeDescription(vnode);
+        }
+
+        protected virtual string FormatNodeDescription(VisualTreeNode node) =>
+            node.Description.Format(node.Context, Data);
+
         private void HandleTreeViewSelection(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var item = (TreeViewItem) e.NewValue;
             CurrentNode = (VisualTreeNode) item?.Tag;
             LoadDetailsPage();
-        }
-
-        protected virtual void OpenKitInKitExplorer(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private VisualTreeNode FindKitNode(VisualTreeNode currentNode)
-        {
-            while (currentNode != null)
-            {
-                if (currentNode.KitNumber != null)
-                {
-                    return currentNode;
-                }
-                currentNode = currentNode.Parent;
-            }
-            return null;
         }
 
         protected virtual void LoadDetailsPage()
@@ -158,7 +198,7 @@ namespace VDrumExplorer.Wpf
             var context = CurrentNode.Context;
             foreach (var detail in CurrentNode.Details)
             {
-                var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(context, detail);
+                var grid = detail.Container == null ? FormatDescriptions(context, detail) : FormatContainer(detail.Container);
                 var groupBox = new GroupBox
                 {
                     Header = new TextBlock { FontWeight = FontWeights.SemiBold, Text = detail.Description },
@@ -169,9 +209,7 @@ namespace VDrumExplorer.Wpf
 
                 if (grid.Tag is (DynamicOverlay overlay, Container currentContainer))
                 {
-                    var container = detail.Container.FinalField;
-                    var detailContext = detail.FixContainer(context);
-                    var segmentStart = Data.GetSegment(detailContext.Address + overlay.SwitchOffset).Start;
+                    var segmentStart = Data.GetSegment(detail.Container.Address + overlay.SwitchContainerOffset).Start;
                     boundItems.Add((groupBox, segmentStart));
                 }
             }
@@ -179,15 +217,11 @@ namespace VDrumExplorer.Wpf
                 .ToLookup(pair => pair.Item2, pair => pair.Item1);
         }
 
-        private Grid FormatContainer(FixedContainer context, VisualTreeDetail detail)
+        private Grid FormatContainer(FixedContainer context)
         {
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-            // Find the real context based on the container.
-            var container = detail.Container.FinalField;
-            context = detail.FixContainer(context);
 
             var fields = context.GetPrimitiveFields(Data)
                 .Where(f => f.IsEnabled(context, Data));
@@ -206,7 +240,6 @@ namespace VDrumExplorer.Wpf
                 {
                     value = CreateReadWriteFieldElement(context, primitive);
                     value.Margin = new Thickness(5, 1, 0, 0);
-
                 }
                 else
                 {
@@ -291,6 +324,10 @@ namespace VDrumExplorer.Wpf
             // - For preset instruments, we want to pick group and then instrument
             // - For user samples, we want a simple textbox for the sample number
 
+            // Instrument overlays are particularly complicated:
+            // - For most fields, the field doesn't reset unless the instrument group resets (like a normal overlay)
+            // - For cymbal/hi-hat fields, the size resets when the instrument is changed, because the size is part of the instrument.
+
             const string presetBank = "Preset";
             const string samplesBank = "User sample";
 
@@ -298,13 +335,13 @@ namespace VDrumExplorer.Wpf
             var bankChoice = new ComboBox { Items = { presetBank, samplesBank }, SelectedItem = selected.Group != null ? presetBank : samplesBank };
             var groupChoice = new ComboBox { ItemsSource = Schema.InstrumentGroups, SelectedItem = selected.Group, Margin = new Thickness(4, 0, 0, 0) };
             var instrumentChoice = new ComboBox { ItemsSource = selected.Group?.Instruments, SelectedItem = selected, DisplayMemberPath = "Name", Margin = new Thickness(4, 0, 0, 0) };
-            var userSampleTextBox = new TextBox { Width = 50, Text = selected.Id.ToString(CultureInfo.InvariantCulture), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
+            var userSampleTextBox = new TextBox { Width = 50, Text = TextConversions.Format(selected.Id), Padding = new Thickness(0), Margin = new Thickness(4, 0, 0, 0), VerticalContentAlignment = VerticalAlignment.Center };
 
             SetVisibility(selected.Group != null);
 
             userSampleTextBox.SelectionChanged += (sender, args) =>
             {
-                bool valid = int.TryParse(userSampleTextBox.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int sample)
+                bool valid = TextConversions.TryParseInt32(userSampleTextBox.Text, out int sample)
                     && sample >= 1 && sample <= Schema.UserSampleInstruments.Count;
                 if (valid)
                 {
@@ -329,7 +366,13 @@ namespace VDrumExplorer.Wpf
                 {
                     return;
                 }
+                // Note: this updates the vedit fields if necessary too. (Size for cymbals etc.)
                 field.SetInstrument(context, Data, instrument);
+                // Update the vedit if necessary.
+                // FIXME: This is really hacky, but working out exactly what should trigger when is harder.
+                // We don't really need to recreate the fields - we'd just like to modify the content. But
+                // that's tricky too.
+                UpdateVeditGroupBox();
             };
             bankChoice.SelectionChanged += (sender, args) =>
             {
@@ -368,15 +411,64 @@ namespace VDrumExplorer.Wpf
                 groupChoice.Visibility = preset ? Visibility.Visible : Visibility.Collapsed;
                 instrumentChoice.Visibility = preset ? Visibility.Visible : Visibility.Collapsed;
             }
+
+            void UpdateVeditGroupBox()
+            {
+                var veditAddress = context.Address + field.VeditOffset;
+                foreach (var groupBox in detailsPanel.Children.OfType<GroupBox>())
+                {
+                    if (groupBox.Tag is VisualTreeDetail detail && detail.Container?.Address.Value == veditAddress.Value)
+                    {
+                        groupBox.Content = FormatContainer(detail.Container);
+                    }
+                }
+            }
         }
 
         private static readonly Brush errorBrush = new SolidColorBrush(Colors.Red);
         private FrameworkElement CreateNumericFieldElement(FixedContainer context, NumericField field)
         {
-            var textBox = new TextBox { Text = field.GetText(context, Data), Padding = new Thickness(0) };
-            textBox.TextChanged += (sender, args) =>
-                textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
-            return textBox;
+            if (UseSliders)
+            {
+                var slider = new Slider
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(2, 1, 0, 0),
+                    Minimum = field.Min,
+                    Maximum = field.Max,
+                    Value = field.GetRawValue(context, Data),
+                    SmallChange = 1,
+                    LargeChange = Math.Max((field.Max - field.Min) / 10, 1),
+                    Width = 150                    
+                };
+                
+                var label = new Label
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(2, 1, 0, 0),
+                    Content = field.GetText(context, Data),
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
+
+                slider.ValueChanged += (sender, args) =>
+                {
+                    field.SetRawValue(context, Data, (int) args.NewValue);
+                    label.Content = field.GetText(context, Data);
+                };
+
+                return new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Children = { slider, label }
+                };
+            }
+            else
+            {
+                var textBox = new TextBox { Text = field.GetText(context, Data), Padding = new Thickness(0) };
+                textBox.TextChanged += (sender, args) =>
+                    textBox.Foreground = field.TrySetText(context, Data, textBox.Text) ? SystemColors.WindowTextBrush : errorBrush;
+                return textBox;
+            }
         }
 
         private Grid FormatDescriptions(FixedContainer context, VisualTreeDetail detail)
@@ -403,6 +495,7 @@ namespace VDrumExplorer.Wpf
         {
             editMode = true;
             Data.Snapshot();
+            savedOverlayEditData = new Dictionary<(ModuleAddress, Container), byte[]>();
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -411,6 +504,7 @@ namespace VDrumExplorer.Wpf
         {
             editMode = false;
             Data.CommitSnapshot();
+            savedOverlayEditData = null;
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -419,6 +513,7 @@ namespace VDrumExplorer.Wpf
         {
             editMode = false;
             Data.RevertSnapshot();
+            savedOverlayEditData = null;
             EnableDisableButtons();
             LoadDetailsPage();
         }
@@ -453,42 +548,63 @@ namespace VDrumExplorer.Wpf
 
         private void HandleModuleDataChanged(object sender, ModuleDataChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke((Action) HandleModuleDataChangedImpl);
-
-            void HandleModuleDataChangedImpl()
+            // Avoid recusive calls when handling data changes. This is a little messy, but effective.
+            // Using a proper ViewModel would probably fix this.
+            if (currentlyHandlingChanges)
             {
+                return;
+            }
+            try
+            {
+                currentlyHandlingChanges = true;
+                // Note: this is *not* thread-safe. We assume that only the UI is making changes
+                // to the data it's responsible for. This allows us to handle data changes synchronously,
+                // which greatly simplifies ordering aspects when changing an instrument group -
+                // we first need to reset the vedit overlay, then set the size etc.
                 var segment = e.ChangedSegment;
                 ReflectChangesInTree(segment);
                 ReflectChangesInDetails(segment);
+            }
+            finally
+            {
+                currentlyHandlingChanges = false;
             }
 
             void ReflectChangesInTree(DataSegment segment)
             {
                 foreach (var treeViewItem in treeViewItemsToUpdateBySegmentStart[segment.Start])
                 {
-                    var vnode = (VisualTreeNode) treeViewItem.Tag;
-                    treeViewItem.Header = vnode.Description.Format(vnode.Context, Data);
+                    RefreshTreeNodeText(treeViewItem);
                 }
             }
 
             void ReflectChangesInDetails(DataSegment segment)
             {
-                var context = CurrentNode.Context;
                 foreach (var groupBox in detailGroupsToUpdateBySegmentStart[segment.Start])
                 {
                     var detail = (VisualTreeDetail) groupBox.Tag;
 
-                    var container = detail.Container.FinalField;
-                    var detailContext = detail.FixContainer(context);
+                    var detailContext = detail.Container;
                     Grid grid = (Grid) groupBox.Content;
                     var (overlay, previousContainer) = ((DynamicOverlay, Container)) grid.Tag;
                     var currentContainer = overlay.GetOverlaidContainer(detailContext, Data);
                     if (currentContainer != previousContainer)
                     {
-                        // As the container has changed, let's reset the values to sensible defaults.
+                        var overlayAddress = detailContext.Address + overlay.Offset;
+                        // Save the current container data in case we need to come back to it.
+                        savedOverlayEditData[(overlayAddress, previousContainer)] = Data.GetData(overlayAddress, overlay.Size);
+                        // As the container has changed, let's either reset the values to sensible defaults,
+                        // or to previous values if we have any.
                         // This will itself trigger a change notification event, but that's okay.
-                        currentContainer.Reset(detailContext, Data);
-                        groupBox.Content = FormatContainer(context, detail);
+                        if (savedOverlayEditData.TryGetValue((overlayAddress, currentContainer), out var data))
+                        {
+                            Data.GetSegment(overlayAddress).SetData(overlayAddress, data);
+                        }
+                        else
+                        {
+                            currentContainer.Reset(detailContext, Data);
+                        }
+                        groupBox.Content = FormatContainer(detailContext);
                     }
                 }
             }
@@ -497,6 +613,7 @@ namespace VDrumExplorer.Wpf
         protected async Task CopySegmentsToDeviceAsync(List<DataSegment> segments)
         {
             midiPanel.IsEnabled = false;
+            int written = 0;
             try
             {
                 Logger.Log($"Writing {segments.Count} segments to the device.");
@@ -504,8 +621,15 @@ namespace VDrumExplorer.Wpf
                 {
                     MidiClient.SendData(segment.Start.Value, segment.CopyData());
                     await Task.Delay(40);
+                    written++;
                 }
                 Logger.Log($"Finished writing segments to the device.");
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Failed while writing data to the device.");
+                Logger.Log($"Segments successfully written: {written}");
+                Logger.Log($"Error: {e}");
             }
             finally
             {

@@ -104,6 +104,14 @@ namespace JonSkeet.DemoUtil
                 }
                 catch (Exception e)
                 {
+                    // Normally we fail due to an exception within the
+                    // code invoked via reflection.
+                    // Unwrap the TargetInvocationException that would otherwise
+                    // be wrapped in.
+                    if (e is TargetInvocationException tie)
+                    {
+                        e = tie.InnerException;
+                    }
                     Console.WriteLine("Exception: {0}", e);
                 }
                 Console.WriteLine();

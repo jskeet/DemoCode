@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace VDrumExplorer.Data.Json
 {
     /// <summary>
-    /// The JSON representation of information about the dynamic overlay 
+    /// The JSON representation of information about a dynamic overlay.
     /// </summary>
     internal sealed class DynamicOverlayJson
     {
@@ -24,19 +24,15 @@ namespace VDrumExplorer.Data.Json
         public HexInt32? Size { get; set; }
 
         /// <summary>
-        /// The offset relative to the start of the parent container, at which
-        /// to find the value to switch between dynamic overlays. This may be an offset into a different
-        /// container.
+        /// The offset of the container holding the switch field, relative to the start of the parent container
+        /// of this field.
         /// </summary>
-        public HexInt32? SwitchOffset { get; set; }
+        public HexInt32? SwitchContainerOffset { get; set; }
 
         /// <summary>
-        /// Any transform to apply. Currently supported value "instrumentGroup", which expects
-        /// the target of the offset to be an instrument field. The instrument group is determined from that.
-        /// (An extra container is expected after all the preset instruments, for user samples, as they're
-        /// not in an instrument group.)
+        /// The name of the switch field within the switch container.
         /// </summary>
-        public string? SwitchTransform { get; set; }
+        public string? SwitchField { get; set; }
 
         /// <summary>
         /// The containers to switch between.

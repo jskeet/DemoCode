@@ -32,7 +32,8 @@ namespace Nullability
             }
         }
 
-        static bool StringIsNullOrEmpty([NotNullWhen(false)] string? text) => string.IsNullOrEmpty(text);
+        static bool StringIsNullOrEmpty([NotNullWhen(false)] string? text) =>
+            string.IsNullOrEmpty(text);
 
         // Imagine a Dictionary<bool, string>
         static bool TryGetValue(bool key, [MaybeNullWhen(false)] out string value)

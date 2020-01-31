@@ -88,6 +88,11 @@ namespace VDrumExplorer.Data.Json
         public int? Off { get; set; }
 
         /// <summary>
+        /// The default value, if not 0.
+        /// </summary>
+        public int? Default { get; set; }
+
+        /// <summary>
         /// The label for the <see cref="Off"/>; defaults to "off".
         /// </summary>
         public string OffLabel { get; set; } = "Off";
@@ -149,7 +154,14 @@ namespace VDrumExplorer.Data.Json
         /// If set, the condition for the field to be enabled.
         /// </summary>
         public FieldConditionJson? Condition { get; set; }
-        
+
+        /// <summary>
+        /// The offset from the start of the parent container of this field,
+        /// to the container with vedit details (tuning, muffling etc). This is
+        /// only relevant for instrument fields.
+        /// </summary>
+        public HexInt32? VeditOffset { get; set; }
+
         public override string ToString() => Description ?? "(No description)";
 
         internal IEnumerable<IField> ToFields(ModuleSchema schema, ModuleJson module)
@@ -237,9 +249,11 @@ namespace VDrumExplorer.Data.Json
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
                 "dynamicOverlay" => BuildDynamicOverlay(),
-                "instrument" => new InstrumentField(BuildCommon(4), ValidateNotNull(BankOffset, nameof(BankOffset)).Value),
-                "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0),
-                "volume32" => new NumericField(BuildCommon(4), -601, 60, 10, null, 0, "dB", (-601, "INF")),
+                "instrument" => new InstrumentField(BuildCommon(4), 
+                    ValidateNotNull(BankOffset, nameof(BankOffset)).Value,
+                    ValidateNotNull(VeditOffset, nameof(VeditOffset)).Value),
+                "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0, 0),
+                "volume32" => new NumericField(BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "-INF")),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
                 "midi32" => new MidiNoteField(BuildCommon(4)),
@@ -248,7 +262,7 @@ namespace VDrumExplorer.Data.Json
             };
 
             EnumField BuildEnumField(int size) =>
-                new EnumField(BuildCommon(size), ValidateNotNull(Values, nameof(Values)).AsReadOnly(), Min ?? 0);
+                new EnumField(BuildCommon(size), ValidateNotNull(Values, nameof(Values)).AsReadOnly(), Min ?? 0, GetDefaultValue());
 
             StringField BuildStringField(int bytesPerChar)
             {
@@ -262,14 +276,15 @@ namespace VDrumExplorer.Data.Json
                 // Offsets within each container are relative to the parent container of this field,
                 // not relative to this field itself.
                 var overlay = ValidateNotNull(DynamicOverlay, nameof(DynamicOverlay));
-                var switchOffset = ValidateNotNull(overlay.SwitchOffset, nameof(overlay.SwitchOffset)).Value;
+                var switchContainerOffset = ValidateNotNull(overlay.SwitchContainerOffset, nameof(overlay.SwitchContainerOffset)).Value;
+                var switchField = ValidateNotNull(overlay.SwitchField, nameof(overlay.SwitchField));
                 var containers = ValidateNotNull(overlay.Containers, nameof(overlay.Containers))
                     .Select((json, index) => json.ToContainer(schema, module, Invariant($"Overlay[{index}]"), 0, description, condition: null))
                     .ToList()
                     .AsReadOnly();
                 var size = ValidateNotNull(overlay.Size, nameof(overlay.Size));
                 var common = new FieldBase.Parameters(schema, name, offset, size.Value, description, condition: null);
-                return new DynamicOverlay(common, switchOffset, overlay.SwitchTransform, containers);
+                return new DynamicOverlay(common, switchContainerOffset, switchField, containers);
             }
 
             Container BuildContainer()
@@ -283,13 +298,21 @@ namespace VDrumExplorer.Data.Json
             {
                 var min = ValidateNotNull(Min, nameof(Min));
                 var max = ValidateNotNull(Max, nameof(Max));
+                Validate(max >= 0, $"Unexpected all-negative field: {name}");
                 return new NumericField(BuildCommon(size),
-                    min, max,
+                    min, max, GetDefaultValue(),
                     Divisor, Multiplier, ValueOffset, Suffix,
                     Off == null ? default((int, string)?) : (Off.Value, OffLabel));
             }
 
             FieldBase.Parameters BuildCommon(int size) => new FieldBase.Parameters(schema, name, offset, size, description, condition);
+
+            // The default is:
+            // - Default if specified
+            // - 0 if that's valid
+            // - min otherwise
+            // Assumption: we never have all-negative fields.
+            int GetDefaultValue() => Default ?? Math.Max(Min ?? 0, 0);
         }
     }
 }

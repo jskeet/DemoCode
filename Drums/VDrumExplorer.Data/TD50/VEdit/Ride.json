@@ -1,5 +1,4 @@
 ﻿{
-  "size": "0x0",
   "fields": [
     {
       "offset": "0x01",
@@ -13,9 +12,21 @@
     {
       "offset": "0x03",
       "description": "Thickness",
-      "type": "range16",
+      "type": "enum16",
       "min": -5,
-      "max": 5
+      "values": [
+        "Thin-5",
+        "Thin-4",
+        "Thin-3",
+        "Thin-2",
+        "Thin-1",
+        "Standard",
+        "Thick+1",
+        "Thick+2",
+        "Thick+3",
+        "Thick+4",
+        "Thick+5"
+      ]
     },
     {
       "offset": "0x05",
@@ -76,11 +87,12 @@
     },
     {
       "offset": "0x0d",
-      "description": "Wire level",
+      "description": "Ping level",
       "type": "range16",
       "min": 1,
       "max": 10,
-      "valueOffset": -5
+      "valueOffset": -5,
+      "default":  5
     }
   ]
 }

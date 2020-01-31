@@ -10,8 +10,8 @@ namespace VDrumExplorer.Data.Fields
     {
         public IReadOnlyList<string> Values { get; }
 
-        internal EnumField(FieldBase.Parameters common, IReadOnlyList<string> values, int min)
-            : base(common, min, values.Count + min - 1) =>
+        internal EnumField(FieldBase.Parameters common, IReadOnlyList<string> values, int min, int @default)
+            : base(common, min, values.Count + min - 1, @default) =>
             Values = values;
 
         public override string GetText(FixedContainer context, ModuleData data) => Values[GetRawValue(context, data) - Min];

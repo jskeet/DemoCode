@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- FIXME: We should be able to use netstandard2.1... -->
-    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
-    <LangVersion>preview</LangVersion>
-    <!-- Nullable option for VS... (FIXME: Remove!) -->
-    <NullableContextOptions>enable</NullableContextOptions>
-    <!-- And for the command line... --> 
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

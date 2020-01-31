@@ -2,10 +2,10 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System.Globalization;
 using System.IO;
 using System.Windows;
 using VDrumExplorer.Data;
+using VDrumExplorer.Data.Layout;
 using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Wpf
@@ -13,30 +13,35 @@ namespace VDrumExplorer.Wpf
     public class KitExplorer : DataExplorer
     {
         private readonly Kit kit;
-        private const string SaveFileFilter = "VDrum Explorer kit files|*.vkit";
+        internal const string SaveFileFilter = "V-Drum Explorer kit files|*.vkit";
 
-        internal KitExplorer(ILogger logger, Kit kit, SysExClient midiClient)
-            : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, SaveFileFilter)
+        internal KitExplorer(ILogger logger, Kit kit, RolandMidiClient midiClient, string fileName)
+            : base(logger, kit.Schema, kit.Data, kit.KitRoot, midiClient, fileName, SaveFileFilter, "Kit explorer")
         {
             this.kit = kit;
-            openKitButton.Visibility = Visibility.Collapsed;
             copyToDeviceButton.Content = "Copy kit to device";
-            Title = $"Kit explorer: {Schema.Identifier.Name}";
+            defaultKitNumber.Text = TextConversions.Format(kit.DefaultKitNumber);
+            copyToDeviceKitNumber.Text = defaultKitNumber.Text;
         }
 
-        protected override void SaveToStream(Stream stream) => kit.Save(stream);
+        protected override void SaveToStream(Stream stream)
+        {
+            if (!TextConversions.TryGetKitRoot(defaultKitNumber.Text, Schema, Logger, out var targetKitRoot))
+            {
+                MessageBox.Show("The default kit number is invalid; please correct before saving.", "Invalid kit number");
+                return;
+            }
+            kit.DefaultKitNumber = targetKitRoot.KitNumber.Value;
+            kit.Save(stream);
+        }
+
+        protected override string FormatNodeDescription(VisualTreeNode node) =>
+            (node.KitOnlyDescription ?? node.Description).Format(node.Context, Data);
 
         protected override async void CopyToDevice(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(copyToDeviceKitNumber.Text, NumberStyles.None, CultureInfo.InvariantCulture, out int kitToCopyTo))
+            if (!TextConversions.TryGetKitRoot(copyToDeviceKitNumber.Text, Schema, Logger, out var targetKitRoot))
             {
-                Logger.Log("Invalid kit number");
-                return;
-            }
-
-            if (!Schema.KitRoots.TryGetValue(kitToCopyTo, out var targetKitRoot))
-            {
-                Logger.Log("Unknown kit number");
                 return;
             }
 

@@ -31,8 +31,7 @@ namespace VDrumExplorer.Data.Json
                 ValidateNull(Format, nameof(Format), nameof(Repeat));
                 ValidateNull(FormatPaths, nameof(FormatPaths), nameof(Repeat));
 
-                var container = context.GetContainer(relativePath);                
-                return new VisualTreeDetail(description, container);
+                return new VisualTreeDetail(description, context.GetContext(relativePath));
             }
             else
             {                

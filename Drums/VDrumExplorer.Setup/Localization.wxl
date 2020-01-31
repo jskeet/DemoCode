@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="Language">1033</String>
+  <String Id="Description">V-Drum Explorer</String>
+  <String Id="ProductName">V-Drum Explorer</String>
+  <String Id="ShortcutName">V-Drum Explorer</String>
+  <String Id="Comments">See https://jskeet.github.io/DemoCode/Drums/</String>
+  <String Id="Manufacturer">Jon Skeet</String>
+  <String Id="ProductFolder">VDrumExplorer</String>
+  <String Id="Keywords">roland,drums,vdrums,drum,vdrum,v-drum</String>
+</WixLocalization>

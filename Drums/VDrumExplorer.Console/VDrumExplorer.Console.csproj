@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Data\VDrumExplorer.Data.csproj" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
   </ItemGroup>
 
 </Project>

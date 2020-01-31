@@ -446,8 +446,8 @@
       "valueOffset": 1,
       "divisor": 10
     },
-    // FIXME: The spec is contradictory here. The raw values are 0-16 (17 values), but the reported values are 1-15 and GLOBAL (16 values).
-    // Need to investigate... I suspect it means channel 1 to channel 16
+    // The spec is incorrect here. It claims the maximum displayed value is 15, but it's actually 16.
+    // (Then Global comes after 16.)
     {
       "offset": "0x0120",
       "description": "Kick MIDI channel",

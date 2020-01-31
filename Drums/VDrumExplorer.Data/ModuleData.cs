@@ -185,6 +185,12 @@ namespace VDrumExplorer.Data
 
         public byte[] GetData(ModuleAddress address, int size)
         {
+            // Normal "we don't really mean it" sizing.
+            if (size >= 0x100)
+            {
+                size -= 0x80;
+            }
+
             var segment = GetSegment(address);
             byte[] ret = new byte[size];
             for (int i = 0; i < size; i++)
@@ -231,6 +237,20 @@ namespace VDrumExplorer.Data
                 segment.SetData(change.address, change.bytes);
             }
             DataChanged?.Invoke(this, new ModuleDataChangedEventArgs(segment));
+        }
+
+        /// <summary>
+        /// Overwrites data in this module with all data from the given module.
+        /// No change events are raised.
+        /// </summary>
+        public void OverwriteWithDataFrom(ModuleData data)
+        {
+            // TODO: What if segments are missing or have different lengths?
+            foreach (var segment in data.GetSegments())
+            {
+                var targetSegment = GetSegment(segment.Start);
+                targetSegment.SetData(segment.Start, segment.CopyData());
+            }
         }
     }
 }

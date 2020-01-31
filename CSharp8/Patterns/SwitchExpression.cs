@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PatternsAndRanges
 {
@@ -6,7 +7,7 @@ namespace PatternsAndRanges
     {
         static void Main()
         {
-            Func<int, int> fib = Fib4;
+            Func<int, int> fib = Fib4a;
             for (int i = 0; i < 10; i++)
             {
                 Console.WriteLine($"{i}: {fib(i)}");
@@ -55,11 +56,23 @@ namespace PatternsAndRanges
             }
         }
 
-        static int Fib4(int n) => n switch
+        static int Fib4a(int n)
+        {
+            int result = n switch
+            {
+                0 => 0,
+                1 => 1,
+                _ => n >= 0 ? Fib4a(n - 1) + Fib4a(n - 2)
+                  : throw new ArgumentOutOfRangeException()
+            };
+            return result;
+        }
+
+        static int Fib4b(int n) => n switch
         {
             0 => 0,
             1 => 1,
-            _ => n >= 0 ? Fib4(n - 1) + Fib4(n - 2)
+            _ => n >= 0 ? Fib4b(n - 1) + Fib4b(n - 2)
               : throw new ArgumentOutOfRangeException()
         };
 
@@ -77,6 +90,19 @@ namespace PatternsAndRanges
 
             int Impl((int current, int next) tuple, int index) =>
                 index == n ? tuple.current : Impl((tuple.next, tuple.current + tuple.next), index + 1);
+        }
+
+        // Just for completeness... the *nice* version.
+        // (No switch expressions though...)
+        static IEnumerable<int> Fib7()
+        {
+            int current = 0;
+            int next = 1;
+            while (true)
+            {
+                yield return current;
+                (current, next) = (next, current + next);
+            }
         }
     }
 }

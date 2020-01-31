@@ -4,13 +4,13 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>    
     <LangVersion>preview</LangVersion>
     <OutputType>Exe</OutputType>
-    <NullableContextOptions>enable</NullableContextOptions>
     <Nullable>enable</Nullable>
     <StartupObject>Nullability.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JonSkeet.DemoUtil" Version="1.1.0" />
+    <PackageReference Include="JonSkeet.DemoUtil" Version="1.1.1" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>

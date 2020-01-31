@@ -5,22 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="KitExplorer" Height="450" Width="800">
+        Title="KitExplorer" Height="800"
+        Style="{StaticResource WindowStyle}"
+        SizeToContent="Width">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveFile" />
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveFileAs" />
+    </Window.CommandBindings>
     <DockPanel x:Name="mainPanel">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Save" Click="SaveFile" />
+                <MenuItem Command="ApplicationCommands.Save" />
+                <MenuItem Command="ApplicationCommands.SaveAs" />
             </MenuItem>
         </Menu>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="defaultKitPanel">
+            <Label Margin="5" Padding="0,2">Default kit number:</Label>
+            <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="defaultKitNumber"></TextBox>
+        </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Margin="5" Padding="5,2" Click="EnterEditMode" x:Name="editModeButton">Edit mode</Button>
             <Button Margin="5" Padding="5,2" Click="CommitChanges" IsEnabled="False" x:Name="commitChangesButton">Commit changes</Button>
             <Button Margin="5" Padding="5,2" Click="CancelChanges" IsEnabled="False" x:Name="cancelChangesButton">Cancel changes</Button>
-            <Button Margin="5" Padding="5,2" Click="OpenKitInKitExplorer" IsEnabled="False" x:Name="openKitButton">Open copy in Kit Explorer</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" x:Name="midiPanel">
             <Button Margin="5" Padding="5,2" Click="CopyToDevice" x:Name="copyToDeviceButton"></Button>
-            <Label Margin="5" Padding="0,2" x:Name="kitNumberLabel">Kit number:</Label>
+            <Label Margin="5" Padding="0,2" x:Name="kitNumberLabel">Kit to copy to:</Label>
             <TextBox Margin="5" Width="30" VerticalAlignment="Center" x:Name="copyToDeviceKitNumber"></TextBox>
             <Button Margin="5" Padding="5,2" Click="PlayNote" x:Name="playNoteButton">Play note</Button>
             <Label Margin="5" Padding="5,2">Midi Channel:</Label>
@@ -43,7 +53,8 @@
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
             <Label Margin="5" Padding="5,2">Attack:</Label>
-            <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider"/>
+            <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" Width="100" x:Name="attackSlider" IsSnapToTickEnabled="True" TickFrequency="1" />
+            <Label Margin="5" Padding="0,2" HorizontalAlignment="Left" Content="{Binding ElementName=attackSlider, Path=Value}"/>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <Grid>
@@ -55,7 +66,7 @@
             <TreeView x:Name="treeView" Grid.Column="0" SelectedItemChanged="HandleTreeViewSelection" BorderThickness="0" />
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
-                <StackPanel Margin="5,0,5,0" x:Name="detailsPanel" Grid.Column="2" />
+                <StackPanel Margin="5,0,5,0" x:Name="detailsPanel" />
             </ScrollViewer>
         </Grid>
     </DockPanel>

@@ -13,12 +13,14 @@ namespace VDrumExplorer.Data.Json
     {
         public string? Description { get; set; }
         public Dictionary<int, string>? Instruments { get; set; }
+        public Dictionary<string, Dictionary<int, int>>? VeditDefaults { get; set; }
 
         internal InstrumentGroup ToInstrumentGroup(int index) =>
             new InstrumentGroup(
                 ValidateNotNull(Description, nameof(Description)),
                 index,
-                ValidateNotNull(Instruments, nameof(Instruments)));
+                ValidateNotNull(Instruments, nameof(Instruments)),
+                VeditDefaults);
 
         public override string ToString() => Description ?? "(Unspecified)";
     }

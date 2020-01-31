@@ -4,47 +4,39 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VDrumExplorer.Data.Fields
 {
     public sealed class DynamicOverlay : FieldBase
     {
-        private InstrumentField instrumentField;
+        public int SwitchContainerOffset { get; }
 
-        public int SwitchOffset { get; }
-        
-        private readonly string? switchTransform;
-        internal IReadOnlyList<Container> OverlaidContainers { get; }
+        private readonly string switchField;
+        private IReadOnlyList<Container> OverlaidContainers { get; }
 
-        // No condition; overlays are already conditional effectively.
-        internal DynamicOverlay(FieldBase.Parameters common, int switchOffset, string? switchTransform, IReadOnlyList<Container> containers)
+        internal DynamicOverlay(FieldBase.Parameters common, int switchContainerOffset, string switchField, IReadOnlyList<Container> containers)
             : base(common)
         {
-            (SwitchOffset, this.switchTransform, OverlaidContainers) = (switchOffset, switchTransform, containers);
-            // FIXME: This is really horribly, but it works for now.
-            instrumentField = new InstrumentField(new FieldBase.Parameters(Schema, "dummy instrument field", 0, 4, "dummy instrument field", null), 8);
+            (SwitchContainerOffset, this.switchField, OverlaidContainers) = (switchContainerOffset, switchField, containers);
         }
 
         public Container GetOverlaidContainer(FixedContainer context, ModuleData data)
         {
-            // FIXME: This is really hacky at the moment...
-            var switchAddress = context.Address + SwitchOffset;
-            int index = switchTransform switch
+            var switchContainerAddress = context.Address + SwitchContainerOffset;
+            var switchContainer = Schema.LoadableContainersByAddress[switchContainerAddress];
+            var switchContext = new FixedContainer(switchContainer, switchContainerAddress);
+            var field = switchContainer.GetField(switchField);
+
+            int index = field switch
             {
-                null => data.GetAddressValue(switchAddress),
-                "instrumentGroup" => GetInstrumentGroupIndex(),
-                _ => throw new InvalidOperationException($"Invalid switch transform '{switchTransform}'")
+                // User samples get an extra overlay at the end.
+                InstrumentField instrumentField =>
+                    instrumentField.GetInstrument(switchContext, data).Group?.Index ?? Schema.InstrumentGroups.Count,
+                NumericFieldBase nfb => nfb.GetRawValue(switchContext, data),
+                _ => throw new InvalidOperationException($"Invalid switch field type '{field.GetType()}'")
             };
             return OverlaidContainers[index];
-            
-            int GetInstrumentGroupIndex()
-            {
-                // This is in the wrong container. It's all horrible!
-                var instrumentContext = new FixedContainer(context.Container, switchAddress);
-                var instrument = instrumentField.GetInstrument(instrumentContext, data);
-                // User samples get an extra overlay at the end.
-                return instrument.Group?.Index ?? Schema.InstrumentGroups.Count;
-            }
         }
     }
 }
