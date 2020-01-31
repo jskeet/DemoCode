@@ -45,7 +45,7 @@
     },
     {
       "offset": "0x02",
-      "description": "Level",
+      "description": "Level (general MFX)",
       "type": "volume32"
     },
     {
