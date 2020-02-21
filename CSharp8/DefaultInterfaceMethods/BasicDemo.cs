@@ -21,8 +21,10 @@ namespace DefaultInterfaceMethods
 
             void CallMTwice()
             {
+                Console.WriteLine("Calling M twice in Foo1");
                 M();
                 M();
+                Console.WriteLine("Done");
             }
         }
 
