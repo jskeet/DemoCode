@@ -52,6 +52,7 @@ namespace JonSkeet.DemoUtil
                 .Select(t => GetEntryPoint(t))
                 .Where(ep => ep != null && ep != assembly.EntryPoint)
                 .OrderBy(ep => GetDescription(ep.DeclaringType))
+                .ThenBy(ep => ep.DeclaringType.Name)
                 .Zip(Keys, (ep, k) => new { Key = k, EntryPoint = ep })
                 .ToList();
 
@@ -118,23 +119,6 @@ namespace JonSkeet.DemoUtil
                 Console.WriteLine("(Finished; press return.)");
                 Console.ReadLine();
             }
-        }
-
-        private static int CompareMethods(MethodBase first, MethodBase second)
-        {
-            Type firstType = first.DeclaringType;
-            Type secondType = second.DeclaringType;
-
-            string firstDescription = GetDescription(firstType);
-            string secondDescription = GetDescription(secondType);
-
-            if (firstDescription == null && secondDescription == null)
-            {
-                return firstType.Name.CompareTo(secondType.Name);
-            }
-            return firstDescription == null ? 1
-                 : secondDescription == null ? -1
-                 : StringComparer.Ordinal.Compare(firstDescription, secondDescription);
         }
 
         private static object GetEntryPointName(MethodBase methodBase)
