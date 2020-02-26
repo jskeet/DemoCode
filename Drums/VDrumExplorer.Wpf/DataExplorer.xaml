@@ -3,11 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="KitExplorer" Height="800"
-        Style="{StaticResource WindowStyle}"
-        SizeToContent="Width">
+        Title="KitExplorer" Height="800" Width="800"
+        Style="{StaticResource WindowStyle}">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Save" Executed="SaveFile" />
         <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveFileAs" />
