@@ -604,8 +604,9 @@ namespace VDrumExplorer.Wpf
                         {
                             currentContainer.Reset(detailContext, Data);
                         }
-                        groupBox.Content = FormatContainer(detailContext);
                     }
+                    // Reformat the container even if it's the same container as it was before - conditional fields may have changed.
+                    groupBox.Content = FormatContainer(detailContext);
                 }
             }
         }
