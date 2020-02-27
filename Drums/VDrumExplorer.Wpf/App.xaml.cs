@@ -11,5 +11,6 @@ namespace VDrumExplorer.Wpf
     /// </summary>
     public partial class App : Application
     {
+        public static Thickness ValueMargin => (Thickness) Application.Current.Resources["ValueMargin"];
     }
 }
