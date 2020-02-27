@@ -239,14 +239,14 @@ namespace VDrumExplorer.Wpf
                 if (editMode)
                 {
                     value = CreateReadWriteFieldElement(context, primitive);
-                    value.Margin = new Thickness(5, 1, 0, 0);
+                    value.Margin = App.ValueMargin;
                 }
                 else
                 {
                     value = new Label
                     {
                         Padding = new Thickness(0),
-                        Margin = new Thickness(5, 1, 0, 0),
+                        Margin = App.ValueMargin,
                         Content = primitive.GetText(context, Data)
                     };
                 }

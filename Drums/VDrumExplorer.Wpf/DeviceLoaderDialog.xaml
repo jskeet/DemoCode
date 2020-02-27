@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VDrumExplorer.Wpf"
         mc:Ignorable="d"
-        Title="Loading module data" Height="140" Width="300">
+        Title="Loading module data" Height="140" Width="300"
+        Style="{StaticResource WindowStyle}">
     <StackPanel>
         <Label Margin="5,8,5,0" Padding="0" x:Name="label">Progress</Label>
         <Grid Margin="5,8,5,0" Height="23">
