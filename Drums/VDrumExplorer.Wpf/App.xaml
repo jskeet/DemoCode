@@ -5,10 +5,19 @@
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Styles when presenting -->
+            <!--
             <Style x:Key="WindowStyle" TargetType="Window">
                 <Setter Property="FontSize" Value="20" />
             </Style>
             <Thickness x:Key="ValueMargin" Left="20" Top="2" Right="0" Bottom="0" />
+            -->
+
+            <!-- Styles for development -->
+            <Style x:Key="WindowStyle" TargetType="Window">
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+            <Thickness x:Key="ValueMargin" Left="5" Top="1" Right="0" Bottom="0" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
