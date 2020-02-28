@@ -1,0 +1,74 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Boost/Cut Low",
+      "type": "range32",
+      "min": 0,
+      "max": 64,
+      "valueOffset": -60,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0a",
+      "description": "Boost/Cut Mid",
+      "type": "range32",
+      "min": 0,
+      "max": 64,
+      "valueOffset": -60,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0e",
+      "description": "Boost/Cut High",
+      "type": "range32",
+      "min": 0,
+      "max": 64,
+      "valueOffset": -60,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x12",
+      "description": "Anti Phase Low Switch",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x16",
+      "description": "Anti Phase Low Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x1a",
+      "description": "Anti Phase Mid Switch",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x1e",
+      "description": "Anti Phase Mid Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x22",
+      "description": "Low Boost Switch",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x26",
+      "description": "Low Boost Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x2a",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

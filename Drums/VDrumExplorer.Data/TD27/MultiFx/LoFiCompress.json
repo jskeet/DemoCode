@@ -1,0 +1,79 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Pre Filter Type",
+      "type": "range32",
+      "min": 0,
+      "max": 5,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x0a",
+      "description": "LoFi Type",
+      "type": "range32",
+      "min": 0,
+      "max": 8,
+      "valueOffset": 1
+    },
+    {
+      "offset": "0x0e",
+      "description": "PostFilter Type",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "Low Pass Filter",
+        "High Pass Filter"
+      ]
+    },
+    {
+      "offset": "0x12",
+      "description": "PostFilter Cutoff",
+      "type": "enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz"
+      ]
+    },
+    {
+      "offset": "0x16",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1a",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x22",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

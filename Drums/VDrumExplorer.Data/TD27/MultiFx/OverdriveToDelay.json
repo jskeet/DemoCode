@@ -1,0 +1,94 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Overdrive Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Overdrive Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x0e",
+      "description": "Tempo Sync",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x12",
+      "description": "Delay Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x16",
+      "description": "Delay Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x1a",
+      "description": "Delay Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "offset": "0x1e",
+      "description": "Delay High Frequency Damp",
+      "type": "enum",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "offset": "0x022",
+      "description": "Delay Balance",
+      "type": "range32",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "offset": "0x26",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

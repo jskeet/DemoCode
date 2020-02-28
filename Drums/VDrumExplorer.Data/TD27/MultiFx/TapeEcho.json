@@ -1,0 +1,102 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Mode",
+      "type": "enum32",
+      "values": [
+        "S",
+        "M",
+        "L",
+        "S+M",
+        "S+L",
+        "M+L",
+        "S+M+L"
+      ]
+    },
+    {
+      "offset": "0x0a",
+      "description": "Repeat Rate",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0e",
+      "description": "Intensity",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x12",
+      "description": "Bass",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x16",
+      "description": "Treble",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1a",
+      "description": "Head S Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x1e",
+      "description": "Head M Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x22",
+      "description": "Head L Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "offset": "0x26",
+      "description": "Tape Distortion",
+      "type": "range32",
+      "min": 0,
+      "max": 5
+    },
+    {
+      "offset": "0x2a",
+      "description": "W/F Rate",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x2e",
+      "description": "W/F Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x3a",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

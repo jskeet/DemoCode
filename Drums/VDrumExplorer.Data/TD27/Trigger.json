@@ -1,0 +1,28 @@
+﻿{
+  "fields": [
+    {
+      "name": "TrigMisc",
+      "offset": "0x00",
+      "description": "Trigger Misc",
+      "type": "container:TrigMisc"
+    },
+    {
+      "name": "TrigAnalog",
+      "offset": "0x01_00",
+      "description": "{1} Trigger Analog",
+      "descriptionLookup": "triggers",
+      "type": "container:TrigAnalog",
+      "repeat": "$triggers",
+      "gap": "0x1_00"
+    },
+    {
+      "name": "TrigDigital",
+      "offset": "0x0d_00",
+      "description": "{1} Trigger Digital",
+      "descriptionLookup": "triggers",
+      "type": "container:TrigDigital",
+      "repeat": "$triggers",
+      "gap": "0x1_00"
+    }
+  ]
+}

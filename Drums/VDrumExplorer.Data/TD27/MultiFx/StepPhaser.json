@@ -1,0 +1,133 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Mode",
+      "type": "enum32",
+      "values": [
+        "4-Stage",
+        "8-Stage",
+        "12-Stage"
+      ]
+    },
+    {
+      "offset": "0x0a",
+      "description": "Manual",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0e",
+      "description": "Tempo Sync (Rate)",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x12",
+      "description": "Rate (Hz)",
+      "type": "range32",
+      "suffix": "Hz",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x16",
+      "description": "Rate (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x1a",
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x1e",
+      "description": "Polarity",
+      "type": "enum32",
+      "values": [
+        "Inverse",
+        "Synchro"
+      ]
+    },
+    {
+      "offset": "0x22",
+      "description": "Resonance",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x26",
+      "description": "Cross Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "offset": "0x2a",
+      "description": "Tempo Sync (Step Rate)",
+      "type": "boolean32"
+    },
+    {
+      "offset": "0x2e",
+      "description": "Step Rate (Hz)",
+      "type": "range32",
+      "suffix": "Hz",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "condition": {
+        "offset": "0x2a",
+        "requiredValue": 0
+      }
+    },
+    {
+      "offset": "0x32",
+      "description": "Step Rate (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x2a",
+        "requiredValue": 1
+      }
+    },
+    {
+      "offset": "0x3a",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x3e",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x42",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

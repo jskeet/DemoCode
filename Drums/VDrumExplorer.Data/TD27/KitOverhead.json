@@ -1,0 +1,419 @@
+﻿{
+  "size": "0x53",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Overhead on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x01",
+      "description": "Microphone type",
+      "type": "enum",
+      "values": [
+        "Type 1",
+        "Type 2",
+        "Type 3",
+        "Type 4"
+      ]
+    },
+    {
+      "offset": "0x02",
+      "description": "Mic width",
+      "type": "range8",
+      "min": "0",
+      "max": "4"
+    },
+    {
+      "offset": "0x03",
+      "description": "Level",
+      "type": "volume32"
+    },
+    {
+      "offset": "0x07",
+      "description": "Pre Limiter Compression on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x08",
+      "description": "Pre Limiter Gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0a",
+      "description": "Pre Limiter Threshold",
+      "type": "range16",
+      "min": -60,
+      "max": 0,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x0c",
+      "description": "Pre Limiter Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "offset": "0x0d",
+      "description": "Pre Limiter Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      "offset": "0x0e",
+      "description": "Pre Limiter Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x0f",
+      "description": "Pre Limiter Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x10",
+      "description": "Compressor on/off",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x11",
+      "description": "Compressor Gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x13",
+      "description": "Compressor Threshold",
+      "type": "range16",
+      "min": -60,
+      "max": 0,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x15",
+      "description": "Compressor Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "offset": "0x16",
+      "description": "Compressor Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      "offset": "0x17",
+      "description": "Compressor Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x18",
+      "description": "Compressor Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x19",
+      "description": "Output Width",
+      "type": "enum",
+      "values": [
+        "Default",
+        "Wide +1",
+        "Wide +2",
+        "Wide +3",
+        "Wide +4",
+        "Wide +5",
+        "Wide +6"
+      ]
+    },
+    {
+      "offset": "0x1a",
+      "description": "EQ Low Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "offset": "0x1b",
+      "description": "EQ Mid Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "offset": "0x1c",
+      "description": "EQ High Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "offset": "0x1d",
+      "description": "Eq Mid Q",
+      "type": "enum",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ]
+    },
+    {
+      "offset": "0x1e",
+      "description": "Eq Low Gain",
+      "type": "range32",
+      "suffix": "dB",
+      "min": -400,
+      "max": 150,
+      "divisor": 10
+    },
+    {
+      "offset": "0x22",
+      "description": "Eq Mid Gain",
+      "type": "range32",
+      "suffix": "dB",
+      "min": -400,
+      "max": 150,
+      "divisor": 10
+    },
+    {
+      "offset": "0x26",
+      "description": "Eq High Gain",
+      "type": "range32",
+      "suffix": "dB",
+      "min": -400,
+      "max": 150,
+      "divisor": 10
+    },
+    {
+      "offset": "0x2a",
+      "description": "Filter {1} type",
+      "type": "enum",
+      "values": [
+        "Through",
+        "Lo cut",
+        "Hi cut",
+        "Lo shelv",
+        "Hi shelv",
+        "Peaking"
+      ],
+      "repeat": "4",
+      "gap": "0x01"
+    },
+    {
+      "offset": "0x2e",
+      "description": "Filter {1} frequency",
+      "type": "enum32",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ],
+      "repeat": "4",
+      "gap": "0x04"
+    },
+    {
+      "offset": "0x3e",
+      "description": "Filter {1} Gain",
+      "type": "range32",
+      "suffix": "dB",
+      "min": -400,
+      "max": 150,
+      "divisor": 10,
+      "repeat": "4",
+      "gap": "0x04"
+    },
+    {
+      "offset": "0x4e",
+      "description": "Filter {1} Q",
+      "type": "enum",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ],
+      "repeat": "4",
+      "gap": "0x01"
+    },
+    {
+      "offset": "0x52",
+      "description": "Distance",
+      "type": "range8",
+      "min": 0,
+      "max": 6
+    }
+  ]
+}

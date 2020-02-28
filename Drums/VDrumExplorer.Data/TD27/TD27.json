@@ -1,0 +1,109 @@
+{
+  "name": "TD-27",
+  "modelId": "0x63",
+  "familyCode": "0x0363",
+  "familyNumberCode": "0x0",
+  "instrumentGroups": "$resource:InstrumentGroups.json",
+  "userSamples": 500,
+  "lookups": [
+    {
+      "name": "instruments",
+      "size": "$instruments",
+      "values": [
+        "Kick Head",
+        "Snare Head",
+        "Snare Rim",
+        "Tom 1 Head",
+        "Tom 1 Rim",
+        "Tom 2 Head",
+        "Tom 2 Rim",
+        "Tom 3 Head",
+        "Tom 3 Rim",
+        "Hi-Hat Head",
+        "Hi-Hat Rim",
+        "Crash 1 Head",
+        "Crash 1 Rim",
+        "Crash 2 Head",
+        "Crash 2 Rim",
+        "Ride Head",
+        "Ride Edge",
+        "Ride Bell",
+        "Aux 1 Head",
+        "Aux 1 Rim",
+        "Aux 2 Head",
+        "Aux 2 Rim",
+        "Aux 3 Head",
+        "Aux 3 Rim"
+      ]
+    },
+    {
+      "name": "triggers",
+      "size": "$triggers",
+      "values": [
+        "Kick",
+        "Snare",
+        "Tom 1",
+        "Tom 2",
+        "Tom 3",
+        "Hi-Hat",
+        "Crash 1",
+        "Crash 2",
+        "Ride",
+        "Aux 1",
+        "Aux 2",
+        "Aux 3"
+      ]
+    },
+    {
+      "name": "assignableInputs",
+      "size": "$assignableInputs",
+      "values": [
+        "MFX1",
+        "MFX2",
+        "MFX3",
+        "Song",
+        "Click",
+        "Mix In",
+        "USB In Main",
+        "USB In Sub"
+      ]
+    }
+  ],
+  "counts": {
+    "kits": 100,
+    "instruments": 24,
+    "triggers": 12,
+    "triggerBanks": 8,
+    "setLists": 32,
+    "mfx": 3,
+    "assignableInputs": 8
+  },
+  "containers": {
+    "Root": "$resource:Root.json",
+    "Kit": "$resource:Kit.json",
+    "Setup": "$resource:Setup.json",
+    "Trigger": "$resource:Trigger.json",
+    "Current": "$resource:Current.json",
+    "KitCommon": "$resource:KitCommon.json",
+    "KitMidi": "$resource:KitMidi.json",
+    "KitOverhead": "$resource:KitOverhead.json",
+    "KitRoom": "$resource:KitRoom.json",
+    "KitMasterComp": "$resource:KitMasterComp.json",
+    "KitMasterEQ": "$resource:KitMasterEQ.json",
+    "KitPadInst": "$resource:KitPadInst.json",
+    "KitPadCommon": "$resource:KitPadCommon.json",
+    "KitPad": "$resource:KitPad.json",
+    "SetListParams": "$resource:SetListParams.json",
+    "Click": "$resource:Click.json",
+    "TrigMisc": "$resource:TrigMisc.json",
+    "TrigAnalog": "$resource:TrigAnalog.json",
+    "SetupOutput": "$resource:SetupOutput.json",
+    "SetupControl": "$resource:SetupControl.json",
+    "SetupMisc": "$resource:SetupMisc.json",
+    "KitMfx": "$resource:KitMfx.json",
+    "KitPadVEdit": "$resource:KitPadVEdit.json",
+    "TrigDigital": "$resource:TrigDigital.json"
+  },
+
+  "logicalTree": "$resource:LogicalTree.json"
+}

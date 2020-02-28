@@ -1,0 +1,48 @@
+﻿{
+  "size": "0x21",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Parameters",
+      "type": "dynamicOverlay",
+      "dynamicOverlay": {
+        "size": "0x21",
+        "comment": "This is an offset into a different container, to get at the instrument and then its group",
+        "switchContainerOffset": "-0xC000",
+        "switchField": "Instrument",
+        "containers": [
+          "$resource:VEdit/Off.json",
+          "$resource:VEdit/Kick.json",
+          "$resource:VEdit/Other.json", // Kick Proc
+          "$resource:VEdit/Other.json", // Kick Elec
+          "$resource:VEdit/Snare.json",
+          "$resource:VEdit/CrossStick.json",
+          "$resource:VEdit/Other.json", // Snare Proc
+          "$resource:VEdit/Other.json", // Snare Elec
+          "$resource:VEdit/Tom.json",
+          "$resource:VEdit/Other.json", // Tom Proc
+          "$resource:VEdit/Other.json", // Tom Elec
+          "$resource:VEdit/HiHat.json",
+          "$resource:VEdit/HiHat.json", // Hi-Hat Proc
+          "$resource:VEdit/HiHat.json", // Hi-Hat Elec
+          "$resource:VEdit/Ride.json",
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Crash
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // China
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Splash
+          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Stacked Cymbal
+          "$resource:VEdit/Other.json", // Cymbal Others
+          "$resource:VEdit/Other.json", // Cymbal Proc
+          "$resource:VEdit/Other.json", // Bell/Chime/Glong
+          "$resource:VEdit/Other.json", // Block/Cowbell
+          "$resource:VEdit/Other.json", // Percussion
+          "$resource:VEdit/Other.json", // Percussion Elec
+          "$resource:VEdit/Other.json", // Clap
+          "$resource:VEdit/Other.json", // Sound FX
+          "$resource:VEdit/Other.json", // Elements
+          "$resource:VEdit/SnareBrush.json",
+          "$resource:VEdit/TomBrush.json"
+        ]
+      }
+    }
+  ]
+}

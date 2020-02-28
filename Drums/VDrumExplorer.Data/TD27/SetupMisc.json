@@ -1,0 +1,31 @@
+﻿{
+  "size": "0x05",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Mix In Gain",
+      "type": "enum",
+      "values": [
+        "0dB",
+        "+6dB",
+        "+12dB"
+      ]
+    },
+    {
+      "offset": "0x01",
+      "description": "USB Audio Input Gain",
+      "type": "range16",
+      "min": -36,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x03",
+      "description": "USB Audio Output Gain",
+      "type": "range16",
+      "min": -24,
+      "max": 24,
+      "suffix": "dB"
+    }
+  ]
+}
