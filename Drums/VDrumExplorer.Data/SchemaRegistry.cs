@@ -16,6 +16,7 @@ namespace VDrumExplorer.Data
             = new Dictionary<ModuleIdentifier, Lazy<ModuleSchema>>
         {
             { ModuleIdentifier.TD17, CreateLazySchema("VDrumExplorer.Data.TD17", "TD17.json") },
+            { ModuleIdentifier.TD27, CreateLazySchema("VDrumExplorer.Data.TD27", "TD27.json") },
             { ModuleIdentifier.TD50, CreateLazySchema("VDrumExplorer.Data.TD50", "TD50.json") }
 
         }.AsReadOnly();

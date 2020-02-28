@@ -1,0 +1,13 @@
+﻿{
+  "size": "0x01",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "Trigger Bank Number",
+      "type": "range8",
+      "min": 0,
+      "max": 7,
+      "valueOffset": 1
+    }
+  ]
+}

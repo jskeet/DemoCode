@@ -1,0 +1,50 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Sample Rate",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Bit Down",
+      "type": "range32",
+      "min": 0,
+      "max": 18
+    },
+    {
+      "offset": "0x0e",
+      "description": "Filter",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x12",
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x16",
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1a",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

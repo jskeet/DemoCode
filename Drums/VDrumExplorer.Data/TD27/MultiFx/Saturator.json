@@ -1,0 +1,55 @@
+﻿{
+  "fields": [
+    {
+      "offset": "0x06",
+      "description": "Saturator Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0a",
+      "description": "Saturator Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x0e",
+      "description": "Saturator Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x12",
+      "description": "Comp Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x16",
+      "description": "Comp Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "offset": "0x1a",
+      "description": "Hi Gain",
+      "type": "range32",
+      "min": 3,
+      "max": 21,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x1e",
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

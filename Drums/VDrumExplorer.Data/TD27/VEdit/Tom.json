@@ -1,0 +1,56 @@
+﻿{
+  "size": "0x0",
+  "fields": [
+    {
+      "offset": "0x01",
+      "description": "Shell depth",
+      "type": "range16",
+      "min": 0,
+      "max": 58,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "offset": "0x03",
+      "description": "Head type",
+      "type": "enum16",
+      "values": [
+        "Clear",
+        "Coated",
+        "Pinstripe"
+      ]
+    },
+    {
+      "offset": "0x05",
+      "description": "Tuning",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "offset": "0x07",
+      "description": "Muffling",
+      "type": "enum16",
+      "values": [
+        "Off",
+        "Tape 1",
+        "Tape 2",
+        "Tape 3",
+        "Tape 4",
+        "Tape 5",
+        "Felt 1",
+        "Felt 2",
+        "Felt 3",
+        "Felt 4"
+      ]
+    },
+    {
+      "offset": "0x09",
+      "description": "Snare buzz",
+      "type": "range16",
+      "min": 0,
+      "max": 8,
+      "off": 0
+    }
+  ]
+}

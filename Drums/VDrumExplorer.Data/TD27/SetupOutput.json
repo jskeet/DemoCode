@@ -1,0 +1,195 @@
+﻿{
+  "size": "0x3a",
+  "fields": [
+    {
+      "name": "TriggerMasterAssign",
+      "offset": "0x00",
+      "repeat": "$triggers",
+      "descriptionLookup": "triggers",
+      "description": "Master Assign ({1})",
+      "gap": "0x01",
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "name": "TriggerDirectAssign",
+      "offset": "0x0e",
+      "repeat": "$triggers",
+      "descriptionLookup": "triggers",
+      "description": "Direct Assign ({1})",
+      "gap": "0x01",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    {
+      "name": "InputMasterAssign",
+      "offset": "0x18",
+      "repeat": "$assignableInputs",
+      "descriptionLookup": "assignableInputs",
+      "description": "Master Assign ({1})",
+      "gap": "0x01",
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "name": "InputDirectAssign",
+      "offset": "0x20",
+      "repeat": "$assignableInputs",
+      "descriptionLookup": "assignableInputs",
+      "description": "Direct Assign ({1})",
+      "gap": "0x01",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    {
+      "offset": "0x28",
+      "description": "Master Output Mode",
+      "type": "enum",
+      "values": [
+        "Master",
+        "Direct"
+      ]
+    },
+    {
+      "offset": "0x29",
+      "description": "PadEq/Comp to Direct",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x2a",
+      "description": "PadComp to Phones",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x2b",
+      "description": "Direct Output Gain",
+      "type": "range16",
+      "min": -12,
+      "max": 12
+    },
+    {
+      "offset": "0x2d",
+      "description": "LoCut Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz"
+      ]
+    },
+    {
+      "offset": "0x2e",
+      "description": "Master Output LoCut",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x2f",
+      "description": "Phones Output LoCut",
+      "type": "boolean"
+    },
+    {
+      "offset": "0x30",
+      "description": "Direct Output LoCut",
+      "type": "boolean"
+    },
+    {
+      "name": "OverheadMasterAssign",
+      "offset": "0x31",
+      "description": "Master Assign (Overhead)",
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "name": "RoomMasterAssign",
+      "offset": "0x32",
+      "description": "Master Assign (Room)",
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "name": "OverheadDirectAssign",
+      "offset": "0x33",
+      "description": "Direct Assign (Overhead)",
+      "gap": "0x01",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    {
+      "name": "RoomDirectAssign",
+      "offset": "0x34",
+      "description": "Direct Assign (Room)",
+      "gap": "0x01",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    // 0x35 is reserved
+    {
+      "offset": "0x36",
+      "description": "Master Output Gain",
+      "type": "range16",
+      "min": -12,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x38",
+      "description": "Phones Output Gain",
+      "type": "range16",
+      "min": -12,
+      "max": 12,
+      "suffix": "dB"
+    }
+  ]
+}

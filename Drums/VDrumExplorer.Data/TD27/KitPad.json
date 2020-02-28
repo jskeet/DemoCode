@@ -1,0 +1,103 @@
+﻿{
+  "size": "0x0b",
+  "fields": [
+    {
+      "offset": "0x00",
+      "description": "MultiFx dry+wet",
+      "type": "enum",
+      "values": [
+        "MultiFx only",
+        "Dry + MultiFx"
+      ]
+    },
+    {
+      "name": "CompSwitch",
+      "offset": "0x01",
+      "description": "Compressor switch",
+      "type": "boolean"
+    },
+    {
+      "name": "CompType",
+      "offset": "0x02",
+      "description": "Compressor type",
+      "type": "enum",
+      "values": [
+        "Kick 1",
+        "Kick 2",
+        "Snare 1",
+        "Snare 2",
+        "Tom 1",
+        "Tom 2",
+        "Cymbal 1",
+        "Cymbal 2",
+        "Soft comp",
+        "Hard comp",
+        "Limiter"
+      ]
+    },
+    {
+      "offset": "0x03",
+      "description": "Gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x05",
+      "description": "Threshold",
+      "type": "range16",
+      "min": -48,
+      "max": 0,
+      "suffix": "dB"
+    },
+    {
+      "offset": "0x07",
+      "description": "Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "offset": "0x08",
+      "description": "Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      // FIXME: Find out what this actually looks like. It's described as "0.1 - 100ms" but that doesn't make much sense.
+      "offset": "0x09",
+      "description": "Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "offset": "0x0a",
+      "description": "Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    }
+  ]
+}
