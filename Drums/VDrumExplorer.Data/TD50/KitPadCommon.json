@@ -55,6 +55,7 @@
         "Switch"
       ]
     },
+    // Note: 0x09 is reserved
     {
       "offset": "0x0a",
       "description": "Fade point",
@@ -94,7 +95,7 @@
       ]
     },
     {
-      "offset": "0x010",
+      "offset": "0x10",
       "description": "Eq Low Gain",
       "type": "range16",
       "suffix": "dB",

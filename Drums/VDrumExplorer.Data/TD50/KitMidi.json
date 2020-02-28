@@ -194,6 +194,7 @@
       "description": "Aux 4 rim note",
       "type": "midi32"
     },
+    // TODO: Use repeats for this and midi channel
     {
       "offset": "0x0104",
       "description": "Kick gate time",

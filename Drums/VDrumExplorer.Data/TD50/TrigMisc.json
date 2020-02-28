@@ -3,6 +3,7 @@
   "fields": [
     {
       "offset": "0x00",
+      "name": "Name",
       "description": "Trigger bank name",
       "type": "string16",
       "length": 16
