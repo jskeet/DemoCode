@@ -220,8 +220,8 @@
       "description": "Eq High Gain",
       "type": "range16",
       "suffix": "dB",
-      "min": -15,
-      "max": 15
+      "min": -12,
+      "max": 12
     }
   ]
 }

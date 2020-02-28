@@ -45,7 +45,6 @@
       "name": "AmbienceMasterAssign",
       "offset": "0x1c",
       "description": "Master Assign (Ambience)",
-      "gap": "0x01",
       "type": "enum",
       "values": [
         "Phones only",
@@ -69,7 +68,6 @@
       "name": "AmbienceDirectAssign",
       "offset": "0x026",
       "description": "Direct Assign (Ambience)",
-      "gap": "0x01",
       "type": "enum",
       "values": [
         "Off",

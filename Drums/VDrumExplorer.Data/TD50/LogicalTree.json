@@ -241,50 +241,64 @@
       ]
     },
     {
-      "description": "Triggers",
-      "path": "Trigger",
+      "description": "Trigger Banks",
+      "path": ".",
       "details": [
         {
-          "description": "Trigger misc",
-          "path": "TrigMisc"
-        },
-        {
-          "description": "Triggers",
-          "repeat": "$triggers",
-          "index": "trigger",
+          "description": "Trigger Banks",
+          "repeat": "$triggerBanks",
+          "index": "triggerBank",
           "formatPaths": [
-            "TrigAnalog[$trigger]/PadType"
+            "TriggerBank[$triggerBank]/TrigMisc/Name"
           ],
-          "format": "Trigger $trigger: {0}"
+          "format": "Bank $triggerBank: {0}"
         }
       ],
       "children": [
         {
-          "repeat": "$triggers",
-          "index": "trigger",
+          "repeat": "$triggerBanks",
+          "index": "triggerBank",
+          "path": "TriggerBank[$triggerBank]",
           "formatPaths": [
-            "PadType"
+            "TrigMisc/Name"
           ],
-          "format": "Trigger $trigger: {0}",
-          "path": "TrigAnalog[$trigger]",
+          "format": "Bank $triggerBank: {0}",
           "details": [
             {
-              "description": "Trigger Details",
-              "path": "."
+              "description": "Trigger misc",
+              "path": "TrigMisc"
             }
-          ]
-        },
-        {
-          "repeat": "$triggers",
-          "index": "trigger",
-          "formatPaths": [
           ],
-          "format": "Digital Trigger $trigger",
-          "path": "TrigDigital[$trigger]",
-          "details": [
+          "children": [
             {
-              "description": "Digital Trigger Details",
-              "path": "."
+              "repeat": "$triggers",
+              "index": "trigger",
+              "formatPaths": [
+                "/lookups/triggers[$trigger]",
+                "PadType"
+              ],
+              "format": "{0} : {1}",
+              "path": "TrigAnalog[$trigger]",
+              "details": [
+                {
+                  "description": "Trigger Details",
+                  "path": "."
+                }
+              ]
+            },
+            {
+              "repeat": "$triggers",
+              "index": "trigger",
+              "formatPaths": [
+              ],
+              "format": "Digital Trigger $trigger",
+              "path": "TrigDigital[$trigger]",
+              "details": [
+                {
+                  "description": "Digital Trigger Details",
+                  "path": "."
+                }
+              ]
             }
           ]
         }

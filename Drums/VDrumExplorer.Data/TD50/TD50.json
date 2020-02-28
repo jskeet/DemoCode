@@ -81,7 +81,8 @@
     "triggers": 14,
     "setLists": 32,
     "mfx": 3,
-    "extraOutputs": 8
+    "extraOutputs": 8,
+    "triggerBanks": 8
   },
   "containers": {
     "Root": "$resource:Root.json",
