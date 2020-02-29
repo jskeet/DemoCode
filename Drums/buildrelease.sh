@@ -32,8 +32,8 @@ zip -rq VDrumExplorer-$version.zip $release_dir
 
 # Setup
 msbuild.exe -property:Configuration=Release -verbosity:quiet ../VDrumExplorer.Setup
-cp ../VDrumExplorer.Setup/bin/Release/en-us/VDrumExplorer-Setup.msi .
+cp ../VDrumExplorer.Setup/bin/Release/en-us/VDrumExplorer-Setup.msi VDrumExplorer-Setup-$version.msi
 # Sign the installer as well
-signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer-Setup.msi
+signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer-Setup-$version.msi
 
 cd ..
