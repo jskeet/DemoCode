@@ -12,7 +12,8 @@
       "description": "Decay",
       "type": "range16",
       "min": 1,
-      "max": 100
+      "max": 100,
+      "default": 100
     }
   ]
 }
