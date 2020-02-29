@@ -48,6 +48,8 @@ namespace VDrumExplorer.Wpf
             userSamples.PreviewTextInput += TextConversions.CheckDigits;
             cancellationTokenSource = new CancellationTokenSource();
 
+            kitNumber.Text = TextConversions.Format(schema.KitRoots.Count);
+
             // Capture the input device names, and attempt to guess a reasonable default.
             var allInputDevices = AudioDevices.GetInputDeviceNames();
             var midiName = midiClient.OutputName;
@@ -55,7 +57,6 @@ namespace VDrumExplorer.Wpf
             inputDevice.ItemsSource = allInputDevices;
             inputDevice.SelectedIndex = allInputDevices.FindIndex(inputName => expectedInputDevices.Contains(inputName));
 
-            kitNumber.Text = TextConversions.Format(schema.KitRoots.Count);
             foreach (var group in schema.InstrumentGroups)
             {
                 instrumentGroupSelector.Items.Add(group.Description);
@@ -131,19 +132,17 @@ namespace VDrumExplorer.Wpf
                 logger.Log($"No midi note for instrument 1. Please email a bug report to skeet@pobox.com");
             }
 
-            int velocity = (int) attackSlider.Value;
-            var instrumentGroupToRecord = (string) instrumentGroupSelector.SelectedItem;
-            var instrumentsToRecord = schema.PresetInstruments
-                .Where(ins => instrumentGroupSelector.SelectedIndex == 0 || ins.Group.Description == instrumentGroupToRecord)
+            var presetInstrumentsToRecord = schema.PresetInstruments
+                .Where(ins => config.InstrumentGroup == -1 || ins.Group.Index == config.InstrumentGroup)
                 .ToList();
-            progress.Maximum = instrumentsToRecord.Count + config.UserSamples;
+            progress.Maximum = presetInstrumentsToRecord.Count + config.UserSamples;
 
             logger.Log($"Starting recording process");
             try
             {
                 var captures = new List<InstrumentAudio>();
                 progress.Value = 0;
-                foreach (var instrument in instrumentsToRecord)
+                foreach (var instrument in presetInstrumentsToRecord)
                 {
                     var instrumentAudio = await RecordInstrument(instrument);
                     captures.Add(instrumentAudio);
@@ -183,6 +182,7 @@ namespace VDrumExplorer.Wpf
                 {
                     container.Container.Reset(container, data);
                 }
+                // Note: setting the instrument resets VEdit data to defaults
                 instrumentField.SetInstrument(instrumentFieldContext, data, instrument);
                 foreach (var container in instrumentContainers)
                 {
@@ -190,12 +190,10 @@ namespace VDrumExplorer.Wpf
                     midiClient.SendData(segment.Start.Value, segment.CopyData());
                     await Task.Delay(40, CancellationToken);
                 }
-                await Task.Delay(200, CancellationToken);
                 midiClient.Silence(config.MidiChannel);
                 await Task.Delay(40);
                 var recordingTask = AudioDevices.RecordAudio(config.AudioDeviceId, config.RecordingDuration, CancellationToken);
-                midiClient.PlayNote(config.MidiChannel, midiNote.Value, velocity);
-                await Task.Delay(2500);
+                midiClient.PlayNote(config.MidiChannel, midiNote.Value, config.Attack);
                 var audio = await recordingTask;
                 return new InstrumentAudio(instrument, audio);
             }
@@ -303,9 +301,10 @@ namespace VDrumExplorer.Wpf
                 RecordingDuration = recordingDuration,
                 OutputFile = outputFile,
                 AudioDeviceId = deviceId.Value,
+                InstrumentGroup = instrumentGroupSelector.SelectedIndex - 1,
                 UserSamples = parsedUserSamples,
                 MidiChannel = midiChannel,
-                Attack = (int) attackSlider.Value
+                Attack = (int) attackSlider.Value,
             };
         }
 
@@ -315,6 +314,7 @@ namespace VDrumExplorer.Wpf
             internal TimeSpan RecordingDuration { get; set; }
             internal string OutputFile { get; set; }
             internal int AudioDeviceId { get; set; }
+            internal int InstrumentGroup { get; set; } // -1 for "All" or the instrument group otherwise
             internal int UserSamples { get; set; }
             internal int MidiChannel { get; set; }
             internal int Attack { get; set; }
