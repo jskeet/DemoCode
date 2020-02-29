@@ -47,7 +47,14 @@ namespace VDrumExplorer.Wpf
             kitNumber.PreviewTextInput += TextConversions.CheckDigits;
             userSamples.PreviewTextInput += TextConversions.CheckDigits;
             cancellationTokenSource = new CancellationTokenSource();
-            inputDevice.ItemsSource = AudioDevices.GetInputDeviceNames();
+
+            // Capture the input device names, and attempt to guess a reasonable default.
+            var allInputDevices = AudioDevices.GetInputDeviceNames();
+            var midiName = midiClient.OutputName;
+            var expectedInputDevices = new[] { $"MASTER ({midiName})", $"IN ({midiName})", $"KICK ({midiName})" };
+            inputDevice.ItemsSource = allInputDevices;
+            inputDevice.SelectedIndex = allInputDevices.FindIndex(inputName => expectedInputDevices.Contains(inputName));
+
             kitNumber.Text = TextConversions.Format(schema.KitRoots.Count);
             foreach (var group in schema.InstrumentGroups)
             {

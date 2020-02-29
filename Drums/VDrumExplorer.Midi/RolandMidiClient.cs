@@ -29,6 +29,9 @@ namespace VDrumExplorer.Midi
         private readonly object sync = new object();
         private readonly LinkedList<Consumer> consumers = new LinkedList<Consumer>();
 
+        public string InputName => rawClient.InputName;
+        public string OutputName => rawClient.OutputName;
+
         private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, int modelId)
         {
             this.rawClient = rawClient;
