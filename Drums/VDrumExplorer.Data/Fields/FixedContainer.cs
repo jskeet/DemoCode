@@ -112,5 +112,7 @@ namespace VDrumExplorer.Data.Fields
                 }
             }
         }
+
+        public override string ToString() => Container.Description;
     }
 }
