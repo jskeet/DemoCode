@@ -19,6 +19,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -31,21 +32,26 @@
                 <TextBox Margin="5" Width="30" HorizontalAlignment="Left" x:Name="recordingTime">2.5</TextBox>
                 <Label Margin="0,5" Padding="0,2" HorizontalAlignment="Left">(seconds)</Label>
             </StackPanel>
+            <!-- Instrument group -->
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="1">Instrument group to record:</Label>
+            <ComboBox Margin="5" Padding="5,2" x:Name="instrumentGroupSelector" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left">
+                <ComboBoxItem IsSelected="True">All</ComboBoxItem>
+            </ComboBox>
             <!-- User samples -->
-            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="1">User samples to record:</Label>
-            <TextBox Margin="5" Width="30" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" x:Name="userSamples">0</TextBox>
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="2">User samples to record:</Label>
+            <TextBox Margin="5" Width="30" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" x:Name="userSamples">0</TextBox>
 
             <!-- Device selection -->
-            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="2">Input Device:</Label>
-            <ComboBox Margin="5" Grid.Column="1" Grid.Row="2" x:Name="inputDevice" SelectionChanged="InputDeviceChanged" HorizontalAlignment="Left" />
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="3">Input Device:</Label>
+            <ComboBox Margin="5" Grid.Column="1" Grid.Row="3" x:Name="inputDevice" SelectionChanged="InputDeviceChanged" HorizontalAlignment="Left" />
 
             <!-- Kit selection -->
-            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="3">Kit to use:</Label>
-            <TextBox Margin="5" Width="30" Grid.Column="1" Grid.Row="3" x:Name="kitNumber" TextChanged="KitNumberChanged" HorizontalAlignment="Left"></TextBox>
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="4">Kit to use:</Label>
+            <TextBox Margin="5" Width="30" Grid.Column="1" Grid.Row="4" x:Name="kitNumber" TextChanged="KitNumberChanged" HorizontalAlignment="Left"></TextBox>
                 
             <!-- Midi channel -->
-            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="4">Midi Channel:</Label>
-            <ComboBox Margin="5" Padding="5,2" x:Name="midiChannelSelector" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left">
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="5">Midi Channel:</Label>
+            <ComboBox Margin="5" Padding="5,2" x:Name="midiChannelSelector" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left">
                 <ComboBoxItem>1</ComboBoxItem>
                 <ComboBoxItem>2</ComboBoxItem>
                 <ComboBoxItem>3</ComboBoxItem>
@@ -65,19 +71,19 @@
             </ComboBox>
 
             <!-- Attack -->
-            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="5">Attack:</Label>
-            <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Horizontal">
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="6">Attack:</Label>
+            <StackPanel Grid.Column="1" Grid.Row="6" Orientation="Horizontal">
                 <Slider Minimum="1" Maximum="127" Value="80" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100" x:Name="attackSlider" IsSnapToTickEnabled="True" TickFrequency="1" />
                 <Label Margin="5" Padding="0,2" HorizontalAlignment="Left" Content="{Binding ElementName=attackSlider, Path=Value}"/>
             </StackPanel>
 
             <!-- Output file -->
-            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="6">Output File:</Label>
-            <Label Margin="5" Padding="0,2" Grid.Column="1" Grid.Row="6" x:Name="fileLabel" HorizontalAlignment="Left">(Not set)</Label>
-            <Button Padding="5,2" Margin="5" Grid.Column="2" Grid.Row="6" Click="SelectFile" HorizontalAlignment="Left">Select file</Button>
+            <Label Margin="5" Padding="0,2" Grid.Column="0" Grid.Row="7">Output File:</Label>
+            <Label Margin="5" Padding="0,2" Grid.Column="1" Grid.Row="7" x:Name="fileLabel" HorizontalAlignment="Left">(Not set)</Label>
+            <Button Padding="5,2" Margin="5" Grid.Column="2" Grid.Row="7" Click="SelectFile" HorizontalAlignment="Left">Select file</Button>
 
             <!-- Start! -->
-            <Button Padding="5,2" Margin="5" Grid.Column="0" Grid.Row="7" HorizontalAlignment="Left" Click="StartRecording" x:Name="recordButton" IsEnabled="False">Start recording</Button>
+            <Button Padding="5,2" Margin="5" Grid.Column="0" Grid.Row="8" HorizontalAlignment="Left" Click="StartRecording" x:Name="recordButton" IsEnabled="False">Start recording</Button>
         </Grid>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
         </StackPanel>
