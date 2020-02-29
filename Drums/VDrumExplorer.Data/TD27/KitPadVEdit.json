@@ -32,6 +32,7 @@
           "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Stacked Cymbal
           "$resource:VEdit/Other.json", // Cymbal Others
           "$resource:VEdit/Other.json", // Cymbal Proc
+          "$resource:VEdit/Other.json", // Cymbal Elec
           "$resource:VEdit/Other.json", // Bell/Chime/Glong
           "$resource:VEdit/Other.json", // Block/Cowbell
           "$resource:VEdit/Other.json", // Percussion

@@ -27,7 +27,12 @@
     {
       "offset": "0x03",
       "description": "Level",
-      "type": "volume32"
+      "type": "range32",
+      "min": -601,
+      "max": 120,
+      "divisor": 10,
+      "off": -601,
+      "offLabel": "-INF"
     },
     {
       "offset": "0x07",

@@ -195,6 +195,7 @@
       "offset": "0x1c",
       "description": "Multi FX Assign",
       "type": "enum",
+      "min": 1,
       "values": [
         "MFX1",
         "MFX2",
