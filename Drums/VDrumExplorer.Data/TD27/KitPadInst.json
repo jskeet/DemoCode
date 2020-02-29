@@ -23,7 +23,8 @@
       "description": "Transient time",
       "type": "range8",
       "min": 1,
-      "max": 10
+      "max": 10,
+      "default": 5
     },
     {
       "offset": "0x0b",
@@ -63,7 +64,8 @@
       "description": "Pad decay",
       "type": "range8",
       "min": 1,
-      "max": 100
+      "max": 100,
+      "default": 100
     },
     {
       "offset": "0x13",
