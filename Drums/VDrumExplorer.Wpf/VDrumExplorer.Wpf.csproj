@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <Version>1.0.0-alpha02</Version>
     <AssemblyVersion>1.0.0.2</AssemblyVersion>
     <PublishTrimmed>true</PublishTrimmed>
