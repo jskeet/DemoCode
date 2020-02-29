@@ -76,17 +76,21 @@ namespace VDrumExplorer.Data.Fields
 
             // Then set any appropriate vedit information separately.
             // (We may want to do this all in one go, but it doesn't matter too much.)
-            if (instrument.DefaultFieldValues != null)
+            var veditAddress = context.Address + VeditOffset;
+            var veditContainer = Schema.LoadableContainersByAddress[veditAddress];
+            var veditContext = new FixedContainer(veditContainer, veditAddress);
+            var defaultFieldValues = instrument?.DefaultFieldValues;
+            
+            // Reset each field in the instrument's vedit based on either the schema default, or the instrument-specific value.
+            foreach (var field in veditContext.GetChildren(data).OfType<IPrimitiveField>())
             {
-                var veditAddress = context.Address + VeditOffset;
-                var veditContainer = Schema.LoadableContainersByAddress[veditAddress];
-                var veditContext = new FixedContainer(veditContainer, veditAddress);
-                foreach (var field in veditContext.GetChildren(data).OfType<NumericField>())
+                if (field is NumericField numeric && defaultFieldValues != null && defaultFieldValues.TryGetValue(field.Name, out int value))
                 {
-                    if (instrument.DefaultFieldValues.TryGetValue(field.Name, out int value))
-                    {
-                        field.SetRawValue(veditContext, data, value);
-                    }
+                    numeric.SetRawValue(veditContext, data, value);
+                }
+                else
+                {
+                    field.Reset(veditContext, data);
                 }
             }
         }
