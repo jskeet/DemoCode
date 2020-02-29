@@ -29,7 +29,14 @@ namespace VDrumExplorer.Wpf
             this.audio = audio;
             this.logger = logger;
             capturesByGroup = audio.Captures.ToLookup(c => c.Instrument.Group);
-            outputDevice.ItemsSource = AudioDevices.GetOutputDeviceNames();
+            var allOutputDeviceNames = AudioDevices.GetOutputDeviceNames();
+            outputDevice.ItemsSource = allOutputDeviceNames;
+
+            // Assume that device 0 is the default. That will usually be the case.
+            if (allOutputDeviceNames.Count > 0)
+            {
+                outputDevice.SelectedIndex = 0;
+            }
 
             moduleId.Content = audio.Schema.Identifier.Name;
             userSamples.Content = TextConversions.Format(capturesByGroup[null].Count());
