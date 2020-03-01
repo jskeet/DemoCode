@@ -37,7 +37,7 @@ namespace VDrumExplorer.Console
             var console = context.Console.Out;
             var kit = context.ParseResult.ValueForOption<int>("kit");
             var file = context.ParseResult.ValueForOption<string>("file");
-            var (client, schema) = await DeviceDetection.DetectDeviceAsync(context.Console.Out);
+            var (client, schema) = await DeviceDetection.DetectDeviceAsync(console);
 
             if (client == null)
             {
