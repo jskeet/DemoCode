@@ -185,7 +185,7 @@ namespace VDrumExplorer.Wpf
                 }
                 case ModuleAudio audio:
                 {
-                    new InstrumentAudioExplorer(logger, audio).Show();
+                    new InstrumentAudioExplorer(logger, audio, dialog.FileName).Show();
                     break;
                 }
                 default:
