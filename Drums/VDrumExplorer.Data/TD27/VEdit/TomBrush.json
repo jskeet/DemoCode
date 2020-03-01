@@ -18,7 +18,8 @@
         "Clear",
         "Coated",
         "Pinstripe"
-      ]
+      ],
+      "default": 1
     },
     {
       "offset": "0x05",
