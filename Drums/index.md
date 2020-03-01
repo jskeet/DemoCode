@@ -18,7 +18,7 @@ how you get on with this.
 
 - Windows 8.1 or Windows 10
 - .NET 4.7.2 or later
-- To be genuinely useful, a Roland TD-17 or TD-50 V-Drums drum kit, turned on and connected via USB (see later for details)
+- To be genuinely useful, a Roland TD-17, TD-27 or TD-50 V-Drums drum kit, turned on and connected via USB (see later for details)
 
 # Installation
 
@@ -100,7 +100,7 @@ supported, this range may vary.)
 
 Loading a single kit is reasonably quick - a few seconds - but
 loading the complete module data takes about three minutes for the
-TD-17, and longer for the TD-50. You'll see a progress dialog like
+TD-17, and longer for the TD-27 or TD-50. You'll see a progress dialog like
 this:
 
 ![Module loading dialog](loading-dialog.png)
@@ -259,12 +259,25 @@ Before recording, there are some things to check:
   setting on the TD-17 is very quiet, for example. In the TD-17, on
   the module, press the Setup button, select the USB option, and set
   the "USB Output Gain" option. I had success with a setting of +20dB.
+- Optionally select an instrument group to record, or leave it at the
+  default "All" to record all instruments. If you only want to record
+  user samples, select the "Off" instrument group. (That contains a
+  single instrument called "Off", but at that point you're not wasting
+  much time recording silence.)
+  - Currently there's no way of recording "just some" instrument
+    groups; it's either all or a single group. Please give me feedback
+    if this limitation causes you any practical difficulties.
 - Select how many user samples you wish to record. There's no point in
   recording more samples than are populated on your module, but the
   explorer can't determine how many there are. Also, you may not wish
   to record the samples anyway.
-- Select the relevant audio device in the dialog. (In the above
-  example, my audio device is "IN (3- TD-17)".)
+- Select the relevant audio device in the dialog, if a suitable one
+  isn't picked by default.
+  - For the TD-17, the audio device is likely to be of the form "IN (3- TD-17)".
+  - For the TD-27 (and I suspect the TD-50), each trigger can be recorded separately.
+    Either record the KICK input, or MASTER. Note that the pad to record
+    is KICK regardless of which instrument group is being recorded, as
+    all samples are played through the kick trigger.
 - Make sure your module has the same kit selected as is shown in the
   dialog box. You can edit this; I'd recommend using a "user" kit that
   is still untouched, for two reasons:
@@ -276,7 +289,7 @@ Before recording, there are some things to check:
   quite large (e.g. around 75MB for a TD-17 with 7 user samples and
   the default 2.5s recording duration) so make sure there is enough
   disk space wherever you're saving to.
-- Make sure the Midi channel is correct for your kit. (This is the
+- Make sure the MIDI channel is correct for your kit. (This is the
   same channel used to play instruments in the Module Explorer and Kit
   Explorer, so that's an easy way to test it.)
 - Optionally change the recording duration per instrument and the
@@ -289,15 +302,15 @@ the module, or strike the pads, you could end up with undesirable
 results.
 
 **Note:** Recording all the samples takes a long time, particularly
-on the TD-50 with over 400 instruments. As well as the recording
-time itself, there's a little overhead while the instrument is
-changed etc. So on a TD-50, recording 2.5s of audio per instrument
-could take over 20 minutes. Please be patient! (The progress bar
-will show you how it's doing, of course.)
+on the TD-50 with over 400 instruments or the TD-27 with over 750!
+As well as the recording time itself, there's a little overhead
+while the instrument is changed etc. So on a TD-50, recording 2.5s
+of audio per instrument could take over 20 minutes. Please be
+patient! (The progress bar will show you how it's doing, of course.)
 
 The process works as follows:
 
-- Load the data for instrument 1 (typically the kick drum) from the
+- Load the data for instrument 1 (the kick drum) from the
   kit, so it can be restored later.
 - For each available instrument:
   - Silence the module (to stop the previous instrument sound)
@@ -358,7 +371,16 @@ apologies in advance.)
 
 # Version history
 
-## Version 1.0.0-alpha02
+## Version 1.0.0-alpha03 (2020-03-01)
+
+- Initial support for TD-27
+- Change MIDI library choice (hopefully invisible to most users)
+- Fix stack overflow error on some changes
+- Fix tempo sync switch not reflecting in UI
+- Select the first output device as a reasonable default in Instrument Audio Explorer
+- Attempt to find a reasonable default input device in instrument recording dialog
+
+## Version 1.0.0-alpha02 (2019-10-03)
 
 - Ability to record instrument sounds and then open the Instrument Audio Explorer
 - Windows installer
@@ -367,7 +389,7 @@ apologies in advance.)
 - Added "Import kit from file" feature (in context menu)
 - Added "Export kit to file" feature (in context menu)
 
-## Version 1.0.0-alpha01
+## Version 1.0.0-alpha01 (2019-09-27)
 
 - Publish .NET Core 3.0 version
 - Change away from 0.x to be consistent with my general thoughts on versioning
