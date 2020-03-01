@@ -22,7 +22,7 @@ how you get on with this.
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha02/VDrumExplorer-Setup.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha03/VDrumExplorer-Setup-1.0.0-alpha03.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
