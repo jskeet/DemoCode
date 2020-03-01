@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using VDrumExplorer.Data;
@@ -24,10 +22,11 @@ namespace VDrumExplorer.Wpf
             InitializeComponent();
         }
 
-        internal InstrumentAudioExplorer(ILogger logger, ModuleAudio audio) : this()
+        internal InstrumentAudioExplorer(ILogger logger, ModuleAudio audio, string fileName) : this()
         {
             this.audio = audio;
             this.logger = logger;
+            Title = $"{Title} - {fileName}";
             capturesByGroup = audio.Captures.ToLookup(c => c.Instrument.Group);
             var allOutputDeviceNames = AudioDevices.GetOutputDeviceNames();
             outputDevice.ItemsSource = allOutputDeviceNames;
