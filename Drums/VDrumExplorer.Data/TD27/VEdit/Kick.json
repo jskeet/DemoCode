@@ -17,7 +17,8 @@
         "Clear",
         "Coated",
         "Pinstripe"
-      ]
+      ],
+      "default": 1
     },
     {
       "offset": "0x05",
@@ -69,7 +70,8 @@
       "type": "range16",
       "min": 0,
       "max": 10,
-      "valueOffset": -5
+      "valueOffset": -5,
+      "default": 5
     },
     {
       "offset": "0x0f",
@@ -77,7 +79,8 @@
       "type": "range16",
       "min": 0,
       "max": 4,
-      "valueOffset": -2
+      "valueOffset": -2,
+      "default": 2
     },
     {
       "offset": "0x11",

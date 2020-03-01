@@ -7,7 +7,8 @@
       "min": 0,
       "max": 78,
       "valueOffset": 2,
-      "divisor": 2
+      "divisor": 2,
+      "default": 38
     },
     {
       "offset": "0x03",
@@ -83,7 +84,8 @@
         "Standard",
         "Heavy",
         "Heavy 2"
-      ]
+      ],
+      "default": 2
     },
     {
       "offset": "0x0d",

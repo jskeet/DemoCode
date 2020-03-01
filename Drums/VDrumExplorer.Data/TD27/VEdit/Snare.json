@@ -7,7 +7,8 @@
       "min": 0,
       "max": 58,
       "valueOffset": 2,
-      "divisor": 2
+      "divisor": 2,
+      "default": 11
     },
     {
       "offset": "0x03",
@@ -17,7 +18,8 @@
         "Clear",
         "Coated",
         "Pinstripe"
-      ]
+      ],
+      "default": 1
     },
     {
       "offset": "0x05",
