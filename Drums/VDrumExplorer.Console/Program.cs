@@ -18,6 +18,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ListDevicesCommand.Command);
             rootCommand.AddCommand(ImportKitCommand.Command);
             rootCommand.AddCommand(ShowKitCommand.Command);
+            rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
             return rootCommand.InvokeAsync(args);
         }
     }

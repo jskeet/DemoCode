@@ -252,5 +252,21 @@ namespace VDrumExplorer.Data
                 targetSegment.SetData(segment.Start, segment.CopyData());
             }
         }
+
+        /// <summary>
+        /// Creates a shallow clone of this data, but not the event changed handler.
+        /// </summary>
+        public ModuleData Clone()
+        {
+            var ret = new ModuleData();
+            lock (sync)
+            {
+                foreach (var segment in segments)
+                {
+                    ret.Populate(segment.Start, segment.CopyData());
+                }
+            }
+            return ret;
+        }
     }
 }
