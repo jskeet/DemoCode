@@ -19,6 +19,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ImportKitCommand.Command);
             rootCommand.AddCommand(ShowKitCommand.Command);
             rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
+            rootCommand.AddCommand(ShowMidiEventsCommand.Command);
             return rootCommand.InvokeAsync(args);
         }
     }
