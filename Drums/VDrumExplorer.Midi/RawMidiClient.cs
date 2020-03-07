@@ -48,9 +48,8 @@ namespace VDrumExplorer.Midi
 
         public void Dispose()
         {
-            // FIXME
-            input.CloseAsync();
-            output.CloseAsync();
+            input.Dispose();
+            output.Dispose();
         }
     }
 }
