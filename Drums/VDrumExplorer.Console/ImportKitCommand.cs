@@ -38,11 +38,9 @@ namespace VDrumExplorer.Console
                 return 1;
             }
 
-            var moduleData = new ModuleData();
-
             using (client)
             {
-                if (!schema.KitRoots.TryGetValue(kit, out var kitRoot))
+                if (!schema.KitRoots.TryGetValue(kit, out _))
                 {
                     console.WriteLine($"Kit {kit} out of range");
                     return 1;
@@ -53,15 +51,8 @@ namespace VDrumExplorer.Console
                 try
                 {
                     Stopwatch sw = Stopwatch.StartNew();
-                    var containers = kitRoot.Context.AnnotateDescendantsAndSelf().Where(c => c.Container.Loadable).ToList();
-                    console.WriteLine($"Loading {containers.Count} containers from device {schema.Identifier.Name}");
-                    foreach (var container in containers)
-                    {
-                        await PopulateSegment(moduleData, container, overallToken);
-                    }
+                    var kitToSave = await KitUtilities.ReadKit(schema, client, kit, console);
                     console.WriteLine($"Finished loading in {(int) sw.Elapsed.TotalSeconds} seconds");
-                    var clonedData = kitRoot.Context.CloneData(moduleData, schema.KitRoots[1].Context.Address);
-                    var kitToSave = new Kit(schema, clonedData, kit);
                     using (var stream = File.Create(file))
                     {
                         kitToSave.Save(stream);
@@ -81,21 +72,6 @@ namespace VDrumExplorer.Console
 
             }
             return 0;
-
-            async Task PopulateSegment(ModuleData data, AnnotatedContainer annotatedContainer, CancellationToken token)
-            {
-                var timerToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
-                var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(token, timerToken).Token;
-                try
-                {
-                    var segment = await client.RequestDataAsync(annotatedContainer.Context.Address.Value, annotatedContainer.Container.Size, effectiveToken);
-                    data.Populate(annotatedContainer.Context.Address, segment);
-                }
-                catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
-                {
-                    console.WriteLine($"Device didn't respond for container {annotatedContainer.Path}; skipping.");
-                }
-            }
         }
     }
 }
