@@ -49,8 +49,10 @@ namespace VDrumExplorer.Console
 
             void DisplayMessage(object sender, MidiReceivedEventArgs e)
             {
-                var end = e.Start + e.Length;
-                var data = e.Data[e.Start..end];
+                var data =
+                    e.Start == 0 && e.Length == e.Data.Length
+                    ? e.Data
+                    : e.Data.Skip(e.Start).Take(e.Length).ToArray();
 
                 console.WriteLine($"Received: {BitConverter.ToString(data)}");
             }
