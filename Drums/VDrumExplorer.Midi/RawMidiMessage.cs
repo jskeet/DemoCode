@@ -5,7 +5,7 @@
 namespace VDrumExplorer.Midi
 {
     /// <summary>
-    /// A raw, uninterpreted MIDI 
+    /// A raw, uninterpreted MIDI message.
     /// </summary>
     internal sealed class RawMidiMessage
     {

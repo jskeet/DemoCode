@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace VDrumExplorer.Midi
 {
     /// <summary>
-    /// A MIDI client with almost no logic
+    /// A MIDI client with almost no logic.
     /// </summary>
     internal sealed class RawMidiClient : IDisposable
     {
@@ -48,8 +48,12 @@ namespace VDrumExplorer.Midi
 
         public void Dispose()
         {
-            input.Dispose();
-            output.Dispose();
+            // Calling CloseAsync is significantly faster than calling Dispose.
+            // This is slightly odd, as the implementation for desktop seems to call
+            // CloseAsync too. Not sure what's going on, and maybe we should be waiting
+            // the task to complete... but it doesn't seem to cause any harm.
+            input.CloseAsync();
+            output.CloseAsync();
         }
     }
 }
