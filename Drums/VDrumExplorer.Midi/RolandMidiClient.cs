@@ -32,6 +32,11 @@ namespace VDrumExplorer.Midi
         public string InputName => rawClient.InputName;
         public string OutputName => rawClient.OutputName;
 
+        /// <summary>
+        /// An event handler for MIDI messages other than the data send/receive messages.
+        /// </summary>
+        internal EventHandler<RawMidiMessage> MessageReceived;
+
         private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, int modelId)
         {
             this.rawClient = rawClient;
@@ -54,16 +59,17 @@ namespace VDrumExplorer.Midi
 
         private void HandleMessage(RawMidiMessage message)
         {
-            // For the moment, we only care about SysEx Data Set messages
-            if (!DataSetMessage.TryParse(message, out var result))
+            // If it's a Data Set message aimed at this device, handle it...
+            if (DataSetMessage.TryParse(message, out var result) &&
+                result.RawDeviceId == rawDeviceId && result.ModelId == modelId)
             {
-                return;
+                HandleDataSetMessage(result);
             }
-            if (result.RawDeviceId != rawDeviceId || result.ModelId != modelId)
+            // Otherwise, delegate to any other event handlers that have been set up.
+            else
             {
-                return;
+                MessageReceived?.Invoke(this, message);
             }
-            HandleDataSetMessage(result);
         }
 
         public void PlayNote(int channel, int note, int velocity)
