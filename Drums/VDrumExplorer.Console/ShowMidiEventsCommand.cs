@@ -15,18 +15,12 @@ namespace VDrumExplorer.Console
 {
     public sealed class ShowMidiEventsCommand : ICommandHandler
     {
-        internal static Command Command { get; } = CreateCommand();
-
-        private static Command CreateCommand()
+        internal static Command Command { get; } = new Command("show-midi-events")
         {
-            var command = new Command("show-midi-events")
-            {
-                Description = "Shows the data of a kit, as JSON",
-                Handler = new ShowMidiEventsCommand(),
-            };
-            command.AddOption(new Option("--device", "MIDI input device to listen to") { Argument = new Argument<string>(), Required = true });
-            return command;
+            Description = "Shows the data of a kit, as JSON",
+            Handler = new ShowMidiEventsCommand(),
         }
+        .AddRequiredOption<string>("--device", "MIDI input device to listen to");
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {
