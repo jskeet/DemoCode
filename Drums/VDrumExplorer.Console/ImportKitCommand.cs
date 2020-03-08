@@ -18,19 +18,13 @@ namespace VDrumExplorer.Console
 {
     class ImportKitCommand : ICommandHandler
     {
-        internal static Command Command { get; } = CreateCommand();
-
-        private static Command CreateCommand()
+        internal static Command Command { get; } = new Command("import-kit")
         {
-            var command = new Command("import-kit")
-            {
-                Description = "Imports a kit from a device, saving it as a file",
-                Handler = new ImportKitCommand(),
-            };
-            command.AddOption(new Option("--kit", "Kit number to import") { Argument = new Argument<int>(), Required = true });
-            command.AddOption(new Option("--file", "File to save") { Argument = new Argument<string>(), Required = true  });
-            return command;
+            Description = "Imports a kit from a device, saving it as a file",
+            Handler = new ImportKitCommand(),
         }
+        .AddRequiredOption<int>("--kit", "Kit number to import")
+        .AddRequiredOption<string>("--file", "File to save");
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {

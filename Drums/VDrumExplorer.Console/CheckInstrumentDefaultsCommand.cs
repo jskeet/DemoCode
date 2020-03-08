@@ -17,18 +17,12 @@ namespace VDrumExplorer.Console
 {
     class CheckInstrumentDefaultsCommand : ICommandHandler
     {
-        internal static Command Command { get; } = CreateCommand();
-
-        private static Command CreateCommand()
+        internal static Command Command { get; } = new Command("check-instrument-defaults")
         {
-            var command = new Command("check-instrument-defaults")
-            {
-                Description = "Checks the default settings (including vedit) from every instrument",
-                Handler = new CheckInstrumentDefaultsCommand(),
-            };
-            command.AddOption(new Option("--kit", "Kit number to interact with") { Argument = new Argument<int>(), Required = true });
-            return command;
+            Description = "Checks the default settings (including vedit) from every instrument",
+            Handler = new CheckInstrumentDefaultsCommand(),
         }
+        .AddRequiredOption<int>("--kit", "Kit number to interact with");
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {

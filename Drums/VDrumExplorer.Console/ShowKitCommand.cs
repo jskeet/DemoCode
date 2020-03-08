@@ -19,18 +19,12 @@ namespace VDrumExplorer.Console
 {
     class ShowKitCommand : ICommandHandler
     {
-        internal static Command Command { get; } = CreateCommand();
-
-        private static Command CreateCommand()
+        internal static Command Command { get; } = new Command("show-kit")
         {
-            var command = new Command("show-kit")
-            {
-                Description = "Shows the data of a kit, as JSON",
-                Handler = new ShowKitCommand(),
-            };
-            command.AddOption(new Option("--file", "File to load") { Argument = new Argument<string>(), Required = true  });
-            return command;
+            Description = "Shows the data of a kit, as JSON",
+            Handler = new ShowKitCommand(),
         }
+        .AddRequiredOption<string>("--file", "File to load");
 
         public Task<int> InvokeAsync(InvocationContext context)
         {
