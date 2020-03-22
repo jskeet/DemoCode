@@ -2,16 +2,20 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TurnPagesCommandBase1.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Data\VDrumExplorer.Data.csproj" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-
-    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)'=='net472'" />
+    <!-- Make Windows Forms types available so we can use SendKeys - at least on Windows. -->
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
   </ItemGroup>
 
 </Project>
