@@ -23,7 +23,8 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ShowMidiEventsCommand.Command);
 
 #if NET472
-            rootCommand.AddCommand(TurnPagesCommand.Command);
+            rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
+            rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
 #endif
             return rootCommand.InvokeAsync(args);
         }
