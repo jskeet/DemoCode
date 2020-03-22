@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
@@ -15,7 +15,7 @@
     <ProjectReference Include="..\VDrumExplorer.Data\VDrumExplorer.Data.csproj" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
     <!-- Make Windows Forms types available so we can use SendKeys - at least on Windows. -->
-    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" Condition="'$(OS)' == 'Windows_NT'"/>
   </ItemGroup>
 
 </Project>
