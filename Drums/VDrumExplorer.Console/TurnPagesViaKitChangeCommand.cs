@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-#if NET472
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -39,6 +38,13 @@ namespace VDrumExplorer.Console
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             var console = context.Console.Out;
+
+            if (!SendKeysUtilities.HasSendKeys)
+            {
+                console.WriteLine($"SendKeys not detected; this command can only be run on Windows.");
+                return 1;
+            }
+
             var (client, schema) = await DeviceDetection.DetectDeviceAsync(console);
             if (client is null)
             {
@@ -77,7 +83,7 @@ namespace VDrumExplorer.Console
                     if (message.Data.Length == 2 && message.Data[0] == programChangeCommand)
                     {
                         console.WriteLine("Turning the page...");
-                        System.Windows.Forms.SendKeys.SendWait(keys);
+                        SendKeysUtilities.SendWait(keys);
                         SetCurrentKit(targetKit);
                     }
                 };
@@ -90,4 +96,3 @@ namespace VDrumExplorer.Console
         }
     }
 }
-#endif
