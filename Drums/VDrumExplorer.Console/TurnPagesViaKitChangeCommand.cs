@@ -25,15 +25,12 @@ namespace VDrumExplorer.Console
     /// - When a MIDI Program Change event is received, send keys to the current
     ///   application to turn the page, and reset the current kit to 99.
     /// </summary>
-    public class TurnPagesCommand : ICommandHandler
+    public class TurnPagesViaKitChangeCommand : ICommandHandler
     {
-        // Prevent eager type initialization.
-        static TurnPagesCommand() { }
-
-        internal static Command Command { get; } = new Command("turn-pages")
+        internal static Command Command { get; } = new Command("turn-pages-kit")
         {
-            Description = "Performs page turning",
-            Handler = new TurnPagesCommand(),
+            Description = "Performs page turning when the kit changes (e.g. via foot switch)",
+            Handler = new TurnPagesViaKitChangeCommand(),
         }
         .AddOptionalOption("--channel", "MIDI channel", 10)
         .AddOptionalOption("--keys", "SendKeys key string", "{RIGHT}")
