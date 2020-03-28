@@ -1,29 +1,33 @@
 {
   "description": "Root",
   "path": ".",
-  "details": [
-    {
-      "description": "Current kit",
-      "path": "Current"
-    },
-    {
-      "description": "Output",
-      "path": "Setup/Output"
-    },
-    {
-      "description": "Control",
-      "path": "Setup/Control"
-    },
-    {
-      "description": "Click",
-      "path": "Setup/Click"
-    },
-    {
-      "description": "Misc",
-      "path": "Setup/Misc"
-    }
-  ],
   "children": [
+    {
+      "description": "Setup",
+      "path": ".",
+      "details": [
+        {
+          "description": "Current kit",
+          "path": "Current"
+        },
+        {
+          "description": "Output",
+          "path": "Setup/Output"
+        },
+        {
+          "description": "Control",
+          "path": "Setup/Control"
+        },
+        {
+          "description": "Click",
+          "path": "Setup/Click"
+        },
+        {
+          "description": "Misc",
+          "path": "Setup/Misc"
+        }
+      ]
+    },
     {
       "description": "Kits",
       "path": ".",
