@@ -38,7 +38,7 @@ namespace VDrumExplorer.Wpf
         protected override string FormatNodeDescription(VisualTreeNode node) =>
             (node.KitOnlyDescription ?? node.Description).Format(node.Context, Data);
 
-        protected override async void CopyToDevice(object sender, RoutedEventArgs e)
+        protected override void CopyToDevice(object sender, RoutedEventArgs e)
         {
             if (!TextConversions.TryGetKitRoot(copyToDeviceKitNumber.Text, Schema, Logger, out var targetKitRoot))
             {
@@ -50,7 +50,7 @@ namespace VDrumExplorer.Wpf
             // twice, but that's much quicker than sending it to the kit anyway.
             var clonedData = RootNode.Context.CloneData(Data, targetKitRoot.Context.Address);
             var segments = clonedData.GetSegments();
-            await CopySegmentsToDeviceAsync(segments);
+            CopySegmentsToDevice(segments);
         }
     }
 }

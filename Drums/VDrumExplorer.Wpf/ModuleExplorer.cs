@@ -167,7 +167,7 @@ namespace VDrumExplorer.Wpf
             LoadDetailsPage();
         }
 
-        protected override async void CopyToDevice(object sender, RoutedEventArgs e)
+        protected override void CopyToDevice(object sender, RoutedEventArgs e)
         {
             if (CurrentNode == null)
             {
@@ -185,7 +185,7 @@ namespace VDrumExplorer.Wpf
                 .Distinct()
                 .OrderBy(segment => segment.Start)
                 .ToList();
-            await CopySegmentsToDeviceAsync(segments);
+            CopySegmentsToDevice(segments);
 
             IEnumerable<DataSegment> GetSegments(VisualTreeNode treeNode) =>
                 treeNode.Details

@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -36,7 +37,7 @@ namespace VDrumExplorer.Wpf
             this.logger = logger;
             this.client = client;
             this.schema = schema;
-            cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+            cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(15));
         }
         
         internal async void LoadDeviceData(FixedContainer root)
@@ -81,6 +82,41 @@ namespace VDrumExplorer.Wpf
             void LogUnconsumedMessage(object sender, DataResponseMessage message) =>
                 logger.Log($"Unexpected data response. Address: {message.Address:x8}; Length: {message.Length:x8}");
             */
+        }
+
+        internal async void CopySegmentsToDeviceAsync(List<DataSegment> segments)
+        {
+            // Slightly ugly to have this here rather than in XAML, but it's at least simple.
+            Title = "Copying data to module";
+            Stopwatch sw = Stopwatch.StartNew();
+            int written = 0;
+            try
+            {
+                logger.Log($"Writing {segments.Count} segments to the device.");
+                progress.Maximum = segments.Count;
+                foreach (var segment in segments)
+                {
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    client.SendData(segment.Start.Value, segment.CopyData());
+                    await Task.Delay(40);
+                    written++;
+                    progress.Value = written;
+                }
+                logger.Log($"Finished writing segments to the device {(int) sw.Elapsed.TotalSeconds} seconds.");
+                DialogResult = true;
+            }
+            catch (OperationCanceledException)
+            {
+                logger.Log($"Data copying to device was cancelled. Warning: module may now have inconsistent data.");
+                DialogResult = false;
+            }
+            catch (Exception e)
+            {
+                logger.Log("Failed while writing data to the device.");
+                logger.Log($"Segments successfully written: {written}");
+                logger.Log($"Error: {e}");
+                DialogResult = false;
+            }
         }
 
         private async Task PopulateSegment(ModuleData data, AnnotatedContainer annotatedContainer, CancellationToken token)
