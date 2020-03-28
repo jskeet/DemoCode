@@ -22,7 +22,7 @@ how you get on with this.
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha03/VDrumExplorer-Setup-1.0.0-alpha03.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha04/VDrumExplorer-Setup-1.0.0-alpha04.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -370,6 +370,12 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+# Version 1.0.0-alpha04 (2020-03-28)
+
+- Fixed incorrect schema data (mostly in multifx, but also one TD-27 midi field, and TD-27 output assignments)
+- Progress dialog when copying data to the module
+- Top-level small containers moved to a "Setup" node under the root for simpler copying
 
 ## Version 1.0.0-alpha03 (2020-03-01)
 
