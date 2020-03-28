@@ -53,27 +53,27 @@
       }
     },
     {
-      "offset": "0x21",
+      "offset": "0x1e",
       "description": "Phase Left",
-      "type": "enum",
+      "type": "enum32",
       "values": [
         "Normal",
         "Inverse"
       ]
     },
     {
-      "offset": "0x25",
+      "offset": "0x22",
       "description": "Phase Right",
-      "type": "enum",
+      "type": "enum32",
       "values": [
         "Normal",
         "Inverse"
       ]
     },
     {
-      "offset": "0x29",
+      "offset": "0x26",
       "description": "Feedback mode",
-      "type": "enum",
+      "type": "enum32",
       "values": [
         "Normal",
         "Cross"
