@@ -130,7 +130,7 @@
     },
     {
       "name": "Midi[18]",
-      "offset": "0x48",
+      "offset": "0x58",
       "description": "Ride bell note",
       "type": "midi32"
     },

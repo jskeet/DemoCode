@@ -162,6 +162,16 @@
       }
     },
     {
+      "offset": "0x4a",
+      "description": "Delay3 feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
       "offset": "0x04e",
       "description": "Delay HF Damp",
       "type": "enum32",

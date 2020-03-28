@@ -16,7 +16,7 @@
     },
     {
       "name": "TriggerDirectAssign",
-      "offset": "0x0e",
+      "offset": "0x0c",
       "repeat": "$triggers",
       "descriptionLookup": "triggers",
       "description": "Direct Assign ({1})",

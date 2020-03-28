@@ -54,7 +54,7 @@
     {
       "offset": "0x1e",
       "description": "Delay High Frequency Damp",
-      "type": "enum",
+      "type": "enum32",
       "values": [
         "200Hz",
         "250Hz",

@@ -91,7 +91,7 @@
     {
       "offset": "0x2e",
       "description": "High Frequency Damp",
-      "type": "enum",
+      "type": "enum32",
       "values": [
         "200Hz",
         "250Hz",
