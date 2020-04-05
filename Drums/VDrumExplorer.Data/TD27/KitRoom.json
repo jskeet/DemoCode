@@ -117,7 +117,7 @@
               {
                 "offset": "0x16",
                 "description": "Diffusion",
-                "type": "range8",
+                "type": "range32",
                 "min": 0,
                 "max": 127
               },
