@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>Enable</Nullable>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Google.Protobuf" Version="3.11.4" />
+    <EmbeddedResource Include="TD27/**/*.json" />
+    <EmbeddedResource Include="Shared/**/*.json" />
+    <ProjectReference Include="..\VDrumExplorer.Utility\VDrumExplorer.Utility.csproj" />
+  </ItemGroup>
+</Project>
