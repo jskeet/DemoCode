@@ -1,0 +1,72 @@
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using Google.Protobuf;
+using System.IO;
+using System.Text;
+
+namespace VDrumExplorer.Proto
+{
+    /// <summary>
+    /// I/O methods for Protocol Buffer representations of V-Drum data.
+    /// </summary>
+    public static class ProtoIo
+    {
+        private const string MagicString = "JLSVDRUM1";
+        private static readonly byte[] MagicBytes = Encoding.UTF8.GetBytes(MagicString);
+
+        /// <summary>
+        /// Creates a model from the data in a stream.
+        /// </summary>
+        /// <param name="stream">Stream to read</param>
+        /// <returns>The model data. The type depends on the data in the stream.</returns>
+        public static object ReadModel(Stream stream)
+        {
+            var file = ReadDrumFile(stream);
+            return file.FileCase switch
+            {
+                DrumFile.FileOneofCase.Kit => (object) file.Kit.ToModel(),
+                DrumFile.FileOneofCase.Module => file.Module.ToModel(),
+                DrumFile.FileOneofCase.ModuleAudio => file.ModuleAudio.ToModel(),
+                _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
+            };
+        }
+
+        // Note: these methods are currently called by the convenience methods in ModelExtensions.
+        // We could make them public if we wanted.
+        internal static void Write(Stream stream, Model.Module module) =>
+            Write(stream, new DrumFile { Module = Module.FromModel(module) });
+
+        internal static void Write(Stream stream, Model.Kit kit) =>
+            Write(stream, new DrumFile { Kit = Kit.FromModel(kit) });
+
+        internal static void Write(Stream stream, Model.Audio.ModuleAudio audio) =>
+            Write(stream, new DrumFile { ModuleAudio = ModuleAudio.FromModel(audio) });
+
+        internal static void Write(Stream stream, DrumFile drumFile)
+        {
+            stream.Write(MagicBytes, 0, MagicBytes.Length);
+            drumFile.WriteTo(stream);
+        }
+
+        private static DrumFile ReadDrumFile(Stream stream)
+        {
+            // Simpler than using bulk read...
+            for (int i = 0; i < MagicBytes.Length; i++)
+            {
+                int streamByte = stream.ReadByte();
+                if (streamByte == -1)
+                {
+                    throw new EndOfStreamException("Magic number missing from stream");
+                }
+                if (streamByte != MagicBytes[i])
+                {
+                    throw new InvalidDataException($"Magic number invalid in stream. Index={i}; Expected={MagicBytes[i]}; Actual={streamByte}");
+                }
+            }
+
+            return DrumFile.Parser.ParseFrom(stream);
+        }        
+    }
+}
