@@ -1,0 +1,29 @@
+﻿{
+  "description": "Filter and drive",
+  "fields": [
+    {
+      "description": "Cutoff",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Resonance",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

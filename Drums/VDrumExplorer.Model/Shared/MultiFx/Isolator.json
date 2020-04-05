@@ -1,0 +1,65 @@
+﻿{
+  "description": "Isolator",
+  "fields": [
+    {
+      "description": "Boost/Cut Low",
+      "type": "range32",
+      "min": 0,
+      "max": 64,
+      "valueOffset": -60,
+      "suffix": "dB"
+    },
+    {
+      "description": "Boost/Cut Mid",
+      "type": "range32",
+      "min": 0,
+      "max": 64,
+      "valueOffset": -60,
+      "suffix": "dB"
+    },
+    {
+      "description": "Boost/Cut High",
+      "type": "range32",
+      "min": 0,
+      "max": 64,
+      "valueOffset": -60,
+      "suffix": "dB"
+    },
+    {
+      "description": "Anti Phase Low Switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Anti Phase Low Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Anti Phase Mid Switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Anti Phase Mid Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Low Boost Switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Low Boost Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

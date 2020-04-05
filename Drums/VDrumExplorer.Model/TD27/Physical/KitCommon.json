@@ -1,0 +1,97 @@
+﻿{
+  "size": "0x34",
+  "fields": [
+    {
+      "description": "Kit name",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "description": "Kit Sub name",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "description": "Kit volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Pedal HH volume",
+      "type": "volume32"
+    },
+    {
+      "name": "XStickSwitch",
+      "description": "XStick on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "XStick Instrument",
+      "type": "enum",
+      "values": [
+        "Hard Wood X",
+        "Maple X",
+        "Beech X",
+        "Steel X",
+        "Walnut X",
+        "Tight Buzz X",
+        "Cross Stick 1",
+        "Cross Stick 2",
+        "Cross Stick 3",
+        "Cross Stick 4",
+        "Cross Stick 5",
+        "Cross Stick 6",
+        "Cross Stick 7",
+        "Cross Stick 8",
+        "Cross Stick 9",
+        "Cross Stick 10"
+      ]
+    },
+    {
+      "description": "XStick volume",
+      "type": "volume32"
+    },
+    {
+      "name": "BrushSwitch",
+      "description": "Brush on/off",
+      "type": "boolean"
+    },
+    {
+      "name": "Color",
+      "type": "range8",
+      "min": 0,
+      "max": 9,
+      "valueOffset": 1
+    },
+    {
+      "description": "Overhead template",
+      "type": "enum",
+      "values": [
+        "Clear",
+        "Warm",
+        "Dry",
+        "Mild",
+        "Bright",
+        "Other 1",
+        "Other 2",
+        "Other 3",
+        "Other 4"
+      ]
+    },
+    {
+      "description": "Kit Tempo",
+      "type": "boolean"
+    },
+    {
+      "name": "Tempo",
+      "type": "range32",
+      "min": 20,
+      "max": 260
+    },
+    {
+      "description": "Hi-Hat Open/Close Balance",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+﻿{
+  "description": "Tape echo",
+  "fields": [
+    {
+      "description": "Mode",
+      "type": "enum32",
+      "values": [
+        "S",
+        "M",
+        "L",
+        "S+M",
+        "S+L",
+        "M+L",
+        "S+M+L"
+      ]
+    },
+    {
+      "description": "Repeat Rate",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Intensity",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bass",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "Treble",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "Head S Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Head M Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Head L Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Tape Distortion",
+      "type": "range32",
+      "min": 0,
+      "max": 5
+    },
+    {
+      "description": "W/F Rate",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "W/F Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "name": "Placeholder field 1",
+      "type": "placeholder32"
+    },
+    {
+      "name": "Placeholder field 2",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

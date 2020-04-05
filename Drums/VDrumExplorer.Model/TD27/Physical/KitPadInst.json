@@ -1,0 +1,81 @@
+﻿{
+  "size": "0x19",
+  "fields": [
+    {
+      "description": "Instrument",
+      "type": "instrument",
+      "bankField": "InstrumentBank"
+    },
+    {
+      "description": "Volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Instrument bank",
+      "type": "enum",
+      "values": [
+        "Preset",
+        "User sample"
+      ]
+    },
+    {
+      "description": "Transient on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Transient time",
+      "type": "range8",
+      "min": 1,
+      "max": 10,
+      "default": 5
+    },
+    {
+      "description": "Transient attack",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Transient release",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Transient gain",
+      "type": "range16",
+      "min": -120,
+      "max": 60,
+      "divisor": 10,
+      "suffix": "dB"
+    },
+    {
+      "description": "Dynamic enhancer",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Normal",
+        "Wide"
+      ]
+    },
+    {
+      "description": "Pad decay",
+      "type": "range8",
+      "min": 1,
+      "max": 100,
+      "default": 100
+    },
+    {
+      "description": "Pad pitch",
+      "type": "range32",
+      "min": -4800,
+      "max": 4800
+    },
+    {
+      "description": "Pad pitch sweep",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+﻿{
+  "description": "Bit crusher",
+  "fields": [
+    {
+      "description": "Sample Rate",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bit Down",
+      "type": "range32",
+      "min": 0,
+      "max": 18
+    },
+    {
+      "description": "Filter",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

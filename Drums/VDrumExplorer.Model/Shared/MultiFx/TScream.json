@@ -1,0 +1,23 @@
+﻿{
+  "description": "T-Scream",
+  "fields": [
+    {
+      "description": "Distortion",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tone",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

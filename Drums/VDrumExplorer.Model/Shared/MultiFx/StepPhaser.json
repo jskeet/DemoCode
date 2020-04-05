@@ -1,0 +1,123 @@
+﻿{
+  "description": "Step phaser",
+  "fields": [
+    {
+      "description": "Mode",
+      "type": "enum32",
+      "values": [
+        "4-Stage",
+        "8-Stage",
+        "12-Stage"
+      ]
+    },
+    {
+      "description": "Manual",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tempo Sync (Rate)",
+      "type": "boolean32"
+    },
+    {
+      "description": "Rate (Hz)",
+      "type": "range32",
+      "suffix": "Hz",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Rate (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Polarity",
+      "type": "enum32",
+      "values": [
+        "Inverse",
+        "Synchro"
+      ]
+    },
+    {
+      "description": "Resonance",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Cross Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "description": "Tempo Sync (Step Rate)",
+      "type": "boolean32"
+    },
+    {
+      "description": "Step Rate (Hz)",
+      "type": "range32",
+      "suffix": "Hz",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "condition": {
+        "offset": "0x2a",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Step Rate (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x2a",
+        "requiredValue": 1
+      }
+    },
+    {
+      "name": "Placeholder field",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

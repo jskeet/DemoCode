@@ -1,0 +1,43 @@
+﻿{
+  "description": "Hi hat",
+  "fields": [
+    {
+      "description": "Size",
+      "type": "range16",
+      "min": 0,
+      "max": 78,
+      "valueOffset": 2,
+      "divisor": 2,
+      "default": 26
+    },
+    {
+      "description": "Fixed",
+      "type": "enum16",
+      "values": [
+        "Normal",
+        "Press",
+        "Close",
+        "Half",
+        "Open"
+      ]
+    },
+    {
+      "description": "Thickness",
+      "type": "enum16",
+      "min": -5,
+      "values": [
+        "Thin-5",
+        "Thin-4",
+        "Thin-3",
+        "Thin-2",
+        "Thin-1",
+        "Standard",
+        "Thick+1",
+        "Thick+2",
+        "Thick+3",
+        "Thick+4",
+        "Thick+5"
+      ]
+    }
+  ]
+}

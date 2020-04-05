@@ -1,0 +1,60 @@
+﻿{
+  "description": "Distortion",
+  "fields": [
+    {
+      "description": "Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tone",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp Switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Amp Type",
+      "type": "enum32",
+      "values": [
+        "Small",
+        "Built-in",
+        "2-Stack",
+        "3-Stack"
+      ]
+    },
+    {
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

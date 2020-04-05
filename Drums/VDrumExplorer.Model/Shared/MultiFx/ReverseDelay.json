@@ -1,0 +1,234 @@
+﻿{
+  "description": "Reverse delay",
+  "fields": [
+    {
+      "description": "Threshold",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tempo Sync Rev",
+      "type": "boolean32"
+    },
+    {
+      "description": "RevDelay Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x0a",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "RevDelay Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x0a",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "RevDelay Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "description": "RevDelay HF Damp",
+      "type": "enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "description": "RevDelay Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "RevDelay Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tempo Sync Delay1",
+      "type": "boolean32"
+    },
+    {
+      "description": "Delay1 Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x26",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Delay1 Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x26",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "Tempo Sync Delay2",
+      "type": "boolean32"
+    },
+    {
+      "description": "Delay2 Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x32",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Delay2 Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x32",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "Tempo Sync Delay3",
+      "type": "boolean32"
+    },
+    {
+      "description": "Delay3 Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x3e",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Delay3 Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x3e",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "Delay3 feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "description": "Delay HF Damp",
+      "type": "enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "description": "Delay1 Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Delay2 Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Delay1 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Delay2 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "name": "Placeholder field",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

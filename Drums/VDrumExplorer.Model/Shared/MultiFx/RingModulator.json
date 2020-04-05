@@ -1,0 +1,51 @@
+﻿{
+  "description": "Ring modulator",
+  "fields": [
+    {
+      "description": "Frequency",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Sens",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Polarity",
+      "type": "enum32",
+      "values": [
+        "Up",
+        "Down"
+      ]
+    },
+    {
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "name": "Placeholder field",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}
