@@ -336,7 +336,7 @@
     },
     {
       "offset": "0x2a",
-      "description": "Filter {1} type",
+      "description": "Filter {0} type",
       "type": "enum",
       "values": [
         "Through",
@@ -351,7 +351,7 @@
     },
     {
       "offset": "0x2e",
-      "description": "Filter {1} frequency",
+      "description": "Filter {0} frequency",
       "type": "enum32",
       "values": [
         "20Hz",
@@ -390,7 +390,7 @@
     },
     {
       "offset": "0x3e",
-      "description": "Filter {1} Gain",
+      "description": "Filter {0} Gain",
       "type": "range32",
       "suffix": "dB",
       "min": -400,
@@ -401,7 +401,7 @@
     },
     {
       "offset": "0x4e",
-      "description": "Filter {1} Q",
+      "description": "Filter {0} Q",
       "type": "enum",
       "values": [
         "0.5",

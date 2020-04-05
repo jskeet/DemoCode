@@ -32,11 +32,26 @@
     },
     {
       "offset": "0x25",
-      "description": "XStick Inst",
-      "type": "range8",
-      "min": 0,
-      "max": 15,
-      "valueOffset": 1
+      "description": "XStick Instrument",
+      "type": "enum",
+      "values": [
+        "Hard Wood X",
+        "Maple X",
+        "Beech X",
+        "Steel X",
+        "Walnut X",
+        "Tight Buzz X",
+        "Cross Stick 1",
+        "Cross Stick 2",
+        "Cross Stick 3",
+        "Cross Stick 4",
+        "Cross Stick 5",
+        "Cross Stick 6",
+        "Cross Stick 7",
+        "Cross Stick 8",
+        "Cross Stick 9",
+        "Cross Stick 10"
+      ]
     },
     {
       "offset": "0x26",
