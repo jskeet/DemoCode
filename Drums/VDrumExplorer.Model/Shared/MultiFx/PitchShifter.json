@@ -1,0 +1,84 @@
+﻿{
+  "description": "Pitch shifter",
+  "fields": [
+    {
+      "description": "Course",
+      "type": "range32",
+      "min": 0,
+      "max": 36,
+      "valueOffset": -24,
+      "suffix": "semi"
+    },
+    {
+      "description": "Fine",
+      "type": "range32",
+      "min": 0,
+      "max": 100,
+      "valueOffset": -50,
+      "multiplier": 2,
+      "suffix": "cent"
+    },
+    {
+      "description": "Tempo Sync",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "description": "Delay Time (milliseconds)",
+      "type": "range32",
+      "suffix": "ms",
+      "min": 1,
+      "max": 1300,
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Delay Time (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x0e",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%"
+    },
+    {
+      "description": "Low Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "High Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "name": "Placeholder field",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

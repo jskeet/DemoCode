@@ -1,0 +1,104 @@
+﻿{
+  "description": "Super filter",
+  "fields": [
+    {
+      "description": "Filter Type",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "Low Pass Filter",
+        "High Pass Filter",
+        "Notch"
+      ]
+    },
+    {
+      "description": "Filter Slope",
+      "type": "enum32",
+      "values": [
+        "-12dB",
+        "-24dB",
+        "-36dB"
+      ]
+    },
+    {
+      "description": "Filter Cutoff",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Filter Resonance",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Filter Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "description": "Modulation Switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Modulation Wave",
+      "type": "enum32",
+      "values": [
+        "Triangle",
+        "Square",
+        "Sine",
+        "Saw 1",
+        "Saw 2"
+      ]
+    },
+    {
+      "description": "Tempo Sync",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "description": "Rate (Hz)",
+      "type": "range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "suffix": "Hz",
+      "condition": {
+        "offset": "0x22",
+        "requiredValue": 0
+      }
+    },
+    {
+      "description": "Rate (note)",
+      "type": "musicalNote",
+      "condition": {
+        "offset": "0x22",
+        "requiredValue": 1
+      }
+    },
+    {
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Attack",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "identifier": {
+    "name": "TD-27",
+    "modelId": "0x63",
+    "familyCode": "0x0363",
+    "familyNumberCode": "0x0"
+  },
+  "instrumentGroups": "$resource:InstrumentGroups.json",
+  "lookups": {
+    "triggers": [
+      "Kick Head",
+      "Snare Head",
+      "Snare Rim",
+      "Tom 1 Head",
+      "Tom 1 Rim",
+      "Tom 2 Head",
+      "Tom 2 Rim",
+      "Tom 3 Head",
+      "Tom 3 Rim",
+      "Hi-Hat Head",
+      "Hi-Hat Rim",
+      "Crash 1 Head",
+      "Crash 1 Rim",
+      "Crash 2 Head",
+      "Crash 2 Rim",
+      "Ride Head",
+      "Ride Edge",
+      "Ride Bell",
+      "Aux 1 Head",
+      "Aux 1 Rim",
+      "Aux 2 Head",
+      "Aux 2 Rim",
+      "Aux 3 Head",
+      "Aux 3 Rim"
+    ],
+    "pads": [
+      "Kick",
+      "Snare",
+      "Tom 1",
+      "Tom 2",
+      "Tom 3",
+      "Hi-Hat",
+      "Crash 1",
+      "Crash 2",
+      "Ride",
+      "Aux 1",
+      "Aux 2",
+      "Aux 3"
+    ],
+    "assignableInputs": [
+      "MFX1",
+      "MFX2",
+      "MFX3",
+      "Song",
+      "Click",
+      "Mix In",
+      "USB In Main",
+      "USB In Sub"
+    ]
+  },
+  "counts": {
+    "kits": 100,
+    "triggerBanks": 8,
+    "setLists": 32,
+    "mfx": 3,
+    "userSamples": 500
+  },
+  "containers": {
+    "Root": "$resource:Physical/Root.json",
+    "Kit": "$resource:Physical/Kit.json",
+    "Setup": "$resource:Physical/Setup.json",
+    "Trigger": "$resource:Physical/Trigger.json",
+    "Current": "$resource:Physical/Current.json",
+    "KitCommon": "$resource:Physical/KitCommon.json",
+    "KitMidi": "$resource:Physical/KitMidi.json",
+    "KitOverhead": "$resource:Physical/KitOverhead.json",
+    "KitRoom": "$resource:Physical/KitRoom.json",
+    "KitMasterComp": "$resource:Physical/KitMasterComp.json",
+    "KitMasterEQ": "$resource:Physical/KitMasterEQ.json",
+    "KitPadInst": "$resource:Physical/KitPadInst.json",
+    "KitPadCommon": "$resource:Physical/KitPadCommon.json",
+    "KitPad": "$resource:Physical/KitPad.json",
+    "SetListParams": "$resource:Physical/SetListParams.json",
+    "Click": "$resource:Physical/Click.json",
+    "TrigMisc": "$resource:Physical/TrigMisc.json",
+    "TrigAnalog": "$resource:Physical/TrigAnalog.json",
+    "SetupOutput": "$resource:Physical/SetupOutput.json",
+    "SetupControl": "$resource:Physical/SetupControl.json",
+    "SetupMisc": "$resource:Physical/SetupMisc.json",
+    "KitMfx": "$resource:Physical/KitMfx.json",
+    "KitPadVEdit": "$resource:Physical/KitPadVEdit.json",
+    "TrigDigital": "$resource:Physical/TrigDigital.json"
+  },
+
+  "logicalTree": "$resource:Logical/Root.json"
+}

@@ -1,0 +1,49 @@
+﻿{
+  "description": "Saturator",
+  "fields": [
+    {
+      "description": "Saturator Gain",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Saturator Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Saturator Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Comp Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Comp Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Hi Gain",
+      "type": "range32",
+      "min": 3,
+      "max": 21,
+      "valueOffset": -15,
+      "suffix": "dB"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

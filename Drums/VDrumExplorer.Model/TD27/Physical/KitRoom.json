@@ -1,0 +1,142 @@
+﻿{
+  "size": "0x56",
+  "fields": [
+    {
+      "description": "On/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Type",
+      "type": "enum",
+      "values": [
+        "Room",
+        "Reverb"
+      ]
+    },
+    {
+      "description": "Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Room parameters",
+      "type": "overlay",
+      "overlay": {
+        "fieldCount": 20,
+        "fieldSize": 4,
+        "switchPath": "Type",
+        "fieldLists": [
+          {
+            "description": "Room",
+            "fields": [
+              {
+                "description": "Room Type",
+                "type": "enum32",
+                "values": [
+                  "Small Studio 1",
+                  "Small Studio 2",
+                  "Small Studio 3",
+                  "Small Studio 4",
+                  "Large Studio 1",
+                  "Large Studio 2",
+                  "Large Studio 3",
+                  "Large Studio 4",
+                  "Live House 1",
+                  "Live House 2",
+                  "Live House 3",
+                  "Live House 4",
+                  "Stage 1",
+                  "Stage 2",
+                  "Stage 3",
+                  "Stage 4",
+                  "Middle Hall 1",
+                  "Middle Hall 2",
+                  "Middle Hall 3",
+                  "Middle Hall 4"
+                ]
+              },
+              {
+                "description": "Distance",
+                "type": "range32",
+                "min": 0,
+                "max": 6
+              },
+              {
+                "description": "Time",
+                "type": "range32",
+                "min": -64,
+                "max": 0
+              }
+            ]
+          },
+          {
+            "description": "Reverb",
+            "fields": [
+              {
+                "description": "Type",
+                "type": "enum32",
+                "values": [
+                  "Room 1",
+                  "Room 2",
+                  "Hall 1",
+                  "Hall 2",
+                  "Plate"
+                ]
+              },
+              {
+                "description": "Pre delay",
+                "type": "range32",
+                "min": 0,
+                "max": 100,
+                "suffix": "ms"
+              },
+              {
+                "description": "Time",
+                "type": "range32",
+                "min": 1,
+                "max": 100,
+                "divisor": 10,
+                "suffix": "sec"
+              },
+              {
+                "description": "Density",
+                "type": "range32",
+                "min": 0,
+                "max": 127
+              },
+              {
+                "description": "Diffusion",
+                "type": "range32",
+                "min": 0,
+                "max": 127
+              },
+              {
+                "description": "LF damp",
+                "type": "range32",
+                "min": 0,
+                "max": 127
+              },
+              {
+                "description": "HF damp",
+                "type": "range32",
+                "min": 0,
+                "max": 127
+              },
+              {
+                "description": "Spread",
+                "type": "range32",
+                "min": 0,
+                "max": 127
+              },
+              {
+                "description": "Tone",
+                "type": "range32",
+                "min": 0,
+                "max": 127
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

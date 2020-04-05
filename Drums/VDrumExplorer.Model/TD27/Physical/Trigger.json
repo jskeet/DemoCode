@@ -1,0 +1,29 @@
+﻿{
+  "containers": [
+    {
+      "name": "TrigMisc",
+      "offset": "0x00",
+      "description": "Trigger Misc"
+    },
+    {
+      "name": "TrigAnalog",
+      "offset": "0x01_00",
+      "description": "{item} Trigger Analog",
+      "repeat":
+      {
+        "items": "pads",
+        "gap": "0x1_00"
+      }
+    },
+    {
+      "name": "TrigDigital",
+      "offset": "0x0d_00",
+      "description": "{item} Trigger Digital",
+      "repeat":
+      {
+        "items": "pads",
+        "gap": "0x1_00"
+      }
+    }
+  ]
+}

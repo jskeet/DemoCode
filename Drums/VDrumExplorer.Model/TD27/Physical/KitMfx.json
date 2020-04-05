@@ -1,0 +1,91 @@
+﻿{
+  "size": "0x01_06",
+  "fields": [
+    {
+      "description": "Type",
+      "type": "enum",
+      "values": [
+        "Delay",
+        "Tape echo",
+        "Reverse delay",
+        "3Tap pan delay",
+        "Overdrive -> Delay",
+        "Distortion -> Delay",
+        "Chorus",
+        "Space-D",
+        "Overdrive -> Chorus",
+        "Distortion -> Chorus",
+        "Phaser A",
+        "Phaser B",
+        "Step Phaser",
+        "Flanger",
+        "Reverb",
+        "Long reverb",
+        "Super filter",
+        "Filter + drive",
+        "Auto wah",
+        "Overdrive / Distortion -> Twah",
+        "LoFi compress",
+        "Distortion",
+        "Overdrive",
+        "Saturator",
+        "T-scream",
+        "Bit crusher",
+        "Isolator",
+        "Ring modulator",
+        "Pitch shifter",
+        "Auto pan"
+      ]
+    },
+    {
+      "description": "Switch",
+      "type": "boolean"
+    },
+    {
+      "description": "Level (general MFX)",
+      "type": "volume32"
+    },
+    {
+      "name": "Parameters",
+      "description": "MFX parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "Type",
+        "fieldCount": 32,
+        "fieldSize": 4,
+        "fieldLists": [
+          "$resource:../Shared/MultiFx/Delay.json",
+          "$resource:../Shared/MultiFx/TapeEcho.json",
+          "$resource:../Shared/MultiFx/ReverseDelay.json",
+          "$resource:../Shared/MultiFx/3TapPan.json",
+          "$resource:../Shared/MultiFx/OverdriveToDelay.json",
+          "$resource:../Shared/MultiFx/DistortionToDelay.json",
+          "$resource:../Shared/MultiFx/Chorus.json",
+          "$resource:../Shared/MultiFx/SpaceD.json",
+          "$resource:../Shared/MultiFx/OverdriveToChorus.json",
+          "$resource:../Shared/MultiFx/DistortionToChorus.json",
+          "$resource:../Shared/MultiFx/PhaserA.json",
+          "$resource:../Shared/MultiFx/PhaserB.json",
+          "$resource:../Shared/MultiFx/StepPhaser.json",
+          "$resource:../Shared/MultiFx/Flanger.json",
+          "$resource:../Shared/MultiFx/Reverb.json",
+          "$resource:../Shared/MultiFx/LongReverb.json",
+          "$resource:../Shared/MultiFx/SuperFilter.json",
+          "$resource:../Shared/MultiFx/FilterAndDrive.json",
+          "$resource:../Shared/MultiFx/AutoWah.json",
+          "$resource:../Shared/MultiFx/OverdriveDistortionToTwah.json",
+          "$resource:../Shared/MultiFx/LoFiCompress.json",
+          "$resource:../Shared/MultiFx/Distortion.json",
+          "$resource:../Shared/MultiFx/Overdrive.json",
+          "$resource:../Shared/MultiFx/Saturator.json",
+          "$resource:../Shared/MultiFx/TScream.json",
+          "$resource:../Shared/MultiFx/BitCrusher.json",
+          "$resource:../Shared/MultiFx/Isolator.json",
+          "$resource:../Shared/MultiFx/RingModulator.json",
+          "$resource:../Shared/MultiFx/PitchShifter.json",
+          "$resource:../Shared/MultiFx/AutoPan.json"
+        ]
+      }
+    }
+  ]
+}

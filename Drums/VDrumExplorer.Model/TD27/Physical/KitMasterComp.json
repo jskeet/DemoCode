@@ -1,0 +1,147 @@
+﻿{
+  "size": "0x16",
+  "fields": [
+    {
+      "name": "CompressorSwitch",
+      "description": "Compressor on/off",
+      "type": "boolean"
+    },
+    {
+      "name": "Type",
+      "type": "enum",
+      "values": [
+        "Single soft compressor",
+        "Single hard compressor",
+        "Single limiter",
+        "2 band soft compressor",
+        "2 band hard compressor",
+        "2 band limiter"
+      ]
+    },
+    {
+      "description": "Split frequency",
+      "type": "range32",
+      "min": 0,
+      "max": 1600,
+      "off": 0,
+      "offLabel": "Single",
+      "multiplier": 10
+    },
+    {
+      "description": "Lo gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "description": "Hi gain",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "description": "Lo threshold",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "description": "Hi threshold",
+      "type": "range16",
+      "min": -48,
+      "max": 48,
+      "divisor": 2,
+      "suffix": "dB"
+    },
+    {
+      "description": "Lo Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "description": "Hi Ratio",
+      "type": "enum",
+      "values": [
+        "1:1",
+        "2:1",
+        "3:1",
+        "4:1",
+        "8:1",
+        "16:1",
+        "32:1",
+        "100:1"
+      ]
+    },
+    {
+      "description": "Lo Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      "description": "Hi Knee",
+      "type": "enum",
+      "values": [
+        "Hard",
+        "Soft 1",
+        "Soft 2",
+        "Soft 3"
+      ]
+    },
+    {
+      "description": "Lo Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "description": "Hi Attack",
+      "type": "range8",
+      "min": 0,
+      "max": 100,
+      "valueOffset": 1,
+      "divisor": 10,
+      "suffix": "ms"
+    },
+    {
+      "description": "Lo Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    },
+    {
+      "description": "Hi Release",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      "valueOffset": 1,
+      "multiplier": 10,
+      "suffix": "ms"
+    }
+  ]
+}
