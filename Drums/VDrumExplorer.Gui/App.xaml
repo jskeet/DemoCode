@@ -1,0 +1,32 @@
+﻿<Application x:Class="VDrumExplorer.Gui.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Margin to the left of a value when being displayed as a key/value pair. -->
+            <Thickness x:Key="ValueMargin" Left="5" Top="0" Right="0" Bottom="0" />
+
+            <ControlTemplate TargetType="ItemsControl" x:Key="KeyValueTable">
+                <ItemsControl ItemsSource="{TemplateBinding ItemsSource}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Grid.IsSharedSizeScope="True" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Col0" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Key}" />
+                                <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="{StaticResource ResourceKey=ValueMargin}" ToolTip="{Binding ToolTip}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
