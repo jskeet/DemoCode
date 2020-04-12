@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
+using System.Collections.Generic;
 using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Model
@@ -15,7 +17,13 @@ namespace VDrumExplorer.Model
         public ModuleSchema Schema { get; }
         public ModuleData Data { get; }
 
-        public Module(ModuleSchema schema, ModuleData data) =>
-            (Schema, Data) = (schema, data);
+        public Module(ModuleData data) =>
+            (Schema, Data) = (data.PhysicalRoot.Schema, data);
+
+        public static Module Create(ModuleSchema moduleSchema, Dictionary<ModuleAddress, byte[]> data)
+        {
+            var moduleData = ModuleData.FromData(moduleSchema.LogicalRoot, data);
+            return new Module(moduleData);
+        }
     }
 }

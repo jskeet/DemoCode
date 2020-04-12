@@ -12,7 +12,7 @@ namespace VDrumExplorer.Model.Schema.Fields
     public sealed class BooleanField : NumericFieldBase
     {
         internal BooleanField(Parameters common)
-            : base(common, min: 0, max: 0, @default: 0)
+            : base(common, min: 0, max: 1, @default: 0)
         {
         }
     }

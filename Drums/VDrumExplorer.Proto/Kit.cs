@@ -3,13 +3,19 @@
 // as found in the LICENSE.txt file.
 
 using System.Linq;
+using VDrumExplorer.Model;
 
 namespace VDrumExplorer.Proto
 {
     internal partial class Kit
     {
-        internal Model.Kit ToModel() =>
-            new Model.Kit(Identifier.GetSchema(), FieldContainerData.LoadData(Containers), DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
+        internal Model.Kit ToModel()
+        {
+            var data = Containers.ToDictionary(
+                container => ModuleAddress.FromDisplayValue(container.Address),
+                container => container.Data.ToByteArray());
+            return Model.Kit.Create(Identifier.GetSchema(), data, DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
+        }
 
         internal static Kit FromModel(Model.Kit kit) =>
             new Kit

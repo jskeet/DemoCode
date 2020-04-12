@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.ViewModel
 {
@@ -13,7 +14,7 @@ namespace VDrumExplorer.ViewModel
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        private PropertyChangedEventHandler? propertyChangedHandler;
+        private PropertyChangedEventHandler? propertyChanged;
 
         // Implement the event subscription manually so ViewModels can subscribe and unsubscribe
         // from events raised by their models.
@@ -21,18 +22,14 @@ namespace VDrumExplorer.ViewModel
         {
             add
             {
-                bool wasNull = propertyChangedHandler is null;
-                var newValue = propertyChangedHandler += value;
-                if (newValue is object && wasNull)
+                if (NotifyPropertyChangedHelper.AddHandler(ref propertyChanged, value))
                 {
                     OnPropertyChangedHasSubscribers();
                 }
             }
             remove
             {
-                bool wasNull = propertyChangedHandler is null;
-                var newValue = propertyChangedHandler -= value;
-                if (newValue is null && !wasNull)
+                if (NotifyPropertyChangedHelper.RemoveHandler(ref propertyChanged, value))
                 {
                     OnPropertyChangedHasNoSubscribers();
                 }
@@ -55,6 +52,9 @@ namespace VDrumExplorer.ViewModel
         {
         }
 
+        protected void RaisePropertyChanged(string name) =>
+            propertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
         protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? name = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value))
@@ -62,7 +62,7 @@ namespace VDrumExplorer.ViewModel
                 return false;
             }
             field = value;
-            propertyChangedHandler?.Invoke(this, new PropertyChangedEventArgs(name));
+            RaisePropertyChanged(name!);
             return true;
         }
     }
@@ -77,5 +77,25 @@ namespace VDrumExplorer.ViewModel
 
         private protected ViewModelBase(TModel model) =>
             Model = model;
+
+        protected override void OnPropertyChangedHasSubscribers()
+        {
+            if (Model is INotifyPropertyChanged inpc)
+            {
+                inpc.PropertyChanged += OnPropertyModelChanged;
+            }
+        }
+
+        protected override void OnPropertyChangedHasNoSubscribers()
+        {
+            if (Model is INotifyPropertyChanged inpc)
+            {
+                inpc.PropertyChanged -= OnPropertyModelChanged;
+            }
+        }
+
+        protected virtual void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)
+        {
+        }
     }
 }
