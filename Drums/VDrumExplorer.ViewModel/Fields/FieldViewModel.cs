@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using VDrumExplorer.Model.Fields;
+using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.ViewModel;
 
 namespace VDrumExplorer.ViewModels.Fields

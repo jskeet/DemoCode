@@ -3,7 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using VDrumExplorer.Model.LogicalSchema;
+using VDrumExplorer.Model.Schema.Logical;
 
 namespace VDrumExplorer.ViewModel.LogicalSchema
 {

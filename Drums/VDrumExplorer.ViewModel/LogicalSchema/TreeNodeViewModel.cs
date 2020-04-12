@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDrumExplorer.Model.LogicalSchema;
+using VDrumExplorer.Model.Schema.Logical;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.ViewModel.LogicalSchema
