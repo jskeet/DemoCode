@@ -55,5 +55,12 @@ namespace VDrumExplorer.Model
         public override int GetHashCode() => DisplayValue;
 
         public override bool Equals(object? obj) => obj is ModuleAddress other && Equals(other);
+
+        public static bool operator ==(ModuleOffset lhs, ModuleOffset rhs) => lhs.LogicalValue == rhs.LogicalValue;
+        public static bool operator !=(ModuleOffset lhs, ModuleOffset rhs) => lhs.LogicalValue != rhs.LogicalValue;
+        public static bool operator >=(ModuleOffset lhs, ModuleOffset rhs) => lhs.LogicalValue >= rhs.LogicalValue;
+        public static bool operator <=(ModuleOffset lhs, ModuleOffset rhs) => lhs.LogicalValue <= rhs.LogicalValue;
+        public static bool operator >(ModuleOffset lhs, ModuleOffset rhs) => lhs.LogicalValue > rhs.LogicalValue;
+        public static bool operator <(ModuleOffset lhs, ModuleOffset rhs) => lhs.LogicalValue < rhs.LogicalValue;
     }
 }

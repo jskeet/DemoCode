@@ -19,7 +19,7 @@ namespace VDrumExplorer.Proto
         /// <summary>
         /// Creates a model from the data in a stream.
         /// </summary>
-        /// <param name="stream">Stream to read</param>
+        /// <param name="stream">The stream to read data from.</param>
         /// <returns>The model data. The type depends on the data in the stream.</returns>
         public static object ReadModel(Stream stream)
         {
@@ -31,6 +31,20 @@ namespace VDrumExplorer.Proto
                 DrumFile.FileOneofCase.ModuleAudio => file.ModuleAudio.ToModel(),
                 _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
             };
+        }
+
+        /// <summary>
+        /// Loads a model from the data in a file. This is a convenience method to call
+        /// <see cref="ReadModel(Stream)"/> using a file.
+        /// </summary>
+        /// <param name="file">The file to load.</param>
+        /// <returns>The model data. The type depends on the data in the stream.</returns>
+        public static object LoadModel(string file)
+        {
+            using (var stream = File.OpenRead(file))
+            {
+                return ReadModel(stream);
+            }
         }
 
         // Note: these methods are currently called by the convenience methods in ModelExtensions.

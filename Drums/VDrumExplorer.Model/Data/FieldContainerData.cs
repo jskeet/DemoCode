@@ -3,7 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using VDrumExplorer.Model.PhysicalSchema;
+using VDrumExplorer.Model.Schema.Physical;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Data
@@ -13,11 +13,15 @@ namespace VDrumExplorer.Model.Data
     /// </summary>
     public sealed class FieldContainerData
     {
-        public ModuleAddress Address { get; }
+        public ModuleData ModuleData { get; }
+        public FieldContainer FieldContainer { get; }
         private readonly byte[] data;
 
-        public FieldContainerData(ModuleAddress address, byte[] data) =>
-            (Address, this.data) = (address, Preconditions.CheckNotNull(data, nameof(data)));
+        public event EventHandler<DataChangedEventArgs>? DataChanged;
+
+        public FieldContainerData(ModuleData moduleData, FieldContainer fieldContainer, byte[] data) =>
+            (ModuleData, FieldContainer, this.data) =
+            (moduleData, fieldContainer, Preconditions.CheckNotNull(data, nameof(data)));
 
         /// <summary>
         /// Creates a copy of the data in this container.
@@ -51,7 +55,28 @@ namespace VDrumExplorer.Model.Data
             };
         }
 
-        // TODO: Span<byte> perhaps?
+        public void WriteInt32(ModuleOffset offset, int size, int value)
+        {
+            ValidateRange(offset, size);
+            int start = offset.LogicalValue;
+            switch (size)
+            {
+                case 1:
+                    data[start] = (byte) value;
+                    break;
+                case 2:
+                    data[start] = (byte) ((value >> 4) & 0xf);
+                    data[1] = (byte) ((value >> 0) & 0xf);
+                    break;
+                case 4:
+                    data[start] = (byte) ((value >> 12) & 0xf);
+                    data[start + 1] = (byte) ((value >> 8) & 0xf);
+                    data[start + 2] = (byte) ((value >> 4) & 0xf);
+                    data[start + 3] = (byte) ((value >> 0) & 0xf);
+                    break;
+            }
+            DataChanged?.Invoke(this, new DataChangedEventArgs(this, offset, offset + size));
+        }
 
         /// <summary>
         /// Copies part of the data into the specified span.
@@ -62,6 +87,13 @@ namespace VDrumExplorer.Model.Data
         {
             ValidateRange(offset, destination.Length);
             data.AsSpan().Slice(offset.LogicalValue, destination.Length).CopyTo(destination);
+        }
+
+        public void WriteBytes(ModuleOffset offset, ReadOnlySpan<byte> bytes)
+        {
+            ValidateRange(offset, bytes.Length);
+            bytes.CopyTo(data.AsSpan().Slice(offset.LogicalValue));
+            DataChanged?.Invoke(this, new DataChangedEventArgs(this, offset, offset + bytes.Length));
         }
 
         private void ValidateRange(ModuleOffset offset, int length)

@@ -10,24 +10,11 @@ namespace VDrumExplorer.Proto
 {
     internal partial class FieldContainerData
     {
-        internal Model.Data.FieldContainerData ToModel() =>
-            new Model.Data.FieldContainerData(Model.ModuleAddress.FromDisplayValue(Address), Data.ToByteArray());
-
-        internal static FieldContainerData FromModel(Model.Data.FieldContainerData container) =>
+        internal static FieldContainerData FromModel(Model.Data.FieldContainerData data) =>
             new FieldContainerData
             {
-                Address = container.Address.DisplayValue,
-                Data = ByteString.CopyFrom(container.CopyData())
+                Address = data.FieldContainer.Address.DisplayValue,
+                Data = ByteString.CopyFrom(data.CopyData())
             };
-
-        internal static ModuleData LoadData(RepeatedField<FieldContainerData> containers)
-        {
-            var moduleData = new ModuleData();
-            foreach (var container in containers)
-            {
-                moduleData.AddContainer(container.ToModel());
-            }
-            return moduleData;
-        }
     }
 }

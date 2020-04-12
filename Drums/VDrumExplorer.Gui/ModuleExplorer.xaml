@@ -1,0 +1,68 @@
+﻿<Window x:Class="VDrumExplorer.Gui.ModuleExplorer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vmd="clr-namespace:VDrumExplorer.ViewModel.Data;assembly=VDrumExplorer.ViewModel"
+        mc:Ignorable="d"        
+        d:DataContext="{d:DesignInstance vmd:DataExplorerViewModel}"
+        Title="{Binding Title}" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Tree of container nodes. -->
+        <TreeView x:Name="treeView" Grid.Column="0" BorderThickness="0" ItemsSource="{Binding Root}" SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Format.Text}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+        <!-- Details for the selected node. -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
+            <StackPanel Margin="5,0,5,0">
+                <ItemsControl ItemsSource="{Binding SelectedNode.Details}">
+                    <ItemsControl.Resources>
+                        <!-- Read-only field containers -->
+                        <DataTemplate DataType="{x:Type vmd:FieldContainerDataNodeDetailViewModel}">
+                            <GroupBox Header="{Binding Description}">
+                                <ItemsControl ItemsSource="{Binding Fields}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Grid.IsSharedSizeScope="True" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition SharedSizeGroup="Col0" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Description}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding FormattedText}" Margin="{StaticResource ResourceKey=ValueMargin}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </GroupBox>
+                        </DataTemplate>
+                        
+                        <!-- Lists (always read-only) -->
+                        <DataTemplate DataType="{x:Type vmd:ListDataNodeDetailViewModel}">
+                            <GroupBox Header="{Binding Description}">
+                                <ItemsControl ItemsSource="{Binding Items}" DisplayMemberPath="Text" />
+                            </GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

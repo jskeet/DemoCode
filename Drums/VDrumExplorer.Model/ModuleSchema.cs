@@ -7,9 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using VDrumExplorer.Model.Json;
-using VDrumExplorer.Model.LogicalSchema;
-using VDrumExplorer.Model.PhysicalSchema;
+using VDrumExplorer.Model.Schema.Json;
+using VDrumExplorer.Model.Schema.Logical;
+using VDrumExplorer.Model.Schema.Physical;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model
@@ -74,7 +74,7 @@ namespace VDrumExplorer.Model
                 .ToList()
                 .AsReadOnly();
 
-            PhysicalRoot = json.BuildPhysicalRoot();
+            PhysicalRoot = json.BuildPhysicalRoot(this);
             LogicalRoot = json.BuildLogicalRoot(PhysicalRoot);
 
             // Note: this makes an assumption about the schema, but it appears to be reasonable.

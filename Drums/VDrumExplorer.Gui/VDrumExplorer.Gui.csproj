@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VDrumExplorer.Proto\VDrumExplorer.Proto.csproj" />
     <ProjectReference Include="..\VDrumExplorer.ViewModel\VDrumExplorer.ViewModel.csproj" />
   </ItemGroup>
 

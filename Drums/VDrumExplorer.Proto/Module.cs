@@ -3,13 +3,20 @@
 // as found in the LICENSE.txt file.
 
 using System.Linq;
+using VDrumExplorer.Model;
+using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Proto
 {
     internal partial class Module
     {
-        internal Model.Module ToModel() =>
-            new Model.Module(Identifier.GetSchema(), FieldContainerData.LoadData(Containers));
+        internal Model.Module ToModel()
+        {
+            var data = Containers.ToDictionary(
+                container => ModuleAddress.FromDisplayValue(container.Address),
+                container => container.Data.ToByteArray());
+            return Model.Module.Create(Identifier.GetSchema(), data);
+        }
 
         internal static Module FromModel(Model.Module module) =>
             new Module

@@ -218,9 +218,9 @@ namespace VDrumExplorer.Model.Schema.Json
                     foreach (var fieldJson in fieldList.Fields)
                     {
                         fieldJson.ValidateJson(module);
-                        var field = fieldJson.ToFieldForOverlay(module, offset);
+                        var field = fieldJson.ToFieldForOverlay(module, offsetWithinOverlay);
                         ret.Add(field);
-                        offset += field.Size;
+                        offsetWithinOverlay += field.Size;
                         Validate(
                             field.Size == Overlay.FieldSize,
                             "Field {0} in overlay list {1} has inappropriate size",
