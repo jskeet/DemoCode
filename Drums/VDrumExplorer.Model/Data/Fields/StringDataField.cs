@@ -17,7 +17,7 @@ namespace VDrumExplorer.Model.Data.Fields
         private int Length => SchemaField.Length;
         private int BytesPerChar => SchemaField.BytesPerChar;
 
-        public StringDataField(FieldContainerData context, StringField field) : base(context, field)
+        internal StringDataField(FieldContainerData context, StringField field) : base(context, field)
         {
         }
 

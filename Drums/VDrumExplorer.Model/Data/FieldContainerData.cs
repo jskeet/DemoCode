@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Schema.Physical;
 using VDrumExplorer.Utility;
 
@@ -24,6 +25,15 @@ namespace VDrumExplorer.Model.Data
             (moduleData, fieldContainer, Preconditions.CheckNotNull(data, nameof(data)));
 
         /// <summary>
+        /// Resolves a path (relative to <see cref="FieldContainer"/> or absolute) as a data field.
+        /// </summary>
+        internal IDataField ResolveDataField(string path)
+        {
+            var (container, field) = FieldContainer.ResolveField(path);
+            return ModuleData.CreateDataField(container, field);
+        }
+
+        /// <summary>
         /// Creates a copy of the data in this container.
         /// </summary>
         /// <returns>A copy of the data.</returns>
@@ -38,7 +48,7 @@ namespace VDrumExplorer.Model.Data
         /// <param name="offset">The offset for the start of the data.</param>
         /// <param name="size">The number of bytes to read. Must be 1, 2 or 4.</param>
         /// <returns>An integer read from the data.</returns>
-        public int ReadInt32(ModuleOffset offset, int size)
+        internal int ReadInt32(ModuleOffset offset, int size)
         {
             ValidateRange(offset, size);
             int start = offset.LogicalValue;
@@ -55,9 +65,13 @@ namespace VDrumExplorer.Model.Data
             };
         }
 
-        public void WriteInt32(ModuleOffset offset, int size, int value)
+        internal void WriteInt32(ModuleOffset offset, int size, int value)
         {
             ValidateRange(offset, size);
+            if (ReadInt32(offset, size) == value)
+            {
+                return;
+            }
             int start = offset.LogicalValue;
             switch (size)
             {
@@ -83,16 +97,21 @@ namespace VDrumExplorer.Model.Data
         /// </summary>
         /// <param name="offset">The offset to start reading.</param>
         /// <param name="destination">The span to copy data into.</param>
-        public void ReadBytes(ModuleOffset offset, Span<byte> destination)
+        internal void ReadBytes(ModuleOffset offset, Span<byte> destination)
         {
             ValidateRange(offset, destination.Length);
             data.AsSpan().Slice(offset.LogicalValue, destination.Length).CopyTo(destination);
         }
 
-        public void WriteBytes(ModuleOffset offset, ReadOnlySpan<byte> bytes)
+        internal void WriteBytes(ModuleOffset offset, ReadOnlySpan<byte> bytes)
         {
             ValidateRange(offset, bytes.Length);
-            bytes.CopyTo(data.AsSpan().Slice(offset.LogicalValue));
+            var targetSpan = data.AsSpan().Slice(offset.LogicalValue);
+            if (bytes.SequenceEqual(targetSpan))
+            {
+                return;
+            }
+            bytes.CopyTo(targetSpan);
             DataChanged?.Invoke(this, new DataChangedEventArgs(this, offset, offset + bytes.Length));
         }
 

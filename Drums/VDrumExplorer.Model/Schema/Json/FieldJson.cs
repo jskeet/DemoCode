@@ -107,9 +107,9 @@ namespace VDrumExplorer.Model.Schema.Json
         public List<string>? Values { get; set; }
 
         /// <summary>
-        /// For instrument fields only, the name of the bank switch field within the same container.
+        /// For instrument fields only, the path to the bank switch field (usually in the same container).
         /// </summary>
-        public string BankField { get; set; }
+        public string? BankPath { get; set; }
 
         /// <summary>
         /// If set, the condition for the field to be enabled.

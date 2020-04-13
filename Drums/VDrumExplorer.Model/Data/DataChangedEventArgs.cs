@@ -3,8 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using VDrumExplorer.Model.Schema.Fields;
-using VDrumExplorer.Model.Schema.Physical;
+using VDrumExplorer.Model.Data.Fields;
 
 namespace VDrumExplorer.Model.Data
 {
@@ -32,15 +31,15 @@ namespace VDrumExplorer.Model.Data
             (Container, Start, End) = (container, start, end);
 
         // TODO: Test this!
-        public bool OverlapsField(FieldContainer targetContainer, IField targetField)
+        public bool OverlapsField(IDataField targetField)
         {
-            if (targetContainer != Container.FieldContainer)
+            if (targetField.Context.FieldContainer != Container.FieldContainer)
             {
                 return false;
             }
 
-            int targetStart = targetField.Offset.LogicalValue;
-            int targetEnd = targetStart + targetField.Size;
+            int targetStart = targetField.SchemaField.Offset.LogicalValue;
+            int targetEnd = targetStart + targetField.SchemaField.Size;
 
             int sourceStart = Start.LogicalValue;
             int sourceEnd = End.LogicalValue;

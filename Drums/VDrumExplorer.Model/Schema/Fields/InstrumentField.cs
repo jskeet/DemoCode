@@ -2,8 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using VDrumExplorer.Model.Data;
-
 namespace VDrumExplorer.Model.Schema.Fields
 {
     /// <summary>
@@ -15,7 +13,7 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// The path to the field (usually within the same container) that determines whether the instrument is
         /// a preset instrument or a user sample.
         /// </summary>
-        internal string BankPath;
+        internal string BankPath { get; }
 
         internal InstrumentField(Parameters common, string bankPath) : base(common) =>
             BankPath = bankPath;

@@ -17,12 +17,11 @@ namespace VDrumExplorer.Model.Data.Fields
 
         // We don't need to subscribe to field changes for this field that covers all the values; the individual fields will take
         // care of that. We do need to subscribe to changes for the switch field though.
-        public OverlayDataField(FieldContainerData context, OverlayField field) : base(context, field, subscribeToFieldChanges: false)
+        internal OverlayDataField(FieldContainerData context, OverlayField field) : base(context, field, subscribeToFieldChanges: false)
         {
-            var (switchContainer, switchSchemaField) = context.FieldContainer.ResolveField(SchemaField.SwitchPath);
-            switchField = context.ModuleData.CreateDataField(switchContainer, switchSchemaField);
+            switchField = context.ResolveDataField(SchemaField.SwitchPath);
             fieldLists = field.FieldLists.ToReadOnlyList(fl => Lazy.Create(() => new FieldList(context, fl)));
-            AddFieldMatcher(switchContainer, switchSchemaField);
+            AddFieldMatcher(switchField);
         }
 
         protected override void OnPropertyChangedHasSubscribers()

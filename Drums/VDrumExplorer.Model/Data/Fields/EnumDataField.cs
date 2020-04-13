@@ -12,7 +12,7 @@ namespace VDrumExplorer.Model.Data.Fields
     {
         private IReadOnlyList<string> Values => SchemaField.Values;
 
-        public EnumDataField(FieldContainerData context, EnumField field) : base(context, field)
+        internal EnumDataField(FieldContainerData context, EnumField field) : base(context, field)
         {
         }
 
