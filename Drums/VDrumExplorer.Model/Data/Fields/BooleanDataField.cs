@@ -18,7 +18,11 @@ namespace VDrumExplorer.Model.Data.Fields
             RaisePropertyChange(nameof(Value));
         }
 
-        public bool Value => RawValue == 1;
+        public bool Value
+        {
+            get => RawValue == 1;
+            set => RawValue = value ? 1 : 0;
+        }
 
         public override string FormattedText => Value ? "On" : "Off";
     }

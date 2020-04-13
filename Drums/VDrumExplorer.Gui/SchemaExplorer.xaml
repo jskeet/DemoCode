@@ -28,14 +28,14 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
             <StackPanel Margin="5,0,5,0">
                 <GroupBox Header="Tree node">
-                    <ItemsControl ItemsSource="{Binding SelectedNode.Table}" Template="{StaticResource ResourceKey=KeyValueTable}"/>
+                    <ItemsControl ItemsSource="{Binding SelectedNode.Table}" Template="{StaticResource KeyValueTable}"/>
                 </GroupBox>
                 <Separator />
                 <ItemsControl ItemsSource="{Binding SelectedNode.Details}">
                     <ItemsControl.Resources>
                         <DataTemplate DataType="{x:Type vmls:FieldContainerNodeDetailViewModel}">
                             <GroupBox Header="{Binding Description}">
-                                <ItemsControl ItemsSource="{Binding Fields}" Template="{StaticResource ResourceKey=KeyValueTable}" />
+                                <ItemsControl ItemsSource="{Binding Fields}" Template="{StaticResource KeyValueTable}" />
                             </GroupBox>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vmls:ListNodeDetailViewModel}">

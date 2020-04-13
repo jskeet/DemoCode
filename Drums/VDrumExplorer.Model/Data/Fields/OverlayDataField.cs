@@ -25,6 +25,24 @@ namespace VDrumExplorer.Model.Data.Fields
             AddFieldMatcher(switchContainer, switchSchemaField);
         }
 
+        protected override void OnPropertyChangedHasSubscribers()
+        {
+            base.OnPropertyChangedHasSubscribers();
+            if (switchField.Context != Context)
+            {
+                switchField.Context.DataChanged += ContainerDataChanged;
+            }
+        }
+
+        protected override void OnPropertyChangedHasNoSubscribers()
+        {
+            base.OnPropertyChangedHasNoSubscribers();
+            if (switchField.Context != Context)
+            {
+                switchField.Context.DataChanged -= ContainerDataChanged;
+            }
+        }
+
         public FieldList GetFieldList()
         {
             var index = switchField switch

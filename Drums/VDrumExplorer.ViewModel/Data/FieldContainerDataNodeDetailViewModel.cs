@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,40 +16,54 @@ namespace VDrumExplorer.ViewModel.Data
     {
         public string Description { get; }
 
-        private IReadOnlyList<SimpleDataFieldViewModel> fields;
+        private readonly DataExplorerViewModel windowViewModel;
 
-        public IReadOnlyList<SimpleDataFieldViewModel> Fields
+        // TODO: ObservableCollection? Might allow for smoother "enter editing mode" experience.
+        private IReadOnlyList<DataFieldViewModel> fields;
+        public IReadOnlyList<DataFieldViewModel> Fields
         {
             get => fields;
             set => SetProperty(ref fields, value);
         }
 
-        public FieldContainerDataNodeDetailViewModel(FieldContainerDataNodeDetail model) : base(model)
+        public FieldContainerDataNodeDetailViewModel(FieldContainerDataNodeDetail model, DataExplorerViewModel windowViewModel) : base(model)
         {
             Description = model.Description;
+            this.windowViewModel = windowViewModel;
             fields = GenerateFields(model.Fields).ToReadOnlyList();
         }
 
+        private void RefreshFields() => Fields = GenerateFields(Model.Fields).ToReadOnlyList();
+
         protected override void OnPropertyChangedHasSubscribers()
         {
+            windowViewModel.PropertyChanged += Parent_PropertyChanged;
             foreach (var field in Model.Fields.OfType<OverlayDataField>())
             {
                 field.PropertyChanged += FieldListChanged;
             }
         }
 
+        private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(windowViewModel.ReadOnly))
+            {
+                RefreshFields();
+            }
+        }
+
         protected override void OnPropertyChangedHasNoSubscribers()
         {
+            windowViewModel.PropertyChanged -= Parent_PropertyChanged;
             foreach (var field in Model.Fields.OfType<OverlayDataField>())
             {
                 field.PropertyChanged -= FieldListChanged;
             }
         }
 
-        private void FieldListChanged(object sender, PropertyChangedEventArgs e) =>
-            Fields = GenerateFields(Model.Fields).ToReadOnlyList();
+        private void FieldListChanged(object sender, PropertyChangedEventArgs e) => RefreshFields();
 
-        private static IEnumerable<SimpleDataFieldViewModel> GenerateFields(IEnumerable<IDataField> fields)
+        private IEnumerable<DataFieldViewModel> GenerateFields(IEnumerable<IDataField> fields)
         {
             foreach (var field in fields)
             {
@@ -61,7 +76,7 @@ namespace VDrumExplorer.ViewModel.Data
                 }
                 else
                 {
-                    yield return new SimpleDataFieldViewModel(field);
+                    yield return DataFieldViewModel.CreateViewModel(field, windowViewModel.ReadOnly);
                 }
             }
         }
