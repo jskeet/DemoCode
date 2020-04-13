@@ -10,6 +10,7 @@ using System.Reflection;
 using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Data.Json;
 using VDrumExplorer.Data.Layout;
+using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Data
 {

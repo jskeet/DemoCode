@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Data;
 using VDrumExplorer.Data.Fields;
+using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -31,12 +32,13 @@ namespace VDrumExplorer.Console
             var console = context.Console.Out;
             var kit = context.ParseResult.ValueForOption<int>("kit");
             var file = context.ParseResult.ValueForOption<string>("file");
-            var (client, schema) = await DeviceDetection.DetectDeviceAsync(console);
+            var client = await MidiDevices.DetectRolandMidiClientAsync(console.WriteLine, SchemaRegistry.KnownSchemas.Keys);
 
             if (client == null)
             {
                 return 1;
             }
+            var schema = SchemaRegistry.KnownSchemas[client.Identifier].Value;
 
             using (client)
             {

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ModuleIdentifier = VDrumExplorer.Midi.ModuleIdentifier;
 using VDrumExplorer.Data.Proto;
 
 namespace VDrumExplorer.Data

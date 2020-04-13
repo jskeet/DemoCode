@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VDrumExplorer.Midi
 {
@@ -23,7 +24,7 @@ namespace VDrumExplorer.Midi
         internal DataSetMessage(byte rawDeviceId, int modelId, int address, byte[] data) =>
             (RawDeviceId, ModelId, Address, this.data) = (rawDeviceId, modelId, address, data);
 
-        internal static bool TryParse(RawMidiMessage message, out DataSetMessage result)
+        internal static bool TryParse(RawMidiMessage message, [NotNullWhen(true)] out DataSetMessage? result)
         {
             var messageData = message.Data;
             int length = messageData.Length;

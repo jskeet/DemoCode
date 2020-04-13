@@ -30,7 +30,6 @@ namespace VDrumExplorer.Wpf
             logger = new TextBlockLogger(logPanel);
             LogVersion();
             Loaded += OnLoaded;
-            Loaded += LoadSchemaRegistry;
             Closed += OnClosed;
             // We can't attach this event handler in XAML, as only instance members of the current class are allowed.
             loadKitFromDeviceKitNumber.PreviewTextInput += TextConversions.CheckDigits;
@@ -51,13 +50,18 @@ namespace VDrumExplorer.Wpf
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            var midiDevice = await DetectMidiDeviceAsync();
-            detectedMidi = midiDevice;
-            midiPanel.IsEnabled = detectedMidi.HasValue;
+            await LoadSchemaRegistry();
+            detectedMidi = null;
+            var midiDevice = await MidiDevices.DetectRolandMidiClientAsync(logger.Log, SchemaRegistry.KnownSchemas.Keys);
+            if (midiDevice != null)
+            {
+                detectedMidi = (midiDevice, SchemaRegistry.KnownSchemas[midiDevice.Identifier].Value);
+            }            
+            midiPanel.IsEnabled = midiDevice is object;
             logger.Log("-----------------");
         }
 
-        private async void LoadSchemaRegistry(object sender, RoutedEventArgs e)
+        private async Task LoadSchemaRegistry()
         {
             logger.Log($"Loading known schemas");
             foreach (var pair in SchemaRegistry.KnownSchemas)
@@ -71,79 +75,6 @@ namespace VDrumExplorer.Wpf
         private void OnClosed(object sender, EventArgs e)
         {            
             detectedMidi?.client.Dispose();
-        }
-
-        private async Task<(RolandMidiClient client, ModuleSchema schema)?> DetectMidiDeviceAsync()
-        {
-            var inputDevices = MidiDevices.ListInputDevices();
-            var outputDevices = MidiDevices.ListOutputDevices();
-
-            logger.Log($"Detecting MIDI ports");
-            logger.Log($"Input ports:");
-            foreach (var inputDevice in inputDevices)
-            {
-                logger.Log(inputDevice.ToString());
-            }
-            logger.Log($"Output ports:");
-            foreach (var outputDevice in outputDevices)
-            {
-                logger.Log(outputDevice.ToString());
-            }
-            var commonNames = inputDevices.Select(input => input.Name).Intersect(outputDevices.Select(output => output.Name)).OrderBy(x => x).ToList();
-            if (commonNames.Count == 0)
-            {
-                logger.Log($"Not detected any input/output MIDI ports. Abandoning MIDI detection.");
-                return null;
-            }
-            if (commonNames.Count > 1)
-            {
-                logger.Log($"Detected multiple input/output MIDI ports: {string.Join(",", commonNames)}. Abandoning MIDI detection.");
-                return null;
-            }
-            string name = commonNames.Single();
-            var matchedInputs = inputDevices.Where(input => input.Name == name).ToList();
-            var matchedOutputs = outputDevices.Where(output => output.Name == name).ToList();
-            if (matchedInputs.Count != 1 || matchedOutputs.Count != 1)
-            {
-                logger.Log($"Matched name {name} is ambiguous. Abandoning MIDI detection.");
-                return null;
-            }
-            logger.Log($"Using MIDI ports with name {name}. Detecting devices using Roland identity requests.");
-
-            var input = matchedInputs[0];
-            var output = matchedOutputs[0];
-            var deviceIdentities = await MidiDevices.ListDeviceIdentities(input, output, TimeSpan.FromSeconds(0.5));
-
-            var schemaKeys = SchemaRegistry.KnownSchemas.Keys;
-            var responseList = deviceIdentities.OrderBy(r => r.DisplayDeviceId).ToList();
-            ModuleIdentifier matchedIdentifier = null;
-            DeviceIdentity matchedIdentity = null;
-            int matchCount = 0;
-            foreach (var response in responseList)
-            {
-                var match = schemaKeys.FirstOrDefault(s => response.FamilyCode == s.FamilyCode && response.FamilyNumberCode == s.FamilyNumberCode);
-                string matchLog = match == null ? "No matching schema" : $"Matches schema {match.Name}";
-                logger.Log($"Detected device ID {response.DisplayDeviceId} with family code {response.FamilyCode} ({response.FamilyNumberCode}) : {matchLog}");
-                if (match != null)
-                {
-                    matchedIdentifier = match;
-                    matchedIdentity = response;
-                    matchCount++;
-                }
-            }
-            switch (matchCount)
-            {
-                case 0:
-                    logger.Log($"No devices with a known schema. Abandoning MIDI detection.");
-                    return null;
-                case 1:
-                    logger.Log($"Using device {matchedIdentity.DisplayDeviceId} with schema {matchedIdentifier.Name}.");
-                    var schema = SchemaRegistry.KnownSchemas[matchedIdentifier].Value;
-                    return (await MidiDevices.CreateRolandMidiClientAsync(input, output, matchedIdentity, matchedIdentifier.ModelId), schema);
-                default:
-                    logger.Log($"Multiple devices with a known schema. Abandoning MIDI detection.");
-                    return null;
-            }
         }
 
         private void LoadFile(object sender, RoutedEventArgs e)

@@ -13,4 +13,8 @@
     <EmbeddedResource Include="TD27/**/*.json" />
     <EmbeddedResource Include="TD50/**/*.json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
+  </ItemGroup>
 </Project>
