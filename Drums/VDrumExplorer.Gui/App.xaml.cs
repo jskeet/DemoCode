@@ -5,9 +5,11 @@
 using System;
 using System.IO;
 using System.Windows;
+using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Proto;
 using VDrumExplorer.ViewModel.Data;
+using VDrumExplorer.ViewModel.Home;
 using VDrumExplorer.ViewModel.LogicalSchema;
 
 namespace VDrumExplorer.Gui
@@ -17,13 +19,23 @@ namespace VDrumExplorer.Gui
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        private ExplorerHomeViewModel appContext;
+
+        public App()
         {
-            base.OnStartup(e);
-            ShowModuleExplorer();
+            appContext = new ExplorerHomeViewModel();
         }
 
-        private void ShowModuleExplorer()
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);            
+            MainWindow = CreateExplorerHome();
+            MainWindow.Show();
+            appContext.LogVersion(GetType());
+            await appContext.DetectModule();
+        }
+
+        private Window CreateModuleExplorer()
         {
             // FIXME: This is just for development...
             var cwd = new DirectoryInfo(".");
@@ -36,15 +48,18 @@ namespace VDrumExplorer.Gui
                 cwd = cwd.Parent;
             }
             var module = (Module) ProtoIo.LoadModel(Path.Combine(cwd.FullName, "td27.vdrum"));
-            MainWindow = new ModuleExplorer { DataContext = new DataExplorerViewModel(module.Data) };
-            MainWindow.Show();
+            return new ModuleExplorer { DataContext = new DataExplorerViewModel(module.Data) };
         }
 
-        private void ShowSchemaExplorer()
+        private Window CreateSchemaExplorer()
         {
             var schema = ModuleSchema.KnownSchemas[ModuleIdentifier.TD27].Value;
-            MainWindow = new SchemaExplorer { DataContext = new ModuleSchemaViewModel(schema) };
-            MainWindow.Show();
+            return new SchemaExplorer { DataContext = new ModuleSchemaViewModel(schema) };
+        }
+
+        private Window CreateExplorerHome()
+        {
+            return new ExplorerHome { DataContext = appContext };
         }
     }
 }

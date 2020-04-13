@@ -10,6 +10,7 @@
     <EmbeddedResource Include="TD27/**/*.json" />
     <EmbeddedResource Include="Shared/**/*.json" />
     <Compile Remove="Data\OverlayDataField1.cs" />
+    <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Utility\VDrumExplorer.Utility.csproj" />
   </ItemGroup>
   

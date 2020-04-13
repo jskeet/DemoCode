@@ -8,10 +8,10 @@ namespace VDrumExplorer.Data.Proto
 {
     internal partial class ModuleIdentifier
     {
-        internal Data.ModuleIdentifier ToModel() =>
-            new Data.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
+        internal Midi.ModuleIdentifier ToModel() =>
+            new Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
         
-        internal static ModuleIdentifier FromModel(Data.ModuleIdentifier id) =>
+        internal static ModuleIdentifier FromModel(Midi.ModuleIdentifier id) =>
             new ModuleIdentifier
             {
                 Name = id.Name,

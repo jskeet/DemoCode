@@ -24,34 +24,34 @@ namespace VDrumExplorer.Midi
 
         private readonly RawMidiClient rawClient;
         private readonly byte rawDeviceId;
-        private readonly int modelId;
 
         private readonly object sync = new object();
         private readonly LinkedList<Consumer> consumers = new LinkedList<Consumer>();
 
+        public ModuleIdentifier Identifier { get; }
         public string InputName => rawClient.InputName;
         public string OutputName => rawClient.OutputName;
 
         /// <summary>
         /// An event handler for MIDI messages other than the data send/receive messages.
         /// </summary>
-        internal EventHandler<RawMidiMessage> MessageReceived;
+        internal EventHandler<RawMidiMessage>? MessageReceived;
 
-        private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, int modelId)
+        private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, ModuleIdentifier identifier)
         {
             this.rawClient = rawClient;
             this.rawDeviceId = rawDeviceId;
-            this.modelId = modelId;
+            this.Identifier = identifier;
         }
 
-        internal static async Task<RolandMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, byte rawDeviceId, int modelId)
+        internal static async Task<RolandMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, byte rawDeviceId, ModuleIdentifier identifier)
         {
             // This is all a bit nasty... we can't create a RolandMidiClient instance until we have the raw client, and we can't
             // create the raw client until we've got a method to call. LocalHandleMessage acts as a sort of trampoline.
             // If we could make the constructor asynchronous, it wouldn't be a problem.
-            RolandMidiClient ret = null;
+            RolandMidiClient? ret = null;
             var rawClient = await RawMidiClient.CreateAsync(inputDevice, outputDevice, LocalHandleMessage);
-            ret = new RolandMidiClient(rawClient, rawDeviceId, modelId);
+            ret = new RolandMidiClient(rawClient, rawDeviceId, identifier);
             return ret;
 
             void LocalHandleMessage(RawMidiMessage message) => ret?.HandleMessage(message);
@@ -61,7 +61,7 @@ namespace VDrumExplorer.Midi
         {
             // If it's a Data Set message aimed at this device, handle it...
             if (DataSetMessage.TryParse(message, out var result) &&
-                result.RawDeviceId == rawDeviceId && result.ModelId == modelId)
+                result.RawDeviceId == rawDeviceId && result.ModelId == Identifier.ModelId)
             {
                 HandleDataSetMessage(result);
             }
@@ -219,7 +219,7 @@ namespace VDrumExplorer.Midi
             ret[0] = 0xf0; // System Exclusive
             ret[1] = (byte) ManufacturerId.Roland;
             ret[2] = rawDeviceId;
-            WriteBigEndianInt32(ret, 3, modelId);
+            WriteBigEndianInt32(ret, 3, Identifier.ModelId);
             ret[7] = command;
 
             ret[ret.Length - 1] = 0xf7; // End of System Exclusive

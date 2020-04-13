@@ -6,7 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Model\VDrumExplorer.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Fields\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NodaTime" Version="2.4.7" />
   </ItemGroup>
 
 </Project>

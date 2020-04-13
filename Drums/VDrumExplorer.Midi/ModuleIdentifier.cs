@@ -1,10 +1,10 @@
-﻿// Copyright 2019 Jon Skeet. All rights reserved.
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
 using System;
 
-namespace VDrumExplorer.Data
+namespace VDrumExplorer.Midi
 {
     /// <summary>
     /// Everything required to confidently identify a module. This is

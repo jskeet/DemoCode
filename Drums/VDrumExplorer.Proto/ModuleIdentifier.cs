@@ -9,10 +9,10 @@ namespace VDrumExplorer.Proto
 {
     internal partial class ModuleIdentifier
     {
-        internal Model.ModuleIdentifier ToModel() =>
-            new Model.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
+        internal Midi.ModuleIdentifier ToModel() =>
+            new Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
         
-        internal static ModuleIdentifier FromModel(Model.ModuleIdentifier id) =>
+        internal static ModuleIdentifier FromModel(Midi.ModuleIdentifier id) =>
             new ModuleIdentifier
             {
                 Name = id.Name,
