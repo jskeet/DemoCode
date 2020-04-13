@@ -7,16 +7,15 @@ using VDrumExplorer.Model.Data.Fields;
 
 namespace VDrumExplorer.ViewModel.Data
 {
-    public class SimpleDataFieldViewModel : ViewModelBase<IDataField>, IDataFieldViewModel
+    public class ReadOnlyDataFieldViewModel : DataFieldViewModel
     {
-        public SimpleDataFieldViewModel(IDataField model) : base(model)
+        public ReadOnlyDataFieldViewModel(IDataField model) : base(model)
         {
         }
 
         protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e) =>
             RaisePropertyChanged(nameof(FormattedText));
 
-        public string Description => Model.SchemaField.Description;
         public string FormattedText => Model.FormattedText;
     }
 }

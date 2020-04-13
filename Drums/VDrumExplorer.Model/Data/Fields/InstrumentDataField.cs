@@ -23,6 +23,7 @@ namespace VDrumExplorer.Model.Data.Fields
         public Instrument Instrument
         {
             get => GetInstrument();
+            set => SetInstrument(value);
         }
 
         private Instrument GetInstrument()
@@ -33,6 +34,12 @@ namespace VDrumExplorer.Model.Data.Fields
             return bank == 0
                 ? schema.PresetInstruments[index]
                 : schema.UserSampleInstruments[index];
+        }
+
+        private void SetInstrument(Instrument instrument)
+        {
+            Context.WriteInt32(Offset, Size, instrument.Id);
+            bankField.RawValue = instrument.Group is null ? 1 : 0;
         }
 
         public override string FormattedText => Instrument.Name;

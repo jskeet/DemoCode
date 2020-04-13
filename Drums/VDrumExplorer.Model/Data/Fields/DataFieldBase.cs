@@ -16,7 +16,7 @@ namespace VDrumExplorer.Model.Data.Fields
     public abstract class DataFieldBase : IDataField
     {
         public IField SchemaField => GetSchemaField();
-        internal FieldContainerData Context { get; }
+        public FieldContainerData Context { get; }
 
         protected DataFieldBase(FieldContainerData context) =>
             Context = context;
@@ -106,7 +106,7 @@ namespace VDrumExplorer.Model.Data.Fields
             RaisePropertyChange(nameof(FormattedText));
         }
 
-        private void ContainerDataChanged(object sender, DataChangedEventArgs e)
+        protected void ContainerDataChanged(object sender, DataChangedEventArgs e)
         {
             if (dataChangeMatcher(e))
             {

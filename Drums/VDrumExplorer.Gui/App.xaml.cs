@@ -29,7 +29,7 @@ namespace VDrumExplorer.Gui
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);            
-            MainWindow = CreateExplorerHome();
+            MainWindow = CreateModuleExplorer();
             MainWindow.Show();
             appContext.LogVersion(GetType());
             await appContext.DetectModule();

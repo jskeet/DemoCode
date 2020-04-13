@@ -11,7 +11,7 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
             <TextBlock>Connected device: </TextBlock>
-            <TextBlock Text="{Binding ConnectedDeviceSchema.Identifier.Name}" />
+            <TextBlock Text="{Binding ConnectedDeviceSchema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
             <Button>Click me</Button>

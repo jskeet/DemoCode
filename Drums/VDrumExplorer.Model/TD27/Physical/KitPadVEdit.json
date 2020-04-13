@@ -44,7 +44,8 @@
           "$resource:VEdit/Other.json", // Sound FX
           "$resource:VEdit/Other.json", // Elements
           "$resource:VEdit/SnareBrush.json",
-          "$resource:VEdit/TomBrush.json"
+          "$resource:VEdit/TomBrush.json",
+          "$resource:VEdit/Other.json" // User sample
         ]
       }
     }

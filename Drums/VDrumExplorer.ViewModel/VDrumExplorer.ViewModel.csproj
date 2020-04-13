@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Fields\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="NodaTime" Version="2.4.7" />
   </ItemGroup>
 

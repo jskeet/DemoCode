@@ -7,62 +7,100 @@
         mc:Ignorable="d"        
         d:DataContext="{d:DesignInstance vmd:DataExplorerViewModel}"
         Title="{Binding Title}" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Margin="5" Padding="5,2" Command="{Binding EditCommand}">Edit mode</Button>
+            <Button Margin="5" Padding="5,2" Command="{Binding CommitCommand}">Commit changes</Button>
+            <Button Margin="5" Padding="5,2" Command="{Binding CancelEditCommand}">Cancel changes</Button>
+        </StackPanel>
+        <Separator DockPanel.Dock="Top" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <!-- Tree of container nodes. -->
-        <TreeView x:Name="treeView" Grid.Column="0" BorderThickness="0" ItemsSource="{Binding Root}" SelectedItemChanged="TreeView_SelectedItemChanged">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Format.Text}" />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <!-- Tree of container nodes. -->
+            <TreeView x:Name="treeView" Grid.Column="0" BorderThickness="0" ItemsSource="{Binding Root}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Format.Text}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
-        <!-- Details for the selected node. -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
-            <StackPanel Margin="5,0,5,0">
-                <ItemsControl ItemsSource="{Binding SelectedNode.Details}">
-                    <ItemsControl.Resources>
-                        <!-- Read-only field containers -->
-                        <DataTemplate DataType="{x:Type vmd:FieldContainerDataNodeDetailViewModel}">
-                            <GroupBox Header="{Binding Description}">
-                                <ItemsControl ItemsSource="{Binding Fields}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Grid.IsSharedSizeScope="True" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition SharedSizeGroup="Col0" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{Binding Description}" />
-                                                <TextBlock Grid.Column="1" Text="{Binding FormattedText}" Margin="{StaticResource ResourceKey=ValueMargin}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </GroupBox>
-                        </DataTemplate>
-                        
-                        <!-- Lists (always read-only) -->
-                        <DataTemplate DataType="{x:Type vmd:ListDataNodeDetailViewModel}">
-                            <GroupBox Header="{Binding Description}">
-                                <ItemsControl ItemsSource="{Binding Items}" DisplayMemberPath="Text" />
-                            </GroupBox>
-                        </DataTemplate>
-                    </ItemsControl.Resources>
-                </ItemsControl>
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+            <!-- Details for the selected node. -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
+                <StackPanel Margin="5,0,5,0">
+                    <ItemsControl ItemsSource="{Binding SelectedNode.Details}">
+                        <ItemsControl.Resources>
+                            <!-- Read-only field containers -->
+                            <DataTemplate DataType="{x:Type vmd:FieldContainerDataNodeDetailViewModel}">
+                                <GroupBox Header="{Binding Description}">
+                                    <ItemsControl ItemsSource="{Binding Fields}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Grid.IsSharedSizeScope="True" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition SharedSizeGroup="Col0" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Description}" VerticalAlignment="Center" />
+                                                    <ContentControl Grid.Column="1" Content="{Binding .}" Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                        <ContentControl.Resources>
+                                                            <!-- Effectively a switch on how to display a value, based on its type. -->
+                                                            <DataTemplate DataType="{x:Type vmd:ReadOnlyDataFieldViewModel}">
+                                                                <TextBlock Text="{Binding FormattedText}" />
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type vmd:EditableEnumDataFieldViewModel}">
+                                                                <ComboBox ItemsSource="{Binding ValidValues}" SelectedItem="{Binding Value, Mode=TwoWay}" Margin="2" />
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type vmd:EditableBooleanDataFieldViewModel}">
+                                                                <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" />
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type vmd:EditableStringDataFieldViewModel}">
+                                                                <TextBox Text="{Binding Text, Mode=TwoWay}" MaxLength="{Binding MaxLength}"/>
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type vmd:EditableNumericDataFieldViewModel}">
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Slider Padding="0" Margin="2,1,0,0" Value="{Binding Value}" Minimum="{Binding MinValue}" Maximum="{Binding MaxValue}" Width="150" SmallChange="1" LargeChange="{Binding LargeChange}" />
+                                                                    <TextBlock Text="{Binding FormattedText}" Margin="{StaticResource ValueMargin}" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type vmd:EditableInstrumentDataFieldViewModel}">
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <ComboBox ItemsSource="{Binding InstrumentGroups}" SelectedItem="{Binding InstrumentGroup, Mode=TwoWay}" Margin="2" Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"/>
+                                                                    <ComboBox ItemsSource="{Binding InstrumentGroup.Instruments}" SelectedItem="{Binding Instrument, Mode=TwoWay}" Margin="2" Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"/>
+                                                                    <TextBlock Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}">User sample: </TextBlock>
+                                                                    <TextBox Text="{Binding UserSample, Mode=TwoWay, ValidatesOnExceptions=True}" Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource ValueMargin}"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ContentControl.Resources>
+                                                    </ContentControl>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </GroupBox>
+                            </DataTemplate>
+
+                            <!-- Lists (always read-only) -->
+                            <DataTemplate DataType="{x:Type vmd:ListDataNodeDetailViewModel}">
+                                <GroupBox Header="{Binding Description}">
+                                    <ItemsControl ItemsSource="{Binding Items}" DisplayMemberPath="Text" />
+                                </GroupBox>
+                            </DataTemplate>
+                        </ItemsControl.Resources>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
 </Window>

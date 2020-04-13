@@ -11,6 +11,7 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public class DataTreeNodeViewModel : ViewModelBase<DataTreeNode>
     {
+        private readonly DataExplorerViewModel parent;
         private readonly Lazy<IReadOnlyList<DataTreeNodeViewModel>> children;
         private readonly Lazy<IReadOnlyList<IDataNodeDetailViewModel>> details;
 
@@ -18,19 +19,20 @@ namespace VDrumExplorer.ViewModel.Data
         public IReadOnlyList<DataTreeNodeViewModel> Children => children.Value;
         public IReadOnlyList<IDataNodeDetailViewModel> Details => details.Value;
 
-        public DataTreeNodeViewModel(DataTreeNode model) : base(model)
+        public DataTreeNodeViewModel(DataTreeNode model, DataExplorerViewModel parent) : base(model)
         {
+            this.parent = parent;
             Format = model.Format;
-            children = Lazy.Create(() => model.Children.ToReadOnlyList(child => new DataTreeNodeViewModel(child)));
+            children = Lazy.Create(() => model.Children.ToReadOnlyList(child => new DataTreeNodeViewModel(child, parent)));
             details = Lazy.Create(() => model.Details.ToReadOnlyList(detail => CreateDetail(detail)));
         }
 
-        private static IDataNodeDetailViewModel CreateDetail(IDataNodeDetail detail) =>
+        private IDataNodeDetailViewModel CreateDetail(IDataNodeDetail detail) =>
             detail switch
             {
                 ListDataNodeDetail model => new ListDataNodeDetailViewModel(model),
-                FieldContainerDataNodeDetail model => new FieldContainerDataNodeDetailViewModel(model),
+                FieldContainerDataNodeDetail model => new FieldContainerDataNodeDetailViewModel(model, parent),
                 _ => throw new ArgumentException($"Unknown detail type: {detail?.GetType()}")
             };
-}
+    }
 }
