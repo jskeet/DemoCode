@@ -9,8 +9,8 @@ namespace VDrumExplorer.Model.Data.Fields
 {
     public interface IDataField : INotifyPropertyChanged
     {
-        public string FormattedText { get; }
-        public IField SchemaField { get; }
-        public FieldContainerData Context { get; }
+        string FormattedText { get; }
+        IField SchemaField { get; }
+        FieldContainerData Context { get; }
     }
 }

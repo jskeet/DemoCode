@@ -9,7 +9,7 @@ namespace VDrumExplorer.Model.Data.Fields
 {
     public class NumericDataField : NumericDataFieldBase<NumericField>
     {
-        public NumericDataField(FieldContainerData context, NumericField field) : base(context, field)
+        internal NumericDataField(FieldContainerData context, NumericField field) : base(context, field)
         {
         }
 

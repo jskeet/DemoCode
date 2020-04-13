@@ -8,7 +8,7 @@ namespace VDrumExplorer.Model.Data.Fields
 {
     public class BooleanDataField : NumericDataFieldBase<BooleanField>
     {
-        public BooleanDataField(FieldContainerData context, BooleanField field) : base(context, field)
+        internal BooleanDataField(FieldContainerData context, BooleanField field) : base(context, field)
         {
         }
 

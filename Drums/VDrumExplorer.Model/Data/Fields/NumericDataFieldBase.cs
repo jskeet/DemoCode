@@ -12,7 +12,7 @@ namespace VDrumExplorer.Model.Data.Fields
         protected int Min => SchemaField.Min;
         protected int Max => SchemaField.Max;
 
-        public NumericDataFieldBase(FieldContainerData context, TField schemaField)
+        protected NumericDataFieldBase(FieldContainerData context, TField schemaField)
             : base(context, schemaField)
         {
         }

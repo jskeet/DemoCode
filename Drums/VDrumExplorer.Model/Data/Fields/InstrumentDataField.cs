@@ -11,11 +11,10 @@ namespace VDrumExplorer.Model.Data.Fields
     {
         private readonly EnumDataField bankField;
 
-        public InstrumentDataField(FieldContainerData context, InstrumentField field) : base(context, field)
+        internal InstrumentDataField(FieldContainerData context, InstrumentField field) : base(context, field)
         {
-            var (bankContainer, bankSchemaField) = context.FieldContainer.ResolveField(SchemaField.BankPath);
-            bankField = (EnumDataField) context.ModuleData.CreateDataField(bankContainer, bankSchemaField);
-            AddFieldMatcher(bankContainer, bankSchemaField);
+            bankField = (EnumDataField) context.ResolveDataField(SchemaField.BankPath);
+            AddFieldMatcher(bankField);
         }
 
         protected override void OnDataChanged() => RaisePropertyChange(nameof(Instrument));

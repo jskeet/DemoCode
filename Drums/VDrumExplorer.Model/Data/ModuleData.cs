@@ -15,7 +15,7 @@ using VDrumExplorer.Utility;
 namespace VDrumExplorer.Model.Data
 {
     /// <summary>
-    /// The data for a module. (Very much a work in progress...)
+    /// The data for a module.
     /// </summary>
     public sealed class ModuleData
     {

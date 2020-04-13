@@ -77,7 +77,7 @@ namespace VDrumExplorer.Model.Data.Fields
             SchemaField = schemaField;
             if (subscribeToFieldChanges)
             {
-                AddFieldMatcher(Context.FieldContainer, SchemaField);
+                AddFieldMatcher(this);
             }
         }
 
@@ -85,10 +85,11 @@ namespace VDrumExplorer.Model.Data.Fields
         {
         }
 
-        protected void AddFieldMatcher(FieldContainer container, IField field)
+        protected void AddFieldMatcher(IDataField field)
         {
+            AddFieldMatcher(field.Context.FieldContainer, field.SchemaField);
             var existing = dataChangeMatcher;
-            dataChangeMatcher = change => existing(change) || change.OverlapsField(container, field);
+            dataChangeMatcher = change => existing(change) || change.OverlapsField(field);
         }            
 
         protected override void OnPropertyChangedHasSubscribers()
