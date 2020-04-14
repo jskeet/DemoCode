@@ -167,7 +167,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 "enum" => BuildEnumField(1),
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
-                "instrument" => new InstrumentField(BuildCommon(4), ValidateNotNull(BankField, nameof(BankField))),
+                "instrument" => new InstrumentField(BuildCommon(4), ValidateNotNull(BankPath, nameof(BankPath))),
                 "midi32" => new NumericField(BuildCommon(4), 0, 128, 0, null, null, null, null, (128, "Off")),
                 "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0, 0),
                 "overlay" => BuildOverlay(),
