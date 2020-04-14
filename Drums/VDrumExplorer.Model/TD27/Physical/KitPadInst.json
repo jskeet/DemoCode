@@ -4,7 +4,7 @@
     {
       "description": "Instrument",
       "type": "instrument",
-      "bankField": "InstrumentBank"
+      "bankPath": "InstrumentBank"
     },
     {
       "description": "Volume",
