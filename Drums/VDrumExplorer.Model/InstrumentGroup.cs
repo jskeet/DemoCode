@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Utility;
@@ -13,27 +14,55 @@ namespace VDrumExplorer.Model
     /// </summary>
     public class InstrumentGroup
     {
+        /// <summary>
+        /// The general description of the group.
+        /// </summary>
         public string Description { get; }
+
         /// <summary>
         /// Index into <see cref="ModuleSchema.InstrumentGroups"/>.
         /// </summary>
         public int Index { get; }
+
+        /// <summary>
+        /// The instruments in the group
+        /// </summary>
         public IReadOnlyList<Instrument> Instruments { get; }
 
-        internal InstrumentGroup(string description, int index,
-            Dictionary<int, string> instruments,
-            Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults)
+        /// <summary>
+        /// True for preset instruments; false for user samples.
+        /// </summary>
+        public bool Preset { get; }
+
+        /// <summary>
+        /// The instrument bank containing this group.
+        /// </summary>
+        public InstrumentBank Bank => Preset ? InstrumentBank.Preset : InstrumentBank.UserSamples;
+
+        private InstrumentGroup(
+            bool preset,
+            int index,
+            string description,
+            Func<InstrumentGroup, IEnumerable<Instrument>> instrumentProvider)
         {
+            Preset = preset;
             Description = description;
             Index = index;
-            Instruments = instruments
-                .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, this, BuildInstrumentDefaults(instrumentFieldDefaults, pair.Key)))
-                .OrderBy(i => i.Id)
-                .ToList()
-                .AsReadOnly();
+            Instruments = instrumentProvider(this).ToReadOnlyList();
         }
 
-        private IReadOnlyDictionary<string, int>? BuildInstrumentDefaults(
+        internal static InstrumentGroup ForPresetInstruments(int instrumentGroupIndex, string description,
+            Dictionary<int, string> instruments,
+            Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults) =>
+            new InstrumentGroup(preset: true, instrumentGroupIndex, description, group => instruments
+                .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, group, BuildInstrumentDefaults(instrumentFieldDefaults, pair.Key)))
+                .OrderBy(i => i.Id));
+
+        internal static InstrumentGroup ForUserSamples(int instrumentGroupIndex, int sampleCount) =>
+            new InstrumentGroup(preset: false, instrumentGroupIndex, "User samples",
+                group => Enumerable.Range(0, sampleCount).Select(id => Instrument.FromUserSample(id, group)));
+
+        private static IReadOnlyDictionary<string, int>? BuildInstrumentDefaults(
             Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults, int instrumentId)
         {
             if (instrumentFieldDefaults == null)

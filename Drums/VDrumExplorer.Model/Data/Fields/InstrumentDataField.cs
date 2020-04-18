@@ -45,7 +45,7 @@ namespace VDrumExplorer.Model.Data.Fields
             set => SetInstrument(value);
         }
 
-        public InstrumentGroup? Group
+        public InstrumentGroup Group
         {
             get => Instrument.Group;
             set
@@ -54,20 +54,7 @@ namespace VDrumExplorer.Model.Data.Fields
                 {
                     return;
                 }
-                SetInstrument(value is null ? Schema.UserSampleInstruments[0] : value.Instruments[0]);
-            }
-        }
-
-        public InstrumentBank Bank
-        {
-            get => bank;
-            set
-            {
-                if (value == bank)
-                {
-                    return;
-                }
-                SetInstrument(value == InstrumentBank.Preset ? Schema.PresetInstruments[0] : Schema.UserSampleInstruments[0]);
+                SetInstrument(value.Instruments[0]);
             }
         }
 
@@ -77,14 +64,9 @@ namespace VDrumExplorer.Model.Data.Fields
             {
                 return;
             }
-            bool bankChange = instrument.Bank == bank;
             bool groupChange = instrument.Group == Group;
             index = instrument.Id;
             bank = instrument.Bank;
-            if (bankChange)
-            {
-                RaisePropertyChanged(nameof(Bank));
-            }
 
             if (groupChange)
             {

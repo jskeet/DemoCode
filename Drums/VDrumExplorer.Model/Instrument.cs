@@ -23,28 +23,31 @@ namespace VDrumExplorer.Model
         public string Name { get; }
         
         /// <summary>
-        /// The group containing the instrument, or null for a user sample.
+        /// The instrument group containing the instrument. (This might be
+        /// the group of user samples.)
         /// </summary>
-        public InstrumentGroup? Group { get; }
+        public InstrumentGroup Group { get; }
 
         /// <summary>
-        /// The instrument bank containing the instrument.
+        /// The instrument bank containing the instrument. This is just a convenience
+        /// property for <see cref="InstrumentGroup.Bank"/>.
         /// </summary>
-        public InstrumentBank Bank => Group == null ? InstrumentBank.UserSamples : InstrumentBank.Preset;
+        public InstrumentBank Bank => Group.Bank;
 
         /// <summary>
         /// Default values for Vedit fields (e.g. Size), or null if there are no defaults to apply.
         /// </summary>
         public IReadOnlyDictionary<string, int>? DefaultFieldValues { get; }
 
-        private Instrument(int id, string name, InstrumentGroup? group, IReadOnlyDictionary<string, int>? defaultFieldValues) =>
+        private Instrument(int id, string name, InstrumentGroup group, IReadOnlyDictionary<string, int>? defaultFieldValues) =>
             (Id, Name, Group, DefaultFieldValues) = (id, name, group, defaultFieldValues);
 
-        internal static Instrument FromPreset(int id, string name, InstrumentGroup group, IReadOnlyDictionary<string, int>? defaultFieldValues) =>
+        internal static Instrument FromPreset(int id, string name, InstrumentGroup group,
+            IReadOnlyDictionary<string, int>? defaultFieldValues) =>
             new Instrument(id, name, group, defaultFieldValues);
 
-        internal static Instrument FromUserSample(int id) =>
-            new Instrument(id, $"User sample {id + 1}", null, null);
+        internal static Instrument FromUserSample(int id, InstrumentGroup group) =>
+            new Instrument(id, $"User sample {id + 1}", group, null);
 
         public override string ToString() => Name;
     }
