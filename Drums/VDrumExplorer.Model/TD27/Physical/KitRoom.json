@@ -24,8 +24,8 @@
         "fieldCount": 20,
         "fieldSize": 4,
         "switchPath": "Type",
-        "fieldLists": [
-          {
+        "fieldLists": {
+          "Room": {
             "description": "Room",
             "fields": [
               {
@@ -69,7 +69,7 @@
               }
             ]
           },
-          {
+          "Reverb": {
             "description": "Reverb",
             "fields": [
               {
@@ -145,7 +145,7 @@
               }
             ]
           }
-        ]
+        }
       }
     }
   ]

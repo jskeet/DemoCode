@@ -13,6 +13,7 @@ namespace VDrumExplorer.Model.Schema.Json
         public string? Description { get; set; }
         public Dictionary<int, string>? Instruments { get; set; }
         public Dictionary<string, Dictionary<int, int>>? VeditDefaults { get; set; }
+        public string? VEditCategory { get; set; }
 
         public override string ToString() => Description ?? "(Unspecified)";
 
@@ -20,6 +21,7 @@ namespace VDrumExplorer.Model.Schema.Json
             InstrumentGroup.ForPresetInstruments(
                 index,
                 ValidateNotNull(Description, nameof(Description)),
+                ValidateNotNull(VEditCategory, nameof(VEditCategory)),
                 ValidateNotNull(Instruments, nameof(Instruments)),
                 VeditDefaults);
     }

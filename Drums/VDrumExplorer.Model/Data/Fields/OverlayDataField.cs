@@ -16,14 +16,19 @@ namespace VDrumExplorer.Model.Data.Fields
     {
         private readonly ModuleSchema schema;
         private IDataField? switchField;
-        private int switchIndex;
+        private string switchIndex;
 
-        private readonly IReadOnlyList<Lazy<FieldList>> fieldLists;
+        private readonly IReadOnlyDictionary<string, Lazy<FieldList>> fieldLists;
 
         internal OverlayDataField(OverlayField field, ModuleSchema schema) : base(field)
         {
             this.schema = schema;
-            fieldLists = SchemaField.FieldLists.ToReadOnlyList(fieldList => Lazy.Create(() => new FieldList(fieldList, schema)));
+            fieldLists = SchemaField.FieldLists
+                .ToDictionary(
+                    pair => pair.Key,
+                    pair => Lazy.Create(() => new FieldList(pair.Value, schema)))
+                .AsReadOnly();
+            switchIndex = "";
         }
 
         internal override void ResolveFields(ModuleData data, FieldContainer container)
@@ -46,11 +51,10 @@ namespace VDrumExplorer.Model.Data.Fields
             }
         }
 
-        private int GetSwitchIndex() => switchField switch
+        private string GetSwitchIndex() => switchField switch
         {
-            InstrumentDataField instrument => instrument.Instrument.Group.Index,
-            NumericDataField numeric => numeric.RawValue,
-            EnumDataField enumField => enumField.RawValue,
+            InstrumentDataField instrument => instrument.Instrument.Group.VEditCategory,
+            EnumDataField enumField => enumField.Value,
             _ => throw new InvalidOperationException($"Invalid field type for overlay switch: {switchField!.GetType()}")
         };
 

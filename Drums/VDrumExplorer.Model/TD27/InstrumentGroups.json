@@ -1,13 +1,15 @@
 [
   {
-    "Description": "Off",
-    "Instruments": {
+    "description": "Off",
+    "veditCategory": "Off",
+    "instruments": {
       "0": "Off"
     }
   },
   {
-    "Description": "Kick",
-    "Instruments": {
+    "description": "Kick",
+    "veditCategory": "Kick",
+    "instruments": {
       "1": "Vintage24\"SolidK",
       "2": "HardWood Solid K",
       "3": "Bubinga K",
@@ -65,8 +67,9 @@
     }
   },
   {
-    "Description": "Kick Proc",
-    "Instruments": {
+    "description": "Kick Proc",
+    "veditCategory": "Other",
+    "instruments": {
       "26": "Plugged Kick 1",
       "27": "Plugged Kick 2",
       "28": "Plugged Kick 3",
@@ -120,8 +123,9 @@
     }
   },
   {
-    "Description": "Kick Elec",
-    "Instruments": {
+    "description": "Kick Elec",
+    "veditCategory": "Other",
+    "instruments": {
       "76": "Analog Kick 1",
       "77": "Analog Kick 2",
       "78": "Analog Kick 3",
@@ -149,8 +153,9 @@
     }
   },
   {
-    "Description": "Snare",
-    "Instruments": {
+    "description": "Snare",
+    "veditCategory": "Snare",
+    "instruments": {
       "100": "Steel Fat S",
       "101": "Steel Fat SR",
       "102": "Walnut Solid S",
@@ -201,8 +206,9 @@
     }
   },
   {
-    "Description": "Cross Stick",
-    "Instruments": {
+    "description": "Cross Stick",
+    "veditCategory": "CrossStick",
+    "instruments": {
       "128": "Hard Wood X",
       "129": "Maple X",
       "130": "Beech X",
@@ -214,8 +220,9 @@
   // NOTE: The Roland Data List doesn't include this instrument group.
   // Without this, the V-Edit parameters for the Fusion kit are invalid.
   {
-    "Description": "Cross Stick Proc",
-    "Instruments": {
+    "description": "Cross Stick Proc",
+    "veditCategory": "Other",
+    "instruments": {
       "134": "Plugged X 1",
       "135": "Plugged X 2",
       "136": "Plugged X 3",
@@ -224,8 +231,9 @@
     }
   },
   {
-    "Description": "Snare Proc",
-    "Instruments": {
+    "description": "Snare Proc",
+    "veditCategory": "Other",
+    "instruments": {
       "139": "Plugged Snare 1",
       "140": "Plugged Snare 2",
       "141": "Plugged Snare 3",
@@ -283,8 +291,9 @@
     }
   },
   {
-    "Description": "Snare Elec",
-    "Instruments": {
+    "description": "Snare Elec",
+    "veditCategory": "Other",
+    "instruments": {
       "193": "Analog Snare 1",
       "194": "Analog Snare 2",
       "195": "CR-78 Snare",
@@ -303,8 +312,9 @@
     }
   },
   {
-    "Description": "Tom",
-    "Instruments": {
+    "description": "Tom",
+    "veditCategory": "Tom",
+    "instruments": {
       "208": "Hard Wood 8\"",
       "209": "Hard Wood 8\" R",
       "210": "Hard Wood 10\"",
@@ -427,8 +437,9 @@
     }
   },
   {
-    "Description": "Tom Proc",
-    "Instruments": {
+    "description": "Tom Proc",
+    "veditCategory": "Other",
+    "instruments": {
       "271": "Plugged Tom 1 T1",
       "272": "Plugged Tom 1 T2",
       "273": "Plugged Tom 1 T3",
@@ -448,8 +459,9 @@
     }
   },
   {
-    "Description": "Tom Elec",
-    "Instruments": {
+    "description": "Tom Elec",
+    "veditCategory": "Other",
+    "instruments": {
       "287": "Analog Tom 1 T1",
       "288": "Analog Tom 1 T2",
       "289": "Analog Tom 1 T3",
@@ -485,8 +497,9 @@
     }
   },
   {
-    "Description": "Hi-Hat",
-    "Instruments": {
+    "description": "Hi-Hat",
+    "veditCategory": "HiHat",
+    "instruments": {
       "319": "Trad Lathed HH",
       "320": "Trad Lathed HHE",
       "321": "Dark & Warm HH",
@@ -522,8 +535,9 @@
     }
   },
   {
-    "Description": "Hi-Hat Proc",
-    "Instruments": {
+    "description": "Hi-Hat Proc",
+    "veditCategory": "HiHat",
+    "instruments": {
       "333": "Club Hi-Hat",
       "334": "Sharp Hi-Hat",
       "335": "Hip Hi-Hat",
@@ -536,8 +550,9 @@
     }
   },
   {
-    "Description": "Hi-Hat Elec",
-    "Instruments": {
+    "description": "Hi-Hat Elec",
+    "veditCategory": "HiHat",
+    "instruments": {
       "342": "CR-78 Hi-Hat",
       "343": "CR-78 Metal HH",
       "344": "TR-808 Hi-Hat",
@@ -545,8 +560,9 @@
     }
   },
   {
-    "Description": "Ride",
-    "Instruments": {
+    "description": "Ride",
+    "veditCategory": "Ride",
+    "instruments": {
       "346": "Trad MedThin Rd",
       "347": "Trad MedThin RdE",
       "348": "Trad MedThin RdB",
@@ -585,8 +601,9 @@
     }
   },
   {
-    "Description": "Crash",
-    "Instruments": {
+    "description": "Crash",
+    "veditCategory": "CrashChinaSplashStackedCymbal",
+    "instruments": {
       "367": "Trad Thin Cr",
       "368": "Trad Thin CrE",
       "369": "Warm MedThin Cr",
@@ -642,8 +659,9 @@
     }
   },
   {
-    "Description": "China",
-    "Instruments": {
+    "description": "China",
+    "veditCategory": "CrashChinaSplashStackedCymbal",
+    "instruments": {
       "391": "Warm & Dark Ch",
       "392": "Warm & Dark ChE",
       "393": "Dark Swish Ch",
@@ -667,8 +685,9 @@
     }
   },
   {
-    "Description": "Splash",
-    "Instruments": {
+    "description": "Splash",
+    "veditCategory": "CrashChinaSplashStackedCymbal",
+    "instruments": {
       "399": "Warm MedThin Sp",
       "400": "Warm MedThin SpE",
       "401": "BrightMedThin Sp",
@@ -688,8 +707,9 @@
     }
   },
   {
-    "Description": "Stacked Cymbal",
-    "Instruments": {
+    "description": "Stacked Cymbal",
+    "veditCategory": "CrashChinaSplashStackedCymbal",
+    "instruments": {
       "405": "12\"Ch+12\"Ch St",
       "406": "12\"Ch+12\"Ch StE",
       "407": "10\"Ch+8\"Ch St",
@@ -709,8 +729,9 @@
     }
   },
   {
-    "Description": "Cymbal Others",
-    "Instruments": {
+    "description": "Cymbal Others",
+    "veditCategory": "Other",
+    "instruments": {
       "411": "Accent Cymbal",
       "412": "Chime Cymbal",
       "413": "Cross Cymbal 1",
@@ -724,8 +745,9 @@
     }
   },
   {
-    "Description": "Cymbal Proc",
-    "Instruments": {
+    "description": "Cymbal Proc",
+    "veditCategory": "Other",
+    "instruments": {
       "421": "Sweep Crash",
       "422": "Lo-Fi Crash",
       "423": "Ambient Crash",
@@ -748,16 +770,18 @@
     }
   },
   {
-    "Description": "Cymbal Elec",
-    "Instruments": {
+    "description": "Cymbal Elec",
+    "veditCategory": "Other",
+    "instruments": {
       "440": "Analog Cymbal",
       "441": "TR-808 Cymbal",
       "442": "TR-606 Cymbal"
     }
   },
   {
-    "Description": "Bell/Chime/Gong",
-    "Instruments": {
+    "description": "Bell/Chime/Gong",
+    "veditCategory": "Other",
+    "instruments": {
       "443": "Finger Cymbal 1",
       "444": "Finger Cymbal 2",
       "445": "Finger Cymbal 3",
@@ -772,8 +796,9 @@
     }
   },
   {
-    "Description": "Block/Cowbell",
-    "Instruments": {
+    "description": "Block/Cowbell",
+    "veditCategory": "Other",
+    "instruments": {
       "454": "Cowbell 1",
       "455": "Cowbell 1 Tip",
       "456": "Cowbell 2",
@@ -797,8 +822,9 @@
     }
   },
   {
-    "Description": "Percussion",
-    "Instruments": {
+    "description": "Percussion",
+    "veditCategory": "Other",
+    "instruments": {
       "474": "Bongo Hi Open",
       "475": "Bongo Hi Slap",
       "476": "Bongo Lo Open",
@@ -900,8 +926,9 @@
     }
   },
   {
-    "Description": "Percussion Elec",
-    "Instruments": {
+    "description": "Percussion Elec",
+    "veditCategory": "Other",
+    "instruments": {
       "572": "CR-78 Bongo",
       "573": "CR-78 Cowbell",
       "574": "CR-78 Claves",
@@ -923,8 +950,9 @@
     }
   },
   {
-    "Description": "Clap",
-    "Instruments": {
+    "description": "Clap",
+    "veditCategory": "Other",
+    "instruments": {
       "590": "Clap",
       "591": "Hand Clap",
       "592": "Single Clap",
@@ -968,8 +996,9 @@
     }
   },
   {
-    "Description": "Sound FX",
-    "Instruments": {
+    "description": "Sound FX",
+    "veditCategory": "Other",
+    "instruments": {
       "630": "Finger Snap",
       "631": "Dry Snap",
       "632": "Dense Click",
@@ -1015,8 +1044,9 @@
     }
   },
   {
-    "Description": "Elements",
-    "Instruments": {
+    "description": "Elements",
+    "veditCategory": "Other",
+    "instruments": {
       "672": "Kick Low Freq 1",
       "673": "Kick Low Freq 2",
       "674": "Kick Low Freq 3",
@@ -1073,15 +1103,17 @@
     }
   },
   {
-    "Description": "Snare Brush",
-    "Instruments": {
+    "description": "Snare Brush",
+    "veditCategory": "SnareBrush",
+    "instruments": {
       "725": "Brush Snare",
       "726": "Brush Snare Rim"
     }
   },
   {
-    "Description": "Tom Brush",
-    "Instruments": {
+    "description": "Tom Brush",
+    "veditCategory": "TomBrush",
+    "instruments": {
       "727": "Brush Tom 12\"",
       "728": "Brush Tom 14\""
     },

@@ -13,41 +13,24 @@
         "switchPath": "/Kit[{kit}]/KitPad{layer}[{trigger}]/Instrument",
         "fieldSize": 2,
         "fieldCount": 16,
-        "fieldLists": [
-          "$resource:VEdit/Off.json", // Off: no fields
-          "$resource:VEdit/Kick.json",
-          "$resource:VEdit/Other.json", // Kick Proc
-          "$resource:VEdit/Other.json", // Kick Elec
-          "$resource:VEdit/Snare.json",
-          "$resource:VEdit/CrossStick.json",
-          "$resource:VEdit/Other.json", // Cross Stick Proc
-          "$resource:VEdit/Other.json", // Snare Proc
-          "$resource:VEdit/Other.json", // Snare Elec
-          "$resource:VEdit/Tom.json",
-          "$resource:VEdit/Other.json", // Tom Proc
-          "$resource:VEdit/Other.json", // Tom Elec
-          "$resource:VEdit/HiHat.json",
-          "$resource:VEdit/HiHat.json", // Hi-Hat Proc
-          "$resource:VEdit/HiHat.json", // Hi-Hat Elec
-          "$resource:VEdit/Ride.json",
-          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Crash
-          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // China
-          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Splash
-          "$resource:VEdit/CrashChinaSplashStackedCymbal.json", // Stacked Cymbal
-          "$resource:VEdit/Other.json", // Cymbal Others
-          "$resource:VEdit/Other.json", // Cymbal Proc
-          "$resource:VEdit/Other.json", // Cymbal Elec
-          "$resource:VEdit/Other.json", // Bell/Chime/Glong
-          "$resource:VEdit/Other.json", // Block/Cowbell
-          "$resource:VEdit/Other.json", // Percussion
-          "$resource:VEdit/Other.json", // Percussion Elec
-          "$resource:VEdit/Other.json", // Clap
-          "$resource:VEdit/Other.json", // Sound FX
-          "$resource:VEdit/Other.json", // Elements
-          "$resource:VEdit/SnareBrush.json",
-          "$resource:VEdit/TomBrush.json",
-          "$resource:VEdit/Other.json" // User sample
-        ]
+        "fieldLists": {
+          "Off": "$resource:VEdit/Off.json",
+          "Other": "$resource:VEdit/Other.json",
+          "Kick": "$resource:VEdit/Kick.json",
+          "Snare": "$resource:VEdit/Snare.json",
+          "CrossStick": "$resource:VEdit/CrossStick.json",
+          "Tom": "$resource:VEdit/Tom.json",
+          "HiHat": "$resource:VEdit/HiHat.json",
+          "Ride": "$resource:VEdit/Ride.json",
+          "CrashChinaSplashStackedCymbal": "$resource:VEdit/CrashChinaSplashStackedCymbal.json",
+          "SnareBrush": "$resource:VEdit/SnareBrush.json",
+          "TomBrush": "$resource:VEdit/TomBrush.json",
+          // We could potentially configure which existing vedit category to use for
+          // user samples, but it feels simpler to give it its own entry. The only
+          // difference is that switching between samples and other "other" groups
+          // won't preserve the values.
+          "UserSamples": "$resource:VEdit/Other.json"
+        }
       }
     }
   ]

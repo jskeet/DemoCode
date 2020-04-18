@@ -39,27 +39,36 @@ namespace VDrumExplorer.Model
         /// </summary>
         public InstrumentBank Bank => Preset ? InstrumentBank.Preset : InstrumentBank.UserSamples;
 
+        /// <summary>
+        /// The category to use for V-Edit parameters.
+        /// </summary>
+        public string VEditCategory { get; }
+
         private InstrumentGroup(
             bool preset,
             int index,
             string description,
+            string veditCategory,
             Func<InstrumentGroup, IEnumerable<Instrument>> instrumentProvider)
         {
             Preset = preset;
             Description = description;
             Index = index;
+            VEditCategory = veditCategory;
             Instruments = instrumentProvider(this).ToReadOnlyList();
         }
 
-        internal static InstrumentGroup ForPresetInstruments(int instrumentGroupIndex, string description,
+        internal static InstrumentGroup ForPresetInstruments(
+            int instrumentGroupIndex, string description, string veditCategory,
             Dictionary<int, string> instruments,
             Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults) =>
-            new InstrumentGroup(preset: true, instrumentGroupIndex, description, group => instruments
-                .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, group, BuildInstrumentDefaults(instrumentFieldDefaults, pair.Key)))
-                .OrderBy(i => i.Id));
+            new InstrumentGroup(preset: true, instrumentGroupIndex, description, veditCategory,
+                group => instruments
+                    .Select(pair => Instrument.FromPreset(pair.Key, pair.Value, group, BuildInstrumentDefaults(instrumentFieldDefaults, pair.Key)))
+                    .OrderBy(i => i.Id));
 
         internal static InstrumentGroup ForUserSamples(int instrumentGroupIndex, int sampleCount) =>
-            new InstrumentGroup(preset: false, instrumentGroupIndex, "User samples",
+            new InstrumentGroup(preset: false, instrumentGroupIndex, description: "User samples", veditCategory: "UserSamples",
                 group => Enumerable.Range(0, sampleCount).Select(id => Instrument.FromUserSample(id, group)));
 
         private static IReadOnlyDictionary<string, int?>? BuildInstrumentDefaults(

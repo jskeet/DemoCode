@@ -21,17 +21,17 @@ namespace VDrumExplorer.Model.Schema.Fields
         public string SwitchPath { get; }
 
         /// <summary>
-        /// A list to be indexed by the value of the switch field (raw numeric value, or instrument
-        /// group number for instrument fields) to access field list in the overlay.
+        /// A dictionary to be indexed by the value of the switch field (enum name, or instrument
+        /// group "v-edit category" for instrument fields) to access field list in the overlay.
         /// </summary>
-        public IReadOnlyList<FieldList> FieldLists { get; }
+        public IReadOnlyDictionary<string, FieldList> FieldLists { get; }
 
         /// <summary>
         /// The maximum number of fields within each field list.
         /// </summary>
         public int NestedFieldCount { get; }
 
-        internal OverlayField(Parameters common, int nestedFieldCount, string switchPath, IReadOnlyList<FieldList> fieldLists) : base(common) =>
+        internal OverlayField(Parameters common, int nestedFieldCount, string switchPath, IReadOnlyDictionary<string, FieldList> fieldLists) : base(common) =>
             (NestedFieldCount, SwitchPath, FieldLists) = (nestedFieldCount, switchPath, fieldLists);
 
         internal OverlayField WithPath(string newSwitchPath) =>
