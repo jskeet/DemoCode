@@ -28,6 +28,11 @@ namespace VDrumExplorer.Model
         public InstrumentGroup? Group { get; }
 
         /// <summary>
+        /// The instrument bank containing the instrument.
+        /// </summary>
+        public InstrumentBank Bank => Group == null ? InstrumentBank.UserSamples : InstrumentBank.Preset;
+
+        /// <summary>
         /// Default values for Vedit fields (e.g. Size), or null if there are no defaults to apply.
         /// </summary>
         public IReadOnlyDictionary<string, int>? DefaultFieldValues { get; }
