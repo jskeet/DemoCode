@@ -2,10 +2,9 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
 using VDrumExplorer.Model.Data.Fields;
-using VDrumExplorer.Utility;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model.Data.Logical
 {
@@ -19,16 +18,15 @@ namespace VDrumExplorer.Model.Data.Logical
         /// <summary>
         /// The field container and data in the physical schema.
         /// </summary>
-        public FieldContainerData Container { get; }
+        public FieldContainer Container { get; }
 
-        private readonly Lazy<IReadOnlyList<IDataField>> fields;
-        public IReadOnlyList<IDataField> Fields => fields.Value;
+        public IReadOnlyList<IDataField> Fields { get; }
 
-        public FieldContainerDataNodeDetail(string description, FieldContainerData container)
+        public FieldContainerDataNodeDetail(string description, FieldContainer container, ModuleData data)
         {
             Description = description;
             Container = container;
-            fields = Lazy.Create(() => container.FieldContainer.Fields.ToReadOnlyList(field => container.ModuleData.CreateDataField(container.FieldContainer, field)));
+            Fields = data.GetDataFields(container);
         }
     }
 }

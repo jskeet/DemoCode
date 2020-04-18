@@ -42,7 +42,7 @@ namespace VDrumExplorer.Model.Data.Logical
 
         public DataFieldFormattableString(ModuleData data, FieldFormattableString formattable)
         {
-            fields = formattable.Fields?.ToReadOnlyList(pair => data.CreateDataField(pair.container, pair.field))
+            fields = formattable.Fields?.ToReadOnlyList(pair => data.GetDataField(pair.container, pair.field))
                 ?? new DataFieldBase[0];
             formatString = formattable.FormatString;
         }

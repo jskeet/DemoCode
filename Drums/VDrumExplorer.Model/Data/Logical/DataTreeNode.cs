@@ -26,7 +26,7 @@ namespace VDrumExplorer.Model.Data.Logical
             detail switch
             {
                 FieldContainerNodeDetail fieldContainerDetail =>
-                    new FieldContainerDataNodeDetail(fieldContainerDetail.Description, data.GetContainerData(fieldContainerDetail.Container)),
+                    new FieldContainerDataNodeDetail(fieldContainerDetail.Description, fieldContainerDetail.Container, data),
                 ListNodeDetail listDetail =>
                     new ListDataNodeDetail(listDetail.Description, listDetail.Items.ToReadOnlyList(ffs => new DataFieldFormattableString(data, ffs))),
                 _ => throw new ArgumentException("Don't know how to convert {detail} to {nameof(IDataNodeDetail)}")

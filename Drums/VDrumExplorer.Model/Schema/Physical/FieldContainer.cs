@@ -14,13 +14,15 @@ namespace VDrumExplorer.Model.Schema.Physical
     /// </summary>
     public sealed class FieldContainer : ContainerBase
     {
+        public static IComparer<FieldContainer> AddressComparer { get; } = new AddressComparerImpl();
+
         /// <summary>
         /// The fields within this container.
         /// </summary>
         public IReadOnlyList<IField> Fields { get; }
 
         /// <summary>
-        /// A map from field name to fiel.
+        /// A map from field name to field.
         /// </summary>
         public IReadOnlyDictionary<string, IField> FieldsByName { get; }
 
@@ -33,5 +35,12 @@ namespace VDrumExplorer.Model.Schema.Physical
             int size, IReadOnlyList<IField> fields)
             : base(schema, name, description, address, path) =>
             (Size, Fields, FieldsByName) = (size, fields, fields.ToDictionary(f => f.Name).AsReadOnly());
+
+
+        public class AddressComparerImpl : IComparer<FieldContainer>
+        {
+            public int Compare(FieldContainer x, FieldContainer y) =>
+                x.Address.CompareTo(y.Address);
+        }
     }
 }

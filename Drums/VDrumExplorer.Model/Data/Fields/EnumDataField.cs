@@ -12,19 +12,19 @@ namespace VDrumExplorer.Model.Data.Fields
     {
         private IReadOnlyList<string> Values => SchemaField.Values;
 
-        internal EnumDataField(FieldContainerData context, EnumField field) : base(context, field)
+        internal EnumDataField(EnumField field) : base(field)
         {
         }
 
-        protected override void OnDataChanged()
+        protected override void RaisePropertyChanges()
         {
-            base.OnDataChanged();
-            RaisePropertyChange(nameof(Value));
+            base.RaisePropertyChanges();
+            RaisePropertyChanged(nameof(Value));
         }
 
         public string Value
         {
-            get => Values[GetRawValue() - Min];
+            get => Values[RawValue - Min];
             set
             {
                 if (!TrySetValue(value))

@@ -9,11 +9,9 @@ namespace VDrumExplorer.Model.Data.Fields
 {
     public class NumericDataField : NumericDataFieldBase<NumericField>
     {
-        internal NumericDataField(FieldContainerData context, NumericField field) : base(context, field)
+        internal NumericDataField(NumericField field) : base(field)
         {
         }
-
-        protected override void OnDataChanged() => RaisePropertyChange(nameof(RawValue));
 
         public override string FormattedText => GetText();
 
@@ -34,6 +32,5 @@ namespace VDrumExplorer.Model.Data.Fields
             value *= SchemaField.Multiplier ?? 1;
             return value / (SchemaField.Divisor ?? 1m);
         }
-
     }
 }

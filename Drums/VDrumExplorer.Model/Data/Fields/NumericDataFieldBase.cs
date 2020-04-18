@@ -7,24 +7,26 @@ using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
 {
-    public abstract class NumericDataFieldBase<TField> : DataFieldBase<TField> where TField : NumericFieldBase
+    public abstract class NumericDataFieldBase : DataFieldBase<NumericFieldBase>
     {
         protected int Min => SchemaField.Min;
         protected int Max => SchemaField.Max;
 
-        protected NumericDataFieldBase(FieldContainerData context, TField schemaField)
-            : base(context, schemaField)
+        protected NumericDataFieldBase(NumericFieldBase schemaField) : base(schemaField)
         {
+            rawValue = schemaField.Default;
         }
 
-        protected override void OnDataChanged()
+        protected override void RaisePropertyChanges()
         {
-            RaisePropertyChange(nameof(RawValue));
+            base.RaisePropertyChanges();
+            RaisePropertyChanged(nameof(RawValue));
         }
 
+        private int rawValue;
         public int RawValue
         {
-            get => GetRawValue();
+            get => rawValue;
             set
             {
                 if (!TrySetRawValue(value))
@@ -34,17 +36,14 @@ namespace VDrumExplorer.Model.Data.Fields
             }
         }
 
-        protected int GetRawValueUnvalidated() => Context.ReadInt32(Offset, Size);
+        public override void Reset() => RawValue = SchemaField.Default;
 
-        internal int GetRawValue()
-        {
-            var value = GetRawValueUnvalidated();
-            if (value < Min || value > Max)
-            {
-                throw new InvalidOperationException($"Invalid range value: {value}");
-            }
-            return value;
-        }
+        // TODO: Validation? Currently just throws.
+        internal override void Load(DataSegment segment) =>
+            RawValue = segment.ReadInt32(SchemaField.Offset, SchemaField.Size);
+
+        internal override void Save(DataSegment segment) =>
+            segment.WriteInt32(SchemaField.Offset, SchemaField.Size, RawValue);
 
         internal bool TrySetRawValue(int value)
         {
@@ -52,20 +51,19 @@ namespace VDrumExplorer.Model.Data.Fields
             {
                 return false;
             }
-            Context.WriteInt32(Offset, Size, value);
+            SetProperty(ref rawValue, value);
+            // Note: ignore the return value of SetProperty, as we have successfully
+            // set the value. (The return value of SetProperty indicates a change.)
             return true;
         }
+    }
 
-        internal bool ValidateData(out string? error)
+    public abstract class NumericDataFieldBase<TField> : NumericDataFieldBase where TField : NumericFieldBase
+    {
+        public new TField SchemaField => (TField) base.SchemaField;
+
+        protected NumericDataFieldBase(TField schemaField) : base(schemaField)
         {
-            var rawValue = GetRawValueUnvalidated();
-            if (rawValue < Min || rawValue > Max)
-            {
-                error = $"Invalid raw value {rawValue}. Expected range: [{Min}-{Max}]";
-                return false;
-            }
-            error = null;
-            return true;
         }
     }
 }

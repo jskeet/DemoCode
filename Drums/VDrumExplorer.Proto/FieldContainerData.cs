@@ -3,18 +3,21 @@
 // as found in the LICENSE.txt file.
 
 using Google.Protobuf;
-using Google.Protobuf.Collections;
+using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Proto
 {
     internal partial class FieldContainerData
     {
-        internal static FieldContainerData FromModel(Model.Data.FieldContainerData data) =>
+        internal static FieldContainerData FromModel(DataSegment data) =>
             new FieldContainerData
             {
-                Address = data.FieldContainer.Address.DisplayValue,
+                Address = data.Address.DisplayValue,
                 Data = ByteString.CopyFrom(data.CopyData())
             };
+
+        internal DataSegment ToModel() =>
+            new DataSegment(ModuleAddress.FromDisplayValue(Address), Data.ToByteArray());
     }
 }

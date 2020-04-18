@@ -12,42 +12,65 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public class EditableInstrumentDataFieldViewModel : DataFieldViewModel<InstrumentDataField>
     {
+        // TODO: Move this somewhere else, or have some kind of enum data source.
+        private static readonly IReadOnlyList<InstrumentBank> s_instrumentBanks =
+            new List<InstrumentBank> { InstrumentBank.Preset, InstrumentBank.UserSamples }.AsReadOnly();
+
         public EditableInstrumentDataFieldViewModel(InstrumentDataField model) : base(model)
         {
         }
 
         protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged(nameof(Instrument));
-            RaisePropertyChanged(nameof(InstrumentGroup));
+            // TODO: Maybe map from original property to our property?
             RaisePropertyChanged(nameof(IsPreset));
             RaisePropertyChanged(nameof(IsUserSample));
+            RaisePropertyChanged(nameof(Instrument));
+            RaisePropertyChanged(nameof(Group));
+            RaisePropertyChanged(nameof(Bank));
             RaisePropertyChanged(nameof(UserSample));
         }
 
-        private ModuleSchema Schema => Model.Context.FieldContainer.Schema;
-        public bool IsPreset => InstrumentGroup is object;
-        public bool IsUserSample => InstrumentGroup is null;
+        private ModuleSchema Schema => Model.Schema;
+        public bool IsPreset => Bank == InstrumentBank.Preset;
+        public bool IsUserSample => Bank == InstrumentBank.UserSamples;
 
+        public IReadOnlyList<InstrumentBank> InstrumentBanks => s_instrumentBanks;
         public IReadOnlyList<InstrumentGroup> InstrumentGroups => Schema.InstrumentGroups;
-        public InstrumentGroup? InstrumentGroup
+
+        public InstrumentGroup? Group
         {
             get => Model.Instrument.Group;
-            set => Instrument = value?.Instruments[0] ?? Schema.UserSampleInstruments[0];
+            set => Model.Group = value;
         }
 
         public Instrument Instrument
         {
             get => Model.Instrument;
-            set => Model.Instrument = value;
+            set
+            {
+                // This is triggered when we change to user samples.
+                // TODO: Work out why, and stop it.
+                if (value is null)
+                {
+                    return;
+                }
+                Model.Instrument = value;
+            }
+        }
+
+        public InstrumentBank Bank
+        {
+            get => Model.Bank;
+            set => Model.Bank = value;
         }
 
         public int? UserSample
         {
-            get => InstrumentGroup is null ? Instrument.Id + 1 : default(int?);
+            get => Group is null ? Instrument.Id + 1 : default(int?);
             set
             {
-                if (InstrumentGroup is null == value is null)
+                if (Group is null == value is null)
                 {
                     throw new ArgumentException("Can't switch between user samples and preset instruments with this property");
                 }

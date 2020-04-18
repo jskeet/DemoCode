@@ -4,55 +4,117 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using VDrumExplorer.Model.Schema.Fields;
+using VDrumExplorer.Model.Schema.Physical;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Data.Fields
 {
     public class OverlayDataField : DataFieldBase<OverlayField>
     {
-        private IDataField switchField;
+        private readonly ModuleSchema schema;
+        private IDataField? switchField;
+        private int switchIndex;
 
         private readonly IReadOnlyList<Lazy<FieldList>> fieldLists;
 
-        // We don't need to subscribe to field changes for this field that covers all the values; the individual fields will take
-        // care of that. We do need to subscribe to changes for the switch field though.
-        internal OverlayDataField(FieldContainerData context, OverlayField field) : base(context, field, subscribeToFieldChanges: false)
+        internal OverlayDataField(OverlayField field, ModuleSchema schema) : base(field)
         {
-            switchField = context.ResolveDataField(SchemaField.SwitchPath);
-            fieldLists = field.FieldLists.ToReadOnlyList(fl => Lazy.Create(() => new FieldList(context, fl)));
-            AddFieldMatcher(switchField);
+            this.schema = schema;
+            fieldLists = SchemaField.FieldLists.ToReadOnlyList(fieldList => Lazy.Create(() => new FieldList(fieldList, schema)));
+        }
+
+        internal override void ResolveFields(ModuleData data, FieldContainer container)
+        {
+            var resolved = container.ResolveField(SchemaField.SwitchPath);
+            switchField = data.GetDataField(resolved.container, resolved.field);
+            RefreshInstrumentFields();
+        }
+
+        protected override void RaisePropertyChanges()
+        {
+            RaisePropertyChanged(nameof(CurrentFieldList));
+        }
+
+        public override void Reset()
+        {
+            foreach (var field in CurrentFieldList.Fields)
+            {
+                field.Reset();
+            }
+        }
+
+        private int GetSwitchIndex() => switchField switch
+        {
+            InstrumentDataField instrument => instrument.Instrument.Group?.Index ?? schema.InstrumentGroups.Count,
+            NumericDataField numeric => numeric.RawValue,
+            EnumDataField enumField => enumField.RawValue,
+            _ => throw new InvalidOperationException($"Invalid field type for overlay switch: {switchField!.GetType()}")
+        };
+
+        void SwitchFieldChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // TODO: If we change for "Splash" to "China" we don't actually need to reset things.
+            if (SetProperty(ref switchIndex, GetSwitchIndex()))
+            {
+                Reset();
+            }
+            RefreshInstrumentFields();
+        }
+
+        void RefreshInstrumentFields()
+        {
+            if (switchField is InstrumentDataField instrumentSwitch)
+            {
+                var instrument = instrumentSwitch.Instrument;
+                if (instrument.DefaultFieldValues is object)
+                {
+                    foreach (var field in CurrentFieldList.Fields.OfType<NumericDataFieldBase>())
+                    {
+                        if (instrument.DefaultFieldValues.TryGetValue(field.SchemaField.Name, out int rawValue))
+                        {
+                            field.RawValue = rawValue;
+                        }
+                    }
+                }
+            }
         }
 
         protected override void OnPropertyChangedHasSubscribers()
         {
             base.OnPropertyChangedHasSubscribers();
-            if (switchField.Context != Context)
-            {
-                switchField.Context.DataChanged += ContainerDataChanged;
-            }
+            switchField!.PropertyChanged += SwitchFieldChanged;
         }
 
         protected override void OnPropertyChangedHasNoSubscribers()
         {
             base.OnPropertyChangedHasNoSubscribers();
-            if (switchField.Context != Context)
+            switchField!.PropertyChanged -= SwitchFieldChanged;
+        }
+
+        internal override void Load(DataSegment segment)
+        {
+            // FIXME: Can we assume that the switch field has already been loaded? Feels brittle.
+            // Probably okay if we validate it in tests.
+            switchIndex = GetSwitchIndex();
+            foreach (DataFieldBase field in CurrentFieldList.Fields)
             {
-                switchField.Context.DataChanged -= ContainerDataChanged;
+                field.Load(segment);
             }
         }
 
-        public FieldList GetFieldList()
+        internal override void Save(DataSegment segment)
         {
-            var index = switchField switch
+            // FIXME: Can we assume that the switch field has already been loaded? Feels brittle.
+            foreach (DataFieldBase field in CurrentFieldList.Fields)
             {
-                InstrumentDataField instrument => instrument.Instrument.Group?.Index ?? Context.FieldContainer.Schema.InstrumentGroups.Count,
-                NumericDataField numeric => numeric.RawValue,
-                EnumDataField enumField => enumField.RawValue,
-                _ => throw new InvalidOperationException($"Invalid field type for overlay switch: {switchField.GetType()}")
-            };
-            return fieldLists[index].Value;
+                field.Save(segment);
+            }
         }
+
+        public FieldList CurrentFieldList => fieldLists[switchIndex].Value;
 
         /// <summary>
         /// The "data" version of <see cref="OverlayField.FieldList"/>
@@ -62,10 +124,10 @@ namespace VDrumExplorer.Model.Data.Fields
             public string Description { get; }
             public IReadOnlyList<IDataField> Fields { get; }
 
-            public FieldList(FieldContainerData context, OverlayField.FieldList schemaFieldList)
+            public FieldList(OverlayField.FieldList schemaFieldList, ModuleSchema schema)
             {
                 Description = schemaFieldList.Description;
-                Fields = schemaFieldList.Fields.ToReadOnlyList(field => context.ModuleData.CreateDataField(context.FieldContainer, field));
+                Fields = schemaFieldList.Fields.ToReadOnlyList(field => DataFieldBase.CreateDataField(field, schema));
             }
         }
 
