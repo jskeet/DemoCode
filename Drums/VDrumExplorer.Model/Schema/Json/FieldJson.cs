@@ -206,8 +206,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 ValidateNotNull(Overlay, nameof(Overlay));
 
                 var fieldsBySwitchValue = Overlay.FieldLists
-                    .Select(ConvertFieldList)
-                    .ToList()
+                    .ToDictionary(pair => pair.Key, pair => ConvertFieldList(pair.Value))
                     .AsReadOnly();
                 return new OverlayField(BuildCommon(Overlay.FieldCount * Overlay.FieldSize), Overlay.FieldCount, AssertNotNull(Overlay.SwitchPath), fieldsBySwitchValue);
 

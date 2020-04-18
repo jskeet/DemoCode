@@ -29,7 +29,7 @@ namespace VDrumExplorer.Model.Schema.Json
         /// <summary>
         /// The lists of overlaid fields to switch between.
         /// </summary>
-        public List<OverlaidFieldListJson>? FieldLists { get; set; }
+        public Dictionary<string, OverlaidFieldListJson>? FieldLists { get; set; }
 
         internal sealed class OverlaidFieldListJson
         {
