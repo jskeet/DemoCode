@@ -20,6 +20,7 @@
           "$resource:VEdit/Other.json", // Kick Elec
           "$resource:VEdit/Snare.json",
           "$resource:VEdit/CrossStick.json",
+          "$resource:VEdit/Other.json", // Cross Stick Proc
           "$resource:VEdit/Other.json", // Snare Proc
           "$resource:VEdit/Other.json", // Snare Elec
           "$resource:VEdit/Tom.json",

@@ -2,6 +2,14 @@
   "description": "Cross stick",
   "fields": [
     {
+      "name": "Placeholder field 1",
+      "type": "placeholder16"
+    },
+    {
+      "name": "Placeholder field 2",
+      "type": "placeholder16"
+    },
+    {
       "description": "Tuning",
       "type": "range16",
       "min": -100,
@@ -24,7 +32,7 @@
       ]
     },
     {
-      "name": "Placeholder field",
+      "name": "Placeholder field 3",
       "type": "placeholder16"
     },
     {

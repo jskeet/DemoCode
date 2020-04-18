@@ -58,7 +58,8 @@
                 "description": "Distance",
                 "type": "range32",
                 "min": 0,
-                "max": 6
+                "max": 6,
+                "default": 4
               },
               {
                 "description": "Time",
@@ -80,14 +81,16 @@
                   "Hall 1",
                   "Hall 2",
                   "Plate"
-                ]
+                ],
+                "default": 2
               },
               {
                 "description": "Pre delay",
                 "type": "range32",
                 "min": 0,
                 "max": 100,
-                "suffix": "ms"
+                "suffix": "ms",
+                "default": 26
               },
               {
                 "description": "Time",
@@ -95,43 +98,50 @@
                 "min": 1,
                 "max": 100,
                 "divisor": 10,
-                "suffix": "sec"
+                "suffix": "sec",
+                "default": 26
               },
               {
                 "description": "Density",
                 "type": "range32",
                 "min": 0,
-                "max": 127
+                "max": 127,
+                "default": 127
               },
               {
                 "description": "Diffusion",
                 "type": "range32",
                 "min": 0,
-                "max": 127
+                "max": 127,
+                "default": 127
               },
               {
                 "description": "LF damp",
                 "type": "range32",
                 "min": 0,
-                "max": 127
+                "max": 127,
+                "default": 50
               },
               {
                 "description": "HF damp",
                 "type": "range32",
                 "min": 0,
-                "max": 127
+                "max": 127,
+                "default": 50
               },
               {
                 "description": "Spread",
                 "type": "range32",
                 "min": 0,
-                "max": 127
+                "max": 127,
+                "default": 127
               },
               {
                 "description": "Tone",
                 "type": "range32",
                 "min": 0,
-                "max": 127
+                "max": 127,
+                "default": 64
               }
             ]
           }

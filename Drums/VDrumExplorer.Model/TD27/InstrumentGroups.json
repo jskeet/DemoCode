@@ -209,6 +209,13 @@
       "131": "Steel X",
       "132": "Walnut X",
       "133": "Mahogany X",
+    }
+  },
+  // NOTE: The Roland Data List doesn't include this instrument group.
+  // Without this, the V-Edit parameters for the Fusion kit are invalid.
+  {
+    "Description": "Cross Stick Proc",
+    "Instruments": {
       "134": "Plugged X 1",
       "135": "Plugged X 2",
       "136": "Plugged X 3",
