@@ -8,14 +8,14 @@ namespace VDrumExplorer.Model.Data.Fields
 {
     public class BooleanDataField : NumericDataFieldBase<BooleanField>
     {
-        internal BooleanDataField(FieldContainerData context, BooleanField field) : base(context, field)
+        internal BooleanDataField(BooleanField field) : base(field)
         {
         }
 
-        protected override void OnDataChanged()
+        protected override void RaisePropertyChanges()
         {
-            base.OnDataChanged();
-            RaisePropertyChange(nameof(Value));
+            base.RaisePropertyChanges();
+            RaisePropertyChanged(nameof(Value));
         }
 
         public bool Value

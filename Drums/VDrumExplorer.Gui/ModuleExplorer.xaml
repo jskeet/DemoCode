@@ -76,10 +76,30 @@
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableInstrumentDataFieldViewModel}">
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <ComboBox ItemsSource="{Binding InstrumentGroups}" SelectedItem="{Binding InstrumentGroup, Mode=TwoWay}" Margin="2" Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"/>
-                                                                    <ComboBox ItemsSource="{Binding InstrumentGroup.Instruments}" SelectedItem="{Binding Instrument, Mode=TwoWay}" Margin="2" Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"/>
-                                                                    <TextBlock Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}">User sample: </TextBlock>
-                                                                    <TextBox Text="{Binding UserSample, Mode=TwoWay, ValidatesOnExceptions=True}" Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource ValueMargin}"/>
+                                                                    <!-- TODO: Specify an enum converter that will use the description attribute -->
+                                                                    <ComboBox ItemsSource="{Binding InstrumentBanks}"
+                                                                              SelectedItem="{Binding Bank, Mode=TwoWay}"
+                                                                              Margin="2"
+                                                                              VerticalAlignment="Center" />
+                                                                    <ComboBox ItemsSource="{Binding InstrumentGroups}"
+                                                                              SelectedItem="{Binding Group, Mode=TwoWay}"
+                                                                              Margin="2" Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"
+                                                                              VerticalAlignment="Center" />
+                                                                    <ComboBox ItemsSource="{Binding Group.Instruments}"
+                                                                              SelectedItem="{Binding Instrument, Mode=TwoWay}"
+                                                                              Margin="2"
+                                                                              Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"
+                                                                              VerticalAlignment="Center" />
+                                                                    <TextBlock Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}"
+                                                                               VerticalAlignment="Center"
+                                                                               Margin="{StaticResource ValueMargin}"
+                                                                               Text="User sample:" />
+                                                                    <!-- Setting the width here is ugly, but we need enough for three characters -->
+                                                                    <TextBox Text="{Binding UserSample, Mode=TwoWay, ValidatesOnExceptions=True}"
+                                                                             Width="50" 
+                                                                             Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}"
+                                                                             Margin="{StaticResource ValueMargin}"
+                                                                             VerticalAlignment="Center" />
                                                                 </StackPanel>
                                                             </DataTemplate>
                                                         </ContentControl.Resources>

@@ -16,7 +16,7 @@ namespace VDrumExplorer.Model.Schema.Fields
     public sealed class OverlayField : FieldBase
     {
         /// <summary>
-        /// The absolute path of the field that determines which overlay is applied.
+        /// The path (relative or absolute) of the field that determines which overlay is applied.
         /// </summary>
         public string SwitchPath { get; }
 

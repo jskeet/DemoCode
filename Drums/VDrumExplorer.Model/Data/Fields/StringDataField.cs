@@ -17,17 +17,18 @@ namespace VDrumExplorer.Model.Data.Fields
         private int Length => SchemaField.Length;
         private int BytesPerChar => SchemaField.BytesPerChar;
 
-        internal StringDataField(FieldContainerData context, StringField field) : base(context, field)
+        internal StringDataField(StringField field) : base(field)
         {
+            // Load will be called as part of initialization.
+            text = null!;
         }
-
-        protected override void OnDataChanged() => RaisePropertyChange(nameof(Text));
 
         public override string FormattedText => Text;
 
+        private string text;
         public string Text
         {
-            get => GetText();
+            get => text;
             set
             {
                 if (!TrySetText(value))
@@ -37,21 +38,25 @@ namespace VDrumExplorer.Model.Data.Fields
             }
         }
 
-        private string GetText()
+        public override void Reset() => Text = "";
+
+        internal override void Load(DataSegment segment)
         {
             Span<byte> buffer = stackalloc byte[Size];
-            Context.ReadBytes(Offset, buffer);
+            segment.ReadBytes(Offset, buffer);
             switch (BytesPerChar)
             {
                 case 1:
-                    return Encoding.ASCII.GetString(buffer);
+                    text = Encoding.ASCII.GetString(buffer);
+                    break;
                 case 2:
                     Span<byte> asciiBytes = stackalloc byte[SchemaField.Length];
                     for (int i = 0; i < SchemaField.Length; i++)
                     {
                         asciiBytes[i] = (byte) ((buffer[i * 2] << 4) | buffer[i * 2 + 1]);
                     }
-                    return Encoding.ASCII.GetString(asciiBytes);
+                    text = Encoding.ASCII.GetString(asciiBytes);
+                    break;
                 default:
                     throw new InvalidOperationException($"Can't get a string with bytesPerChar of {BytesPerChar}");
             }
@@ -71,6 +76,12 @@ namespace VDrumExplorer.Model.Data.Fields
                 return false;
             }
 
+            SetProperty(ref text, text);
+            return true;
+        }
+
+        internal override void Save(DataSegment segment)
+        {
             text = text.PadRight(Length);
             Span<byte> bytes = stackalloc byte[Size];
             switch (BytesPerChar)
@@ -88,8 +99,7 @@ namespace VDrumExplorer.Model.Data.Fields
                 default:
                     throw new InvalidOperationException($"Can't set a string with bytesPerChar of {BytesPerChar}");
             }
-            Context.WriteBytes(Offset, bytes);
-            return true;
+            segment.WriteBytes(Offset, bytes);
         }
     }
 }

@@ -11,6 +11,6 @@ namespace VDrumExplorer.Model.Data.Fields
     {
         string FormattedText { get; }
         IField SchemaField { get; }
-        FieldContainerData Context { get; }
+        void Reset();
     }
 }

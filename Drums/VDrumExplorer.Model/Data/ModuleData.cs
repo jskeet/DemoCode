@@ -31,54 +31,80 @@ namespace VDrumExplorer.Model.Data
         /// </summary>
         public DataTreeNode LogicalRoot { get; }
 
-        private readonly IReadOnlyDictionary<ModuleAddress, FieldContainerData> containers = new Dictionary<ModuleAddress, FieldContainerData>();
-
-        private ModuleData(TreeNode logicalRoot, IEnumerable<(FieldContainer, byte[])> mappedData)
+        private readonly IReadOnlyDictionary<FieldContainer, IReadOnlyList<IDataField>> fieldsByFieldContainer;
+            
+        private ModuleData(TreeNode logicalSchemaRoot, Dictionary<ModuleAddress, DataSegment> mappedSegments)
         {
-            PhysicalRoot = logicalRoot.Container;
-            containers = mappedData
-                .ToDictionary(pair => pair.Item1.Address, pair => new FieldContainerData(this, pair.Item1, pair.Item2))
-                .AsReadOnly();
-            LogicalRoot = new DataTreeNode(this, logicalRoot);
-        }
-
-        internal static ModuleData FromData(TreeNode logicalRoot, IDictionary<ModuleAddress, byte[]> data)
-        {
-            var physicalRoot = (ContainerContainer) logicalRoot.Container;
-            var containers = physicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
-            if (data.Count != containers.Count)
+            PhysicalRoot = logicalSchemaRoot.Container;
+            var schema = PhysicalRoot.Schema;
+            var fieldContainers = schema.PhysicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+            if (mappedSegments.Count != fieldContainers.Count)
             {
-                throw new ArgumentException($"Expected {containers.Count} data segments; received {data.Count}");
+                throw new ArgumentException($"Expected {fieldContainers.Count} data segments; received {mappedSegments.Count}");
             }
-            var mappedData = new List<(FieldContainer, byte[])>();
-            foreach (var container in containers)            
+
+            // First populate the containers
+            var fieldMap = new SortedDictionary<FieldContainer, IReadOnlyList<IDataField>>(FieldContainer.AddressComparer);
+            foreach (var fieldContainer in fieldContainers)
             {
-                if (!data.TryGetValue(container.Address, out var segment))
+                if (!mappedSegments.TryGetValue(fieldContainer.Address, out var segment))
                 {
-                    throw new ArgumentException($"Data does not contain segment for address {container.Address}");
+                    throw new ArgumentException($"Data does not contain segment for address {fieldContainer.Address}");
                 }
-                mappedData.Add((container, segment));
+                fieldMap[fieldContainer] = fieldContainer.Fields.ToReadOnlyList(field => DataFieldBase.CreateDataField(field, schema));
             }
-            return new ModuleData(logicalRoot, mappedData);
-        }
+            fieldsByFieldContainer = fieldMap;
 
-        public IDataField CreateDataField(FieldContainer container, IField field)
-        {
-            var data = containers[container.Address];
-            return field switch
+            IEnumerable<DataFieldBase> allFields = fieldsByFieldContainer.SelectMany(pair => pair.Value).Cast<DataFieldBase>();
+
+            // Now resolve fields
+            foreach (var pair in fieldsByFieldContainer)
             {
-                StringField f => new StringDataField(data, f),
-                BooleanField f => new BooleanDataField(data, f),
-                NumericField f => new NumericDataField(data, f),
-                EnumField f => new EnumDataField(data, f),
-                InstrumentField f => new InstrumentDataField(data, f),
-                OverlayField f => new OverlayDataField(data, f),
-                _ => throw new ArgumentException($"Can't handle {field} yet")
-            };
+                foreach (var field in pair.Value.Cast<DataFieldBase>())
+                {
+                    field.ResolveFields(this, pair.Key);
+                }
+            }
+            // Now load the data
+            foreach (var (fieldContainer, fieldList) in fieldsByFieldContainer)
+            {
+                if (!mappedSegments.TryGetValue(fieldContainer.Address, out var segment))
+                {
+                    throw new ArgumentException($"Data does not contain segment for address {fieldContainer.Address}");
+                }
+                foreach (DataFieldBase field in fieldList)
+                {
+                    field.Load(segment);
+                }
+            }
+
+            // Note: must populate this *after* containers.
+            LogicalRoot = new DataTreeNode(this, logicalSchemaRoot);
         }
 
-        public IEnumerable<FieldContainerData> Containers => containers.Values.OrderBy(c => c.FieldContainer.Address);
+        internal static ModuleData FromData(TreeNode logicalRoot, IEnumerable<DataSegment> dataSegments)
+        {
+            var mappedSegments = dataSegments.ToDictionary(segment => segment.Address);
+            return new ModuleData(logicalRoot, mappedSegments);
+        }
 
-        public FieldContainerData GetContainerData(FieldContainer container) => containers[container.Address];
+        internal IReadOnlyList<IDataField> GetDataFields(FieldContainer container) => fieldsByFieldContainer[container];
+
+        // TODO: Check how often this is called, and whether we need to optimize.
+        internal IDataField GetDataField(FieldContainer container, IField field) =>
+            GetDataFields(container).FirstOrDefault(dataField => dataField.SchemaField == field);
+
+        public IEnumerable<DataSegment> SerializeData()
+        {
+            foreach (var (fieldContainer, fieldList) in fieldsByFieldContainer)
+            {
+                var segment = new DataSegment(fieldContainer.Address, new byte[fieldContainer.Size]);
+                foreach (DataFieldBase field in fieldList)
+                {
+                    field.Save(segment);
+                }
+                yield return segment;
+            }
+        }
     }
 }

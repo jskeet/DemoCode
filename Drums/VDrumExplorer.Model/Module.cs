@@ -20,7 +20,7 @@ namespace VDrumExplorer.Model
         public Module(ModuleData data) =>
             (Schema, Data) = (data.PhysicalRoot.Schema, data);
 
-        public static Module Create(ModuleSchema moduleSchema, Dictionary<ModuleAddress, byte[]> data)
+        public static Module Create(ModuleSchema moduleSchema, IEnumerable<DataSegment> data)
         {
             var moduleData = ModuleData.FromData(moduleSchema.LogicalRoot, data);
             return new Module(moduleData);

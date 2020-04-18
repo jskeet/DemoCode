@@ -3,37 +3,16 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using VDrumExplorer.Model.Data.Fields;
-using VDrumExplorer.Model.Schema.Physical;
-using VDrumExplorer.Utility;
 
-/* TODO: Delete when we're happy...
 namespace VDrumExplorer.Model.Data
 {
-    /// <summary>
-    /// Data for an individual <see cref="FieldContainer"/>.
-    /// </summary>
-    [Obsolete]
-    public sealed class FieldContainerData
+    public sealed class DataSegment
     {
-        public ModuleData ModuleData { get; }
-        public FieldContainer FieldContainer { get; }
+        public ModuleAddress Address { get; }
         private readonly byte[] data;
 
-        public event EventHandler<DataChangedEventArgs>? DataChanged;
-
-        public FieldContainerData(ModuleData moduleData, FieldContainer fieldContainer, byte[] data) =>
-            (ModuleData, FieldContainer, this.data) =
-            (moduleData, fieldContainer, Preconditions.CheckNotNull(data, nameof(data)));
-
-        /// <summary>
-        /// Resolves a path (relative to <see cref="FieldContainer"/> or absolute) as a data field.
-        /// </summary>
-        internal IDataField ResolveDataField(string path)
-        {
-            var (container, field) = FieldContainer.ResolveField(path);
-            return ModuleData.CreateDataField(container, field);
-        }
+        public DataSegment(ModuleAddress address, byte[] data) =>
+            (Address, this.data) = (address, data);
 
         /// <summary>
         /// Creates a copy of the data in this container.
@@ -91,7 +70,6 @@ namespace VDrumExplorer.Model.Data
                     data[start + 3] = (byte) ((value >> 0) & 0xf);
                     break;
             }
-            DataChanged?.Invoke(this, new DataChangedEventArgs(this, offset, offset + size));
         }
 
         /// <summary>
@@ -114,7 +92,6 @@ namespace VDrumExplorer.Model.Data
                 return;
             }
             bytes.CopyTo(targetSpan);
-            DataChanged?.Invoke(this, new DataChangedEventArgs(this, offset, offset + bytes.Length));
         }
 
         private void ValidateRange(ModuleOffset offset, int length)
@@ -133,4 +110,3 @@ namespace VDrumExplorer.Model.Data
         }
     }
 }
-*/

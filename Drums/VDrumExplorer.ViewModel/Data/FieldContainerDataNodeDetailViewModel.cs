@@ -69,7 +69,7 @@ namespace VDrumExplorer.ViewModel.Data
             {
                 if (field is OverlayDataField odf)
                 {
-                    foreach (var vm in GenerateFields(odf.GetFieldList().Fields))
+                    foreach (var vm in GenerateFields(odf.CurrentFieldList.Fields))
                     {
                         yield return vm;
                     }

@@ -2,43 +2,95 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
 {
-    // TODO: Subscribe to changes in the bank field
     public class InstrumentDataField : DataFieldBase<InstrumentField>
     {
-        private readonly EnumDataField bankField;
+        // TODO: Check whether we actually need this publicly.
+        public ModuleSchema Schema { get; }
 
-        internal InstrumentDataField(FieldContainerData context, InstrumentField field) : base(context, field)
+        internal InstrumentDataField(InstrumentField field, ModuleSchema schema) : base(field)
         {
-            bankField = (EnumDataField) context.ResolveDataField(SchemaField.BankPath);
-            AddFieldMatcher(bankField);
+            Schema = schema;
         }
 
-        protected override void OnDataChanged() => RaisePropertyChange(nameof(Instrument));
+        protected override void RaisePropertyChanges() =>
+            throw new InvalidOperationException("Bug in V-Drum Explorer. This type has complex property semantics, and shouldn't use SetProperty.");
+
+        // Value in the main field.
+        private int index;
+        // Value in the bank field
+        private InstrumentBank bank;
+
+        public override void Reset() => Instrument = Schema.PresetInstruments[0];
+
+        internal override void Load(DataSegment segment)
+        {
+            index = segment.ReadInt32(Offset, Size);
+            bank = (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset, 1);
+        }
+
+        internal override void Save(DataSegment segment)
+        {
+            segment.WriteInt32(Offset, Size, index);
+            segment.WriteInt32(SchemaField.BankOffset, SchemaField.Size, index);
+        }
 
         public Instrument Instrument
         {
-            get => GetInstrument();
+            get => bank == InstrumentBank.Preset ? Schema.PresetInstruments[index] : Schema.UserSampleInstruments[index];
             set => SetInstrument(value);
         }
 
-        private Instrument GetInstrument()
+        public InstrumentGroup? Group
         {
-            var schema = Context.FieldContainer.Schema;
-            var index = Context.ReadInt32(Offset, Size);
-            var bank = bankField.RawValue;
-            return bank == 0
-                ? schema.PresetInstruments[index]
-                : schema.UserSampleInstruments[index];
+            get => Instrument.Group;
+            set
+            {
+                if (value == Instrument.Group)
+                {
+                    return;
+                }
+                SetInstrument(value is null ? Schema.UserSampleInstruments[0] : value.Instruments[0]);
+            }
+        }
+
+        public InstrumentBank Bank
+        {
+            get => bank;
+            set
+            {
+                if (value == bank)
+                {
+                    return;
+                }
+                SetInstrument(value == InstrumentBank.Preset ? Schema.PresetInstruments[0] : Schema.UserSampleInstruments[0]);
+            }
         }
 
         private void SetInstrument(Instrument instrument)
         {
-            Context.WriteInt32(Offset, Size, instrument.Id);
-            bankField.RawValue = instrument.Group is null ? 1 : 0;
+            if (instrument.Id == index && instrument.Bank == bank)
+            {
+                return;
+            }
+            bool bankChange = instrument.Bank == bank;
+            bool groupChange = instrument.Group == Group;
+            index = instrument.Id;
+            bank = instrument.Bank;
+            if (bankChange)
+            {
+                RaisePropertyChanged(nameof(Bank));
+            }
+
+            if (groupChange)
+            {
+                RaisePropertyChanged(nameof(Group));
+            }
+            RaisePropertyChanged(nameof(Instrument));
         }
 
         public override string FormattedText => Instrument.Name;
