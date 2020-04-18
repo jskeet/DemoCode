@@ -107,9 +107,9 @@ namespace VDrumExplorer.Model.Schema.Json
         public List<string>? Values { get; set; }
 
         /// <summary>
-        /// For instrument fields only, the path to the bank switch field (usually in the same container).
+        /// For instrument fields only, the offset of the bank switch field, in the same container.
         /// </summary>
-        public string? BankPath { get; set; }
+        public HexInt32? BankOffset { get; set; }
 
         /// <summary>
         /// If set, the condition for the field to be enabled.
@@ -167,7 +167,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 "enum" => BuildEnumField(1),
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
-                "instrument" => new InstrumentField(BuildCommon(4), ValidateNotNull(BankPath, nameof(BankPath))),
+                "instrument" => new InstrumentField(BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
                 "midi32" => new NumericField(BuildCommon(4), 0, 128, 0, null, null, null, null, (128, "Off")),
                 "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0, 0),
                 "overlay" => BuildOverlay(),

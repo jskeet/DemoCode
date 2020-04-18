@@ -10,12 +10,12 @@ namespace VDrumExplorer.Model.Schema.Fields
     public sealed class InstrumentField : FieldBase
     {
         /// <summary>
-        /// The path to the field (usually within the same container) that determines whether the instrument is
-        /// a preset instrument or a user sample.
+        /// The offset within the same container for the single-byte instrument bank field,
+        /// with a value of 0 for preset instruments and 1 for user samples.
         /// </summary>
-        internal string BankPath { get; }
+        internal ModuleOffset BankOffset { get; }
 
-        internal InstrumentField(Parameters common, string bankPath) : base(common) =>
-            BankPath = bankPath;
+        internal InstrumentField(Parameters common, ModuleOffset bankOffset) : base(common) =>
+            BankOffset = bankOffset;
     }
 }

@@ -4,7 +4,7 @@
     {
       "description": "Instrument",
       "type": "instrument",
-      "bankPath": "InstrumentBank"
+      "bankOffset": "0x08"
     },
     {
       "description": "Volume",
@@ -12,11 +12,7 @@
     },
     {
       "description": "Instrument bank",
-      "type": "enum",
-      "values": [
-        "Preset",
-        "User sample"
-      ]
+      "type": "placeholder8"
     },
     {
       "description": "Transient on/off",
