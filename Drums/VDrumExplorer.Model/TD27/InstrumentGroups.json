@@ -182,7 +182,7 @@
     },
     "veditDefaults": {
       // Default is 11, i.e. 6.5 inch, which covers about half the instruments.
-      "Shell depth": {
+      "ShellDepth": {
         "102": 8,
         "103": 8,
         "106": 9,
@@ -371,7 +371,7 @@
     },
     "veditDefaults": {
       // Default is 26, i.e. 14 inch, which covers about a quarter of the instruments.
-      "Shell depth": {
+      "ShellDepth": {
         "208": 14,
         "209": 14,
         "210": 16,
