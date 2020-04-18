@@ -76,14 +76,9 @@
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableInstrumentDataFieldViewModel}">
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <!-- TODO: Specify an enum converter that will use the description attribute -->
-                                                                    <ComboBox ItemsSource="{Binding InstrumentBanks}"
-                                                                              SelectedItem="{Binding Bank, Mode=TwoWay}"
-                                                                              Margin="2"
-                                                                              VerticalAlignment="Center" />
                                                                     <ComboBox ItemsSource="{Binding InstrumentGroups}"
                                                                               SelectedItem="{Binding Group, Mode=TwoWay}"
-                                                                              Margin="2" Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"
+                                                                              Margin="2"
                                                                               VerticalAlignment="Center" />
                                                                     <ComboBox ItemsSource="{Binding Group.Instruments}"
                                                                               SelectedItem="{Binding Instrument, Mode=TwoWay}"
@@ -93,7 +88,7 @@
                                                                     <TextBlock Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}"
                                                                                VerticalAlignment="Center"
                                                                                Margin="{StaticResource ValueMargin}"
-                                                                               Text="User sample:" />
+                                                                               Text="Sample number:" />
                                                                     <!-- Setting the width here is ugly, but we need enough for three characters -->
                                                                     <TextBox Text="{Binding UserSample, Mode=TwoWay, ValidatesOnExceptions=True}"
                                                                              Width="50" 

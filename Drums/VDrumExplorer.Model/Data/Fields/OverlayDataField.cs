@@ -48,7 +48,7 @@ namespace VDrumExplorer.Model.Data.Fields
 
         private int GetSwitchIndex() => switchField switch
         {
-            InstrumentDataField instrument => instrument.Instrument.Group?.Index ?? schema.InstrumentGroups.Count,
+            InstrumentDataField instrument => instrument.Instrument.Group.Index,
             NumericDataField numeric => numeric.RawValue,
             EnumDataField enumField => enumField.RawValue,
             _ => throw new InvalidOperationException($"Invalid field type for overlay switch: {switchField!.GetType()}")

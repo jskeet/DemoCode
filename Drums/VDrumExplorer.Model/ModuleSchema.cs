@@ -54,13 +54,14 @@ namespace VDrumExplorer.Model
             Identifier = json.Identifier!.ToModuleIdentifier();
             InstrumentGroups = json.InstrumentGroups
                 .Select((igj, index) => igj.ToInstrumentGroup(index))
-                .ToList()
-                .AsReadOnly();
+                .Concat(new[] { InstrumentGroup.ForUserSamples(json.InstrumentGroups!.Count, json.Counts!["userSamples"]) })
+                .ToReadOnlyList();
 
-            PresetInstruments = InstrumentGroups.SelectMany(ig => ig.Instruments)
+            PresetInstruments = InstrumentGroups
+                .TakeWhile(ig => ig.Preset)
+                .SelectMany(ig => ig.Instruments)
                 .OrderBy(i => i.Id)
-                .ToList()
-                .AsReadOnly();
+                .ToReadOnlyList();
             // Just validate that our list is consistent.
             for (int i = 0; i < PresetInstruments.Count; i++)
             {
@@ -70,10 +71,7 @@ namespace VDrumExplorer.Model
                 }
             }
 
-            UserSampleInstruments = Enumerable.Range(0, json.Counts!["userSamples"])
-                .Select(id => Instrument.FromUserSample(id))
-                .ToList()
-                .AsReadOnly();
+            UserSampleInstruments = InstrumentGroups.Last().Instruments;
 
             PhysicalRoot = json.BuildPhysicalRoot(this);
             LogicalRoot = json.BuildLogicalRoot(PhysicalRoot);

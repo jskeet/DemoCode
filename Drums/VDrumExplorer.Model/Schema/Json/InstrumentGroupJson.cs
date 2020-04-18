@@ -17,9 +17,9 @@ namespace VDrumExplorer.Model.Schema.Json
         public override string ToString() => Description ?? "(Unspecified)";
 
         internal InstrumentGroup ToInstrumentGroup(int index) =>
-            new InstrumentGroup(
-                ValidateNotNull(Description, nameof(Description)),
+            InstrumentGroup.ForPresetInstruments(
                 index,
+                ValidateNotNull(Description, nameof(Description)),
                 ValidateNotNull(Instruments, nameof(Instruments)),
                 VeditDefaults);
     }
