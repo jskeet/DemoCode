@@ -73,9 +73,9 @@ namespace VDrumExplorer.Model.Data.Fields
                 {
                     foreach (var field in CurrentFieldList.Fields.OfType<NumericDataFieldBase>())
                     {
-                        if (instrument.DefaultFieldValues.TryGetValue(field.SchemaField.Name, out int rawValue))
+                        if (instrument.DefaultFieldValues.TryGetValue(field.SchemaField.Name, out int? rawValue))
                         {
-                            field.RawValue = rawValue;
+                            field.RawValue = rawValue ?? field.SchemaField.Default;
                         }
                     }
                 }
