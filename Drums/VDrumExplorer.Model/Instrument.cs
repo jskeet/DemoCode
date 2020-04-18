@@ -36,14 +36,16 @@ namespace VDrumExplorer.Model
 
         /// <summary>
         /// Default values for Vedit fields (e.g. Size), or null if there are no defaults to apply.
+        /// If the value is for a dictionary entry is null, that means "set to the default for the field"
+        /// (but do set the field when the instrument changes)
         /// </summary>
-        public IReadOnlyDictionary<string, int>? DefaultFieldValues { get; }
+        public IReadOnlyDictionary<string, int?>? DefaultFieldValues { get; }
 
-        private Instrument(int id, string name, InstrumentGroup group, IReadOnlyDictionary<string, int>? defaultFieldValues) =>
+        private Instrument(int id, string name, InstrumentGroup group, IReadOnlyDictionary<string, int?>? defaultFieldValues) =>
             (Id, Name, Group, DefaultFieldValues) = (id, name, group, defaultFieldValues);
 
         internal static Instrument FromPreset(int id, string name, InstrumentGroup group,
-            IReadOnlyDictionary<string, int>? defaultFieldValues) =>
+            IReadOnlyDictionary<string, int?>? defaultFieldValues) =>
             new Instrument(id, name, group, defaultFieldValues);
 
         internal static Instrument FromUserSample(int id, InstrumentGroup group) =>

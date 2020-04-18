@@ -62,7 +62,7 @@ namespace VDrumExplorer.Model
             new InstrumentGroup(preset: false, instrumentGroupIndex, "User samples",
                 group => Enumerable.Range(0, sampleCount).Select(id => Instrument.FromUserSample(id, group)));
 
-        private static IReadOnlyDictionary<string, int>? BuildInstrumentDefaults(
+        private static IReadOnlyDictionary<string, int?>? BuildInstrumentDefaults(
             Dictionary<string, Dictionary<int, int>>? instrumentFieldDefaults, int instrumentId)
         {
             if (instrumentFieldDefaults == null)
@@ -70,11 +70,8 @@ namespace VDrumExplorer.Model
                 return null;
             }
             var fieldsForInstrument = instrumentFieldDefaults
-                .Where(pair => pair.Value.ContainsKey(instrumentId))
-                .ToDictionary(pair => pair.Key, pair => pair.Value[instrumentId]);
-            return fieldsForInstrument.Count == 0
-                ? null
-                : fieldsForInstrument.AsReadOnly();
+                .ToDictionary(pair => pair.Key, pair => pair.Value.TryGetValue(instrumentId, out var value) ? value : default(int?));
+            return fieldsForInstrument.Any() ? fieldsForInstrument.AsReadOnly() : null;
         }
 
         public override string ToString() => Description;
