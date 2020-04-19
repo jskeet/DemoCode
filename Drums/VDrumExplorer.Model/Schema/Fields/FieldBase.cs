@@ -2,8 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using VDrumExplorer.Model.Data;
-
 namespace VDrumExplorer.Model.Schema.Fields
 {
     /// <summary>
@@ -31,9 +29,14 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// </summary>
         public ModuleOffset Offset { get; }
 
+        /// <summary>
+        /// The condition associated with the field, if any.
+        /// </summary>
+        public Condition? Condition { get; }
+
         private protected FieldBase(Parameters p) =>
-            (Name, Description, Offset, Size) =
-            (p.Name, p.Description, p.Offset, p.Size);
+            (Name, Description, Offset, Size, Condition) =
+            (p.Name, p.Description, p.Offset, p.Size, p.Condition);
 
         public override string ToString() => Description;
 
@@ -46,9 +49,10 @@ namespace VDrumExplorer.Model.Schema.Fields
             public string Description { get; }
             public ModuleOffset Offset { get; }
             public int Size { get; }
+            public Condition? Condition { get; }
 
-            public Parameters(string name, string description, ModuleOffset offset, int size) =>
-                (Name, Description, Offset, Size) = (name, description, offset, size);
+            public Parameters(string name, string description, ModuleOffset offset, int size, Condition? condition) =>
+                (Name, Description, Offset, Size, Condition) = (name, description, offset, size, condition);
         }
     }
 }

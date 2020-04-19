@@ -33,7 +33,7 @@
       "min": 1,
       "max": 1300,
       "condition": {
-        "offset": "0x0e",
+        "field": "TempoSync",
         "requiredValue": 0
       }
     },
@@ -41,7 +41,7 @@
       "description": "Delay Time (note)",
       "type": "musicalNote",
       "condition": {
-        "offset": "0x0e",
+        "field": "TempoSync",
         "requiredValue": 1
       }
     },

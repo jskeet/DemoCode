@@ -12,7 +12,7 @@
       "min": 1,
       "max": 1300,
       "condition": {
-        "offset": "0x06",
+        "field": "TempoSyncLeft",
         "requiredValue": 0
       }
     },
@@ -20,7 +20,7 @@
       "description": "Delay Left Time (note)",
       "type": "musicalNote",
       "condition": {
-        "offset": "0x06",
+        "field": "TempoSyncLeft",
         "requiredValue": 1
       }
     },
@@ -35,7 +35,7 @@
       "min": 1,
       "max": 1300,
       "condition": {
-        "offset": "0x12",
+        "field": "TempoSyncRight",
         "requiredValue": 0
       }
     },
@@ -43,7 +43,7 @@
       "description": "Delay Right time (note)",
       "type": "musicalNote",
       "condition": {
-        "offset": "0x12",
+        "field": "TempoSyncRight",
         "requiredValue": 1
       }
     },
