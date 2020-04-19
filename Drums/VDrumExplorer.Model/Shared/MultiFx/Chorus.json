@@ -57,7 +57,7 @@
       "max": 200,
       "divisor": 20,
       "condition": {
-        "offset": "0x12",
+        "field": "TempoSync",
         "requiredValue": 0
       }
     },
@@ -65,7 +65,7 @@
       "description": "Rate (note)",
       "type": "musicalNote",
       "condition": {
-        "offset": "0x12",
+        "field": "TempoSync",
         "requiredValue": 1
       }
     },

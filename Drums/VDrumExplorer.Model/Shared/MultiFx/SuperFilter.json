@@ -70,7 +70,7 @@
       "divisor": 20,
       "suffix": "Hz",
       "condition": {
-        "offset": "0x22",
+        "field": "TempoSync",
         "requiredValue": 0
       }
     },
@@ -78,7 +78,7 @@
       "description": "Rate (note)",
       "type": "musicalNote",
       "condition": {
-        "offset": "0x22",
+        "field": "TempoSync",
         "requiredValue": 1
       }
     },

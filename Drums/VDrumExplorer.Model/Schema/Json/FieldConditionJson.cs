@@ -3,25 +3,28 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Schema.Json
 {
     internal sealed class FieldConditionJson
     {
         /// <summary>
-        /// The address of the condition field, relative to the field's parent container.
+        /// The name of the condition field (within the same container).
         /// </summary>
-        public HexInt32? Offset { get; set; }
+        public string? Field { get; set; }
         
         /// <summary>
         /// The required value of the condition field.
         /// </summary>
         public int? RequiredValue { get; set; }
 
-        internal void Validate(string fieldName, ModuleJson module)
+        internal void Validate(string fieldName)
         {
-            Validation.Validate(Offset is object, $"{nameof(Offset)} must be specified in condition for field {fieldName}");
+            Validation.Validate(Field is object, $"{nameof(Field)} must be specified in condition for field {fieldName}");
             Validation.Validate(RequiredValue.HasValue, $"{nameof(RequiredValue)} must be specified in condition for field {fieldName}");
         }
+
+        internal Condition ToCondition() => new Condition(Field!, RequiredValue!.Value);
     }
 }

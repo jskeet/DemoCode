@@ -2,9 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
-using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -35,7 +33,7 @@ namespace VDrumExplorer.Model.Schema.Fields
             (NestedFieldCount, SwitchPath, FieldLists) = (nestedFieldCount, switchPath, fieldLists);
 
         internal OverlayField WithPath(string newSwitchPath) =>
-            newSwitchPath == SwitchPath ? this : new OverlayField(new Parameters(Name, Description, Offset, Size), NestedFieldCount, newSwitchPath, FieldLists);
+            newSwitchPath == SwitchPath ? this : new OverlayField(new Parameters(Name, Description, Offset, Size, Condition), NestedFieldCount, newSwitchPath, FieldLists);
 
         public sealed class FieldList
         {

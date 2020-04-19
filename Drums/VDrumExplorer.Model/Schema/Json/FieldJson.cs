@@ -156,7 +156,7 @@ namespace VDrumExplorer.Model.Schema.Json
 
         private IField ToField(ModuleJson module, string name, string description, ModuleOffset offset)
         {
-            Condition?.Validate(name, module);
+            Condition?.Validate(name);
             return Type switch
             {
                 "boolean" => new BooleanField(BuildCommon(1)),
@@ -230,7 +230,7 @@ namespace VDrumExplorer.Model.Schema.Json
             }
 
 
-            FieldBase.Parameters BuildCommon(int size) => new FieldBase.Parameters(name, description, offset, size);
+            FieldBase.Parameters BuildCommon(int size) => new FieldBase.Parameters(name, description, offset, size, Condition?.ToCondition());
 
             // The default is:
             // - Default if specified
