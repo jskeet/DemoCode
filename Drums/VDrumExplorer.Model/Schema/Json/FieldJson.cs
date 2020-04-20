@@ -113,6 +113,7 @@ namespace VDrumExplorer.Model.Schema.Json
 
         /// <summary>
         /// If set, the condition for the field to be enabled.
+        /// This is only valid for fields within an overlay.
         /// </summary>
         public FieldConditionJson? Condition { get; set; }
 
@@ -127,6 +128,7 @@ namespace VDrumExplorer.Model.Schema.Json
         {
             AssertNotNull(ResolvedName);
             AssertNotNull(ResolvedDescription);
+            Validate(Condition is null, "Conditions are only (currently) valid within overlays");
 
             if (Repeat is null)
             {
@@ -150,13 +152,16 @@ namespace VDrumExplorer.Model.Schema.Json
             }
         }
 
-        // TODO: Maybe validate that this isn't repeated?
-        internal IField ToFieldForOverlay(ModuleJson module, ModuleOffset offset) =>
-            ToField(module, AssertNotNull(ResolvedName), AssertNotNull(ResolvedDescription), offset);
+        internal IField ToFieldForOverlay(ModuleJson module, ModuleOffset offset)
+        {
+            AssertNotNull(ResolvedName);
+            Condition?.Validate(ResolvedName);
+            Validate(Repeat is null, "Repeated fields are not valid in overlays");
+            return ToField(module, AssertNotNull(ResolvedName), AssertNotNull(ResolvedDescription), offset);
+        }
 
         private IField ToField(ModuleJson module, string name, string description, ModuleOffset offset)
         {
-            Condition?.Validate(name);
             return Type switch
             {
                 "boolean" => new BooleanField(BuildCommon(1)),
