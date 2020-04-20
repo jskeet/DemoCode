@@ -6,7 +6,8 @@
         xmlns:vmls="clr-namespace:VDrumExplorer.ViewModel.LogicalSchema;assembly=VDrumExplorer.ViewModel"
         mc:Ignorable="d"        
         d:DataContext="{d:DesignInstance vmls:ModuleSchemaViewModel}"
-        Title="{Binding Title}" Height="450" Width="800">
+        Title="{Binding Title}" Height="450" Width="800"
+        Style="{StaticResource WindowStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
