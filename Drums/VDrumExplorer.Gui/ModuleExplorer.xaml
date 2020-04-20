@@ -6,7 +6,8 @@
         xmlns:vmd="clr-namespace:VDrumExplorer.ViewModel.Data;assembly=VDrumExplorer.ViewModel"
         mc:Ignorable="d"        
         d:DataContext="{d:DesignInstance vmd:DataExplorerViewModel}"
-        Title="{Binding Title}" Height="450" Width="800">
+        Title="{Binding Title}" Height="450" Width="800"
+        Style="{StaticResource WindowStyle}">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Margin="5" Padding="5,2" Command="{Binding EditCommand}">Edit mode</Button>
