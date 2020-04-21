@@ -20,6 +20,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ShowKitCommand.Command);
             rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
             rootCommand.AddCommand(ShowMidiEventsCommand.Command);
+            rootCommand.AddCommand(ShowSchemaStatsCommand.Command);
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
             rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
             return rootCommand.InvokeAsync(args);
