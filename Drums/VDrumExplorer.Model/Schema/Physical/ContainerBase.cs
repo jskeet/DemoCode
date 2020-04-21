@@ -37,7 +37,7 @@ namespace VDrumExplorer.Model.Schema.Physical
         private IContainer Root => Parent?.Root ?? this;
 
         // Note: this method knows that it only needs to recurse for ContainerContainer, which is a little odd, but simplifies the code.
-        internal IEnumerable<IContainer> DescendantsAndSelf()
+        public IEnumerable<IContainer> DescendantsAndSelf()
         {
             Queue<IContainer> queue = new Queue<IContainer>();
             queue.Enqueue(this);
