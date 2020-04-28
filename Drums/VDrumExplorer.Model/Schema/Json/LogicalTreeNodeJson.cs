@@ -70,9 +70,9 @@ namespace VDrumExplorer.Model.Schema.Json
             TreeNode ToTreeNode(ModuleJson json, string name, IContainer parentContainer, SchemaVariables variables)
             {
                 string nodePath = PathUtilities.AppendPath(parentNodePath, name);
-                var resolvedContainerPath = variables.Replace(Path);
+                var resolvedContainerPath = variables.Replace(Path!);
                 var container = parentContainer.ResolveContainer(resolvedContainerPath);
-                var formattableString = FieldFormattableString.Create(container, Format, FormatPaths, variables);
+                var formattableString = FieldFormattableString.Create(container, Format!, FormatPaths, variables);
 
                 var childTreeNodes = new List<TreeNode>();
                 foreach (var child in Children)

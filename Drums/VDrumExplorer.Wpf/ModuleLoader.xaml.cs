@@ -51,13 +51,15 @@ namespace VDrumExplorer.Wpf
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             await LoadSchemaRegistry();
+            logger.Log("Detecting connected V-Drums modules");
             detectedMidi = null;
-            var midiDevice = await MidiDevices.DetectRolandMidiClientAsync(logger.Log, SchemaRegistry.KnownSchemas.Keys);
+            var midiDevice = await MidiDevices.DetectSingleRolandMidiClientAsync(logger.Log, SchemaRegistry.KnownSchemas.Keys);
             if (midiDevice != null)
             {
                 detectedMidi = (midiDevice, SchemaRegistry.KnownSchemas[midiDevice.Identifier].Value);
             }            
             midiPanel.IsEnabled = midiDevice is object;
+            logger.Log($"Device detection result: {(midiDevice is object ? $"{midiDevice.Identifier.Name} detected" : "no compatible modules (or multiple modules) detected")}");
             logger.Log("-----------------");
         }
 

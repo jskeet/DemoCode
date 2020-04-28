@@ -47,7 +47,7 @@ namespace VDrumExplorer.Console
                 return 1;
             }
 
-            var client = await MidiDevices.DetectRolandMidiClientAsync(console.WriteLine, SchemaRegistry.KnownSchemas.Keys);
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(console.WriteLine, SchemaRegistry.KnownSchemas.Keys);
             if (client is null)
             {
                 return 1;
