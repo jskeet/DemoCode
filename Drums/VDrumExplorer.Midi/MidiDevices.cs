@@ -65,55 +65,75 @@ namespace VDrumExplorer.Midi
         public static Task<RolandMidiClient> CreateRolandMidiClientAsync(MidiInputDevice input, MidiOutputDevice output, DeviceIdentity deviceIdentity, ModuleIdentifier identifier) =>
             RolandMidiClient.CreateAsync(input, output, deviceIdentity.RawDeviceId, identifier);
 
-        public static async Task<RolandMidiClient?> DetectRolandMidiClientAsync(Action<string> log, IEnumerable<ModuleIdentifier> knownIdentifiers)
+        /// <summary>
+        /// Detects a single Roland MIDI client, or null if there are 0 or multiple known devices.
+        /// </summary>
+        public static async Task<RolandMidiClient?> DetectSingleRolandMidiClientAsync(Action<string> log, IEnumerable<ModuleIdentifier> knownIdentifiers)
+        {
+            var clients = await DetectRolandMidiClientsAsync(log, knownIdentifiers).ToListAsync();
+            if (clients.Count == 1)
+            {
+                return clients[0];
+            }
+            foreach (var client in clients)
+            {
+                client.Dispose();
+            }
+            return null;
+        }
+
+        public static async IAsyncEnumerable<RolandMidiClient> DetectRolandMidiClientsAsync(Action<string> log, IEnumerable<ModuleIdentifier> knownIdentifiers)
         {
             var inputDevices = ListInputDevices();
             foreach (var device in inputDevices)
             {
-                log($"Input device: {device.Name}");
+                log($"Input device: '{device.Name}'");
             }
             var outputDevices = ListOutputDevices();
             foreach (var device in outputDevices)
             {
-                log($"Output device: {device.Name}");
+                log($"Output device: '{device.Name}'");
             }
             var commonNames = inputDevices.Select(input => input.Name)
                 .Intersect(outputDevices.Select(output => output.Name))
                 .OrderBy(x => x)
                 .ToList();
 
-            if (commonNames.Count != 1)
+            if (commonNames.Count == 0)
             {
                 log("No input and output MIDI ports with the same name detected.");
-                return null;
-            }
-            string name = commonNames[0];
-            log($"Detecting Roland device for MIDI ports with name {name}");
-            var matchedInputs = inputDevices.Where(input => input.Name == name).ToList();
-            var matchedOutputs = outputDevices.Where(output => output.Name == name).ToList();
-            if (matchedInputs.Count != 1 || matchedOutputs.Count != 1)
-            {
-                log($"Error: Name {name} matches multiple input or output MIDI ports.");
-                return null;
-            }
-            var identities = await ListDeviceIdentities(matchedInputs[0], matchedOutputs[0], TimeSpan.FromSeconds(1));
-            if (identities.Count != 1)
-            {
-                log($"Error: {(identities.Count == 0 ? "No" : "Multiple")} devices detected for MIDI port {name}.");
-                return null;
+                yield break;
             }
 
-            var identity = identities[0];
-            log($"Detected single device identity {identity}");
-            var matchingKeys = knownIdentifiers.Where(sk => sk.FamilyCode == identity.FamilyCode && sk.FamilyNumberCode == identity.FamilyNumberCode).ToList();
-            if (matchingKeys.Count != 1)
+            foreach (var name in commonNames)
             {
-                log($"Error: {(matchingKeys.Count == 0 ? "No" : "Multiple")} schemas detected for MIDI device.");
-                return null;
+                log($"Detecting devices for MIDI ports with name '{name}'");
+                var matchedInputs = inputDevices.Where(input => input.Name == name).ToList();
+                var matchedOutputs = outputDevices.Where(output => output.Name == name).ToList();
+                if (matchedInputs.Count != 1 || matchedOutputs.Count != 1)
+                {
+                    log($"Error: Name {name} matches multiple input or output MIDI ports. Skipping.");
+                    continue;
+                }
+                var identities = await ListDeviceIdentities(matchedInputs[0], matchedOutputs[0], TimeSpan.FromSeconds(1));
+                if (identities.Count != 1)
+                {
+                    log($"{(identities.Count == 0 ? "No" : "Multiple")} devices detected for MIDI port '{name}'. Skipping.");
+                    continue;
+                }
+
+                var identity = identities[0];
+                log($"Detected single Roland device identity {identity}");
+                var matchingKeys = knownIdentifiers.Where(sk => sk.FamilyCode == identity.FamilyCode && sk.FamilyNumberCode == identity.FamilyNumberCode).ToList();
+                if (matchingKeys.Count != 1)
+                {
+                    log($"{(matchingKeys.Count == 0 ? "No" : "Multiple")} known V-Drums schemas detected for MIDI device. Skipping.");
+                    continue;
+                }
+                log($"Identity matches known schema {matchingKeys[0].Name}.");
+                var client = await CreateRolandMidiClientAsync(matchedInputs[0], matchedOutputs[0], identity, matchingKeys[0]);
+                yield return client;
             }
-            log($"Identity matches known schema {matchingKeys[0].Name}. Device detection complete.");
-            var client = await CreateRolandMidiClientAsync(matchedInputs[0], matchedOutputs[0], identity, matchingKeys[0]);
-            return client;
         }
     }
 }

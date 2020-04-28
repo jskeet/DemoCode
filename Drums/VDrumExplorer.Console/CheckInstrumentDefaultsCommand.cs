@@ -30,7 +30,7 @@ namespace VDrumExplorer.Console
             var console = context.Console.Out;
             var kit = context.ParseResult.ValueForOption<int>("kit");
             var file = context.ParseResult.ValueForOption<string>("file");
-            var client = await MidiDevices.DetectRolandMidiClientAsync(console.WriteLine, SchemaRegistry.KnownSchemas.Keys);
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(console.WriteLine, SchemaRegistry.KnownSchemas.Keys);
 
             if (client == null)
             {

@@ -39,7 +39,7 @@ namespace VDrumExplorer.ViewModel.Home
 
         public async Task DetectModule()
         {
-            ConnectedDevice = await MidiDevices.DetectRolandMidiClientAsync(Log.Log, ModuleSchema.KnownSchemas.Keys);
+            ConnectedDevice = await MidiDevices.DetectSingleRolandMidiClientAsync(Log.Log, ModuleSchema.KnownSchemas.Keys);
             ConnectedDeviceSchema = ConnectedDevice is null ? null : ModuleSchema.KnownSchemas[ConnectedDevice.Identifier].Value;
             RaisePropertyChanged(nameof(ConnectedDevice));
             RaisePropertyChanged(nameof(ConnectedDeviceSchema));
