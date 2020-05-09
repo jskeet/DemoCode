@@ -18,6 +18,9 @@ namespace VDrumExplorer.ViewModel.Data
 
         public int MaxLength => Model.SchemaField.Length;
 
+        // TODO: This is horrible, as it's really a GUI concern. We need to be able to guess a "reasonable average character width".
+        public int MinWidth => MaxLength * 8;
+
         public string Text
         {
             get => Model.Text;
