@@ -40,7 +40,8 @@ namespace VDrumExplorer.Model.Schema.Json
         public string? Comment { get; set; }
 
         /// <summary>
-        /// Must be present for all field containers.
+        /// Must be present for all field containers. This is in "display format", e.g.
+        /// 0x01_00 means 128 bytes, not 256.
         /// </summary>
         public HexInt32? Size { get; set; }
 
@@ -112,7 +113,8 @@ namespace VDrumExplorer.Model.Schema.Json
             if (Fields is object)
             {
                 var fieldList = requiresOverlayResolution ? resolvedFields.Select(FinalizeField).ToList().AsReadOnly() : resolvedFields;
-                return new FieldContainer(schema, name, description, address, path, Size.Value, fieldList);
+                var realSize = ModuleOffset.FromDisplayValue(Size.Value).LogicalValue;
+                return new FieldContainer(schema, name, description, address, path, realSize, fieldList);
 
                 IField FinalizeField(IField field) =>
                     field is OverlayField overlay ? overlay.WithPath(variables.Replace(overlay.SwitchPath)) : field;
