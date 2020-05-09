@@ -28,7 +28,8 @@ namespace VDrumExplorer.Model.Data.Fields
                     pair => pair.Key,
                     pair => Lazy.Create(() => new FieldList(pair.Value, schema)))
                 .AsReadOnly();
-            switchIndex = "";
+            // Default to the first overlay, just to make sure we have a valid value right from the start.
+            switchIndex = SchemaField.FieldLists.First().Key;
         }
 
         internal override void ResolveFields(ModuleData data, FieldContainer container)
@@ -60,8 +61,6 @@ namespace VDrumExplorer.Model.Data.Fields
 
         void SwitchFieldChanged(object sender, PropertyChangedEventArgs e)
         {
-            // TODO: If we change for "Splash" to "China" we don't actually need to reset things.
-            // TODO: Haven't we fixed this now, by having overlay groups?
             if (SetProperty(ref switchIndex, GetSwitchIndex()))
             {
                 Reset();

@@ -24,9 +24,10 @@ namespace VDrumExplorer.Model
         private Kit(ModuleData data, int kitNumber) =>
             (Schema, Data, KitNumber, KitRoot) = (data.PhysicalRoot.Schema, data, kitNumber, data.PhysicalRoot.Schema.KitRoots[1]);
 
-        public static Kit Create(ModuleSchema moduleSchema, IEnumerable<DataSegment> data, int kitNumber)
+        public static Kit Create(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber)
         {
-            var moduleData = ModuleData.FromData(moduleSchema.KitRoots[kitNumber], data);
+            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.KitRoots[kitNumber]);
+            moduleData.LoadSnapshot(snapshot);
             return new Kit(moduleData, kitNumber);
         }
     }

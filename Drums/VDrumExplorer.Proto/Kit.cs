@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System.Linq;
+using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Proto
 {
@@ -11,14 +12,19 @@ namespace VDrumExplorer.Proto
         internal Model.Kit ToModel()
         {
             var data = Containers.Select(fcd => fcd.ToModel());
-            return Model.Kit.Create(Identifier.GetSchema(), data, DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
+            var snapshot = new ModuleDataSnapshot();
+            foreach (var container in Containers)
+            {
+                snapshot.Add(container.ToModel());
+            }
+            return Model.Kit.Create(Identifier.GetSchema(), snapshot, DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
         }
 
         internal static Kit FromModel(Model.Kit kit) =>
             new Kit
             {
                 Identifier = ModuleIdentifier.FromModel(kit.Schema.Identifier),
-                Containers = { kit.Data.SerializeData().Select(FieldContainerData.FromModel) },
+                Containers = { kit.Data.CreateSnapshot().Segments.Select(FieldContainerData.FromModel) },
                 DefaultKitNumber = kit.KitNumber
             };
     }

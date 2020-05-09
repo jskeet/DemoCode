@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System.Linq;
+using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Proto
 {
@@ -10,15 +11,20 @@ namespace VDrumExplorer.Proto
     {
         internal Model.Module ToModel()
         {
-            var data = Containers.Select(fcd => fcd.ToModel());
-            return Model.Module.Create(Identifier.GetSchema(), data);
+            var snapshot = new ModuleDataSnapshot();
+            foreach (var container in Containers)
+            {
+                snapshot.Add(container.ToModel());
+            }
+
+            return Model.Module.Create(Identifier.GetSchema(), snapshot);
         }
 
         internal static Module FromModel(Model.Module module) =>
             new Module
             {
                 Identifier = ModuleIdentifier.FromModel(module.Schema.Identifier),
-                Containers = { module.Data.SerializeData().Select(FieldContainerData.FromModel) }
+                Containers = { module.Data.CreateSnapshot().Segments.Select(FieldContainerData.FromModel) }
             };
     }
 }
