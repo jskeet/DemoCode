@@ -23,6 +23,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ShowSchemaStatsCommand.Command);
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
             rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
+            rootCommand.AddCommand(DumpProtoCommand.Command);
             return rootCommand.InvokeAsync(args);
         }
     }
