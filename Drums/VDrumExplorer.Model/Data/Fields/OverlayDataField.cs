@@ -61,6 +61,7 @@ namespace VDrumExplorer.Model.Data.Fields
         void SwitchFieldChanged(object sender, PropertyChangedEventArgs e)
         {
             // TODO: If we change for "Splash" to "China" we don't actually need to reset things.
+            // TODO: Haven't we fixed this now, by having overlay groups?
             if (SetProperty(ref switchIndex, GetSwitchIndex()))
             {
                 Reset();

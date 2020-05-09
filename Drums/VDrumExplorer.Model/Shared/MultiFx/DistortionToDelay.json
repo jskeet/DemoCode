@@ -19,23 +19,11 @@
       "type": "boolean32"
     },
     {
-      "description": "Delay Time (milliseconds)",
-      "type": "range32",
+      "description": "Delay time",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSync",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Delay Time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSync",
-        "requiredValue": 1
-      }
+      "max": 1300
     },
     {
       "description": "Delay Feedback",

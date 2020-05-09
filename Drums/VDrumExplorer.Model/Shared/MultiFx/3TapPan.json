@@ -2,73 +2,25 @@
   "description": "3-Tap Pan",
   "fields": [
     {
-      "description": "Tempo Sync left",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay left time (milliseconds)",
-      "type": "range32",
+      "description": "Delay left",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncLeft",
-        "requiredValue": 0
-      }
+      "max": 1300
     },
     {
-      "description": "Delay left time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncLeft",
-        "requiredValue": 1
-      }
-    },
-    {
-      "description": "Tempo Sync right",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay right time (milliseconds)",
-      "type": "range32",
+      "description": "Delay right",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncRight",
-        "requiredValue": 0
-      }
+      "max": 1300
     },
     {
-      "description": "Delay right time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncRight",
-        "requiredValue": 1
-      }
-    },
-    {
-      "description": "Tempo Sync center",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay center time (milliseconds)",
-      "type": "range32",
+      "description": "Delay center",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncCenter",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Delay center time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncCenter",
-        "requiredValue": 1
-      }
+      "max": 1300
     },
     {
       "description": "Center Feedback",

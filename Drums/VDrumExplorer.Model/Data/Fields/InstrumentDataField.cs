@@ -14,6 +14,7 @@ namespace VDrumExplorer.Model.Data.Fields
 
         internal InstrumentDataField(InstrumentField field, ModuleSchema schema) : base(field)
         {
+            // TODO: Use primitive data fields as we do in TempoDataField?
             Schema = schema;
         }
 

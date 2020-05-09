@@ -34,7 +34,7 @@ namespace VDrumExplorer.Model.Data.Fields
             }
         }
 
-        internal bool TrySetValue(string value) =>
+        private bool TrySetValue(string value) =>
             SchemaField.RawNumberByName.TryGetValue(value, out int number) && TrySetRawValue(number);
 
         public override string FormattedText => Value;

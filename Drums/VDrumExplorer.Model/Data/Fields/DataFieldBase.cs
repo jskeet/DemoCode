@@ -93,6 +93,7 @@ namespace VDrumExplorer.Model.Data.Fields
                 EnumField f => new EnumDataField(f),
                 InstrumentField f => new InstrumentDataField(f, schema),
                 OverlayField f => new OverlayDataField(f, schema),
+                TempoField f => new TempoDataField(f),
                 _ => throw new ArgumentException($"Can't handle {field} yet")
             };
         }

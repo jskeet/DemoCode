@@ -18,33 +18,6 @@ namespace VDrumExplorer.Model.Schema.Json
 
     internal class FieldJson : ContainerItemBase
     {
-        // FIXME: Work out where to put this.
-        private static readonly IReadOnlyList<string> MusicalNoteValues = new List<string>
-        {
-            "Hemidemisemiquaver triplet \U0001d163\u00b3",
-            "Hemidemisemiquaver \U0001d163",
-            "Demisemiquaver triplet \U0001d162\u00b3",
-            "Demisemiquaver \U0001d162",
-            "Semiquaver triplet \U0001d161\u00b3",
-            "Dotted demisemiquaver \U0001d162.",
-            "Semiquaver \U0001d161",
-            "Quaver triplet \U0001d160\u00b3",
-            "Dotted semiquaver \U0001d161.",
-            "Quaver \U0001d160",
-            "Crotchet triplet \U0001d15f\u00b3",
-            "Dotted quaver \U0001d160.",
-            "Crotchet \U0001d15f",
-            "Minim triplet \U0001d15e\u00b3",
-            "Dotted crotchet \U0001d15f.",
-            "Minim \U0001d15e",
-            "Semibreve triplet \U0001d15d\u00b3",
-            "Dotted minim \U0001d15e.",
-            "Semibreve \U0001d15d",
-            "Breve triplet \U0001d15c\u00b3",
-            "Dotted semibreve \U0001d15d.",
-            "Breve \U0001d15c",
-        }.AsReadOnly();
-
         /// <summary>
         /// The type of the field.
         /// </summary>
@@ -112,12 +85,6 @@ namespace VDrumExplorer.Model.Schema.Json
         public HexInt32? BankOffset { get; set; }
 
         /// <summary>
-        /// If set, the condition for the field to be enabled.
-        /// This is only valid for fields within an overlay.
-        /// </summary>
-        public FieldConditionJson? Condition { get; set; }
-
-        /// <summary>
         /// For "overlay" fields only, the details of the dynamic overlay.
         /// </summary>
         public DynamicOverlayJson? Overlay { get; set; }
@@ -128,7 +95,6 @@ namespace VDrumExplorer.Model.Schema.Json
         {
             AssertNotNull(ResolvedName);
             AssertNotNull(ResolvedDescription);
-            Validate(Condition is null, "Conditions are only (currently) valid within overlays");
 
             if (Repeat is null)
             {
@@ -155,7 +121,6 @@ namespace VDrumExplorer.Model.Schema.Json
         internal IField ToFieldForOverlay(ModuleJson module, ModuleOffset offset)
         {
             AssertNotNull(ResolvedName);
-            Condition?.Validate(ResolvedName);
             Validate(Repeat is null, "Repeated fields are not valid in overlays");
             return ToField(module, AssertNotNull(ResolvedName), AssertNotNull(ResolvedDescription), offset);
         }
@@ -174,13 +139,13 @@ namespace VDrumExplorer.Model.Schema.Json
                 "enum32" => BuildEnumField(4),
                 "instrument" => new InstrumentField(BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
                 "midi32" => new NumericField(BuildCommon(4), 0, 128, 0, null, null, null, null, (128, "Off")),
-                "musicalNote" => new EnumField(BuildCommon(4), MusicalNoteValues, 0, 0),
                 "overlay" => BuildOverlay(),
                 "range8" => BuildNumericField(1),
                 "range16" => BuildNumericField(2),
                 "range32" => BuildNumericField(4),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
+                "tempo" => BuildTempoField(),
                 "volume32" => new NumericField(BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "-INF")),
                 _ => throw new InvalidOperationException($"Invalid field type: '{Type}'")
             };
@@ -193,6 +158,17 @@ namespace VDrumExplorer.Model.Schema.Json
                 var length = ValidateNotNull(Length, nameof(Length));
                 var common = BuildCommon(length * bytesPerChar);
                 return new StringField(common, length);
+            }
+
+            TempoField BuildTempoField()
+            {
+                var min = ValidateNotNull(Min, nameof(Min));
+                var max = ValidateNotNull(Max, nameof(Max));
+                Validate(max >= 0, $"Unexpected all-negative field: {name}");
+                return new TempoField(BuildCommon(12),
+                    min, max, GetDefaultValue(),
+                    Divisor, Multiplier, ValueOffset, Suffix,
+                    Off == null ? default((int, string)?) : (Off.Value, OffLabel));
             }
 
             NumericField BuildNumericField(int size)
@@ -226,7 +202,8 @@ namespace VDrumExplorer.Model.Schema.Json
                         ret.Add(field);
                         offsetWithinOverlay += field.Size;
                         Validate(
-                            field.Size == Overlay.FieldSize,
+                            // The field might actually encompass multiple underlying fields - e.g. for tempo fields.
+                            (field.Size % Overlay.FieldSize) == 0,
                             "Field {0} in overlay list {1} has inappropriate size",
                             field.Name, fieldList.Description);
                     }
@@ -235,7 +212,7 @@ namespace VDrumExplorer.Model.Schema.Json
             }
 
 
-            FieldBase.Parameters BuildCommon(int size) => new FieldBase.Parameters(name, description, offset, size, Condition?.ToCondition());
+            FieldBase.Parameters BuildCommon(int size) => new FieldBase.Parameters(name, description, offset, size);
 
             // The default is:
             // - Default if specified

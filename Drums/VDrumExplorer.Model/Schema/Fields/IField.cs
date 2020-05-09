@@ -28,10 +28,5 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// Description of the field.
         /// </summary>
         public string Description { get; }
-
-        /// <summary>
-        /// The condition associated with the field, if any.
-        /// </summary>
-        public Condition? Condition { get; }
     }
 }
