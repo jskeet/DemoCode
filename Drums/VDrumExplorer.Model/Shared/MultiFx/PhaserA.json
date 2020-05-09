@@ -17,28 +17,12 @@
       "max": 127
     },
     {
-      "description": "Tempo Sync",
-      "type": "boolean32"
-    },
-    {
-      "description": "Rate (Hz)",
-      "type": "range32",
-      "suffix": "Hz",
+      "description": "Rate",
+      "type": "tempo",
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "condition": {
-        "field": "TempoSync",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Rate (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSync",
-        "requiredValue": 1
-      }
+      "suffix": "Hz"
     },
     {
       "description": "Depth",

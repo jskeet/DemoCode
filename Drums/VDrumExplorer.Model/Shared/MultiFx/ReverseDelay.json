@@ -8,27 +8,11 @@
       "max": 127
     },
     {
-      "description": "Tempo Sync Rev",
-      "type": "boolean32"
-    },
-    {
-      "description": "RevDelay Time (milliseconds)",
-      "type": "range32",
+      "description": "RevDelay time",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncRev",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "RevDelay Time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncRev",
-        "requiredValue": 1
-      }
+      "max": 1300
     },
     {
       "description": "RevDelay Feedback",
@@ -77,73 +61,25 @@
       "max": 127
     },
     {
-      "description": "Tempo Sync Delay1",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay1 Time (milliseconds)",
-      "type": "range32",
+      "description": "Delay 1 time",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncDelay1",
-        "requiredValue": 0
-      }
+      "max": 1300
     },
     {
-      "description": "Delay1 Time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncDelay1",
-        "requiredValue": 1
-      }
-    },
-    {
-      "description": "Tempo Sync Delay2",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay2 Time (milliseconds)",
-      "type": "range32",
+      "description": "Delay 2 time",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncDelay2",
-        "requiredValue": 0
-      }
+      "max": 1300
     },
     {
-      "description": "Delay2 Time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncDelay2",
-        "requiredValue": 1
-      }
-    },
-    {
-      "description": "Tempo Sync Delay3",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay3 Time (milliseconds)",
-      "type": "range32",
+      "description": "Delay 3 time",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncDelay3",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Delay3 Time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncDelay3",
-        "requiredValue": 1
-      }
+      "max": 1300
     },
     {
       "description": "Delay3 feedback",

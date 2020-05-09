@@ -17,28 +17,12 @@
       "max": 127
     },
     {
-      "description": "Tempo Sync (Rate)",
-      "type": "boolean32"
-    },
-    {
-      "description": "Rate (Hz)",
-      "type": "range32",
-      "suffix": "Hz",
+      "description": "Rate",
+      "type": "tempo",
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "condition": {
-        "field": "TempoSync(Rate)",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Rate (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSync(Rate)",
-        "requiredValue": 1
-      }
+      "suffix": "Hz"
     },
     {
       "description": "Depth",
@@ -70,28 +54,12 @@
       "suffix": "%"
     },
     {
-      "description": "Tempo Sync (Step Rate)",
-      "type": "boolean32"
-    },
-    {
-      "description": "Step Rate (Hz)",
-      "type": "range32",
-      "suffix": "Hz",
+      "description": "Step Rate",
+      "type": "tempo",
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "condition": {
-        "field": "TempoSync(StepRate)",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Step Rate (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSync(StepRate)",
-        "requiredValue": 1
-      }
+      "suffix": "Hz"
     },
     {
       "name": "Placeholder field",

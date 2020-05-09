@@ -33,7 +33,7 @@ namespace VDrumExplorer.Model.Schema.Fields
             (NestedFieldCount, SwitchPath, FieldLists) = (nestedFieldCount, switchPath, fieldLists);
 
         internal OverlayField WithPath(string newSwitchPath) =>
-            newSwitchPath == SwitchPath ? this : new OverlayField(new Parameters(Name, Description, Offset, Size, Condition), NestedFieldCount, newSwitchPath, FieldLists);
+            newSwitchPath == SwitchPath ? this : new OverlayField(new Parameters(Name, Description, Offset, Size), NestedFieldCount, newSwitchPath, FieldLists);
 
         public sealed class FieldList
         {

@@ -15,7 +15,7 @@ namespace VDrumExplorer.Model.Data.Fields
 
         public override string FormattedText => GetText();
 
-        public string GetText()
+        private string GetText()
         {
             int value = RawValue;
             if (SchemaField.CustomValueFormatting is (int customValue, string text) && value == customValue)

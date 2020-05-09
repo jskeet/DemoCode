@@ -29,14 +29,9 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// </summary>
         public ModuleOffset Offset { get; }
 
-        /// <summary>
-        /// The condition associated with the field, if any.
-        /// </summary>
-        public Condition? Condition { get; }
-
         private protected FieldBase(Parameters p) =>
-            (Name, Description, Offset, Size, Condition) =
-            (p.Name, p.Description, p.Offset, p.Size, p.Condition);
+            (Name, Description, Offset, Size) =
+            (p.Name, p.Description, p.Offset, p.Size);
 
         public override string ToString() => Description;
 
@@ -49,10 +44,9 @@ namespace VDrumExplorer.Model.Schema.Fields
             public string Description { get; }
             public ModuleOffset Offset { get; }
             public int Size { get; }
-            public Condition? Condition { get; }
 
-            public Parameters(string name, string description, ModuleOffset offset, int size, Condition? condition) =>
-                (Name, Description, Offset, Size, Condition) = (name, description, offset, size, condition);
+            public Parameters(string name, string description, ModuleOffset offset, int size) =>
+                (Name, Description, Offset, Size) = (name, description, offset, size);
         }
     }
 }

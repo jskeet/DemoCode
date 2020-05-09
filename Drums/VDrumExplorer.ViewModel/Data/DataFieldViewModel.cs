@@ -20,13 +20,12 @@ namespace VDrumExplorer.ViewModel.Data
             ? (DataFieldViewModel) new ReadOnlyDataFieldViewModel(field)
             : field switch
             {
-                EnumDataField model => new EditableEnumDataFieldViewModel(model),
-                NumericDataField model => new EditableNumericDataFieldViewModel(model),
                 BooleanDataField model => new EditableBooleanDataFieldViewModel(model),
-                StringDataField model => new EditableStringDataFieldViewModel(model),
+                EnumDataField model => new EditableEnumDataFieldViewModel(model),
                 InstrumentDataField model => new EditableInstrumentDataFieldViewModel(model),
-                // Temporary hack...
-                { } => new ReadOnlyDataFieldViewModel(field),
+                NumericDataField model => new EditableNumericDataFieldViewModel(model),
+                StringDataField model => new EditableStringDataFieldViewModel(model),
+                TempoDataField model => new EditableTempoDataFieldViewModel(model),
                 _ => throw new ArgumentException($"Can't create editable field of type {field?.GetType()}")
             };
     }

@@ -2,50 +2,18 @@
   "description": "Delay",
   "fields": [
     {
-      "description": "Tempo Sync Left",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay Left Time (milliseconds)",
-      "type": "range32",
+      "description": "Delay left",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncLeft",
-        "requiredValue": 0
-      }
+      "max": 1300
     },
     {
-      "description": "Delay Left Time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncLeft",
-        "requiredValue": 1
-      }
-    },
-    {
-      "description": "Tempo Sync right",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay Right time (milliseconds)",
-      "type": "range32",
+      "description": "Delay right",
+      "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300,
-      "condition": {
-        "field": "TempoSyncRight",
-        "requiredValue": 0
-      }
-    },
-    {
-      "description": "Delay Right time (note)",
-      "type": "musicalNote",
-      "condition": {
-        "field": "TempoSyncRight",
-        "requiredValue": 1
-      }
+      "max": 1300
     },
     {
       "description": "Phase Left",
