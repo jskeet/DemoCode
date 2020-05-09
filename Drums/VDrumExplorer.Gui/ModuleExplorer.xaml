@@ -8,7 +8,17 @@
         d:DataContext="{d:DesignInstance vmd:DataExplorerViewModel}"
         Title="{Binding Title}" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveFile" />
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveFileAs" />
+    </Window.CommandBindings>
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Command="ApplicationCommands.Save" />
+                <MenuItem Command="ApplicationCommands.SaveAs" />
+            </MenuItem>
+        </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Margin="5" Padding="5,2" Command="{Binding EditCommand}">Edit mode</Button>
             <Button Margin="5" Padding="5,2" Command="{Binding CommitCommand}">Commit changes</Button>

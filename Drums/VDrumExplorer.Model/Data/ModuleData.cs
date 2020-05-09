@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Schema.Fields;
@@ -31,6 +30,8 @@ namespace VDrumExplorer.Model.Data
         /// (This may not be the module root, however.)
         /// </summary>
         public DataTreeNode LogicalRoot { get; }
+
+        public ModuleSchema Schema => PhysicalRoot.Schema;
 
         private readonly IReadOnlyDictionary<FieldContainer, IReadOnlyList<IDataField>> fieldsByFieldContainer;
             

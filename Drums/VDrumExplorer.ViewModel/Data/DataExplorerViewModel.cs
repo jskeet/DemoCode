@@ -2,12 +2,13 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System.IO;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.ViewModel.Data
 {
-    public class DataExplorerViewModel : ViewModelBase<ModuleData>
+    public abstract class DataExplorerViewModel : ViewModelBase<ModuleData>
     {
         private readonly ModuleData data;
 
@@ -15,7 +16,26 @@ namespace VDrumExplorer.ViewModel.Data
         public DelegateCommand CommitCommand { get; }
         public DelegateCommand CancelEditCommand { get; }
 
-        public string Title => "TBD";
+        private string? fileName;
+        public string? FileName
+        {
+            get => fileName;
+            set
+            {
+                if (SetProperty(ref fileName, value))
+                {
+                    RaisePropertyChanged(nameof(Title));
+                }
+            }
+        }
+
+        protected abstract string ExplorerName { get; }
+        public abstract string SaveFileFilter { get; }
+        protected abstract void SaveToStream(Stream stream);
+
+        public string Title => FileName is null
+            ? $"{ExplorerName} ({Model.Schema.Identifier.Name})"
+            : $"{ExplorerName} ({Model.Schema.Identifier.Name}) - {fileName}";
 
         private ModuleDataSnapshot? snapshot;
 
@@ -42,6 +62,14 @@ namespace VDrumExplorer.ViewModel.Data
                     CommitCommand.Enabled = !value;
                     CancelEditCommand.Enabled = !value;
                 }
+            }
+        }
+
+        public void Save()
+        {
+            using (var stream = File.OpenWrite(FileName))
+            {
+                SaveToStream(stream);
             }
         }
 
