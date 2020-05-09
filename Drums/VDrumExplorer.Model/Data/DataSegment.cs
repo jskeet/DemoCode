@@ -61,7 +61,7 @@ namespace VDrumExplorer.Model.Data
                     break;
                 case 2:
                     data[start] = (byte) ((value >> 4) & 0xf);
-                    data[1] = (byte) ((value >> 0) & 0xf);
+                    data[start + 1] = (byte) ((value >> 0) & 0xf);
                     break;
                 case 4:
                     data[start] = (byte) ((value >> 12) & 0xf);
