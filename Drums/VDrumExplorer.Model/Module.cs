@@ -20,9 +20,10 @@ namespace VDrumExplorer.Model
         public Module(ModuleData data) =>
             (Schema, Data) = (data.PhysicalRoot.Schema, data);
 
-        public static Module Create(ModuleSchema moduleSchema, IEnumerable<DataSegment> data)
+        public static Module Create(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot)
         {
-            var moduleData = ModuleData.FromData(moduleSchema.LogicalRoot, data);
+            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.LogicalRoot);
+            moduleData.LoadSnapshot(snapshot);
             return new Module(moduleData);
         }
     }
