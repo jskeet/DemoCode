@@ -64,7 +64,7 @@ namespace VDrumExplorer.Proto
             drumFile.WriteTo(stream);
         }
 
-        private static DrumFile ReadDrumFile(Stream stream)
+        internal static DrumFile ReadDrumFile(Stream stream)
         {
             // Simpler than using bulk read...
             for (int i = 0; i < MagicBytes.Length; i++)
