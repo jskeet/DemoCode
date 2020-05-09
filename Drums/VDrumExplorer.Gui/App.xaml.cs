@@ -49,7 +49,7 @@ namespace VDrumExplorer.Gui
             }
             var path = Path.Combine(cwd.FullName, "td27.vdrum");
             var module = (Module) ProtoIo.LoadModel(path);
-            return new ModuleExplorer { DataContext = new ModuleExplorerViewModel(module) { FileName = path } };
+            return new DataExplorer { DataContext = new ModuleExplorerViewModel(module) { FileName = path } };
         }
 
         private Window CreateSchemaExplorer()

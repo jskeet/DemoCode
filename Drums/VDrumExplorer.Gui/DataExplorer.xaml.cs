@@ -3,7 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Win32;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using VDrumExplorer.ViewModel.Data;
@@ -13,11 +12,11 @@ namespace VDrumExplorer.Gui
     /// <summary>
     /// Interaction logic for ModuleExplorer.xaml
     /// </summary>
-    public partial class ModuleExplorer : Window
+    public partial class DataExplorer : Window
     {
         private DataExplorerViewModel ViewModel => (DataExplorerViewModel) DataContext;
 
-        public ModuleExplorer()
+        public DataExplorer()
         {
             InitializeComponent();
         }
