@@ -77,7 +77,7 @@
                                                                 <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" VerticalAlignment="Center" />
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableStringDataFieldViewModel}">
-                                                                <TextBox Text="{Binding Text, Mode=TwoWay}" MaxLength="{Binding MaxLength}"/>
+                                                                <TextBox Text="{Binding Text, Mode=TwoWay}" MaxLength="{Binding MaxLength}" MinWidth="{Binding MinWidth}"/>
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableNumericDataFieldViewModel}">
                                                                 <StackPanel Orientation="Horizontal">
