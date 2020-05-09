@@ -11,9 +11,5 @@
     <EmbeddedResource Include="Shared/**/*.json" />
     <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Utility\VDrumExplorer.Utility.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Data\Physical\" />
-  </ItemGroup>
+  </ItemGroup>  
 </Project>
