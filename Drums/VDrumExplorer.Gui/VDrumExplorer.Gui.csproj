@@ -10,20 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VDrumExplorer.Proto\VDrumExplorer.Proto.csproj" />
     <ProjectReference Include="..\VDrumExplorer.ViewModel\VDrumExplorer.ViewModel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="SchemaExplorer.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="SchemaExplorer.xaml">
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
 
 </Project>

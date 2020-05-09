@@ -47,8 +47,9 @@ namespace VDrumExplorer.Gui
                 }
                 cwd = cwd.Parent;
             }
-            var module = (Module) ProtoIo.LoadModel(Path.Combine(cwd.FullName, "td27.vdrum"));
-            return new ModuleExplorer { DataContext = new DataExplorerViewModel(module.Data) };
+            var path = Path.Combine(cwd.FullName, "td27.vdrum");
+            var module = (Module) ProtoIo.LoadModel(path);
+            return new ModuleExplorer { DataContext = new ModuleExplorerViewModel(module) { FileName = path } };
         }
 
         private Window CreateSchemaExplorer()
