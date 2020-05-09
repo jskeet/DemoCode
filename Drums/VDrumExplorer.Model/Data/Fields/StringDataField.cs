@@ -19,8 +19,7 @@ namespace VDrumExplorer.Model.Data.Fields
 
         internal StringDataField(StringField field) : base(field)
         {
-            // Load will be called as part of initialization.
-            text = null!;
+            text = "";
         }
 
         public override string FormattedText => Text;
@@ -47,7 +46,7 @@ namespace VDrumExplorer.Model.Data.Fields
             switch (BytesPerChar)
             {
                 case 1:
-                    text = Encoding.ASCII.GetString(buffer);
+                    Text = Encoding.ASCII.GetString(buffer).Trim();
                     break;
                 case 2:
                     Span<byte> asciiBytes = stackalloc byte[SchemaField.Length];
@@ -55,34 +54,27 @@ namespace VDrumExplorer.Model.Data.Fields
                     {
                         asciiBytes[i] = (byte) ((buffer[i * 2] << 4) | buffer[i * 2 + 1]);
                     }
-                    text = Encoding.ASCII.GetString(asciiBytes);
+                    Text = Encoding.ASCII.GetString(asciiBytes).Trim();
                     break;
                 default:
                     throw new InvalidOperationException($"Can't get a string with bytesPerChar of {BytesPerChar}");
             }
         }
 
-        internal bool ValidateData(out string? error)
+        private bool TrySetText(string value)
         {
-            // We could potentially validate that it contains non-control-character ASCII...
-            error = null;
-            return true;
-        }
-
-        private bool TrySetText(string text)
-        {
-            if (text.Length > Length || text.Any(c => c > 126))
+            if (value.Length > Length || value.Any(c => c > 126))
             {
                 return false;
             }
 
-            SetProperty(ref text, text);
+            SetProperty(ref text, value);
             return true;
         }
 
         internal override void Save(DataSegment segment)
         {
-            text = text.PadRight(Length);
+            string padded = text.PadRight(Length);
             Span<byte> bytes = stackalloc byte[Size];
             switch (BytesPerChar)
             {
@@ -92,8 +84,8 @@ namespace VDrumExplorer.Model.Data.Fields
                 case 2:
                     for (int i = 0; i < Length; i++)
                     {
-                        bytes[i * 2] = (byte) (text[i] >> 4);
-                        bytes[i * 2 + 1] = (byte) (text[i] & 0xf);
+                        bytes[i * 2] = (byte) (padded[i] >> 4);
+                        bytes[i * 2 + 1] = (byte) (padded[i] & 0xf);
                     }
                     break;
                 default:
