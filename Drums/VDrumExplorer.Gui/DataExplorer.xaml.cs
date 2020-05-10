@@ -5,7 +5,9 @@
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
+using VDrumExplorer.Gui.Dialogs;
 using VDrumExplorer.ViewModel.Data;
+using VDrumExplorer.ViewModel.Dialogs;
 
 namespace VDrumExplorer.Gui
 {
@@ -71,7 +73,18 @@ namespace VDrumExplorer.Gui
 
         private void CopyKit(object sender, ExecutedRoutedEventArgs e)
         {
+            // TODO: Move everything that creates the CopyKitViewModel into DataTreeNodeViewModel?
 
+            var kitNode = (DataTreeNodeViewModel) e.Parameter;
+            var module = ((ModuleExplorerViewModel) DataContext).Module;
+            var kit = module.ExportKit(kitNode.KitNumber!.Value);
+            var viewModel = new CopyKitViewModel(module, kit);
+            var dialog = new CopyKitTarget { DataContext = viewModel };
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                module.ImportKit(kit, viewModel.DestinationKitNumber);
+            }
         }
     }
 }

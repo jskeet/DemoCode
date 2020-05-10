@@ -10,16 +10,16 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public class ModuleExplorerViewModel : DataExplorerViewModel
     {
-        private readonly Module module;
+        public Module Module { get; }
 
         public ModuleExplorerViewModel(Module module) : base(module.Data)
         {
-            this.module = module;
+            Module = module;
         }
 
         protected override string ExplorerName =>  "Module Explorer";
         public override string SaveFileFilter => "V-Drum Explorer module files|*.vdrum";
 
-        protected override void SaveToStream(Stream stream) => module.Save(stream);
+        protected override void SaveToStream(Stream stream) => Module.Save(stream);
     }
 }

@@ -1,0 +1,36 @@
+﻿<Window x:Class="VDrumExplorer.Gui.Dialogs.CopyKitTarget"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vmd="clr-namespace:VDrumExplorer.ViewModel.Dialogs;assembly=VDrumExplorer.ViewModel"
+        xmlns:local="clr-namespace:VDrumExplorer.Gui.Dialogs"
+        mc:Ignorable="d"
+        Title="Select Destination Kit"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Style="{StaticResource WindowStyle}"
+        d:DataContext="{d:DesignInstance vmd:CopyKitViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" MinWidth="200" />
+        </Grid.ColumnDefinitions>
+        <Label Margin="3" Padding="0,2" Grid.Column="0" Grid.Row="0">Source kit:</Label>
+        <Label Margin="3" Padding="0,2" Grid.Column="1" Grid.Row="0" Content="{Binding SourceKitName}" HorizontalAlignment="Left"/>
+        <Label Margin="3" Padding="0,2" Grid.Column="0" Grid.Row="1">Destination kit number:</Label>
+        <TextBox Margin="3" Width="30" Grid.Column="1" Grid.Row="1" Text="{Binding DestinationKitNumber, UpdateSourceTrigger=PropertyChanged}" x:Name="kitNumber" HorizontalAlignment="Left"/>
+        <Label Margin="3" Padding="0,2" Grid.Column="0" Grid.Row="2">Destination kit name:</Label>
+        <Label Margin="3" Padding="0,2" Grid.Column="1" Grid.Row="2" Content="{Binding DestinationKitName}" HorizontalAlignment="Left"></Label>
+        <UniformGrid Rows="1" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+            <Button Padding="5,2" Margin="3,3,3,5" Click="Copy" IsEnabled="{Binding CopyEnabled}">Copy</Button>
+            <Button Padding="5,2" Margin="3,3,3,5" Click="Cancel">Cancel</Button>
+        </UniformGrid>
+    </Grid>
+</Window>
