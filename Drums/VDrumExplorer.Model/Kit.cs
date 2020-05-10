@@ -15,6 +15,8 @@ namespace VDrumExplorer.Model
         public ModuleSchema Schema { get; }
         public ModuleData Data { get; }
         public TreeNode KitRoot { get; }
+        // Note: we could potentially validate here, and implement INotifyPropertyChanged. It's just as simple
+        // to do so in a view model though, really.
         public int DefaultKitNumber { get; set; }
 
         private Kit(ModuleData data, int defaultKitNumber) =>

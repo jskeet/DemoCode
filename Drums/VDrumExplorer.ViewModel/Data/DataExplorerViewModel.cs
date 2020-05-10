@@ -3,7 +3,9 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Utility;
 
@@ -34,10 +36,36 @@ namespace VDrumExplorer.ViewModel.Data
         protected abstract string ExplorerName { get; }
         public abstract string SaveFileFilter { get; }
         protected abstract void SaveToStream(Stream stream);
+        // Ugly, but simple.
+        public bool IsKitExplorer => this is KitExplorerViewModel;
+        public bool IsModuleExplorer => !IsKitExplorer;
+
+        public bool CanPlayNote => SelectedNode?.MidiNotePath is object;
+        public string CopyDataTitle => IsKitExplorer ? "Copy Kit" : "Copy Data";
 
         public string Title => FileName is null
             ? $"{ExplorerName} ({Model.Schema.Identifier.Name})"
             : $"{ExplorerName} ({Model.Schema.Identifier.Name}) - {fileName}";
+
+        public IReadOnlyList<int> MidiChannels { get; } = Enumerable.Range(1, 16).ToList();
+
+        private int selectedMidiChannel = 10;
+        public int SelectedMidiChannel
+        {
+            get => selectedMidiChannel;
+            // No validation, as we assume this is in a drop-down for now.
+            set => SetProperty(ref selectedMidiChannel, value);
+        }
+
+        public int MinAttack => 1;
+        public int MaxAttack => 127;
+
+        private int attack = 80;
+        public int Attack
+        {
+            get => attack;
+            set => SetProperty(ref attack, value);
+        }
 
         private ModuleDataSnapshot? snapshot;
 
@@ -102,7 +130,29 @@ namespace VDrumExplorer.ViewModel.Data
         public DataTreeNodeViewModel? SelectedNode
         {
             get => selectedNode;
-            set => SetProperty(ref selectedNode, value);
+            set
+            {
+                if (SetProperty(ref selectedNode, value))
+                {
+                    RaisePropertyChanged(nameof(CanPlayNote));
+                }
+            }
+        }
+
+        public void PlayNote()
+        {
+            var midiClient = SharedViewModel.ConnectedDevice;
+            if (midiClient is null)
+            {
+                return;
+            }
+            var midiNote = SelectedNode?.GetMidiNote();
+            if (midiNote is null)
+            {
+                return;
+            }
+            
+            midiClient.PlayNote(SelectedMidiChannel, midiNote.Value, Attack);
         }
     }
 }

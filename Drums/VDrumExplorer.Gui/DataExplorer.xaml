@@ -24,12 +24,29 @@
                 <MenuItem Command="ApplicationCommands.SaveAs" />
             </MenuItem>
         </Menu>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Margin="5" Command="{Binding EditCommand}">Edit mode</Button>
-            <Button Margin="5" Command="{Binding CommitCommand}">Commit changes</Button>
-            <Button Margin="5" Command="{Binding CancelEditCommand}">Cancel changes</Button>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource PanelMargin}">
+            <TextBlock Margin="{StaticResource ValueMargin}">Default kit number:</TextBlock>
+            <TextBox Margin="{StaticResource ValueMargin}" Width="30" VerticalAlignment="Center" Text="{Binding DefaultKitNumber, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
-        <Separator DockPanel.Dock="Top" />
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding EditCommand}">Edit mode</Button>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding CommitCommand}">Commit changes</Button>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding CancelEditCommand}">Cancel changes</Button>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Visibility="{Binding SharedViewModel.DeviceConnected, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource PanelMargin}">
+            <Button Margin="{StaticResource ValueMargin}" Click="CopyDataToDevice" Content="{Binding CopyDataTitle}" VerticalAlignment="Center"/>
+            <TextBlock Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center">Kit to copy to:</TextBlock>
+            <TextBox Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center" Text="{Binding KitCopyTargetNumber, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
+            <Button Margin="{StaticResource ValueMargin}" Click="PlayNote" VerticalAlignment="Center" IsEnabled="{Binding CanPlayNote}">Play note</Button>
+            <TextBlock Margin="{StaticResource ValueMargin}" VerticalAlignment="Center">Midi Channel:</TextBlock>
+            <ComboBox Margin="{StaticResource ValueMargin}" ItemsSource="{Binding MidiChannels}" SelectedItem="{Binding SelectedMidiChannel}" VerticalAlignment="Center"/>
+            <TextBlock Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" >Attack:</TextBlock>
+            <Slider Margin="{StaticResource ValueMargin}" Minimum="{Binding MinAttack}" Maximum="{Binding MaxAttack}" Value="{Binding Attack}" VerticalAlignment="Center" Width="100" IsSnapToTickEnabled="True" TickFrequency="1" />
+            <TextBlock Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" Text="{Binding Attack}" VerticalAlignment="Center"/>
+        </StackPanel>
+        <Separator DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
