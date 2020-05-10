@@ -46,8 +46,8 @@
                                 <ContextMenu Visibility="{Binding IsKitNode, Converter={StaticResource VisibilityConverter}}">
                                     <MenuItem Header="Open copy in Kit Explorer" Command="{x:Static local:DataExplorerCommands.OpenCopyInKitExplorer}" CommandParameter="{Binding .}" />
                                     <MenuItem Header="Copy to another kit" Command="{x:Static local:DataExplorerCommands.CopyKit}" CommandParameter="{Binding .}" />
-                                    <MenuItem Header="Import from file" Command="{x:Static local:DataExplorerCommands.ExportKit}" CommandParameter="{Binding .}" />
-                                    <MenuItem Header="Export to file" Command="{x:Static local:DataExplorerCommands.ImportKitFromFile}" CommandParameter="{Binding .}" />
+                                    <MenuItem Header="Import from file" Command="{x:Static local:DataExplorerCommands.ImportKitFromFile}" CommandParameter="{Binding .}" />
+                                    <MenuItem Header="Export to file" Command="{x:Static local:DataExplorerCommands.ExportKit}" CommandParameter="{Binding .}" />
                                 </ContextMenu>
                             </TextBlock.ContextMenu>
                         </TextBlock>
