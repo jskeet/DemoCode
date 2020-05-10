@@ -3,9 +3,13 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using VDrumExplorer.Gui.Dialogs;
+using VDrumExplorer.Model;
+using VDrumExplorer.Proto;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
 
@@ -63,12 +67,53 @@ namespace VDrumExplorer.Gui
 
         private void ImportKitFromFile(object sender, ExecutedRoutedEventArgs e)
         {
+            OpenFileDialog dialog = new OpenFileDialog { Multiselect = false, Filter = "Kit files|*.vkit" };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+            object loaded;
+            try
+            {
+                loaded = ProtoIo.LoadModel(dialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                //Logger.Log($"Error loading {dialog.FileName}", ex);
+                return;
+            }
+            if (!(loaded is Kit kit))
+            {
+                //Logger.Log("Loaded file was not a kit");
+                return;
+            }
 
+            var module = ((ModuleExplorerViewModel) DataContext).Module;
+            if (!kit.Schema.Identifier.Equals(module.Schema.Identifier))
+            {
+                //Logger.Log($"Kit was from {kit.Schema.Identifier.Name}; this module is {Schema.Identifier.Name}");
+                return;
+            }
+            var kitNode = (DataTreeNodeViewModel) e.Parameter;
+            module.ImportKit(kit, kitNode.KitNumber!.Value);
         }
 
         private void ExportKit(object sender, ExecutedRoutedEventArgs e)
         {
+            var kitNode = (DataTreeNodeViewModel) e.Parameter;
+            var module = ((ModuleExplorerViewModel) DataContext).Module;
+            var kit = module.ExportKit(kitNode.KitNumber!.Value);
 
+            var dialog = new SaveFileDialog { Filter = "Kit files|*.vkit" };
+            var result = dialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+            using (var stream = File.Create(dialog.FileName))
+            {
+                kit.Save(stream);
+            }
         }
 
         private void CopyKit(object sender, ExecutedRoutedEventArgs e)
