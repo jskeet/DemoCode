@@ -2,10 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System.Collections.Generic;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Schema.Logical;
-using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model
 {
@@ -17,16 +15,15 @@ namespace VDrumExplorer.Model
         public ModuleSchema Schema { get; }
         public ModuleData Data { get; }
         public TreeNode KitRoot { get; }
-        public int KitNumber { get; set; }
+        public int DefaultKitNumber { get; set; }
 
-        // TODO: This is all a mess. Fix it up.
+        private Kit(ModuleData data, int defaultKitNumber) =>
+            (Schema, Data, DefaultKitNumber, KitRoot) =
+            (data.PhysicalRoot.Schema, data, defaultKitNumber, data.PhysicalRoot.Schema.KitRoots[0]);
 
-        private Kit(ModuleData data, int kitNumber) =>
-            (Schema, Data, KitNumber, KitRoot) = (data.PhysicalRoot.Schema, data, kitNumber, data.PhysicalRoot.Schema.KitRoots[1]);
-
-        public static Kit Create(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber)
+        public static Kit FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber)
         {
-            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.KitRoots[kitNumber]);
+            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.KitRoots[0]);
             moduleData.LoadSnapshot(snapshot);
             return new Kit(moduleData, kitNumber);
         }

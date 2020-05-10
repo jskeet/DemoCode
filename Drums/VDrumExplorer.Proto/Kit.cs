@@ -17,7 +17,7 @@ namespace VDrumExplorer.Proto
             {
                 snapshot.Add(container.ToModel());
             }
-            return Model.Kit.Create(Identifier.GetSchema(), snapshot, DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
+            return Model.Kit.FromSnapshot(Identifier.GetSchema(), snapshot, DefaultKitNumber == 0 ? 1 : DefaultKitNumber);
         }
 
         internal static Kit FromModel(Model.Kit kit) =>
@@ -25,7 +25,7 @@ namespace VDrumExplorer.Proto
             {
                 Identifier = ModuleIdentifier.FromModel(kit.Schema.Identifier),
                 Containers = { kit.Data.CreateSnapshot().Segments.Select(FieldContainerData.FromModel) },
-                DefaultKitNumber = kit.KitNumber
+                DefaultKitNumber = kit.DefaultKitNumber
             };
     }
 }

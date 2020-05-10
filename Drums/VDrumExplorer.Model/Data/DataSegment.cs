@@ -15,6 +15,12 @@ namespace VDrumExplorer.Model.Data
             (Address, this.data) = (address, data);
 
         /// <summary>
+        /// Creates a new data segment sharing the data with this one, but at the given new address.
+        /// </summary>
+        internal DataSegment WithAddress(ModuleAddress newAddress) =>
+            new DataSegment(newAddress, data);
+
+        /// <summary>
         /// Creates a copy of the data in this container.
         /// </summary>
         /// <returns>A copy of the data.</returns>

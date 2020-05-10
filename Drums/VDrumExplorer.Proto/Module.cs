@@ -17,7 +17,7 @@ namespace VDrumExplorer.Proto
                 snapshot.Add(container.ToModel());
             }
 
-            return Model.Module.Create(Identifier.GetSchema(), snapshot);
+            return Model.Module.FromSnapshot(Identifier.GetSchema(), snapshot);
         }
 
         internal static Module FromModel(Model.Module module) =>

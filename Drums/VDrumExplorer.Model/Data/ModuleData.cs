@@ -38,8 +38,12 @@ namespace VDrumExplorer.Model.Data
         private ModuleData(TreeNode logicalSchemaRoot)
         {
             PhysicalRoot = logicalSchemaRoot.Container;
+            if (!(PhysicalRoot is ContainerBase containerBase))
+            {
+                throw new ArgumentException("Invalid root for ModuleData");
+            }
             var schema = PhysicalRoot.Schema;
-            var fieldContainers = schema.PhysicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+            var fieldContainers = containerBase.DescendantsAndSelf().OfType<FieldContainer>().ToList();
 
             // First populate the containers
             var fieldMap = new SortedDictionary<FieldContainer, IReadOnlyList<IDataField>>(FieldContainer.AddressComparer);
@@ -90,14 +94,59 @@ namespace VDrumExplorer.Model.Data
             var snapshot = new ModuleDataSnapshot();
             foreach (var (fieldContainer, fieldList) in fieldsByFieldContainer)
             {
-                var segment = new DataSegment(fieldContainer.Address, new byte[fieldContainer.Size]);
-                foreach (DataFieldBase field in fieldList)
-                {
-                    field.Save(segment);
-                }
-                snapshot.Add(segment);
+                snapshot.Add(CreateDataSegment(fieldContainer, fieldList));
             }
             return snapshot;
+        }
+
+        internal ModuleDataSnapshot CreatePartialSnapshot(TreeNode root)
+        {
+            if (root.Container.Schema != Schema)
+            {
+                throw new ArgumentException("Invalid root for snapshot: incorrect schema");
+            }
+            if (!(root.Container is ContainerBase containerBase))
+            {
+                throw new ArgumentException("Invalid root for snapshot: unknown container type");
+            }
+            var fieldContainers = containerBase.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+            var snapshot = new ModuleDataSnapshot();
+            foreach (var fc in fieldContainers)
+            {
+                snapshot.Add(CreateDataSegment(fc, fieldsByFieldContainer[fc]));
+            }
+            return snapshot;
+        }
+
+        private static DataSegment CreateDataSegment(FieldContainer fieldContainer, IReadOnlyList<IDataField> fields)
+        {
+            var segment = new DataSegment(fieldContainer.Address, new byte[fieldContainer.Size]);
+            foreach (DataFieldBase field in fields)
+            {
+                field.Save(segment);
+            }
+            return segment;
+        }
+
+        /// <summary>
+        /// Loads data from a snapshot which could contain just part of the data contained
+        /// in this object. This is internal as it's inherently somewhat dangerous - it should only be called
+        /// for well-defined snapshots, e.g. "a whole kit".
+        /// </summary>
+        internal void LoadPartialSnapshot(ModuleDataSnapshot snapshot)
+        {
+            // TODO: This is more awkward than it should be, because we keep a map based on field containers rather than
+            // addresses. We could change the map... then we might not need the FieldContainer.AddressComparer, either.
+            foreach (var (container, fieldList) in fieldsByFieldContainer)
+            {
+                if (snapshot.TryGetSegment(container.Address, out var segment))
+                {
+                    foreach (DataFieldBase field in fieldList)
+                    {
+                        field.Load(segment);
+                    }
+                }
+            }
         }
 
         public void LoadSnapshot(ModuleDataSnapshot snapshot)
