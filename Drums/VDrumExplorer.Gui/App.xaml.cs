@@ -43,6 +43,12 @@ namespace VDrumExplorer.Gui
             await sharedViewModel.DetectModule();
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            sharedViewModel?.ConnectedDevice?.Dispose();
+        }
+
         private Window CreateModuleExplorer()
         {
             // FIXME: This is just for development...
