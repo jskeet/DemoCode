@@ -79,7 +79,7 @@ namespace VDrumExplorer.Model.Data.Fields
             switch (BytesPerChar)
             {
                 case 1:
-                    Encoding.ASCII.GetBytes(text.AsSpan(), bytes);
+                    Encoding.ASCII.GetBytes(padded.AsSpan(), bytes);
                     break;
                 case 2:
                     for (int i = 0; i < Length; i++)
