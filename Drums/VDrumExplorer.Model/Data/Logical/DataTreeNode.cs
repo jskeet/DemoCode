@@ -14,12 +14,14 @@ namespace VDrumExplorer.Model.Data.Logical
         public IReadOnlyList<DataTreeNode> Children { get; }
         public IReadOnlyList<IDataNodeDetail> Details { get; }
         public DataFieldFormattableString Format { get; }
+        public TreeNode SchemaNode { get; }
 
         public DataTreeNode(ModuleData data, TreeNode node)
         {
             Children = node.Children.ToReadOnlyList(child => new DataTreeNode(data, child));
             Details = node.Details.ToReadOnlyList(detail => ConvertDetail(data, detail));
             Format = new DataFieldFormattableString(data, node.Format);
+            SchemaNode = node;
         }
 
         private static IDataNodeDetail ConvertDetail(ModuleData data, INodeDetail detail) =>

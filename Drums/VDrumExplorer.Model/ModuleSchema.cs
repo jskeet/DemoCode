@@ -78,6 +78,10 @@ namespace VDrumExplorer.Model
 
             // Note: this makes an assumption about the schema, but it appears to be reasonable.
             KitRoots = LogicalRoot.Children.Single(child => child.Name == "Kits").Children.ToReadOnlyList();
+            for (int i = 0; i < KitRoots.Count; i++)
+            {
+                KitRoots[i].KitNumber = i + 1;
+            }
         }
 
         private static Lazy<ModuleSchema> LazyFromAssemblyResources(string resourceBase, string resourceName) =>

@@ -53,5 +53,25 @@ namespace VDrumExplorer.Gui
             ViewModel.FileName = newFileName;
             ViewModel.Save();
         }
+
+        private void OpenCopyInKitExplorer(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void ImportKitFromFile(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void ExportKit(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void CopyKit(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
     }
 }

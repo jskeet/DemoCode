@@ -46,6 +46,11 @@ namespace VDrumExplorer.Model.Schema.Logical
         /// </summary>
         public TreeNode? Parent { get; internal set; }
 
+        /// <summary>
+        /// The 1-based kit number for which this tree node is a logical root, if any.
+        /// </summary>
+        public int? KitNumber { get; internal set; }
+
         internal TreeNode Root => Parent?.Root ?? this;
 
         internal TreeNode(string name, string path, IContainer container, FieldFormattableString format, IReadOnlyList<TreeNode> children, IReadOnlyList<INodeDetail> details)
