@@ -12,9 +12,27 @@ namespace VDrumExplorer.ViewModel.Data
     {
         public Kit Kit { get; }
 
+        public int DefaultKitNumber
+        {
+            get => Kit.DefaultKitNumber;
+            set
+            {
+                Kit.DefaultKitNumber = Kit.Schema.ValidateKitNumber(value);
+                RaisePropertyChanged(nameof(DefaultKitNumber));
+            }
+        }
+
+        private int kitCopyTargetNumber;
+        public int KitCopyTargetNumber
+        {
+            get => kitCopyTargetNumber;
+            set => SetProperty(ref kitCopyTargetNumber, Kit.Schema.ValidateKitNumber(value));
+        }
+
         public KitExplorerViewModel(SharedViewModel shared, Kit kit) : base(shared, kit.Data)
         {
             Kit = kit;
+            kitCopyTargetNumber = kit.DefaultKitNumber;
         }
 
         protected override string ExplorerName =>  "Module Explorer";

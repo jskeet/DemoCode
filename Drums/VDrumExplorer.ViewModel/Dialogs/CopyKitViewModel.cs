@@ -20,11 +20,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             get => destinationKitNumber;
             set
             {
-                if (value < 1 || value >= module.Schema.KitRoots.Count)
-                {
-                    throw new ArgumentOutOfRangeException("Invalid destination kit number");
-                }
-                if (SetProperty(ref destinationKitNumber, value))
+                if (SetProperty(ref destinationKitNumber, module.Schema.ValidateKitNumber(value)))
                 {
                     RaisePropertyChanged(nameof(DestinationKitName));
                     RaisePropertyChanged(nameof(CopyEnabled));

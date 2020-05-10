@@ -70,6 +70,7 @@ namespace VDrumExplorer.Model.Schema.Json
             TreeNode ToTreeNode(ModuleJson json, string name, IContainer parentContainer, SchemaVariables variables)
             {
                 string nodePath = PathUtilities.AppendPath(parentNodePath, name);
+                string? midiNotePath = MidiNotePath is null ? null : variables.Replace(MidiNotePath);
                 var resolvedContainerPath = variables.Replace(Path!);
                 var container = parentContainer.ResolveContainer(resolvedContainerPath);
                 var formattableString = FieldFormattableString.Create(container, Format!, FormatPaths, variables);
@@ -80,7 +81,7 @@ namespace VDrumExplorer.Model.Schema.Json
                     childTreeNodes.AddRange(child.ToTreeNodes(json, nodePath, container));
                 }
                 var treeDetails = Details.Select(detail => detail.ToNodeDetail(json, container, variables)).ToList().AsReadOnly();
-                return new TreeNode(name, nodePath, container, formattableString, childTreeNodes.AsReadOnly(), treeDetails);
+                return new TreeNode(name, nodePath, container, formattableString, midiNotePath, childTreeNodes.AsReadOnly(), treeDetails);
             }
         }
     }

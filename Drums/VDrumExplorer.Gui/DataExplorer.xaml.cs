@@ -30,6 +30,8 @@ namespace VDrumExplorer.Gui
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) =>
             ViewModel.SelectedNode = (DataTreeNodeViewModel) treeView.SelectedItem;
 
+        // TODO: Let's move all of this into the view model if possible, using a view-specified callback for dialogs.
+
         // TODO: This doesn't really feel ideal, but my research into handling ApplicationCommands in the ViewModel
         // hasn't shown anything nicer. In particular, the ViewModel would somehow have to request the Save File
         // dialog box...
@@ -134,6 +136,16 @@ namespace VDrumExplorer.Gui
             {
                 module.ImportKit(kit, viewModel.DestinationKitNumber);
             }
+        }
+
+        private void PlayNote(object sender, RoutedEventArgs e)
+        {
+            ViewModel.PlayNote();
+        }
+
+        private void CopyDataToDevice(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
