@@ -11,7 +11,7 @@
         ResizeMode="NoResize"
         Style="{StaticResource WindowStyle}"
         d:DataContext="{d:DesignInstance vmd:CopyKitViewModel}">
-    <Grid>
+    <Grid Margin="6">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -22,15 +22,23 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" MinWidth="200" />
         </Grid.ColumnDefinitions>
-        <Label Margin="3" Padding="0,2" Grid.Column="0" Grid.Row="0">Source kit:</Label>
-        <Label Margin="3" Padding="0,2" Grid.Column="1" Grid.Row="0" Content="{Binding SourceKitName}" HorizontalAlignment="Left"/>
-        <Label Margin="3" Padding="0,2" Grid.Column="0" Grid.Row="1">Destination kit number:</Label>
-        <TextBox Margin="3" Width="30" Grid.Column="1" Grid.Row="1" Text="{Binding DestinationKitNumber, UpdateSourceTrigger=PropertyChanged}" x:Name="kitNumber" HorizontalAlignment="Left"/>
-        <Label Margin="3" Padding="0,2" Grid.Column="0" Grid.Row="2">Destination kit name:</Label>
-        <Label Margin="3" Padding="0,2" Grid.Column="1" Grid.Row="2" Content="{Binding DestinationKitName}" HorizontalAlignment="Left"></Label>
+        <Label Grid.Column="0" Grid.Row="0">Source kit:</Label>
+        <Label Grid.Column="0" Grid.Row="1">Destination kit number:</Label>
+        <Label Grid.Column="0" Grid.Row="2">Destination kit name:</Label>
+
+        <TextBlock Grid.Column="1" Grid.Row="0" 
+               Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Text="{Binding SourceKitName}" />
+        <TextBox Grid.Column="1" Grid.Row="1"
+                 Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30" 
+                 Text="{Binding DestinationKitNumber, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Grid.Column="1" Grid.Row="2"
+               Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Text="{Binding DestinationKitName}"/>
+
         <UniformGrid Rows="1" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-            <Button Padding="5,2" Margin="3,3,3,5" Click="Copy" IsEnabled="{Binding CopyEnabled}">Copy</Button>
-            <Button Padding="5,2" Margin="3,3,3,5" Click="Cancel">Cancel</Button>
+            <Button Margin="3,6,3,5" Click="Copy" IsEnabled="{Binding CopyEnabled}" VerticalAlignment="Center">Copy</Button>
+            <Button Margin="3,6,3,5" Click="Cancel" VerticalAlignment="Center">Cancel</Button>
         </UniformGrid>
     </Grid>
 </Window>

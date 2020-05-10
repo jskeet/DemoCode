@@ -25,9 +25,9 @@
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Margin="5" Padding="5,2" Command="{Binding EditCommand}">Edit mode</Button>
-            <Button Margin="5" Padding="5,2" Command="{Binding CommitCommand}">Commit changes</Button>
-            <Button Margin="5" Padding="5,2" Command="{Binding CancelEditCommand}">Cancel changes</Button>
+            <Button Margin="5" Command="{Binding EditCommand}">Edit mode</Button>
+            <Button Margin="5" Command="{Binding CommitCommand}">Commit changes</Button>
+            <Button Margin="5" Command="{Binding CancelEditCommand}">Cancel changes</Button>
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <Grid>
