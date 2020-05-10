@@ -27,5 +27,26 @@ namespace VDrumExplorer.Model
             moduleData.LoadSnapshot(snapshot);
             return new Kit(moduleData, kitNumber);
         }
+
+        public string GetKitName() => GetKitName(Data, KitRoot);
+
+        // TODO: Fix this, because hardcoding it is horrible. However, putting something general
+        // into all schema nodes is pretty unpleasant too. Maybe a top-level piece of JSON?
+
+        /// <summary>
+        /// Returned the name of a kit from the specified data, given a logical kit root node.
+        /// </summary>
+        /// <param name="data">The data to load the name from.</param>
+        /// <param name="logicalKitRoot">The logical tree node representing the root of the kit.</param>
+        /// <returns>The kit name.</returns>
+        internal static string GetKitName(ModuleData data, TreeNode logicalKitRoot)
+        {
+            var container = logicalKitRoot.Container;
+            var (nameContainer, nameField) = container.ResolveField("KitCommon/KitName");
+            var (subNameContainer, subNameField) = container.ResolveField("KitCommon/KitSubName");
+            var name = data.GetDataField(nameContainer, nameField).FormattedText;
+            var subName = data.GetDataField(subNameContainer, subNameField).FormattedText;
+            return $"{name} / {subName}";
+        }
     }
 }
