@@ -15,7 +15,10 @@
             <Style x:Key="WindowStyle" TargetType="Window">
                 <Setter Property="FontSize" Value="14" />
             </Style>
-            
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="5,2" />
+            </Style>
+
             <!-- Margin to the left of a value when being displayed as a key/value pair. -->
             <Thickness x:Key="ValueMargin" Left="10" Top="0" Right="0" Bottom="0" />
 
