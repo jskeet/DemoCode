@@ -43,7 +43,7 @@
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <TextBlock Text="{Binding Format.Text}">
                             <TextBlock.ContextMenu>
-                                <ContextMenu Visibility="{Binding IsKitNode, Converter={StaticResource VisibilityConverter}}">
+                                <ContextMenu Visibility="{Binding KitContextCommandsEnabled, Converter={StaticResource VisibilityConverter}}">
                                     <MenuItem Header="Open copy in Kit Explorer" Command="{x:Static local:DataExplorerCommands.OpenCopyInKitExplorer}" CommandParameter="{Binding .}" />
                                     <MenuItem Header="Copy to another kit" Command="{x:Static local:DataExplorerCommands.CopyKit}" CommandParameter="{Binding .}" />
                                     <MenuItem Header="Import from file" Command="{x:Static local:DataExplorerCommands.ImportKitFromFile}" CommandParameter="{Binding .}" />

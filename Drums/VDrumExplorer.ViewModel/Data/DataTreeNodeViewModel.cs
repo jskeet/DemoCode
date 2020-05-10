@@ -20,7 +20,7 @@ namespace VDrumExplorer.ViewModel.Data
         public IReadOnlyList<IDataNodeDetailViewModel> Details => details.Value;
 
         public int? KitNumber => Model.SchemaNode.KitNumber;
-        public bool IsKitNode => KitNumber.HasValue;
+        public bool KitContextCommandsEnabled => parent is ModuleExplorerViewModel && KitNumber.HasValue;
 
         public DataTreeNodeViewModel(DataTreeNode model, DataExplorerViewModel parent) : base(model)
         {

@@ -62,7 +62,11 @@ namespace VDrumExplorer.Gui
 
         private void OpenCopyInKitExplorer(object sender, ExecutedRoutedEventArgs e)
         {
-
+            var kitNode = (DataTreeNodeViewModel) e.Parameter;
+            var module = ((ModuleExplorerViewModel) DataContext).Module;
+            var kit = module.ExportKit(kitNode.KitNumber!.Value);
+            var kitExplorer = new DataExplorer { DataContext = new KitExplorerViewModel(kit) };
+            kitExplorer.Show();
         }
 
         private void ImportKitFromFile(object sender, ExecutedRoutedEventArgs e)
