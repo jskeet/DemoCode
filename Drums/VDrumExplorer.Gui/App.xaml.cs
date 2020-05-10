@@ -25,6 +25,11 @@ namespace VDrumExplorer.Gui
         public App()
         {
             sharedViewModel = new SharedViewModel();
+            DispatcherUnhandledException += (sender, args) =>
+            {
+                sharedViewModel.Log("Unhandled exception", args.Exception);
+                args.Handled = true;
+            };
         }
 
         protected override async void OnStartup(StartupEventArgs e)

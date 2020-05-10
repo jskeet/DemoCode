@@ -65,10 +65,7 @@ namespace VDrumExplorer.ViewModel.Data
                 }
                 if (value is int sampleId)
                 {
-                    if (sampleId < 1 || sampleId > Schema.UserSampleInstruments.Count)
-                    {
-                        throw new ArgumentOutOfRangeException($"Invalid user sample number: {sampleId}");
-                    }
+                    Schema.ValidateUserSampleNumber(sampleId);
                     Instrument = Schema.UserSampleInstruments[sampleId - 1];
                 }
             }

@@ -30,8 +30,16 @@ namespace VDrumExplorer.ViewModel
         public RolandMidiClient? ConnectedDevice
         {
             get => connectedDevice;
-            set => SetProperty(ref connectedDevice, value);
+            set
+            {
+                if (SetProperty(ref connectedDevice, value))
+                {
+                    RaisePropertyChanged(nameof(DeviceConnected));
+                }
+            }
         }
+
+        public bool DeviceConnected => connectedDevice is object;
 
         public SharedViewModel()
         {

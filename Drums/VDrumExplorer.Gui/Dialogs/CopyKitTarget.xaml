@@ -31,7 +31,7 @@
                Text="{Binding SourceKitName}" />
         <TextBox Grid.Column="1" Grid.Row="1"
                  Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30" 
-                 Text="{Binding DestinationKitNumber, UpdateSourceTrigger=PropertyChanged}" />
+                 Text="{Binding DestinationKitNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
         <TextBlock Grid.Column="1" Grid.Row="2"
                Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" VerticalAlignment="Center"
                Text="{Binding DestinationKitName}"/>
