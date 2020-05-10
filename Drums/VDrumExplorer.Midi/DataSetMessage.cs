@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace VDrumExplorer.Midi
 {
     // TODO: Remove? Move to a private class in RolandMidiClient?
+    // TODO: Use logical addresses instead of display addresses?
     internal sealed class DataSetMessage
     {
         public int Address { get; }

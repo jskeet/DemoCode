@@ -128,7 +128,7 @@ namespace VDrumExplorer.Midi
         /// <summary>
         /// Requests data at a given address.
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="address">The address in "display format"</param>
         /// <param name="size">The number of bytes to receive. Must be in the range 0x1 to 0x17f inclusive.
         /// If this is in the range 0x100-0x17f, it is assumed that the actual number of bytes will be 0x80 smaller,
         /// due to the address range compression.</param>

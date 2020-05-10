@@ -2,9 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using VDrumExplorer.Model;
-using VDrumExplorer.Model.Data.Logical;
 
 namespace VDrumExplorer.ViewModel.Dialogs
 {
