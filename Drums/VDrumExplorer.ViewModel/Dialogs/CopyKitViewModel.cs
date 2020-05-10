@@ -32,14 +32,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
         }
 
-        public string DestinationKitName
-        {
-            get
-            {
-                var destinationRoot = module.Schema.KitRoots[destinationKitNumber - 1];
-                return new DataFieldFormattableString(module.Data, destinationRoot.Format).Text;
-            }
-        }
+        public string DestinationKitName => module.GetKitName(destinationKitNumber);
 
         public bool CopyEnabled => kit.DefaultKitNumber != destinationKitNumber;
 
@@ -47,7 +40,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
         {
             this.module = module;
             this.kit = kit;
-            SourceKitName = new DataFieldFormattableString(kit.Data, kit.KitRoot.Format).Text;
+            SourceKitName = kit.GetKitName();
         }
     }
 }

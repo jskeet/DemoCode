@@ -26,6 +26,8 @@ namespace VDrumExplorer.Model
             return new Module(moduleData);
         }
 
+        public string GetKitName(int kitNumber) => Kit.GetKitName(Data, Schema.KitRoots[kitNumber - 1]);
+
         /// <summary>
         /// Copies the data in the specified kit into this module, at the specified kit number.
         /// </summary>
