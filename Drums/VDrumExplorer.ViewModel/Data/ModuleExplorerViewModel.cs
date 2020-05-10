@@ -12,7 +12,7 @@ namespace VDrumExplorer.ViewModel.Data
     {
         public Module Module { get; }
 
-        public ModuleExplorerViewModel(Module module) : base(module.Data)
+        public ModuleExplorerViewModel(SharedViewModel shared, Module module) : base(shared, module.Data)
         {
             Module = module;
         }

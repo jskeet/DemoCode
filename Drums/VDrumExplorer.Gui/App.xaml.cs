@@ -8,6 +8,7 @@ using System.Windows;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Proto;
+using VDrumExplorer.ViewModel;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Home;
 using VDrumExplorer.ViewModel.LogicalSchema;
@@ -19,20 +20,22 @@ namespace VDrumExplorer.Gui
     /// </summary>
     public partial class App : Application
     {
-        private ExplorerHomeViewModel appContext;
+        private SharedViewModel sharedViewModel;
 
         public App()
         {
-            appContext = new ExplorerHomeViewModel();
+            sharedViewModel = new SharedViewModel();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);            
-            MainWindow = CreateModuleExplorer();
+            base.OnStartup(e);
+            
+            MainWindow = CreateExplorerHome();
             MainWindow.Show();
-            appContext.LogVersion(GetType());
-            await appContext.DetectModule();
+            CreateModuleExplorer().Show();
+            sharedViewModel.LogVersion(GetType());
+            await sharedViewModel.DetectModule();
         }
 
         private Window CreateModuleExplorer()
@@ -49,7 +52,7 @@ namespace VDrumExplorer.Gui
             }
             var path = Path.Combine(cwd.FullName, "td27.vdrum");
             var module = (Module) ProtoIo.LoadModel(path);
-            return new DataExplorer { DataContext = new ModuleExplorerViewModel(module) { FileName = path } };
+            return new DataExplorer { DataContext = new ModuleExplorerViewModel(sharedViewModel, module) { FileName = path } };
         }
 
         private Window CreateSchemaExplorer()
@@ -60,7 +63,7 @@ namespace VDrumExplorer.Gui
 
         private Window CreateExplorerHome()
         {
-            return new ExplorerHome { DataContext = appContext };
+            return new ExplorerHome { DataContext = new ExplorerHomeViewModel(sharedViewModel) };
         }
     }
 }

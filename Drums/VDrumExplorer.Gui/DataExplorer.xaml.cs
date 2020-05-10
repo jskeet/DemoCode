@@ -65,7 +65,7 @@ namespace VDrumExplorer.Gui
             var kitNode = (DataTreeNodeViewModel) e.Parameter;
             var module = ((ModuleExplorerViewModel) DataContext).Module;
             var kit = module.ExportKit(kitNode.KitNumber!.Value);
-            var kitExplorer = new DataExplorer { DataContext = new KitExplorerViewModel(kit) };
+            var kitExplorer = new DataExplorer { DataContext = new KitExplorerViewModel(ViewModel.SharedViewModel, kit) };
             kitExplorer.Show();
         }
 
@@ -83,19 +83,19 @@ namespace VDrumExplorer.Gui
             }
             catch (Exception ex)
             {
-                //Logger.Log($"Error loading {dialog.FileName}", ex);
+                ViewModel.Log($"Error loading {dialog.FileName}", ex);
                 return;
             }
             if (!(loaded is Kit kit))
             {
-                //Logger.Log("Loaded file was not a kit");
+                ViewModel.Log("Loaded file was not a kit");
                 return;
             }
 
             var module = ((ModuleExplorerViewModel) DataContext).Module;
             if (!kit.Schema.Identifier.Equals(module.Schema.Identifier))
             {
-                //Logger.Log($"Kit was from {kit.Schema.Identifier.Name}; this module is {Schema.Identifier.Name}");
+                ViewModel.SharedViewModel.Log($"Kit was from {kit.Schema.Identifier.Name}; this module is {module.Schema.Identifier.Name}");
                 return;
             }
             var kitNode = (DataTreeNodeViewModel) e.Parameter;
