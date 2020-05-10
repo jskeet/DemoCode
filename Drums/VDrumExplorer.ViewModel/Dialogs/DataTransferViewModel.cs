@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Schema.Physical;
@@ -16,6 +17,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
     {
         private SharedViewModel shared;
 
+        public ICommand CancelCommand { get; }
         public string Title { get; }
 
         private int completed;
@@ -43,6 +45,11 @@ namespace VDrumExplorer.ViewModel.Dialogs
         {
             this.shared = shared;
             Title = title;
+            CancelCommand = new DelegateCommand(Cancel, true);
+        }
+
+        private void Cancel()
+        {
         }
 
         internal async Task StoreDataAsync(RolandMidiClient client, IReadOnlyList<DataSegment> segments, CancellationToken cancellationToken)

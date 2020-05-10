@@ -21,5 +21,10 @@ namespace VDrumExplorer.Gui.Dialogs
         {
             InitializeComponent();
         }
+
+        private void Cancel(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
