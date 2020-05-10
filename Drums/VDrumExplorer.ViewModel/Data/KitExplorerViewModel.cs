@@ -12,7 +12,7 @@ namespace VDrumExplorer.ViewModel.Data
     {
         public Kit Kit { get; }
 
-        public KitExplorerViewModel(Kit kit) : base(kit.Data)
+        public KitExplorerViewModel(SharedViewModel shared, Kit kit) : base(shared, kit.Data)
         {
             Kit = kit;
         }

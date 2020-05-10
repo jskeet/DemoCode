@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.IO;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Utility;
@@ -12,6 +13,7 @@ namespace VDrumExplorer.ViewModel.Data
     {
         private readonly ModuleData data;
 
+        public SharedViewModel SharedViewModel { get; }
         public DelegateCommand EditCommand { get; }
         public DelegateCommand CommitCommand { get; }
         public DelegateCommand CancelEditCommand { get; }
@@ -39,8 +41,9 @@ namespace VDrumExplorer.ViewModel.Data
 
         private ModuleDataSnapshot? snapshot;
 
-        public DataExplorerViewModel(ModuleData data) : base(data)
+        public DataExplorerViewModel(SharedViewModel shared, ModuleData data) : base(data)
         {
+            SharedViewModel = shared;
             this.data = data;
             readOnly = true;
             Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
@@ -49,6 +52,9 @@ namespace VDrumExplorer.ViewModel.Data
             CommitCommand = new DelegateCommand(CommitEdit, !readOnly);
             CancelEditCommand = new DelegateCommand(CancelEdit, !readOnly);
         }
+
+        public void Log(string text) => SharedViewModel.Log(text);
+        public void Log(string text, Exception exception) => SharedViewModel.Log(text, exception);
 
         private bool readOnly;
         public bool ReadOnly
