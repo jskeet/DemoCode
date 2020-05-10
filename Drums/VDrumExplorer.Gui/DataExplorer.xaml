@@ -85,13 +85,13 @@
                                                                 <TextBlock Text="{Binding FormattedText}" />
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableEnumDataFieldViewModel}">
-                                                                <ComboBox ItemsSource="{Binding ValidValues}" SelectedItem="{Binding Value, Mode=TwoWay}" Margin="2" />
+                                                                <ComboBox ItemsSource="{Binding ValidValues}" SelectedItem="{Binding Value}" Margin="2" />
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableBooleanDataFieldViewModel}">
-                                                                <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" VerticalAlignment="Center" />
+                                                                <CheckBox IsChecked="{Binding Value}" VerticalAlignment="Center" />
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableStringDataFieldViewModel}">
-                                                                <TextBox Text="{Binding Text, Mode=TwoWay}" MaxLength="{Binding MaxLength}" MinWidth="{Binding MinWidth}"/>
+                                                                <TextBox Text="{Binding Text, ValidatesOnExceptions=True}" MaxLength="{Binding MaxLength}" MinWidth="{Binding MinWidth}"/>
                                                             </DataTemplate>
                                                             <DataTemplate DataType="{x:Type vmd:EditableNumericDataFieldViewModel}">
                                                                 <StackPanel Orientation="Horizontal">
@@ -102,11 +102,11 @@
                                                             <DataTemplate DataType="{x:Type vmd:EditableInstrumentDataFieldViewModel}">
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <ComboBox ItemsSource="{Binding InstrumentGroups}"
-                                                                              SelectedItem="{Binding Group, Mode=TwoWay}"
+                                                                              SelectedItem="{Binding Group}"
                                                                               Margin="2"
                                                                               VerticalAlignment="Center" />
                                                                     <ComboBox ItemsSource="{Binding Group.Instruments}"
-                                                                              SelectedItem="{Binding Instrument, Mode=TwoWay}"
+                                                                              SelectedItem="{Binding Instrument}"
                                                                               Margin="2"
                                                                               Visibility="{Binding IsPreset, Converter={StaticResource VisibilityConverter}}"
                                                                               VerticalAlignment="Center" />
@@ -115,7 +115,7 @@
                                                                                Margin="{StaticResource ValueMargin}"
                                                                                Text="Sample number:" />
                                                                     <!-- Setting the width here is ugly, but we need enough for three characters -->
-                                                                    <TextBox Text="{Binding UserSample, Mode=TwoWay, ValidatesOnExceptions=True}"
+                                                                    <TextBox Text="{Binding UserSample, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
                                                                              Width="50" 
                                                                              Visibility="{Binding IsUserSample, Converter={StaticResource VisibilityConverter}}"
                                                                              Margin="{StaticResource ValueMargin}"
@@ -125,8 +125,8 @@
                                                             <DataTemplate DataType="{x:Type vmd:EditableTempoDataFieldViewModel}">
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <TextBlock Text="Tempo sync" VerticalAlignment="Center"/>
-                                                                    <CheckBox IsChecked="{Binding TempoSync, Mode=TwoWay}" Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" />
-                                                                    <ComboBox ItemsSource="{Binding ValidMusicalNoteValues}" SelectedItem="{Binding MusicalNote, Mode=TwoWay}" Margin="{StaticResource ValueMargin}"
+                                                                    <CheckBox IsChecked="{Binding TempoSync}" Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" />
+                                                                    <ComboBox ItemsSource="{Binding ValidMusicalNoteValues}" SelectedItem="{Binding MusicalNote}" Margin="{StaticResource ValueMargin}"
                                                                               Visibility="{Binding TempoSync, Converter={StaticResource VisibilityConverter}}" />
                                                                     <Slider Padding="0" Margin="2,1,0,0" Value="{Binding NumericValue}" Minimum="{Binding MinNumericValue}" Maximum="{Binding MaxNumericValue}" Width="150" SmallChange="1" LargeChange="{Binding LargeNumericChange}"
                                                                             Visibility="{Binding NotTempoSync, Converter={StaticResource VisibilityConverter}}"/>

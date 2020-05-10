@@ -20,7 +20,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             get => destinationKitNumber;
             set
             {
-                if (destinationKitNumber < 1 || destinationKitNumber >= module.Schema.KitRoots.Count)
+                if (value < 1 || value >= module.Schema.KitRoots.Count)
                 {
                     throw new ArgumentOutOfRangeException("Invalid destination kit number");
                 }

@@ -21,5 +21,30 @@ namespace VDrumExplorer.Gui
         {
             InitializeComponent();
         }
+
+        private void LoadFile(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveLog(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LoadModuleFromDevice(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LoadKitFromDevice(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RecordInstrumentsFromDevice(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
