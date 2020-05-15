@@ -38,7 +38,6 @@ namespace VDrumExplorer.Gui
             
             MainWindow = CreateExplorerHome();
             MainWindow.Show();
-            CreateModuleExplorer().Show();
             sharedViewModel.LogVersion(GetType());
             await sharedViewModel.DetectModule();
         }
