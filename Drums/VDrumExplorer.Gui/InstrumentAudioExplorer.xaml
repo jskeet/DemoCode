@@ -1,0 +1,80 @@
+﻿<Window x:Class="VDrumExplorer.Gui.InstrumentAudioExplorer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:vmi="clr-namespace:VDrumExplorer.ViewModel.Audio;assembly=VDrumExplorer.ViewModel"
+        Title="{Binding Title}" Height="450" Width="800"
+        Style="{StaticResource WindowStyle}"
+        d:DataContext="{d:DesignInstance vmi:InstrumentAudioExplorerViewModel}">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Margin="6">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <!-- Module ID -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Module:" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ModuleName}" VerticalAlignment="Center" Margin="{StaticResource ValueMargin}"/>
+
+            <!-- Time per instrument -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Time per instrument (seconds):" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DurationSeconds}" VerticalAlignment="Center" Margin="{StaticResource ValueMargin}"/>
+
+            <!-- Audio format -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Audio format:" VerticalAlignment="Center" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AudioFormat}" VerticalAlignment="Center" Margin="{StaticResource ValueMargin}"/>
+
+            <!-- User samples -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="User samples:" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding UserSampleCount}" VerticalAlignment="Center" Margin="{StaticResource ValueMargin}"/>
+        </Grid>
+        <Separator DockPanel.Dock="Top" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="0" Header="Instrument Groups">
+                <ListView ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectedGroup}" DisplayMemberPath="Group"/>
+            </GroupBox>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <GroupBox Grid.Column="2" Header="Instruments">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!-- Output device -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Output device:"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" ItemsSource="{Binding OutputDevices}" SelectedItem="{Binding SelectedOutputDevice}" VerticalAlignment="Center"/>
+                    
+                    <!-- Instruments-->
+                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Text="Instruments:" />
+                    <ListBox Grid.Row="1" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" Height="Auto" ItemsSource="{Binding SelectedGroup.Audio}" SelectedItem="{Binding SelectedAudio}" DisplayMemberPath="Instrument"
+                             VerticalAlignment="Top"
+                             SelectionChanged="PlayAudio"
+                             MouseDoubleClick="PlayAudio" />
+                    <!--
+                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" ItemsSource="{Binding SelectedGroup.Audio}" SelectedItem="{Binding SelectedAudio}" DisplayMemberPath="Instrument" />
+
+                    <Button Grid.Row="2" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" Content="Play" Click="PlayAudio" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    -->
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
+</Window>

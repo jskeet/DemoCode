@@ -14,6 +14,8 @@ namespace VDrumExplorer.ViewModel
 {
     /// <summary>
     /// Information shared by multiple view models, e.g. the log and connected device.
+    /// TODO: Break this apart and only inject the dependencies we really need?
+    /// Maybe do that when we're done and can tell what the dependencies are...
     /// </summary>
     public class SharedViewModel : ViewModelBase
     {

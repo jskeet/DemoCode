@@ -1,18 +1,14 @@
-﻿using Microsoft.Win32;
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
 using VDrumExplorer.Proto;
+using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Home;
 
@@ -68,8 +64,9 @@ namespace VDrumExplorer.Gui
                     }
                 case ModuleAudio audio:
                     {
-                        ViewModel.SharedViewModel.Log("TODO: Module audio handling");
-                        //new InstrumentAudioExplorer(logger, audio, dialog.FileName).Show();
+                        // TODO: Maybe refactor for consistency?
+                        var vm = new InstrumentAudioExplorerViewModel(ViewModel.SharedViewModel, audio, dialog.FileName);
+                        new InstrumentAudioExplorer { DataContext = vm }.Show();
                         break;
                     }
                 default:
