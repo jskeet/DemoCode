@@ -13,11 +13,9 @@ namespace VDrumExplorer.ViewModel.Data
     {
         private readonly DataExplorerViewModel parent;
         private readonly Lazy<IReadOnlyList<DataTreeNodeViewModel>> children;
-        private readonly Lazy<IReadOnlyList<IDataNodeDetailViewModel>> details;
 
         public DataFieldFormattableString Format { get; }
         public IReadOnlyList<DataTreeNodeViewModel> Children => children.Value;
-        public IReadOnlyList<IDataNodeDetailViewModel> Details => details.Value;
 
         public int? KitNumber => Model.SchemaNode.KitNumber;
         public bool KitContextCommandsEnabled => parent.IsModuleExplorer && KitNumber.HasValue;
@@ -31,8 +29,9 @@ namespace VDrumExplorer.ViewModel.Data
             this.parent = parent;
             Format = model.Format;
             children = Lazy.Create(() => model.Children.ToReadOnlyList(child => new DataTreeNodeViewModel(child, parent)));
-            details = Lazy.Create(() => model.Details.ToReadOnlyList(detail => CreateDetail(detail)));
         }
+
+        internal IReadOnlyList<IDataNodeDetailViewModel> CreateDetails() => Model.Details.ToReadOnlyList(CreateDetail);
 
         private IDataNodeDetailViewModel CreateDetail(IDataNodeDetail detail) =>
             detail switch

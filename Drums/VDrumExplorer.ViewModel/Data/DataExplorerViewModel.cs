@@ -135,9 +135,13 @@ namespace VDrumExplorer.ViewModel.Data
                 if (SetProperty(ref selectedNode, value))
                 {
                     RaisePropertyChanged(nameof(CanPlayNote));
+                    SelectedNodeDetails = selectedNode?.CreateDetails();
+                    RaisePropertyChanged(nameof(SelectedNodeDetails));
                 }
             }
         }
+
+        public IReadOnlyList<IDataNodeDetailViewModel>? SelectedNodeDetails { get; private set; }
 
         public void PlayNote()
         {
