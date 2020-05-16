@@ -9,6 +9,7 @@ namespace VDrumExplorer.Model.Data
     public sealed class DataSegment
     {
         public ModuleAddress Address { get; }
+        public int Size => data.Length;
         private readonly byte[] data;
 
         public DataSegment(ModuleAddress address, byte[] data) =>

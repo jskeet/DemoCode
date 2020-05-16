@@ -5,11 +5,13 @@
 using Microsoft.Win32;
 using System;
 using System.Windows;
+using VDrumExplorer.Gui.Dialogs;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
 using VDrumExplorer.Proto;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
+using VDrumExplorer.ViewModel.Dialogs;
 using VDrumExplorer.ViewModel.Home;
 
 namespace VDrumExplorer.Gui
@@ -92,7 +94,9 @@ namespace VDrumExplorer.Gui
 
         private void RecordInstrumentsFromDevice(object sender, RoutedEventArgs e)
         {
-
+            var vm = new InstrumentAudioRecorderViewModel(ViewModel.SharedViewModel);
+            new InstrumentAudioRecorder { DataContext = vm }.ShowDialog();
+            // TODO: On success, open the InstrumentAudioExplorer?
         }
     }
 }
