@@ -20,5 +20,10 @@ namespace VDrumExplorer.Gui.Dialogs
         {
 
         }
+
+        private void HandleClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

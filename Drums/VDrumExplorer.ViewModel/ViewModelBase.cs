@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -55,8 +56,12 @@ namespace VDrumExplorer.ViewModel
         protected void RaisePropertyChanged(string name) =>
             propertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? name = null)
+        protected bool SetProperty<T>(ref T field, T value, bool valid, [CallerMemberName] string? name = null)
         {
+            if (!valid)
+            {
+                throw new ArgumentException($"Invalid value: {value}");
+            }
             if (EqualityComparer<T>.Default.Equals(field, value))
             {
                 return false;
@@ -65,6 +70,9 @@ namespace VDrumExplorer.ViewModel
             RaisePropertyChanged(name!);
             return true;
         }
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? name = null) =>
+            SetProperty(ref field, value, true, name);
     }
 
     /// <summary>
