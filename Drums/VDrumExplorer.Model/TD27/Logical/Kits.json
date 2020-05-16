@@ -84,10 +84,6 @@
               "midiNotePath": "KitMidi/Midi[{index}]",
               "details": [
                 {
-                  "description": "Common",
-                  "path": "KitPadCommon[{index}]"
-                },
-                {
                   "description": "Main instrument",
                   "path": "KitPadMain[{index}]"
                 },
@@ -102,6 +98,10 @@
                 {
                   "description": "Sub VEdit",
                   "path": "KitPadVEditSub[{index}]"
+                },
+                {
+                  "description": "Common",
+                  "path": "KitPadCommon[{index}]"
                 }
               ]
             }
