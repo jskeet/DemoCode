@@ -76,7 +76,7 @@
             <!-- Details for the selected node. -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Column="2">
                 <StackPanel Margin="5,0,5,0">
-                    <ItemsControl ItemsSource="{Binding SelectedNode.Details}">
+                    <ItemsControl ItemsSource="{Binding SelectedNodeDetails}">
                         <ItemsControl.Resources>
                             <!-- Read-only field containers -->
                             <DataTemplate DataType="{x:Type vmd:FieldContainerDataNodeDetailViewModel}">
