@@ -2,12 +2,14 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.VisualBasic.CompilerServices;
 using NAudio.SoundFont;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
@@ -19,44 +21,69 @@ namespace VDrumExplorer.ViewModel.Dialogs
 {
     public class InstrumentAudioRecorderViewModel : ViewModelBase
     {
+        private CancellationTokenSource? cancellationTokenSource;
+        private readonly IViewServices viewServices;
         private readonly ModuleSchema schema;
         private readonly RolandMidiClient device;
         private LogViewModel logger;
         public InstrumentAudioRecorderSettingsViewModel Settings { get; }
         public InstrumentAudioRecorderProgressViewModel Progress { get; }
-
+        public CommandBase StartRecordingCommand { get; }
+        public CommandBase CancelCommand { get; }
         public string Title { get; }
 
-        public InstrumentAudioRecorderViewModel(SharedViewModel shared)
+        public InstrumentAudioRecorderViewModel(IViewServices viewServices, SharedViewModel shared)
         {
+            this.viewServices = viewServices;
             logger = shared.LogViewModel;
             schema = shared.ConnectedDeviceSchema ?? throw new InvalidOperationException("Cannot record audio without a connected device");
             device = shared.ConnectedDevice ?? throw new InvalidOperationException("Cannot record audio without a connected device");
 
-            Settings = new InstrumentAudioRecorderSettingsViewModel(schema);
+            Settings = new InstrumentAudioRecorderSettingsViewModel(viewServices, schema, device.InputName);
             Progress = new InstrumentAudioRecorderProgressViewModel();
             Title = $"Instrument Audio Recorder ({schema.Identifier.Name})";
+            StartRecordingCommand = new DelegateCommand(StartRecording, false);
+            CancelCommand = new DelegateCommand(Cancel, false);
+            Settings.PropertyChanged += (sender, args) => UpdateButtonStatus();
         }
 
-        private bool settingsEnabled;
-        public bool SettingsEnabled
+        public bool SettingsEnabled => !CancelCommand.Enabled;
+        public bool ProgressEnabled => CancelCommand.Enabled;
+
+        private void UpdateButtonStatus()
         {
-            get => settingsEnabled;
-            private set => SetProperty(ref settingsEnabled, value);
+            CancelCommand.Enabled = cancellationTokenSource is object;
+            StartRecordingCommand.Enabled = cancellationTokenSource is null && Settings.OutputFile is object && Settings.SelectedInputDevice is object;
+            RaisePropertyChanged(nameof(SettingsEnabled));
+            RaisePropertyChanged(nameof(ProgressEnabled));
         }
 
-        private bool progressEnabled;
-        public bool ProgressEnabled
+        /// <summary>
+        /// Cancel the recording operation, if it's still active. This is always safe to call.
+        /// </summary>
+        public void Cancel() => cancellationTokenSource?.Cancel();
+
+        private async void StartRecording()
         {
-            get => progressEnabled;
-            set => SetProperty(ref progressEnabled, value);
+            cancellationTokenSource = new CancellationTokenSource();
+            UpdateButtonStatus();
+            try
+            {
+                await StartRecording(cancellationTokenSource.Token);
+            }
+            catch (Exception e)
+            {
+                Progress.CurrentInstrumentRecording = e is OperationCanceledException ? "Recording cancelled" : "Error - see log";
+            }
+            finally
+            {
+                cancellationTokenSource = null;
+                UpdateButtonStatus();
+            }
         }
 
         public async Task StartRecording(CancellationToken token)
         {
-            SettingsEnabled = false;
-            ProgressEnabled = true;
-
             // Need to:
             // - Find the logical node for the instrument within the kit
             // - Work out the MIDI note for kick
@@ -72,6 +99,12 @@ namespace VDrumExplorer.ViewModel.Dialogs
             catch (OperationCanceledException)
             {
                 logger.Log($"Recording operation canceled");
+                Progress.CurrentInstrumentRecording = "Recording cancelled";
+            }
+            catch (Exception e)
+            {
+                logger.Log($"Recording operation failed", e);
+                Progress.CurrentInstrumentRecording = "Error - see log";
             }
             finally
             {
@@ -247,7 +280,6 @@ namespace VDrumExplorer.ViewModel.Dialogs
             Progress.TotalInstruments = instrumentsToRecord.Count;
             Progress.CompletedInstruments = 0;
 
-
             // Load the details for the whole kit.
             // We don't need all of it, but it doesn't take *that* long, compared with the rest of the process.
             var schemaKitRoot = schema.KitRoots[Settings.KitNumber - 1];
@@ -257,6 +289,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             var triggerRoot = dataKitRoot.Children.First(n => n.SchemaNode.Name == "Triggers")
                 .Children.First(n => n.SchemaNode.Name == "Trigger[1]");
 
+            Progress.CurrentInstrumentRecording = "Loading kit data";
             logger.Log($"Loading data from kit {Settings.KitNumber} to restore later");
             var snapshot = await LoadSnapshotFromDevice(moduleData, token);
             // Populate the module data with the snapshot we've created.
@@ -274,6 +307,8 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             // TODO: How do we save a FieldContainerDataNodeDetail to a DataSegment? New method?
             // TODO: Can we just poke the instrument field itself? (Well, the two bits of it...)
+
+            logger.Log($"Recording {instrumentsToRecord.Count} instruments");
             try
             {
                 // Just simulate it for the moment...
@@ -286,10 +321,13 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             finally
             {
+                Progress.CurrentInstrumentRecording = "Restoring kit data";
                 logger.Log($"Restoring snapshot to kit {Settings.KitNumber}");
                 // Don't cancel restoring the snapshot
                 await SaveSnapshotToDevice(snapshot, CancellationToken.None);
             }
+            logger.Log($"Recording complete");
+            Progress.CurrentInstrumentRecording = "Complete";
         }
 
         // TODO: Put these somewhere common.

@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
+using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.ViewModel.Audio;
 
@@ -12,10 +14,12 @@ namespace VDrumExplorer.ViewModel.Dialogs
 {
     public class InstrumentAudioRecorderSettingsViewModel : ViewModelBase
     {
+        private readonly IViewServices viewServices;
         private readonly ModuleSchema schema;
 
-        public InstrumentAudioRecorderSettingsViewModel(ModuleSchema schema)
+        public InstrumentAudioRecorderSettingsViewModel(IViewServices viewServices, ModuleSchema schema, string midiName)
         {
+            this.viewServices = viewServices;
             this.schema = schema;
             var groups = schema.InstrumentGroups
                 .Where(ig => ig.Preset)
@@ -25,7 +29,13 @@ namespace VDrumExplorer.ViewModel.Dialogs
             InstrumentGroups = groups;
             selectedInstrumentGroup = groups[0];
             InputDevices = AudioDevices.GetInputDeviceNames();
+
+            // Try to guess at a reasonable input based on known inputs including the MIDI name.
+            var expectedInputDevices = new[] { $"MASTER ({midiName})", $"IN ({midiName})", $"KICK ({midiName})" };
+            SelectedInputDevice = InputDevices.FirstOrDefault(inputName => expectedInputDevices.Contains(inputName));
+
             kitNumber = schema.KitRoots.Count;
+            SelectOutputFileCommand = new DelegateCommand(SelectOutputFile, true);
         }
 
         private decimal recordingTime = 2.5m;
@@ -63,13 +73,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
         public string? SelectedInputDevice
         {
             get => selectedInputDevice;
-            set
-            {
-                if (SetProperty(ref selectedInputDevice, value))
-                {
-                    RaisePropertyChanged(nameof(RecordingEnabled));
-                }
-            }
+            set => SetProperty(ref selectedInputDevice, value);
         }
 
         public IReadOnlyList<string> InputDevices { get; }
@@ -105,17 +109,18 @@ namespace VDrumExplorer.ViewModel.Dialogs
         public string? OutputFile
         {
             get => outputFile;
-            set
-            {
-                if (SetProperty(ref outputFile, value))
-                {
-                    RaisePropertyChanged(nameof(RecordingEnabled));
-                }
-            }
+            set => SetProperty(ref outputFile, value);
         }
 
-        public string OutputFileFilter => FileFilters.InstrumentAudioFiles;
+        public ICommand SelectOutputFileCommand { get; }
 
-        public bool RecordingEnabled => OutputFile is object && SelectedInputDevice is object;
+        private void SelectOutputFile()
+        {
+            var file = viewServices.ShowSaveFileDialog(FileFilters.InstrumentAudioFiles);
+            if (file != null)
+            {
+                OutputFile = file;
+            }
+        }
     }
 }

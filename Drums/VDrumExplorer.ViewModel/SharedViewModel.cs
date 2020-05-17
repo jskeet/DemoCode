@@ -53,10 +53,7 @@ namespace VDrumExplorer.ViewModel
             LogViewModel.Log(text);
         }
 
-        public void Log(string text, Exception exception)
-        {
-            LogViewModel.Log($"{text}: {exception.GetType().Name}: {exception.Message}");
-        }
+        public void Log(string text, Exception exception) => LogViewModel.Log(text, exception);
 
         public void LogVersion(Type type)
         {

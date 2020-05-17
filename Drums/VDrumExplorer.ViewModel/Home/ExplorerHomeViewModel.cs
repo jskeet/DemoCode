@@ -55,7 +55,7 @@ namespace VDrumExplorer.ViewModel.Home
 
         private void RecordInstrumentAudio()
         {
-            var vm = new InstrumentAudioRecorderViewModel(SharedViewModel);
+            var vm = new InstrumentAudioRecorderViewModel(viewServices, SharedViewModel);
             viewServices.ShowInstrumentRecorderDialog(vm);
             // TODO: On success, open the InstrumentAudioExplorer?
         }

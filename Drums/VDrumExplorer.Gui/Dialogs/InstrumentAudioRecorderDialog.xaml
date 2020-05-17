@@ -9,11 +9,10 @@
         d:DataContext="{d:DesignInstance Type=vmd:InstrumentAudioRecorderViewModel}"
         Style="{StaticResource WindowStyle}"
         SizeToContent="WidthAndHeight"
-        Closing="HandleClosing">
+        Closing="Cancel">
     <DockPanel VerticalAlignment="Top">
         <Grid DockPanel.Dock="Top" Margin="6" DataContext="{Binding Settings}" IsEnabled="{Binding SettingsEnabled}">
             <Grid.RowDefinitions>
-                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
@@ -63,26 +62,30 @@
             <!-- Output file -->
             <TextBlock Grid.Column="0" Grid.Row="7" Text="Output File:" />
             <TextBlock Grid.Column="1" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" Text="{Binding OutputFile}" HorizontalAlignment="Left" />
-            <Button Grid.Column="2" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" Click="SelectFile" HorizontalAlignment="Left" Content="Select file"/>
+            <Button Grid.Column="2" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" Command="{Binding SelectOutputFileCommand}" HorizontalAlignment="Left" Content="Select file"/>
 
-            <!-- Start! -->
-            <Button Grid.Column="0" Grid.Row="8" HorizontalAlignment="Left" Click="StartRecording" IsEnabled="{Binding RecordingEnabled}" Content="Start recording"/>
         </Grid>
         <Separator DockPanel.Dock="Top" />
-        <StackPanel DockPanel.Dock="Top" DataContext="{Binding Progress}" Margin="6" IsEnabled="{Binding ProgressEnabled}">
-            <TextBlock Text="{Binding CurrentInstrumentRecording}" Margin="0,0,0,3" />
-            <Grid>
-                <ProgressBar Value="{Binding CompletedInstruments, Mode=OneWay}" Maximum="{Binding TotalInstruments}" Padding="3" />
-                <TextBlock HorizontalAlignment="Center">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{} {0} / {1}">
-                            <Binding Path="CompletedInstruments" Mode="OneWay" />
-                            <Binding Path="TotalInstruments" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Grid>
+        <GroupBox Header="Progress" DockPanel.Dock="Top" Margin="6,0,6,0">
+            <StackPanel DockPanel.Dock="Top" DataContext="{Binding Progress}" Margin="6" IsEnabled="{Binding ProgressEnabled}">
+                <TextBlock Text="{Binding CurrentInstrumentRecording}" Margin="0,0,0,3" />
+                <Grid>
+                    <ProgressBar Value="{Binding CompletedInstruments, Mode=OneWay}" Maximum="{Binding TotalInstruments}" Padding="3" />
+                    <TextBlock HorizontalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{} {0} / {1}">
+                                <Binding Path="CompletedInstruments" Mode="OneWay" />
+                                <Binding Path="TotalInstruments" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <StackPanel Orientation="Horizontal" Margin="6">
+            <!-- Start! -->
+            <Button Command="{Binding StartRecordingCommand}" Content="Start recording"/>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding CancelCommand}" Content="Cancel" />
         </StackPanel>
-        <Button Margin="5,8,5,8" Click="Cancel" HorizontalAlignment="Left" Content="Cancel" />
     </DockPanel>
 </Window>
