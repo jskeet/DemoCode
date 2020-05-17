@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using NodaTime;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -28,6 +29,12 @@ namespace VDrumExplorer.ViewModel.Home
         {
             var entry = new LogEntry(clock.GetCurrentInstant(), text);
             LogEntries.Add(entry);
+        }
+
+        public void Log(string text, Exception exception)
+        {
+            // TODO: Keep the exception in the log entry?
+            Log($"{text}: {exception.GetType().Name}: {exception.Message}");
         }
 
         public void Clear()
