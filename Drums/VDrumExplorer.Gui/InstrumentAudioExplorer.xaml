@@ -64,15 +64,14 @@
                     
                     <!-- Instruments-->
                     <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Text="Instruments:" />
+                    <!-- 
+                      - It would be nice to use a command here, but it's not easy to bind a command to SelectionChanged and MouseDoubleClick events.
+                      - Currently this triggers when *anything* is double clicked, too - not just the items.
+                      -->
                     <ListBox Grid.Row="1" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" Height="Auto" ItemsSource="{Binding SelectedGroup.Audio}" SelectedItem="{Binding SelectedAudio}" DisplayMemberPath="Instrument"
                              VerticalAlignment="Top"
                              SelectionChanged="PlayAudio"
-                             MouseDoubleClick="PlayAudio" />
-                    <!--
-                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" ItemsSource="{Binding SelectedGroup.Audio}" SelectedItem="{Binding SelectedAudio}" DisplayMemberPath="Instrument" />
-
-                    <Button Grid.Row="2" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" Content="Play" Click="PlayAudio" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    -->
+                             MouseDoubleClick="PlayAudio"/>
                 </Grid>
             </GroupBox>
         </Grid>

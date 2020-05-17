@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!--
+      - Note: this would be netstandard2.0 or netstandard2.1,
+      - but NAudio doesn't provide everything we need in that configuration.
+      - An alternative would be to create an interface here and implement it (simply)
+      - in each *application* that needs it.
+      -->
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>Enable</Nullable>
   </PropertyGroup>
@@ -13,7 +19,7 @@
 
   <ItemGroup>
     <!-- TODO: Sort this out.-->
-    <PackageReference Include="NAudio" Version="1.10.0"/>
+    <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="NodaTime" Version="2.4.7" />
   </ItemGroup>
 

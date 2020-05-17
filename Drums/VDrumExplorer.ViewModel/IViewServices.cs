@@ -1,0 +1,38 @@
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using System.Runtime.InteropServices.ComTypes;
+using VDrumExplorer.ViewModel.Audio;
+using VDrumExplorer.ViewModel.Data;
+using VDrumExplorer.ViewModel.Dialogs;
+
+namespace VDrumExplorer.ViewModel
+{
+    /// <summary>
+    /// Interface implemented by the view to handle behavior that is inherently UI-related,
+    /// primarily around opening dialog boxes.
+    /// </summary>
+    public interface IViewServices
+    {
+        /// <summary>
+        /// Shows an "open file" dialog with the given filter.
+        /// </summary>
+        /// <param name="filter">The filter for which files to show. See FileDialog.Filter docs for details.</param>
+        /// <returns>The selected file, or null if the dialog was cancelled.</returns>
+        string? ShowOpenFileDialog(string filter);
+
+        /// <summary>
+        /// Shows a "save file" dialog with the given filter.
+        /// </summary>
+        /// <param name="filter">The filter for which files to show. See FileDialog.Filter docs for details.</param>
+        /// <returns>The selected file, or null if the dialog was cancelled.</returns>
+        string? ShowSaveFileDialog(string filter);
+
+        int? ChooseCopyKitTarget(CopyKitViewModel viewModel);
+        void ShowKitExplorer(KitExplorerViewModel viewModel);
+        void ShowModuleExplorer(ModuleExplorerViewModel viewModel);
+        void ShowInstrumentAudioExplorer(InstrumentAudioExplorerViewModel viewModel);
+        void ShowInstrumentRecorderDialog(InstrumentAudioRecorderViewModel viewModel);
+    }
+}

@@ -9,19 +9,12 @@
         d:DataContext="{d:DesignInstance vmd:DataExplorerViewModel}"
         Title="{Binding Title}" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
-    <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveFile" />
-        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveFileAs" />
-        <CommandBinding Command="{x:Static local:DataExplorerCommands.OpenCopyInKitExplorer}" Executed="OpenCopyInKitExplorer" />
-        <CommandBinding Command="{x:Static local:DataExplorerCommands.CopyKit}" Executed="CopyKit" />
-        <CommandBinding Command="{x:Static local:DataExplorerCommands.ExportKit}" Executed="ExportKit" />
-        <CommandBinding Command="{x:Static local:DataExplorerCommands.ImportKitFromFile}" Executed="ImportKitFromFile" />
-    </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Command="ApplicationCommands.Save" />
-                <MenuItem Command="ApplicationCommands.SaveAs" />
+                <!-- It's annoying that we can't use ApplicationCommands here, but I haven't managed to make it work. -->
+                <MenuItem Command="{Binding SaveFileCommand}" Header="Save" IsCheckable="False"/>
+                <MenuItem Command="{Binding SaveFileAsCommand}" Header="Save As" IsCheckable="False"/>
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource PanelMargin}">
@@ -36,10 +29,10 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Visibility="{Binding SharedViewModel.DeviceConnected, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource PanelMargin}">
-            <Button Margin="{StaticResource ValueMargin}" Click="CopyDataToDevice" Content="{Binding CopyDataTitle}" VerticalAlignment="Center"/>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding CopyDataToDeviceCommand}" CommandParameter="{Binding SelectedNode}" Content="{Binding CopyDataTitle}" VerticalAlignment="Center"/>
             <TextBlock Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center">Kit to copy to:</TextBlock>
             <TextBox Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center" Text="{Binding KitCopyTargetNumber, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
-            <Button Margin="{StaticResource ValueMargin}" Click="PlayNote" VerticalAlignment="Center" IsEnabled="{Binding CanPlayNote}">Play note</Button>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding PlayNoteCommand}" VerticalAlignment="Center">Play note</Button>
             <TextBlock Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" Text="Midi Channel:"/>
             <ComboBox Margin="{StaticResource ValueMargin}" ItemsSource="{Binding MidiChannels}" SelectedItem="{Binding SelectedMidiChannel}" VerticalAlignment="Center"/>
             <TextBlock Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" Text="Attack:"/>
@@ -61,10 +54,10 @@
                         <TextBlock Text="{Binding Format.Text}">
                             <TextBlock.ContextMenu>
                                 <ContextMenu Visibility="{Binding KitContextCommandsEnabled, Converter={StaticResource VisibilityConverter}}">
-                                    <MenuItem Header="Open copy in Kit Explorer" Command="{x:Static local:DataExplorerCommands.OpenCopyInKitExplorer}" CommandParameter="{Binding .}" />
-                                    <MenuItem Header="Copy to another kit" Command="{x:Static local:DataExplorerCommands.CopyKit}" CommandParameter="{Binding .}" />
-                                    <MenuItem Header="Import from file" Command="{x:Static local:DataExplorerCommands.ImportKitFromFile}" CommandParameter="{Binding .}" />
-                                    <MenuItem Header="Export to file" Command="{x:Static local:DataExplorerCommands.ExportKit}" CommandParameter="{Binding .}" />
+                                    <MenuItem Header="Open copy in Kit Explorer" Command="{Binding Root.OpenCopyInKitExplorerCommand}" CommandParameter="{Binding .}" />
+                                    <MenuItem Header="Copy to another kit" Command="{Binding Root.CopyKitCommand}" CommandParameter="{Binding .}" />
+                                    <MenuItem Header="Import from file" Command="{Binding Root.ImportKitFromFileCommand}" CommandParameter="{Binding .}" />
+                                    <MenuItem Header="Export to file" Command="{Binding Root.ExportKitCommand}" CommandParameter="{Binding .}" />
                                 </ContextMenu>
                             </TextBlock.ContextMenu>
                         </TextBlock>

@@ -7,11 +7,11 @@ using System.Windows;
 namespace VDrumExplorer.Gui.Dialogs
 {
     /// <summary>
-    /// Interaction logic for CopyKitTarget.xaml
+    /// Interaction logic for CopyKitTargetDialog.xaml
     /// </summary>
-    public partial class CopyKitTarget : Window
+    public partial class CopyKitTargetDialog : Window
     {
-        public CopyKitTarget()
+        public CopyKitTargetDialog()
         {
             InitializeComponent();
         }

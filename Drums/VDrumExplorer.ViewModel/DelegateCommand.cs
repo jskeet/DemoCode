@@ -8,11 +8,15 @@ using System.Windows.Input;
 namespace VDrumExplorer.ViewModel
 {
     /// <summary>
-    /// Simple ICommand implementation with explicit enablement.
+    /// Base class for command implementations.
     /// </summary>
-    public sealed class DelegateCommand : ICommand
+    public abstract class CommandBase : ICommand
     {
-        private readonly Action action;
+        /// <summary>
+        /// Simple command that is never enabled, and throws on execution
+        /// </summary>
+        public static DelegateCommand NotImplemented { get; } = new DelegateCommand(() => throw new NotImplementedException(), false);
+
         public event EventHandler? CanExecuteChanged;
 
         private bool enabled;
@@ -29,11 +33,34 @@ namespace VDrumExplorer.ViewModel
             }
         }
 
-        public DelegateCommand(Action action, bool enabled) =>
-            (this.action, this.enabled) = (action, enabled);
-
         public bool CanExecute(object parameter) => Enabled;
 
-        public void Execute(object parameter) => action();
+        public abstract void Execute(object parameter);
+    }
+
+    /// <summary>
+    /// Command which ignores parameters.
+    /// </summary>
+    public sealed class DelegateCommand : CommandBase
+    {
+        private readonly Action action;
+
+        public DelegateCommand(Action action, bool enabled) =>
+            (this.action, Enabled) = (action, enabled);
+
+        public override void Execute(object parameter) => action();
+    }
+
+    /// <summary>
+    /// Command which expects a parameter of a specified type.
+    /// </summary>
+    public sealed class DelegateCommand<T> : CommandBase
+    {
+        private readonly Action<T> action;
+
+        public DelegateCommand(Action<T> action, bool enabled) =>
+            (this.action, Enabled) = (action, enabled);
+
+        public override void Execute(object parameter) => action((T) parameter);
     }
 }

@@ -14,17 +14,17 @@
             <TextBlock Text="{Binding SharedViewModel.ConnectedDeviceSchema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="3,3,3,3">
-            <Button Click="LoadFile">Load file</Button>
-            <Button Click="SaveLog" Margin="{StaticResource ValueMargin}">Save log file</Button>
+            <Button Command="{Binding LoadFileCommand}">Load file</Button>
+            <Button Command="{Binding SaveLogCommand}" Margin="{StaticResource ValueMargin}">Save log file</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding SharedViewModel.DeviceConnected}" Margin="3,3,3,3">
             <!-- Note: primary reason for using labels instead of text blocks is that they reflect enabled state more simply. -->
-            <Label VerticalAlignment="Center">Device options:</Label>
-            <Button VerticalAlignment="Center" Margin="{StaticResource ValueMargin}" Click="LoadModuleFromDevice">Load all data</Button>
-            <Button VerticalAlignment="Center" Margin="{StaticResource ValueMargin}" Click="LoadKitFromDevice">Load single kit</Button>
-            <Label VerticalAlignment="Center" Margin="{StaticResource ValueMargin}">Kit number:</Label>
-            <TextBox VerticalAlignment="Center" Margin="{StaticResource ValueMargin}" Text="{Binding LoadKitFromDeviceNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" Width="30"/>
-            <Button VerticalAlignment="Center" Margin="{StaticResource ValueMargin}"  Click="RecordInstrumentsFromDevice">Record instruments</Button>
+            <Label Content="Device options:" />
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding LoadModuleFromDeviceCommand}" Content="Load all data"/>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding LoadKitFromDeviceCommand}" Content="Load single kit"/>
+            <Label Margin="{StaticResource ValueMargin}" Content="Kit number:"/>
+            <TextBox Margin="{StaticResource ValueMargin}" Text="{Binding LoadKitFromDeviceNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" Width="30"/>
+            <Button Margin="{StaticResource ValueMargin}"  Command="{Binding RecordInstrumentAudioCommand}" Content="Record instruments" />
         </StackPanel>
         <Separator DockPanel.Dock="Top" />
         <GroupBox Header="Log" Margin="5,0,5,5">
