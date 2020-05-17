@@ -11,24 +11,28 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public class DataTreeNodeViewModel : ViewModelBase<DataTreeNode>
     {
-        private readonly DataExplorerViewModel parent;
+        // Note: exposing the root like this is somewhat ugly, but it means we can have "4 command instances which take a parameter"
+        // rather than "4 command instances per tree view node". It's relatively tricky to get back to the root datacontext
+        // within the XAML for a menu item.
+        public DataExplorerViewModel Root { get; }
+
         private readonly Lazy<IReadOnlyList<DataTreeNodeViewModel>> children;
 
         public DataFieldFormattableString Format { get; }
         public IReadOnlyList<DataTreeNodeViewModel> Children => children.Value;
 
         public int? KitNumber => Model.SchemaNode.KitNumber;
-        public bool KitContextCommandsEnabled => parent.IsModuleExplorer && KitNumber.HasValue;
+        public bool KitContextCommandsEnabled => Root.IsModuleExplorer && KitNumber.HasValue;
 
         public string? MidiNotePath => Model.SchemaNode.MidiNotePath;
 
         public int? GetMidiNote() => Model.GetMidiNote();
 
-        public DataTreeNodeViewModel(DataTreeNode model, DataExplorerViewModel parent) : base(model)
+        public DataTreeNodeViewModel(DataTreeNode model, DataExplorerViewModel root) : base(model)
         {
-            this.parent = parent;
+            Root = root;
             Format = model.Format;
-            children = Lazy.Create(() => model.Children.ToReadOnlyList(child => new DataTreeNodeViewModel(child, parent)));
+            children = Lazy.Create(() => model.Children.ToReadOnlyList(child => new DataTreeNodeViewModel(child, root)));
         }
 
         internal IReadOnlyList<IDataNodeDetailViewModel> CreateDetails() => Model.Details.ToReadOnlyList(CreateDetail);
@@ -37,7 +41,7 @@ namespace VDrumExplorer.ViewModel.Data
             detail switch
             {
                 ListDataNodeDetail model => new ListDataNodeDetailViewModel(model),
-                FieldContainerDataNodeDetail model => new FieldContainerDataNodeDetailViewModel(model, parent),
+                FieldContainerDataNodeDetail model => new FieldContainerDataNodeDetailViewModel(model, Root),
                 _ => throw new ArgumentException($"Unknown detail type: {detail?.GetType()}")
             };
     }

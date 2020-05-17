@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,6 +12,7 @@ namespace VDrumExplorer.ViewModel.Audio
 {
     public class InstrumentAudioExplorerViewModel : ViewModelBase<ModuleAudio>
     {
+        private readonly IViewServices viewServices;
         private readonly SharedViewModel shared;
         
         public string Title { get; }
@@ -56,8 +56,9 @@ namespace VDrumExplorer.ViewModel.Audio
             set => SetProperty(ref selectedAudio, value);
         }
 
-        public InstrumentAudioExplorerViewModel(SharedViewModel shared, ModuleAudio model, string? file) : base(model)
+        public InstrumentAudioExplorerViewModel(IViewServices viewServices, SharedViewModel shared, ModuleAudio model, string? file) : base(model)
         {
+            this.viewServices = viewServices;
             this.shared = shared;
             Title = file is null
                 ? $"Instrument Audio Explorer ({model.Schema.Identifier.Name})"

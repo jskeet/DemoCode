@@ -27,6 +27,9 @@
             <Style TargetType="TextBlock">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
+            <Style TargetType="Label">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
             <Style TargetType="TextBox">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>

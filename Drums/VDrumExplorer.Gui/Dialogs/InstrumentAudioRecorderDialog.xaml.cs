@@ -10,14 +10,14 @@ using VDrumExplorer.ViewModel.Dialogs;
 namespace VDrumExplorer.Gui.Dialogs
 {
     /// <summary>
-    /// Interaction logic for InstrumentAudioRecorder.xaml
+    /// Interaction logic for InstrumentAudioRecorderDialog.xaml
     /// </summary>
-    public partial class InstrumentAudioRecorder : Window
+    public partial class InstrumentAudioRecorderDialog : Window
     {
         private InstrumentAudioRecorderViewModel ViewModel => (InstrumentAudioRecorderViewModel) DataContext;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        public InstrumentAudioRecorder()
+        public InstrumentAudioRecorderDialog()
         {
             InitializeComponent();
         }

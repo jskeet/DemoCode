@@ -4,6 +4,8 @@
 
 using NodaTime;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 
 namespace VDrumExplorer.ViewModel.Home
 {
@@ -32,5 +34,8 @@ namespace VDrumExplorer.ViewModel.Home
         {
             LogEntries.Clear();
         }
+
+        public void Save(string file) =>
+            File.WriteAllLines(file, LogEntries.Select(entry => $"{entry.Timestamp:yyyy-MM-ddTHH:mm:ss} {entry.Text}"));
     }
 }

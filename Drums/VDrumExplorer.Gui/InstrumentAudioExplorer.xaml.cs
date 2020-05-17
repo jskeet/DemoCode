@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Windows;
 using VDrumExplorer.ViewModel.Audio;
 
@@ -19,13 +20,7 @@ namespace VDrumExplorer.Gui
             InitializeComponent();
         }
 
-        /*
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) =>
-            ViewModel.SelectedGroup = (InstrumentGroupAudioViewModel) treeView.SelectedItem;
-            */
-        private async void PlayAudio(object sender, RoutedEventArgs e)
-        {
+        private async void PlayAudio(object sender, EventArgs e) =>
             await ViewModel.PlayAudio();
-        }
     }
 }

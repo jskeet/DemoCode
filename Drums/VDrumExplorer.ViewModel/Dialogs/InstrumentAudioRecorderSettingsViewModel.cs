@@ -114,7 +114,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
         }
 
-        public string OutputFileFilter => "V-Drum Explorer audio files|*.vaudio";
+        public string OutputFileFilter => FileFilters.InstrumentAudioFiles;
 
         public bool RecordingEnabled => OutputFile is object && SelectedInputDevice is object;
     }

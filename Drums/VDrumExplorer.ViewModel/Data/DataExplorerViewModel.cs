@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Utility;
 
@@ -13,12 +14,22 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public abstract class DataExplorerViewModel : ViewModelBase<ModuleData>
     {
+        protected IViewServices ViewServices { get; }
         private readonly ModuleData data;
 
         public SharedViewModel SharedViewModel { get; }
         public DelegateCommand EditCommand { get; }
         public DelegateCommand CommitCommand { get; }
         public DelegateCommand CancelEditCommand { get; }
+        public DelegateCommand PlayNoteCommand { get; }
+        // There are app commands of course, but it's not clear how we bind them.
+        public DelegateCommand SaveFileCommand { get; }
+        public DelegateCommand SaveFileAsCommand { get; }
+        public CommandBase CopyDataToDeviceCommand { get; }
+
+        public void SaveHandler(object sender, EventArgs e)
+        {
+        }
 
         private string? fileName;
         public string? FileName
@@ -33,6 +44,11 @@ namespace VDrumExplorer.ViewModel.Data
             }
         }
 
+        public abstract ICommand OpenCopyInKitExplorerCommand { get; }
+        public abstract ICommand CopyKitCommand { get; }
+        public abstract ICommand ImportKitFromFileCommand { get; }
+        public abstract ICommand ExportKitCommand { get; }
+
         protected abstract string ExplorerName { get; }
         public abstract string SaveFileFilter { get; }
         protected abstract void SaveToStream(Stream stream);
@@ -40,7 +56,6 @@ namespace VDrumExplorer.ViewModel.Data
         public bool IsKitExplorer => this is KitExplorerViewModel;
         public bool IsModuleExplorer => !IsKitExplorer;
 
-        public bool CanPlayNote => SelectedNode?.MidiNotePath is object;
         public string CopyDataTitle => IsKitExplorer ? "Copy Kit" : "Copy Data";
 
         public string Title => FileName is null
@@ -69,16 +84,21 @@ namespace VDrumExplorer.ViewModel.Data
 
         private ModuleDataSnapshot? snapshot;
 
-        public DataExplorerViewModel(SharedViewModel shared, ModuleData data) : base(data)
+        public DataExplorerViewModel(IViewServices viewServices, SharedViewModel shared, ModuleData data) : base(data)
         {
+            this.ViewServices = viewServices;
             SharedViewModel = shared;
             this.data = data;
             readOnly = true;
-            Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
-            SelectedNode = Root[0];
             EditCommand = new DelegateCommand(EnterEditMode, readOnly);
             CommitCommand = new DelegateCommand(CommitEdit, !readOnly);
             CancelEditCommand = new DelegateCommand(CancelEdit, !readOnly);
+            PlayNoteCommand = new DelegateCommand(PlayNote, shared.DeviceConnected);
+            SaveFileCommand = new DelegateCommand(SaveFile, true);
+            SaveFileAsCommand = new DelegateCommand(SaveFileAs, true);
+            CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, true);
+            Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
+            SelectedNode = Root[0];
         }
 
         public void Log(string text) => SharedViewModel.Log(text);
@@ -99,9 +119,23 @@ namespace VDrumExplorer.ViewModel.Data
             }
         }
 
-        public void Save()
+        private void SaveFileAs() => SaveFileImpl(null);
+
+        private void SaveFile() => SaveFileImpl(FileName);
+
+        private void SaveFileImpl(string? defaultFileName)
         {
-            using (var stream = File.OpenWrite(FileName))
+            string? fileName = defaultFileName;
+            if (fileName is null)
+            {
+                fileName = ViewServices.ShowSaveFileDialog(SaveFileFilter);
+                if (fileName is null)
+                {
+                    return;
+                }
+                FileName = fileName;
+            }
+            using (var stream = File.OpenWrite(fileName))
             {
                 SaveToStream(stream);
             }
@@ -134,16 +168,20 @@ namespace VDrumExplorer.ViewModel.Data
             {
                 if (SetProperty(ref selectedNode, value))
                 {
-                    RaisePropertyChanged(nameof(CanPlayNote));
+                    PlayNoteCommand.Enabled = SelectedNode?.MidiNotePath is object;
                     SelectedNodeDetails = selectedNode?.CreateDetails();
-                    RaisePropertyChanged(nameof(SelectedNodeDetails));
                 }
             }
         }
 
-        public IReadOnlyList<IDataNodeDetailViewModel>? SelectedNodeDetails { get; private set; }
+        private IReadOnlyList<IDataNodeDetailViewModel>? selectedNodeDetails;
+        public IReadOnlyList<IDataNodeDetailViewModel>? SelectedNodeDetails
+        {
+            get => selectedNodeDetails;
+            set => SetProperty(ref selectedNodeDetails, value);
+        }
 
-        public void PlayNote()
+        private void PlayNote()
         {
             var midiClient = SharedViewModel.ConnectedDevice;
             if (midiClient is null)
@@ -158,5 +196,7 @@ namespace VDrumExplorer.ViewModel.Data
             
             midiClient.PlayNote(SelectedMidiChannel, midiNote.Value, Attack);
         }
+
+        protected abstract void CopyDataToDevice();
     }
 }
