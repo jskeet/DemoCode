@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
@@ -23,7 +24,7 @@ namespace VDrumExplorer.Wpf
             if (!TryParseInt32(text, out var kitNumber) ||
                 !schema.KitRoots.TryGetValue(kitNumber, out kitRoot))
             {
-                logger?.Log($"Invalid kit number: {text}");
+                logger?.LogError($"Invalid kit number: {text}");
                 kitRoot = null;
                 return false;
             }

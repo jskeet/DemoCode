@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
@@ -40,38 +41,38 @@ namespace VDrumExplorer.Wpf
             var version = typeof(ModuleLoader).Assembly.GetCustomAttributes().OfType<AssemblyInformationalVersionAttribute>().FirstOrDefault();
             if (version != null)
             {
-                logger.Log($"V-Drum Explorer version {version.InformationalVersion}");
+                logger.LogInformation($"V-Drum Explorer version {version.InformationalVersion}");
             }            
             else
             {
-                logger.Log($"Version attribute not found.");
+                logger.LogWarning($"Version attribute not found.");
             }
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             await LoadSchemaRegistry();
-            logger.Log("Detecting connected V-Drums modules");
+            logger.LogInformation("Detecting connected V-Drums modules");
             detectedMidi = null;
-            var midiDevice = await MidiDevices.DetectSingleRolandMidiClientAsync(logger.Log, SchemaRegistry.KnownSchemas.Keys);
+            var midiDevice = await MidiDevices.DetectSingleRolandMidiClientAsync(logger, SchemaRegistry.KnownSchemas.Keys);
             if (midiDevice != null)
             {
                 detectedMidi = (midiDevice, SchemaRegistry.KnownSchemas[midiDevice.Identifier].Value);
             }            
             midiPanel.IsEnabled = midiDevice is object;
-            logger.Log($"Device detection result: {(midiDevice is object ? $"{midiDevice.Identifier.Name} detected" : "no compatible modules (or multiple modules) detected")}");
-            logger.Log("-----------------");
+            logger.LogInformation($"Device detection result: {(midiDevice is object ? $"{midiDevice.Identifier.Name} detected" : "no compatible modules (or multiple modules) detected")}");
+            logger.LogInformation("-----------------");
         }
 
         private async Task LoadSchemaRegistry()
         {
-            logger.Log($"Loading known schemas");
+            logger.LogInformation($"Loading known schemas");
             foreach (var pair in SchemaRegistry.KnownSchemas)
             {
-                logger.Log($"Loading schema for {pair.Key.Name}");
+                logger.LogInformation($"Loading schema for {pair.Key.Name}");
                 await Task.Run(() => pair.Value.Value);
             }
-            logger.Log($"Finished loading schemas");
+            logger.LogInformation($"Finished loading schemas");
         }
 
         private void OnClosed(object sender, EventArgs e)
@@ -96,7 +97,7 @@ namespace VDrumExplorer.Wpf
             }
             catch (Exception ex)
             {
-                logger.Log($"Error loading {dialog.FileName}", ex);
+                logger.LogError($"Error loading {dialog.FileName}", ex);
                 return;
             }
             // TODO: Potentially declare an IDrumData interface with the Schema property and Validate method.
@@ -122,19 +123,19 @@ namespace VDrumExplorer.Wpf
                     break;
                 }
                 default:
-                    logger.Log($"Unknown file data type");
+                    logger.LogError($"Unknown file data type");
                     break;
             }
 
             void Validate(Func<Data.Fields.ValidationResult> validationAction)
             {
-                logger.Log($"Validating fields");
+                logger.LogInformation($"Validating fields");
                 var validationResult = validationAction();
                 foreach (var error in validationResult.Errors)
                 {
-                    logger.Log($"Field {error.Path} error: {error.Message}");
+                    logger.LogError($"Field {error.Path} error: {error.Message}");
                 }
-                logger.Log($"Validation complete. Total fields: {validationResult.TotalFields}. Errors: {validationResult.Errors.Count}");
+                logger.LogInformation($"Validation complete. Total fields: {validationResult.TotalFields}. Errors: {validationResult.Errors.Count}");
             }
         }
 

@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -128,17 +129,17 @@ namespace VDrumExplorer.Wpf
             }
             catch (Exception ex)
             {
-                Logger.Log($"Error loading {dialog.FileName}", ex);
+                Logger.LogError($"Error loading {dialog.FileName}", ex);
                 return;
             }
             if (!(loaded is Kit kit))
             {
-                Logger.Log("Loaded file was not a kit");
+                Logger.LogError("Loaded file was not a kit");
                 return;
             }
             if (!kit.Schema.Identifier.Equals(Schema.Identifier))
             {
-                Logger.Log($"Kit was from {kit.Schema.Identifier.Name}; this module is {Schema.Identifier.Name}");
+                Logger.LogError($"Kit was from {kit.Schema.Identifier.Name}; this module is {Schema.Identifier.Name}");
                 return;
             }
             var clonedData = kit.KitRoot.Context.CloneData(kit.Data, targetKitNode.Context.Address);

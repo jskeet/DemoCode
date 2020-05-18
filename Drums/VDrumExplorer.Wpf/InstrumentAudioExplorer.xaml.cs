@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -103,7 +104,7 @@ namespace VDrumExplorer.Wpf
             }
             catch (Exception e)
             {
-                logger.Log("Error playing sample", e);
+                logger.LogError("Error playing sample", e);
             }
         }
 
