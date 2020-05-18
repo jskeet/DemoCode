@@ -24,7 +24,7 @@ namespace VDrumExplorer.Console
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             var console = context.Console.Out;
-            var clients = await MidiDevices.DetectRolandMidiClientsAsync(console.WriteLine, SchemaRegistry.KnownSchemas.Keys).ToListAsync();
+            var clients = await MidiDevices.DetectRolandMidiClientsAsync(new ConsoleLogger(console), SchemaRegistry.KnownSchemas.Keys).ToListAsync();
             foreach (var client in clients)
             {
                 client.Dispose();

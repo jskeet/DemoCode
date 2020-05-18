@@ -1,27 +1,26 @@
-﻿// Copyright 2019 Jon Skeet. All rights reserved.
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
-using System.Windows.Controls;
+using System.CommandLine.IO;
 
-namespace VDrumExplorer.Wpf
+namespace VDrumExplorer.Console
 {
-    internal class TextBlockLogger : ILogger
+    internal sealed class ConsoleLogger : ILogger
     {
-        private readonly TextBlock block;
+        private readonly IStandardStreamWriter writer;
 
-        internal TextBlockLogger(TextBlock block) =>
-            this.block = block;
+        internal ConsoleLogger(IStandardStreamWriter writer) =>
+            this.writer = writer;
 
         public IDisposable BeginScope<TState>(TState state) => NoOpDisposable.Instance;
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
         private void Log(string text) =>
-            block.Text += $"{DateTime.Now:HH:mm:ss.fff} {text}\r\n";
+            writer.WriteLine(text);
 
         private void Log(string message, Exception e)
         {
@@ -41,8 +40,6 @@ namespace VDrumExplorer.Wpf
                 Log(message, exception);
             }
         }
-
-        public void SaveLog(string file) => File.WriteAllText(file, block.Text);
 
         private class NoOpDisposable : IDisposable
         {

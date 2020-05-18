@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -49,7 +50,7 @@ namespace VDrumExplorer.Wpf
             {
                 Stopwatch sw = Stopwatch.StartNew();
                 var containers = root.AnnotateDescendantsAndSelf().Where(c => c.Container.Loadable).ToList();
-                logger.Log($"Loading {containers.Count} containers from device {schema.Identifier.Name}");
+                logger.LogInformation($"Loading {containers.Count} containers from device {schema.Identifier.Name}");
                 progress.Maximum = containers.Count;
                 int loaded = 0;
                 foreach (var container in containers)
@@ -62,16 +63,16 @@ namespace VDrumExplorer.Wpf
                 }
                 Data = data;
                 DialogResult = true;
-                logger.Log($"Finished loading in {(int) sw.Elapsed.TotalSeconds} seconds");
+                logger.LogInformation($"Finished loading in {(int) sw.Elapsed.TotalSeconds} seconds");
             }
             catch (OperationCanceledException)
             {
-                logger.Log("Data loading from device was cancelled");
+                logger.LogWarning("Data loading from device was cancelled");
                 DialogResult = false;
             }
             catch (Exception ex)
             {
-                logger.Log("Error loading data from device", ex);
+                logger.LogError("Error loading data from device", ex);
             }
             finally
             {
@@ -92,7 +93,7 @@ namespace VDrumExplorer.Wpf
             int written = 0;
             try
             {
-                logger.Log($"Writing {segments.Count} segments to the device.");
+                logger.LogInformation($"Writing {segments.Count} segments to the device.");
                 progress.Maximum = segments.Count;
                 foreach (var segment in segments)
                 {
@@ -102,19 +103,19 @@ namespace VDrumExplorer.Wpf
                     written++;
                     progress.Value = written;
                 }
-                logger.Log($"Finished writing segments to the device {(int) sw.Elapsed.TotalSeconds} seconds.");
+                logger.LogInformation($"Finished writing segments to the device {(int) sw.Elapsed.TotalSeconds} seconds.");
                 DialogResult = true;
             }
             catch (OperationCanceledException)
             {
-                logger.Log($"Data copying to device was cancelled. Warning: module may now have inconsistent data.");
+                logger.LogWarning($"Data copying to device was cancelled. Warning: module may now have inconsistent data.");
                 DialogResult = false;
             }
             catch (Exception e)
             {
-                logger.Log("Failed while writing data to the device.");
-                logger.Log($"Segments successfully written: {written}");
-                logger.Log($"Error: {e}");
+                logger.LogError("Failed while writing data to the device.");
+                logger.LogInformation($"Segments successfully written: {written}");
+                logger.LogError($"Error: {e}");
                 DialogResult = false;
             }
         }
@@ -130,11 +131,11 @@ namespace VDrumExplorer.Wpf
             }
             catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
             {
-                logger.Log($"Device didn't respond for container {annotatedContainer.Path}; skipping.");
+                logger.LogWarning($"Device didn't respond for container {annotatedContainer.Path}; skipping.");
             }
             catch
             {
-                logger.Log($"Failure while loading {annotatedContainer.Path}");
+                logger.LogError($"Failure while loading {annotatedContainer.Path}");
                 throw;
             }
         }

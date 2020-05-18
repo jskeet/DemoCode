@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ namespace VDrumExplorer.Wpf
             var instrumentRoot = config.KitRoot.DescendantNodesAndSelf().FirstOrDefault(node => node.InstrumentNumber == 1);
             if (instrumentRoot == null)
             {
-                logger.Log($"No instrument root available. Please email a bug report to skeet@pobox.com");
+                logger.LogError($"No instrument root available. Please email a bug report to skeet@pobox.com");
                 return;
             }
 
@@ -84,13 +85,13 @@ namespace VDrumExplorer.Wpf
             var midiNoteChain = instrumentRoot.MidiNoteField;
             if (midiNoteChain == null)
             {
-                logger.Log($"No midi field available. Please email a bug report to skeet@pobox.com");
+                logger.LogError($"No midi field available. Please email a bug report to skeet@pobox.com");
                 return;
             }
 
-            logger.Log($"Starting recording process");
+            logger.LogInformation($"Starting recording process");
             var midiNoteContext = midiNoteChain.GetFinalContext(instrumentRoot.Context);
-            logger.Log($"Loading existing data to restore after recording");
+            logger.LogInformation($"Loading existing data to restore after recording");
             List<FixedContainer> instrumentContainers;
             try
             {
@@ -108,7 +109,7 @@ namespace VDrumExplorer.Wpf
             }
             catch (Exception e)
             {
-                logger.Log($"Error loading data for recording", e);
+                logger.LogError($"Error loading data for recording", e);
                 return;
             }
 
@@ -122,14 +123,14 @@ namespace VDrumExplorer.Wpf
                  select (ct, (InstrumentField) field)).FirstOrDefault();
             if (instrumentFieldContext == null)
             {
-                logger.Log($"No instrument field available. Please email a bug report to skeet@pobox.com");
+                logger.LogError($"No instrument field available. Please email a bug report to skeet@pobox.com");
                 return;
             }
 
             var midiNote = midiNoteChain.FinalField.GetMidiNote(midiNoteContext, data);
             if (midiNote == null)
             {
-                logger.Log($"No midi note for instrument 1. Please email a bug report to skeet@pobox.com");
+                logger.LogError($"No midi note for instrument 1. Please email a bug report to skeet@pobox.com");
             }
 
             var presetInstrumentsToRecord = schema.PresetInstruments
@@ -137,7 +138,7 @@ namespace VDrumExplorer.Wpf
                 .ToList();
             progress.Maximum = presetInstrumentsToRecord.Count + config.UserSamples;
 
-            logger.Log($"Starting recording process");
+            logger.LogInformation($"Starting recording process");
             try
             {
                 var captures = new List<InstrumentAudio>();
@@ -157,15 +158,15 @@ namespace VDrumExplorer.Wpf
                 {
                     moduleAudio.Save(output);
                 }
-                logger.Log($"Saved instrument sounds to {config.OutputFile}.");
+                logger.LogInformation($"Saved instrument sounds to {config.OutputFile}.");
             }
             catch (OperationCanceledException)
             {
-                logger.Log("Cancelled recording");
+                logger.LogWarning("Cancelled recording");
             }
             catch (Exception e)
             {
-                logger.Log($"Error recording data", e);
+                logger.LogError($"Error recording data", e);
             }
             finally
             {
@@ -201,7 +202,7 @@ namespace VDrumExplorer.Wpf
 
         private async Task RestoreData(ModuleData data)
         {
-            logger.Log("Restoring original data");
+            logger.LogInformation("Restoring original data");
             try
             {
                 foreach (var segment in data.GetSegments())
@@ -213,7 +214,7 @@ namespace VDrumExplorer.Wpf
             }
             catch (Exception e)
             {
-                logger.Log($"Error restoring data", e);
+                logger.LogError($"Error restoring data", e);
             }
         }
 
