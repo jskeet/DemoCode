@@ -11,13 +11,13 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
             <TextBlock>Connected device: </TextBlock>
-            <TextBlock Text="{Binding SharedViewModel.ConnectedDeviceSchema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
+            <TextBlock Text="{Binding DeviceViewModel.ConnectedDeviceSchema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="3,3,3,3">
             <Button Command="{Binding LoadFileCommand}">Load file</Button>
             <Button Command="{Binding SaveLogCommand}" Margin="{StaticResource ValueMargin}">Save log file</Button>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding SharedViewModel.DeviceConnected}" Margin="3,3,3,3">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding DeviceViewModel.DeviceConnected}" Margin="3,3,3,3">
             <!-- Note: primary reason for using labels instead of text blocks is that they reflect enabled state more simply. -->
             <Label Content="Device options:" />
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding LoadModuleFromDeviceCommand}" Content="Load all data"/>
@@ -29,7 +29,7 @@
         <Separator DockPanel.Dock="Top" />
         <GroupBox Header="Log" Margin="5,0,5,5">
             <ScrollViewer>
-                <ItemsControl ItemsSource="{Binding Log.LogEntries}">
+                <ItemsControl ItemsSource="{Binding LogViewModel.LogEntries}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Grid.IsSharedSizeScope="True" />

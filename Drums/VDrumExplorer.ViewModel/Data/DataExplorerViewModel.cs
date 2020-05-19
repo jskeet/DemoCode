@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +15,11 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public abstract class DataExplorerViewModel : ViewModelBase<ModuleData>
     {
+        protected ILogger Logger { get; }
         protected IViewServices ViewServices { get; }
+        public DeviceViewModel DeviceViewModel { get; }
         private readonly ModuleData data;
 
-        public SharedViewModel SharedViewModel { get; }
         public DelegateCommand EditCommand { get; }
         public DelegateCommand CommitCommand { get; }
         public DelegateCommand CancelEditCommand { get; }
@@ -84,25 +86,23 @@ namespace VDrumExplorer.ViewModel.Data
 
         private ModuleDataSnapshot? snapshot;
 
-        public DataExplorerViewModel(IViewServices viewServices, SharedViewModel shared, ModuleData data) : base(data)
+        public DataExplorerViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel, ModuleData data) : base(data)
         {
+            Logger = logger;
+            this.DeviceViewModel = deviceViewModel;
             this.ViewServices = viewServices;
-            SharedViewModel = shared;
             this.data = data;
             readOnly = true;
             EditCommand = new DelegateCommand(EnterEditMode, readOnly);
             CommitCommand = new DelegateCommand(CommitEdit, !readOnly);
             CancelEditCommand = new DelegateCommand(CancelEdit, !readOnly);
-            PlayNoteCommand = new DelegateCommand(PlayNote, shared.DeviceConnected);
+            PlayNoteCommand = new DelegateCommand(PlayNote, deviceViewModel.DeviceConnected);
             SaveFileCommand = new DelegateCommand(SaveFile, true);
             SaveFileAsCommand = new DelegateCommand(SaveFileAs, true);
             CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, true);
             Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
             SelectedNode = Root[0];
         }
-
-        public void Log(string text) => SharedViewModel.Log(text);
-        public void Log(string text, Exception exception) => SharedViewModel.Log(text, exception);
 
         private bool readOnly;
         public bool ReadOnly
@@ -183,7 +183,7 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void PlayNote()
         {
-            var midiClient = SharedViewModel.ConnectedDevice;
+            var midiClient = DeviceViewModel.ConnectedDevice;
             if (midiClient is null)
             {
                 return;

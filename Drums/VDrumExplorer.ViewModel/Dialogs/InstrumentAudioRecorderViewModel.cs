@@ -2,42 +2,36 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Microsoft.VisualBasic.CompilerServices;
-using NAudio.SoundFont;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Data.Logical;
-using VDrumExplorer.ViewModel.Home;
 
 namespace VDrumExplorer.ViewModel.Dialogs
 {
     public class InstrumentAudioRecorderViewModel : ViewModelBase
     {
         private CancellationTokenSource? cancellationTokenSource;
-        private readonly IViewServices viewServices;
         private readonly ModuleSchema schema;
         private readonly RolandMidiClient device;
-        private LogViewModel logger;
+        private ILogger logger;
         public InstrumentAudioRecorderSettingsViewModel Settings { get; }
         public InstrumentAudioRecorderProgressViewModel Progress { get; }
         public CommandBase StartRecordingCommand { get; }
         public CommandBase CancelCommand { get; }
         public string Title { get; }
 
-        public InstrumentAudioRecorderViewModel(IViewServices viewServices, SharedViewModel shared)
+        public InstrumentAudioRecorderViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel)
         {
-            this.viewServices = viewServices;
-            logger = shared.LogViewModel;
-            schema = shared.ConnectedDeviceSchema ?? throw new InvalidOperationException("Cannot record audio without a connected device");
-            device = shared.ConnectedDevice ?? throw new InvalidOperationException("Cannot record audio without a connected device");
+            this.logger = logger;
+            schema = deviceViewModel.ConnectedDeviceSchema ?? throw new InvalidOperationException("Cannot record audio without a connected device");
+            device = deviceViewModel.ConnectedDevice ?? throw new InvalidOperationException("Cannot record audio without a connected device");
 
             Settings = new InstrumentAudioRecorderSettingsViewModel(viewServices, schema, device.InputName);
             Progress = new InstrumentAudioRecorderProgressViewModel();
@@ -90,7 +84,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             // 
 
             var originalKit = await GetCurrentKit();
-            logger.Log($"Changing from kit {originalKit} to {Settings.KitNumber}");
+            logger.LogInformation($"Changing from kit {originalKit} to {Settings.KitNumber}");
             await SetCurrentKit(Settings.KitNumber);
             try
             {
@@ -98,17 +92,17 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             catch (OperationCanceledException)
             {
-                logger.Log($"Recording operation canceled");
+                logger.LogInformation($"Recording operation canceled");
                 Progress.CurrentInstrumentRecording = "Recording cancelled";
             }
             catch (Exception e)
             {
-                logger.Log($"Recording operation failed", e);
+                logger.LogError($"Recording operation failed", e);
                 Progress.CurrentInstrumentRecording = "Error - see log";
             }
             finally
             {
-                logger.Log($"Changing kit back to {originalKit}");
+                logger.LogInformation($"Changing kit back to {originalKit}");
                 await SetCurrentKit(originalKit);
             }
 
@@ -290,7 +284,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
                 .Children.First(n => n.SchemaNode.Name == "Trigger[1]");
 
             Progress.CurrentInstrumentRecording = "Loading kit data";
-            logger.Log($"Loading data from kit {Settings.KitNumber} to restore later");
+            logger.LogInformation($"Loading data from kit {Settings.KitNumber} to restore later");
             var snapshot = await LoadSnapshotFromDevice(moduleData, token);
             // Populate the module data with the snapshot we've created.
             moduleData.LoadSnapshot(snapshot);
@@ -308,7 +302,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             // TODO: How do we save a FieldContainerDataNodeDetail to a DataSegment? New method?
             // TODO: Can we just poke the instrument field itself? (Well, the two bits of it...)
 
-            logger.Log($"Recording {instrumentsToRecord.Count} instruments");
+            logger.LogInformation($"Recording {instrumentsToRecord.Count} instruments");
             try
             {
                 // Just simulate it for the moment...
@@ -322,11 +316,11 @@ namespace VDrumExplorer.ViewModel.Dialogs
             finally
             {
                 Progress.CurrentInstrumentRecording = "Restoring kit data";
-                logger.Log($"Restoring snapshot to kit {Settings.KitNumber}");
+                logger.LogInformation($"Restoring snapshot to kit {Settings.KitNumber}");
                 // Don't cancel restoring the snapshot
                 await SaveSnapshotToDevice(snapshot, CancellationToken.None);
             }
-            logger.Log($"Recording complete");
+            logger.LogInformation($"Recording complete");
             Progress.CurrentInstrumentRecording = "Complete";
         }
 

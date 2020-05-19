@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Windows.Input;
 using VDrumExplorer.Model;
@@ -16,8 +17,10 @@ namespace VDrumExplorer.ViewModel.Home
     public class ExplorerHomeViewModel : ViewModelBase
     {
         private readonly IViewServices viewServices;
+        private readonly ILogger logger;
 
-        public SharedViewModel SharedViewModel { get; }
+        public LogViewModel LogViewModel { get; }
+        public DeviceViewModel DeviceViewModel { get; }
 
         public ICommand LoadKitFromDeviceCommand { get; }
         public ICommand LoadModuleFromDeviceCommand { get; }
@@ -25,12 +28,12 @@ namespace VDrumExplorer.ViewModel.Home
         public ICommand SaveLogCommand { get; }
         public ICommand LoadFileCommand { get; }
 
-        public LogViewModel Log => SharedViewModel.LogViewModel;
-
-        public ExplorerHomeViewModel(IViewServices viewServices, SharedViewModel shared)
+        public ExplorerHomeViewModel(IViewServices viewServices, LogViewModel logViewModel, DeviceViewModel deviceViewModel)
         {
             this.viewServices = viewServices;
-            SharedViewModel = shared;
+            LogViewModel = logViewModel;
+            logger = LogViewModel.Logger;
+            DeviceViewModel = deviceViewModel;
             LoadModuleFromDeviceCommand = new DelegateCommand(LoadModuleFromDevice, true);
             LoadKitFromDeviceCommand = new DelegateCommand(LoadKitFromDevice, true);
             RecordInstrumentAudioCommand = new DelegateCommand(RecordInstrumentAudio, true);
@@ -42,7 +45,7 @@ namespace VDrumExplorer.ViewModel.Home
         public int LoadKitFromDeviceNumber
         {
             get => loadKitFromDeviceNumber;
-            set => SetProperty(ref loadKitFromDeviceNumber, SharedViewModel.ConnectedDeviceSchema.ValidateKitNumber(value));
+            set => SetProperty(ref loadKitFromDeviceNumber, DeviceViewModel.ConnectedDeviceSchema.ValidateKitNumber(value));
         }
 
         private void LoadModuleFromDevice()
@@ -55,7 +58,7 @@ namespace VDrumExplorer.ViewModel.Home
 
         private void RecordInstrumentAudio()
         {
-            var vm = new InstrumentAudioRecorderViewModel(viewServices, SharedViewModel);
+            var vm = new InstrumentAudioRecorderViewModel(viewServices, logger, DeviceViewModel);
             viewServices.ShowInstrumentRecorderDialog(vm);
             // TODO: On success, open the InstrumentAudioExplorer?
         }
@@ -67,7 +70,7 @@ namespace VDrumExplorer.ViewModel.Home
             {
                 return;
             }
-            SharedViewModel.LogViewModel.Save(file);
+            LogViewModel.Save(file);
         }
 
         private void LoadFile()
@@ -84,7 +87,7 @@ namespace VDrumExplorer.ViewModel.Home
             }
             catch (Exception ex)
             {
-                SharedViewModel.Log($"Error loading {file}", ex);
+                logger.LogError($"Error loading {file}", ex);
                 return;
             }
             // TODO: Potentially declare an IDrumData interface with the Schema property and Validate method.
@@ -92,25 +95,25 @@ namespace VDrumExplorer.ViewModel.Home
             {
                 case Kit kit:
                     {
-                        var vm = new KitExplorerViewModel(viewServices, SharedViewModel, kit) { FileName = file };
+                        var vm = new KitExplorerViewModel(viewServices, logger, DeviceViewModel, kit) { FileName = file };
                         viewServices.ShowKitExplorer(vm);
                         break;
                     }
                 case Module module:
                     {
-                        var vm = new ModuleExplorerViewModel(viewServices, SharedViewModel, module) { FileName = file };
+                        var vm = new ModuleExplorerViewModel(viewServices, logger, DeviceViewModel, module) { FileName = file };
                         viewServices.ShowModuleExplorer(vm);
                         break;
                     }
                 case ModuleAudio audio:
                     {
                         // TODO: Maybe refactor for consistency?
-                        var vm = new InstrumentAudioExplorerViewModel(viewServices, SharedViewModel, audio, file);
+                        var vm = new InstrumentAudioExplorerViewModel(audio, file);
                         viewServices.ShowInstrumentAudioExplorer(vm);
                         break;
                     }
                 default:
-                    SharedViewModel.Log($"Unknown file data type");
+                    logger.LogError($"Unknown file data type");
                     break;
             }
         }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Windows.Input;
@@ -15,8 +16,8 @@ namespace VDrumExplorer.ViewModel.Data
     {
         public Module Module { get; }
 
-        public ModuleExplorerViewModel(IViewServices viewServices, SharedViewModel shared, Module module)
-            : base(viewServices, shared, module.Data)
+        public ModuleExplorerViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel, Module module)
+            : base(viewServices, logger, deviceViewModel, module.Data)
         {
             Module = module;
             OpenCopyInKitExplorerCommand = new DelegateCommand<DataTreeNodeViewModel>(OpenCopyInKitExplorer, true);
@@ -38,7 +39,7 @@ namespace VDrumExplorer.ViewModel.Data
         private void OpenCopyInKitExplorer(DataTreeNodeViewModel kitNode)
         {
             var kit = Module.ExportKit(kitNode.KitNumber!.Value);
-            var viewModel = new KitExplorerViewModel(ViewServices, SharedViewModel, kit);
+            var viewModel = new KitExplorerViewModel(ViewServices, Logger, DeviceViewModel, kit);
             ViewServices.ShowKitExplorer(viewModel);
         }
 
@@ -67,18 +68,18 @@ namespace VDrumExplorer.ViewModel.Data
             }
             catch (Exception ex)
             {
-                Log($"Error loading {file}", ex);
+                Logger.LogError($"Error loading {file}", ex);
                 return;
             }
             if (!(loaded is Kit kit))
             {
-                Log("Loaded file was not a kit");
+                Logger.LogError("Loaded file was not a kit");
                 return;
             }
 
             if (!kit.Schema.Identifier.Equals(Module.Schema.Identifier))
             {
-                Log($"Kit was from {kit.Schema.Identifier.Name}; this module is {Module.Schema.Identifier.Name}");
+                Logger.LogError($"Kit was from {kit.Schema.Identifier.Name}; this module is {Module.Schema.Identifier.Name}");
                 return;
             }
             Module.ImportKit(kit, kitNode.KitNumber!.Value);

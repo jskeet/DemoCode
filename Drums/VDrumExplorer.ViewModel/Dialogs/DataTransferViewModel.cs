@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -15,8 +16,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
 {
     public sealed class DataTransferViewModel : ViewModelBase
     {
-        private SharedViewModel shared;
-
+        private readonly ILogger logger;
         public ICommand CancelCommand { get; }
         public string Title { get; }
 
@@ -41,9 +41,9 @@ namespace VDrumExplorer.ViewModel.Dialogs
             private set => SetProperty(ref currentItem, value);
         }
 
-        public DataTransferViewModel(SharedViewModel shared, string title)
+        public DataTransferViewModel(ILogger logger, string title)
         {
-            this.shared = shared;
+            this.logger = logger;
             Title = title;
             CancelCommand = new DelegateCommand(Cancel, true);
         }
@@ -96,12 +96,12 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
             {
-                shared.Log($"Device didn't respond for container {container.Path}; aborting.");
+                logger.LogError($"Device didn't respond for container {container.Path}; aborting.");
                 throw;
             }
-            catch
+            catch (Exception e)
             {
-                shared.Log($"Failure while loading {container.Path}");
+                logger.LogError($"Failure while loading {container.Path}", e);
                 throw;
             }
         }
