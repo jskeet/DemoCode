@@ -16,14 +16,16 @@ namespace VDrumExplorer.Gui
     /// </summary>
     public partial class App : Application
     {
-        private SharedViewModel sharedViewModel;
+        private DeviceViewModel deviceViewModel;
+        private LogViewModel logViewModel;
 
         public App()
         {
-            sharedViewModel = new SharedViewModel();
+            deviceViewModel = new DeviceViewModel();
+            logViewModel = new LogViewModel();
             DispatcherUnhandledException += (sender, args) =>
             {
-                sharedViewModel.Log("Unhandled exception", args.Exception);
+                logViewModel.Log("Unhandled exception", args.Exception);
                 args.Handled = true;
             };
         }
@@ -32,17 +34,17 @@ namespace VDrumExplorer.Gui
         {
             base.OnStartup(e);
 
-            var viewModel = new ExplorerHomeViewModel(ViewServices.Instance, sharedViewModel);
+            var viewModel = new ExplorerHomeViewModel(ViewServices.Instance, logViewModel, deviceViewModel);
             MainWindow = new ExplorerHome { DataContext = viewModel };
             MainWindow.Show();
-            sharedViewModel.LogVersion(GetType());
-            await sharedViewModel.DetectModule();
+            logViewModel.LogVersion(GetType());
+            await deviceViewModel.DetectModule(logViewModel.Logger);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            sharedViewModel?.ConnectedDevice?.Dispose();
+            deviceViewModel?.ConnectedDevice?.Dispose();
         }
 
         // TODO: Need to get at this somewhere...

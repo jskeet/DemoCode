@@ -8,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace VDrumExplorer.ViewModel.Home
 {
@@ -43,6 +44,19 @@ namespace VDrumExplorer.ViewModel.Home
         public void Clear()
         {
             LogEntries.Clear();
+        }
+
+        public void LogVersion(Type type)
+        {
+            var version = type.Assembly.GetCustomAttributes().OfType<AssemblyInformationalVersionAttribute>().FirstOrDefault();
+            if (version != null)
+            {
+                Log($"V-Drum Explorer version {version.InformationalVersion}");
+            }
+            else
+            {
+                Log($"Version attribute not found.");
+            }
         }
 
         public void Save(string file) =>

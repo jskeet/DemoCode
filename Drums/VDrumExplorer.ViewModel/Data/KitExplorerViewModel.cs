@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Windows.Input;
@@ -32,7 +33,8 @@ namespace VDrumExplorer.ViewModel.Data
             set => SetProperty(ref kitCopyTargetNumber, Kit.Schema.ValidateKitNumber(value));
         }
 
-        public KitExplorerViewModel(IViewServices viewServices, SharedViewModel shared, Kit kit) : base(viewServices, shared, kit.Data)
+        public KitExplorerViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel, Kit kit)
+            : base(viewServices, logger, deviceViewModel, kit.Data)
         {
             Kit = kit;
             kitCopyTargetNumber = kit.DefaultKitNumber;
