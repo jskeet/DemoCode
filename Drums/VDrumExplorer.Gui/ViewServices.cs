@@ -4,6 +4,7 @@
 
 using Microsoft.Win32;
 using System;
+using System.Threading.Tasks;
 using VDrumExplorer.Gui.Dialogs;
 using VDrumExplorer.ViewModel;
 using VDrumExplorer.ViewModel.Audio;
@@ -54,5 +55,22 @@ namespace VDrumExplorer.Gui
 
         public void ShowInstrumentAudioExplorer(InstrumentAudioExplorerViewModel viewModel) =>
             new InstrumentAudioExplorer { DataContext = viewModel }.Show();
+
+        public async Task<T?> ShowDataTransferDialog<T>(DataTransferViewModel<T> viewModel)
+            where T : class
+        {
+            var dialog = new DataTransferDialog { DataContext = viewModel };
+            // Ugly hack: we can't bind DialogResult to the ViewModel in XAML, so let's just do it here.
+            viewModel.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(viewModel.DialogResult))
+                {
+                    dialog.DialogResult = viewModel.DialogResult;
+                }
+            };
+            var task = viewModel.TransferAsync();
+            var result = dialog.ShowDialog();
+            return result == true ? await task : null;
+        }
     }
 }

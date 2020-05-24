@@ -11,7 +11,7 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
             <TextBlock>Connected device: </TextBlock>
-            <TextBlock Text="{Binding DeviceViewModel.ConnectedDeviceSchema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
+            <TextBlock Text="{Binding DeviceViewModel.ConnectedDevice.Schema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="3,3,3,3">
             <Button Command="{Binding LoadFileCommand}">Load file</Button>

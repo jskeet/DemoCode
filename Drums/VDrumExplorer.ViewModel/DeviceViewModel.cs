@@ -6,20 +6,14 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Device;
 
 namespace VDrumExplorer.ViewModel
 {
     public sealed class DeviceViewModel : ViewModelBase
     {
-        private ModuleSchema? connectedDeviceSchema;
-        public ModuleSchema? ConnectedDeviceSchema
-        {
-            get => connectedDeviceSchema;
-            set => SetProperty(ref connectedDeviceSchema, value);
-        }
-
-        private RolandMidiClient? connectedDevice;
-        public RolandMidiClient? ConnectedDevice
+        private DeviceController? connectedDevice;
+        public DeviceController? ConnectedDevice
         {
             get => connectedDevice;
             set
@@ -35,10 +29,9 @@ namespace VDrumExplorer.ViewModel
 
         public async Task DetectModule(ILogger logger)
         {
-            ConnectedDevice = await MidiDevices.DetectSingleRolandMidiClientAsync(logger, ModuleSchema.KnownSchemas.Keys);
-            ConnectedDeviceSchema = ConnectedDevice is null ? null : ModuleSchema.KnownSchemas[ConnectedDevice.Identifier].Value;
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(logger, ModuleSchema.KnownSchemas.Keys);
+            ConnectedDevice = client is null ? null : new DeviceController(client);
             RaisePropertyChanged(nameof(ConnectedDevice));
-            RaisePropertyChanged(nameof(ConnectedDeviceSchema));
         }
     }
 }

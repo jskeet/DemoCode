@@ -10,13 +10,17 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Device;
 using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.ViewModel.Dialogs
 {
-    public sealed class DataTransferViewModel : ViewModelBase
+    /// <summary>
+    /// Non-generic view-model for the sake of the designer
+    /// </summary>
+    public class DataTransferViewModel : ViewModelBase
     {
-        private readonly ILogger logger;
+        protected CancellationTokenSource CancellationTokenSource { get; }
         public ICommand CancelCommand { get; }
         public string Title { get; }
 
@@ -24,86 +28,79 @@ namespace VDrumExplorer.ViewModel.Dialogs
         public int Completed
         {
             get => completed;
-            private set => SetProperty(ref completed, value);
+            protected set => SetProperty(ref completed, value);
         }
 
         private int total;
         public int Total
         {
             get => total;
-            private set => SetProperty(ref total, value);
+            protected set => SetProperty(ref total, value);
         }
 
         private string currentItem = "Progress";
         public string CurrentItem
         {
             get => currentItem;
-            private set => SetProperty(ref currentItem, value);
+            protected set => SetProperty(ref currentItem, value);
         }
 
-        public DataTransferViewModel(ILogger logger, string title)
+        private bool? dialogResult;
+        public bool? DialogResult
         {
-            this.logger = logger;
+            get => dialogResult;
+            set => SetProperty(ref dialogResult, value);
+        }
+
+        public DataTransferViewModel(string title)
+        {
             Title = title;
             CancelCommand = new DelegateCommand(Cancel, true);
+            CancellationTokenSource = new CancellationTokenSource();
         }
 
-        private void Cancel()
+        private void Cancel() => CancellationTokenSource.Cancel();
+
+    }
+
+    public sealed class DataTransferViewModel<T> : DataTransferViewModel
+    {
+        private readonly ILogger logger;
+        private readonly Func<IProgress<TransferProgress>, CancellationToken, Task<T>> transferFunction;
+
+        public DataTransferViewModel(ILogger logger, string title, Func<IProgress<TransferProgress>, CancellationToken, Task<T>> transferFunction)
+            : base(title)
         {
+            this.transferFunction = transferFunction;
+            this.logger = logger;
         }
 
-        internal async Task StoreDataAsync(RolandMidiClient client, IReadOnlyList<DataSegment> segments, CancellationToken cancellationToken)
+        public async Task<T> TransferAsync()
         {
-            Completed = 0;
-            Total = segments.Count;
-
-            foreach (var segment in segments)
-            {
-                CurrentItem = $"Storing segment at {segment.Address.DisplayValue:x8}";
-                cancellationToken.ThrowIfCancellationRequested();
-                client.SendData(segment.Address.DisplayValue, segment.CopyData());
-                await Task.Delay(40);
-                Completed++;
-            }
-            CurrentItem = "Finished";
-        }
-
-        internal async Task<List<DataSegment>> LoadDataAsync(RolandMidiClient client, IReadOnlyList<FieldContainer> containers, CancellationToken cancellationToken)
-        {
-            Completed = 0;
-            Total = containers.Count;
-
-            List<DataSegment> segments = new List<DataSegment>(Total);
-            foreach (var container in containers)
-            {
-                CurrentItem = $"Loading {container.Path}";
-                segments.Add(await LoadSegment(client, container, cancellationToken));
-                Completed++;
-            }
-            CurrentItem = "Finished";
-            return segments;
-        }
-
-        private async Task<DataSegment> LoadSegment(RolandMidiClient client, FieldContainer container, CancellationToken token)
-        {
-            var timerToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
-            var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(token, timerToken).Token;
+            bool success = false;
             try
             {
-                var address = container.Address;
-                var data = await client.RequestDataAsync(address.DisplayValue, container.Size, effectiveToken);
-                return new DataSegment(address, data);
+                var result = await transferFunction(new Progress<TransferProgress>(UpdateProgress), CancellationTokenSource.Token);
+                success = true;
+                return result;
             }
-            catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
+            catch (OperationCanceledException) when (CancellationTokenSource.IsCancellationRequested)
             {
-                logger.LogError($"Device didn't respond for container {container.Path}; aborting.");
+                logger.LogError($"User cancelled transfer operation");
                 throw;
             }
             catch (Exception e)
             {
-                logger.LogError($"Failure while loading {container.Path}", e);
+                logger.LogError($"Failure while loading {CurrentItem}", e);
                 throw;
             }
+            finally
+            {
+                DialogResult = success;
+            }
         }
+
+        private void UpdateProgress(TransferProgress progress) =>
+            (Total, Completed, CurrentItem) = (progress.Total, progress.Completed, progress.Current);
     }
 }

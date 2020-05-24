@@ -3,8 +3,8 @@
 // as found in the LICENSE.txt file.
 
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
+using VDrumExplorer.ViewModel.Dialogs;
 
 namespace VDrumExplorer.Gui.Dialogs
 {
@@ -13,22 +13,12 @@ namespace VDrumExplorer.Gui.Dialogs
     /// </summary>
     public partial class DataTransferDialog : Window
     {
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-
         public DataTransferDialog()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// The cancel button always just acts like the Close button. We'll cancel
-        /// any current recording in HandleClosing.
-        /// </summary>
-        private void Cancel(object sender, RoutedEventArgs e) => Close();
-
-        private void HandleClosing(object sender, CancelEventArgs e)
-        {
-            tokenSource.Cancel();
-        }
+        private void HandleClosing(object sender, CancelEventArgs e) =>
+            ((DataTransferViewModel) DataContext).CancelCommand.Execute(null);
     }
 }

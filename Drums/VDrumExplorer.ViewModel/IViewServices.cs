@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
@@ -34,5 +35,7 @@ namespace VDrumExplorer.ViewModel
         void ShowModuleExplorer(ModuleExplorerViewModel viewModel);
         void ShowInstrumentAudioExplorer(InstrumentAudioExplorerViewModel viewModel);
         void ShowInstrumentRecorderDialog(InstrumentAudioRecorderViewModel viewModel);
+        Task<T?> ShowDataTransferDialog<T>(DataTransferViewModel<T> viewModel)
+            where T : class;
     }
 }
