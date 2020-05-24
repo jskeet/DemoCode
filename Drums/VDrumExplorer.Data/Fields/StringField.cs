@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -75,7 +76,7 @@ namespace VDrumExplorer.Data.Fields
 
         public override void Reset(FixedContainer context, ModuleData data) => TrySetText(context, data, new string(' ', Length));
 
-        protected override bool ValidateData(FixedContainer context, ModuleData data, out string? error)
+        protected override bool ValidateData(FixedContainer context, ModuleData data, [NotNullWhen(false)] out string? error)
         {
             // We could potentially validate that it contains non-control-character ASCII...
             error = null;

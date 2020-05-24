@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VDrumExplorer.Data.Fields
 {
@@ -77,7 +78,7 @@ namespace VDrumExplorer.Data.Fields
 
         public override void Reset(FixedContainer context, ModuleData data) => SetRawValue(context, data, Default);
 
-        protected override bool ValidateData(FixedContainer context, ModuleData data, out string? error)
+        protected override bool ValidateData(FixedContainer context, ModuleData data, [NotNullWhen(false)] out string? error)
         {
             var rawValue = GetRawValueUnvalidated(context, data);
             if (rawValue < Min || rawValue > Max)
