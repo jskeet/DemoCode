@@ -16,6 +16,8 @@ namespace VDrumExplorer.ViewModel.Data
         // within the XAML for a menu item.
         public DataExplorerViewModel Root { get; }
 
+        public new DataTreeNode Model => base.Model;
+
         private readonly Lazy<IReadOnlyList<DataTreeNodeViewModel>> children;
 
         public DataFieldFormattableString Format { get; }

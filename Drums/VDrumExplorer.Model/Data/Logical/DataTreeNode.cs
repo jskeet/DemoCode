@@ -12,7 +12,7 @@ namespace VDrumExplorer.Model.Data.Logical
 {
     public class DataTreeNode
     {
-        private readonly ModuleData data;
+        internal ModuleData Data { get; }
         public IReadOnlyList<DataTreeNode> Children { get; }
         public IReadOnlyList<IDataNodeDetail> Details { get; }
         public DataFieldFormattableString Format { get; }
@@ -20,9 +20,9 @@ namespace VDrumExplorer.Model.Data.Logical
 
         public DataTreeNode(ModuleData data, TreeNode node)
         {
-            this.data = data;
-            Children = node.Children.ToReadOnlyList(child => new DataTreeNode(data, child));
-            Details = node.Details.ToReadOnlyList(detail => ConvertDetail(data, detail));
+            Data = data;
+            Children = node.Children.ToReadOnlyList(child => new DataTreeNode(Data, child));
+            Details = node.Details.ToReadOnlyList(detail => ConvertDetail(Data, detail));
             Format = new DataFieldFormattableString(data, node.Format);
             SchemaNode = node;
         }
@@ -44,7 +44,7 @@ namespace VDrumExplorer.Model.Data.Logical
                 return null;
             }
             var (container, field) = SchemaNode.Container.ResolveField(SchemaNode.MidiNotePath);
-            var midiField = (NumericDataField) data.GetDataField(container, field);
+            var midiField = (NumericDataField) Data.GetDataField(container, field);
             var value = midiField.RawValue;
             // 128 means "off"
             return value >= 0 && value < 128 ? value : default(int?);

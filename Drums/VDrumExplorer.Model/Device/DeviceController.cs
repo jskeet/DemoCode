@@ -2,12 +2,15 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Commons.Music.Midi;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Schema.Logical;
 using VDrumExplorer.Model.Schema.Physical;
 
@@ -80,14 +83,28 @@ namespace VDrumExplorer.Model.Device
             return Module.FromSnapshot(Schema, snapshot);
         }
 
-        public Task PlayNoteAsync(int channel, int note, int attack)
+        public void PlayNote(int channel, int note, int velocity) => client.PlayNote(channel, note, velocity);
+
+        public void Silence(int channel) => client.Silence(channel);
+
+        public Task SaveDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var snapshot = node.Data.CreatePartialSnapshot(node.SchemaNode);
+            if (targetAddress is ModuleAddress target)
+            {
+                snapshot = snapshot.Relocated(node.SchemaNode.Container.Address, target);
+            }
+            return SaveSnapshot(snapshot, progressHandler, cancellationToken);
         }
 
-        public Task SilenceAsync(int channel)
+        public async Task LoadDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var snapshot = await LoadDescendantsAsync(node.SchemaNode, progressHandler, cancellationToken);
+            if (targetAddress is ModuleAddress target)
+            {
+                snapshot = snapshot.Relocated(node.SchemaNode.Container.Address, target);
+            }
+            node.Data.LoadPartialSnapshot(snapshot);
         }
 
         private async Task<ModuleDataSnapshot> LoadDescendantsAsync(TreeNode root, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
@@ -117,6 +134,19 @@ namespace VDrumExplorer.Model.Device
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timerToken).Token;
             var data = await client.RequestDataAsync(address.DisplayValue, size, effectiveToken);
             return new DataSegment(address, data);
+        }
+
+        private async Task SaveSnapshot(ModuleDataSnapshot snapshot, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        {
+            int completed = 0;
+            foreach (var segment in snapshot.Segments)
+            {
+                // TODO: It would be nice to 
+                progressHandler?.Report(new TransferProgress(completed, snapshot.SegmentCount, segment.Address.ToString()));
+                await SaveSegment(segment, cancellationToken);
+                completed++;
+            }
+            progressHandler?.Report(new TransferProgress(snapshot.SegmentCount, snapshot.SegmentCount, "Complete"));
         }
 
         private async Task SaveSegment(DataSegment segment, CancellationToken cancellationToken)
