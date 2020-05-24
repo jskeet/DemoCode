@@ -99,10 +99,6 @@ namespace VDrumExplorer.ViewModel.Data
             }
         }
 
-        protected override void CopyDataToDevice()
-        {
-            // FIXME
-            throw new NotImplementedException();
-        }
+        protected override void CopyDataToDevice() => CopyDataToDevice(SelectedNode?.Model, null);
     }
 }

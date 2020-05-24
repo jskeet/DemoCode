@@ -8,8 +8,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Utility;
+using VDrumExplorer.ViewModel.Dialogs;
 
 namespace VDrumExplorer.ViewModel.Data
 {
@@ -183,8 +186,8 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void PlayNote()
         {
-            var midiClient = DeviceViewModel.ConnectedDevice;
-            if (midiClient is null)
+            var device = DeviceViewModel.ConnectedDevice;
+            if (device is null)
             {
                 return;
             }
@@ -194,7 +197,20 @@ namespace VDrumExplorer.ViewModel.Data
                 return;
             }
             
-            midiClient.PlayNoteAsync(SelectedMidiChannel, midiNote.Value, Attack);
+            device.PlayNote(SelectedMidiChannel, midiNote.Value, Attack);
+        }
+
+        protected async void CopyDataToDevice(DataTreeNode? node, ModuleAddress? targetAddress)
+        {
+            var device = DeviceViewModel.ConnectedDevice;
+            if (device is null || node is null)
+            {
+                return;
+            }
+            // We may or may not really need to bring up the dialog box, but it's simplest to always do that.
+            var viewModel = new DataTransferViewModel<string>(Logger, "Copying data to device",
+                async (progress, token) => { await device.SaveDescendants(node, targetAddress, progress, token); return ""; });
+            await ViewServices.ShowDataTransferDialog(viewModel);
         }
 
         protected abstract void CopyDataToDevice();

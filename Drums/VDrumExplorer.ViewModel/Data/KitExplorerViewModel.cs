@@ -3,7 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
-using System;
 using System.IO;
 using System.Windows.Input;
 using VDrumExplorer.Model;
@@ -40,21 +39,17 @@ namespace VDrumExplorer.ViewModel.Data
             kitCopyTargetNumber = kit.DefaultKitNumber;
         }
 
-        public override ICommand OpenCopyInKitExplorerCommand => DelegateCommand.NotImplemented;
-        public override ICommand CopyKitCommand => DelegateCommand.NotImplemented;
-        public override ICommand ImportKitFromFileCommand => DelegateCommand.NotImplemented;
-        public override ICommand ExportKitCommand => DelegateCommand.NotImplemented;
+        public override ICommand OpenCopyInKitExplorerCommand => CommandBase.NotImplemented;
+        public override ICommand CopyKitCommand => CommandBase.NotImplemented;
+        public override ICommand ImportKitFromFileCommand => CommandBase.NotImplemented;
+        public override ICommand ExportKitCommand => CommandBase.NotImplemented;
 
-        protected override string ExplorerName => "Module Explorer";
+        protected override string ExplorerName => "Kit Explorer";
         public override string SaveFileFilter => FileFilters.KitFiles;
 
         protected override void SaveToStream(Stream stream) => Kit.Save(stream);
 
-        protected override void CopyDataToDevice()
-        {
-            // FIXME
-            throw new NotImplementedException();
-        }
-
+        protected override void CopyDataToDevice() =>
+            CopyDataToDevice(Model.LogicalRoot, Model.Schema.KitRoots[KitCopyTargetNumber - 1].Container.Address);
     }
 }
