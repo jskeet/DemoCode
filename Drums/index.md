@@ -22,7 +22,7 @@ how you get on with this.
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha04/VDrumExplorer-Setup-1.0.0-alpha04.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha05/VDrumExplorer-Setup-1.0.0-alpha05.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -371,7 +371,20 @@ apologies in advance.)
 
 # Version history
 
-# Version 1.0.0-alpha04 (2020-03-28)
+## Version 1.0.0-alpha05 (2020-05-24)
+
+- Fixed [issue 97](https://github.com/jskeet/DemoCode/issues/97)
+  where the presence of multiple MIDI devices unnecessarily aborted
+  module detection.
+  
+There are some known schema issues in the TD-27 schema which are
+addressed in the new codebase but not here (as keeping track of
+things in both places is really tricky).
+
+This is likely to be the last release of the "old" code, as the
+"new" code is approaching feature parity.
+
+## Version 1.0.0-alpha04 (2020-03-28)
 
 - Fixed incorrect schema data (mostly in multifx, but also one TD-27 midi field, and TD-27 output assignments)
 - Progress dialog when copying data to the module
