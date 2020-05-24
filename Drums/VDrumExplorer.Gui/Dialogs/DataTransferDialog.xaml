@@ -9,10 +9,10 @@
         d:DataContext="{d:DesignInstance Type=vmd:DataTransferViewModel}"
         Style="{StaticResource WindowStyle}"
         Closing="HandleClosing">
-    <StackPanel>
+    <StackPanel Margin="6">
         <TextBlock Text="{Binding CurrentItem}" />
-        <Grid Margin="5,8,5,0" Height="23">
-            <ProgressBar Value="{Binding Completed}" Maximum="{Binding Total}" />
+        <Grid Margin="0,8,0,0" Height="23">
+            <ProgressBar Value="{Binding Completed, Mode=OneWay}" Maximum="{Binding Total}" />
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{} {0} / {1}">
@@ -22,6 +22,6 @@
                 </TextBlock.Text>
             </TextBlock>
         </Grid>
-        <Button Command="{Binding CancelCommand}" HorizontalAlignment="Left" Content="Cancel" />
+        <Button Margin="0,8,0,0" Command="{Binding CancelCommand}" HorizontalAlignment="Left" Content="Cancel" />
     </StackPanel>
 </Window>

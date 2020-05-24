@@ -45,15 +45,40 @@ namespace VDrumExplorer.ViewModel.Home
         public int LoadKitFromDeviceNumber
         {
             get => loadKitFromDeviceNumber;
-            set => SetProperty(ref loadKitFromDeviceNumber, DeviceViewModel.ConnectedDeviceSchema.ValidateKitNumber(value));
+            set => SetProperty(ref loadKitFromDeviceNumber, (DeviceViewModel.ConnectedDevice?.Schema).ValidateKitNumber(value));
         }
 
-        private void LoadModuleFromDevice()
+        private async void LoadModuleFromDevice()
         {
+            var device = DeviceViewModel.ConnectedDevice;
+            if (device is null)
+            {
+                return;
+            }
+            var transferViewModel = new DataTransferViewModel<Module>(logger, "Loading module data", device.LoadModuleAsync);
+            var module = await viewServices.ShowDataTransferDialog(transferViewModel);
+            if (module is object)
+            {
+                var moduleViewModel = new ModuleExplorerViewModel(viewServices, logger, DeviceViewModel, module);
+                viewServices.ShowModuleExplorer(moduleViewModel);
+            }
         }
 
-        private void LoadKitFromDevice()
+        private async void LoadKitFromDevice()
         {
+            var device = DeviceViewModel.ConnectedDevice;
+            if (device is null)
+            {
+                return;
+            }
+            var kitNumber = LoadKitFromDeviceNumber;
+            var transferViewModel = new DataTransferViewModel<Kit>(logger, "Loading kit data", (progress, token) => device.LoadKitAsync(kitNumber, progress, token));
+            var kit = await viewServices.ShowDataTransferDialog(transferViewModel);
+            if (kit is object)
+            {
+                var kitViewModel = new KitExplorerViewModel(viewServices, logger, DeviceViewModel, kit);
+                viewServices.ShowKitExplorer(kitViewModel);
+            }
         }
 
         private void RecordInstrumentAudio()

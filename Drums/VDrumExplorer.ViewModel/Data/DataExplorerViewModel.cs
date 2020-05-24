@@ -194,7 +194,7 @@ namespace VDrumExplorer.ViewModel.Data
                 return;
             }
             
-            midiClient.PlayNote(SelectedMidiChannel, midiNote.Value, Attack);
+            midiClient.PlayNoteAsync(SelectedMidiChannel, midiNote.Value, Attack);
         }
 
         protected abstract void CopyDataToDevice();

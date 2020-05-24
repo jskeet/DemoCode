@@ -12,6 +12,7 @@ using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Data.Logical;
+using VDrumExplorer.Model.Device;
 
 namespace VDrumExplorer.ViewModel.Dialogs
 {
@@ -19,7 +20,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
     {
         private CancellationTokenSource? cancellationTokenSource;
         private readonly ModuleSchema schema;
-        private readonly RolandMidiClient device;
+        private readonly DeviceController device;
         private ILogger logger;
         public InstrumentAudioRecorderSettingsViewModel Settings { get; }
         public InstrumentAudioRecorderProgressViewModel Progress { get; }
@@ -30,8 +31,8 @@ namespace VDrumExplorer.ViewModel.Dialogs
         public InstrumentAudioRecorderViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel)
         {
             this.logger = logger;
-            schema = deviceViewModel.ConnectedDeviceSchema ?? throw new InvalidOperationException("Cannot record audio without a connected device");
             device = deviceViewModel.ConnectedDevice ?? throw new InvalidOperationException("Cannot record audio without a connected device");
+            schema = device.Schema;
 
             Settings = new InstrumentAudioRecorderSettingsViewModel(viewServices, schema, device.InputName);
             Progress = new InstrumentAudioRecorderProgressViewModel();
@@ -83,9 +84,9 @@ namespace VDrumExplorer.ViewModel.Dialogs
             // - Work out the MIDI note for kick
             // 
 
-            var originalKit = await GetCurrentKit();
+            var originalKit = await device.GetCurrentKitAsync(token);
             logger.LogInformation($"Changing from kit {originalKit} to {Settings.KitNumber}");
-            await SetCurrentKit(Settings.KitNumber);
+            await device.SetCurrentKitAsync(Settings.KitNumber, token);
             try
             {
                 await RecordInstruments(token);
@@ -103,7 +104,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             finally
             {
                 logger.LogInformation($"Changing kit back to {originalKit}");
-                await SetCurrentKit(originalKit);
+                await device.SetCurrentKitAsync(originalKit, token);
             }
 
             /*
@@ -285,9 +286,9 @@ namespace VDrumExplorer.ViewModel.Dialogs
 
             Progress.CurrentInstrumentRecording = "Loading kit data";
             logger.LogInformation($"Loading data from kit {Settings.KitNumber} to restore later");
-            var snapshot = await LoadSnapshotFromDevice(moduleData, token);
+            //var snapshot = await LoadSnapshotFromDevice(moduleData, token);
             // Populate the module data with the snapshot we've created.
-            moduleData.LoadSnapshot(snapshot);
+            //moduleData.LoadSnapshot(snapshot);
             var midiNote = triggerRoot.GetMidiNote() ?? throw new InvalidOperationException($"Node {triggerRoot.SchemaNode.Path} has no MIDI note");
 
             // TODO: Reset everything on the kit (because of mfx, vedit etc)
@@ -318,26 +319,13 @@ namespace VDrumExplorer.ViewModel.Dialogs
                 Progress.CurrentInstrumentRecording = "Restoring kit data";
                 logger.LogInformation($"Restoring snapshot to kit {Settings.KitNumber}");
                 // Don't cancel restoring the snapshot
-                await SaveSnapshotToDevice(snapshot, CancellationToken.None);
+                //await SaveSnapshotToDevice(snapshot, CancellationToken.None);
             }
             logger.LogInformation($"Recording complete");
             Progress.CurrentInstrumentRecording = "Complete";
         }
 
-        // TODO: Put these somewhere common.
-        private async Task SetCurrentKit(int newKitNumber)
-        {
-            device.SendData(0, new[] { (byte) (newKitNumber - 1) });
-            await Task.Delay(40);
-        }
-
-        private async Task<int> GetCurrentKit()
-        {
-            // TODO: Stop assuming current kit is at address 0, although it is for TD-17, TD-50 and TD-27...
-            var data = await device.RequestDataAsync(0, 1, new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token);
-            return data[0] + 1;
-        }
-
+        /*
         private async Task<ModuleDataSnapshot> LoadSnapshotFromDevice(ModuleData moduleData, CancellationToken token)
         {
             var snapshot = new ModuleDataSnapshot();
@@ -364,6 +352,6 @@ namespace VDrumExplorer.ViewModel.Dialogs
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(token, timerToken).Token;
             var data = await device.RequestDataAsync(address.DisplayValue, size, effectiveToken);
             return new DataSegment(address, data);
-        }
+        }*/
     }
 }
