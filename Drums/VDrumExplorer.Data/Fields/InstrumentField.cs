@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace VDrumExplorer.Data.Fields
@@ -97,7 +98,7 @@ namespace VDrumExplorer.Data.Fields
 
         public override void Reset(FixedContainer context, ModuleData data) => SetInstrument(context, data, Schema.PresetInstruments.First());
 
-        protected override bool ValidateData(FixedContainer context, ModuleData data, out string? error)
+        protected override bool ValidateData(FixedContainer context, ModuleData data, [NotNullWhen(false)] out string? error)
         {
             var instrumentAddress = GetAddress(context);
             var bankAddress = context.Address + bankOffset;

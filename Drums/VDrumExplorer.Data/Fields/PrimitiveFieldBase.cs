@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace VDrumExplorer.Data.Fields
 {
     public abstract class PrimitiveFieldBase : FieldBase, IPrimitiveField
@@ -31,6 +33,6 @@ namespace VDrumExplorer.Data.Fields
         /// after performing the common check that the field has a segment in the module data.
         /// Implementations may therefore assume that the data exists.
         /// </summary>
-        protected abstract bool ValidateData(FixedContainer context, ModuleData data, out string? error);
+        protected abstract bool ValidateData(FixedContainer context, ModuleData data, [NotNullWhen(false)] out string? error);
     }
 }
