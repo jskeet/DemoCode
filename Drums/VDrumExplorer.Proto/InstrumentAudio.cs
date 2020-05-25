@@ -21,7 +21,7 @@ namespace VDrumExplorer.Proto
             {
                 AudioData = ByteString.CopyFrom(audio.Audio),
                 InstrumentId = audio.Instrument.Id,
-                Preset = audio.Instrument.Group != null
+                Preset = audio.Instrument.Group.Preset
             };
     }
 }
