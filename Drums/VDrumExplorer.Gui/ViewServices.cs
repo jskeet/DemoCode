@@ -49,8 +49,19 @@ namespace VDrumExplorer.Gui
         public void ShowModuleExplorer(ModuleExplorerViewModel viewModel) =>
             new DataExplorer { DataContext = viewModel }.Show();
 
-        public void ShowInstrumentRecorderDialog(InstrumentAudioRecorderViewModel viewModel) =>
-            new InstrumentAudioRecorderDialog { DataContext = viewModel }.ShowDialog();
+        public void ShowInstrumentRecorderDialog(InstrumentAudioRecorderViewModel viewModel)
+        {
+            var recorder = new InstrumentAudioRecorderDialog { DataContext = viewModel };
+            // Ugly hack: we can't bind DialogResult to the ViewModel in XAML, so let's just do it here.
+            viewModel.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(viewModel.RecordedAudio))
+                {
+                    recorder.DialogResult = true;
+                }
+            };
+            recorder.ShowDialog();
+        }
 
         public void ShowInstrumentAudioExplorer(InstrumentAudioExplorerViewModel viewModel) =>
             new InstrumentAudioExplorer { DataContext = viewModel }.Show();
