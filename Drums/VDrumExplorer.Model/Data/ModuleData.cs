@@ -20,30 +20,19 @@ namespace VDrumExplorer.Model.Data
     public sealed class ModuleData
     {
         /// <summary>
-        /// The physical root container; all data is present within this root.
-        /// (This may not be the module root, however.)
-        /// </summary>
-        public IContainer PhysicalRoot { get; }
-
-        /// <summary>
         /// The logical root container; all data is present within this root.
         /// (This may not be the module root, however.)
         /// </summary>
         public DataTreeNode LogicalRoot { get; }
 
-        public ModuleSchema Schema => PhysicalRoot.Schema;
+        public ModuleSchema Schema => LogicalRoot.SchemaNode.Container.Schema;
 
         private readonly IReadOnlyDictionary<FieldContainer, IReadOnlyList<IDataField>> fieldsByFieldContainer;
             
         private ModuleData(TreeNode logicalSchemaRoot)
         {
-            PhysicalRoot = logicalSchemaRoot.Container;
-            if (!(PhysicalRoot is ContainerBase containerBase))
-            {
-                throw new ArgumentException("Invalid root for ModuleData");
-            }
-            var schema = PhysicalRoot.Schema;
-            var fieldContainers = containerBase.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+            var schema = logicalSchemaRoot.Container.Schema;
+            var fieldContainers = logicalSchemaRoot.DescendantFieldContainers().ToList();
 
             // First populate the containers
             var fieldMap = new SortedDictionary<FieldContainer, IReadOnlyList<IDataField>>(FieldContainer.AddressComparer);
@@ -105,11 +94,8 @@ namespace VDrumExplorer.Model.Data
             {
                 throw new ArgumentException("Invalid root for snapshot: incorrect schema");
             }
-            if (!(root.Container is ContainerBase containerBase))
-            {
-                throw new ArgumentException("Invalid root for snapshot: unknown container type");
-            }
-            var fieldContainers = containerBase.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+
+            var fieldContainers = root.DescendantFieldContainers().ToList();
             var snapshot = new ModuleDataSnapshot();
             foreach (var fc in fieldContainers)
             {

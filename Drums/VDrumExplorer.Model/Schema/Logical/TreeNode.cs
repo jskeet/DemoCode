@@ -95,5 +95,28 @@ namespace VDrumExplorer.Model.Schema.Logical
         }
 
         public override string ToString() => $"Name: {Name}; Format: {Format}; Path: '{Container.Path}'; Children: {Children.Count}; Details: {Details.Count}";
+
+        private IEnumerable<TreeNode> DescendantsAndSelf()
+        {
+            Queue<TreeNode> queue = new Queue<TreeNode>();
+            queue.Enqueue(this);
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                yield return current;
+                foreach (var item in current.Children)
+                {
+                    queue.Enqueue(item);
+                }
+            }
+        }
+
+        public IEnumerable<FieldContainer> DescendantFieldContainers() =>
+            DescendantsAndSelf()
+            .SelectMany(node => node.Details)
+            .OfType<FieldContainerNodeDetail>()
+            .Select(detail => detail.Container)
+            .Distinct();
+            
     }
 }

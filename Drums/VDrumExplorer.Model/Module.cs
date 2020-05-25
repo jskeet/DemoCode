@@ -16,8 +16,7 @@ namespace VDrumExplorer.Model
         public ModuleSchema Schema { get; }
         public ModuleData Data { get; }
 
-        public Module(ModuleData data) =>
-            (Schema, Data) = (data.PhysicalRoot.Schema, data);
+        public Module(ModuleData data) => (Schema, Data) = (data.Schema, data);
 
         public static Module FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot)
         {
