@@ -209,7 +209,8 @@
         "Outside+3",
         "Outside+4",
         "Outside+5"
-      ]
+      ],
+      "default": 5
     },
     {
       "description": "Room Send Level",

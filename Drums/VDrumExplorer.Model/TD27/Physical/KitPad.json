@@ -7,7 +7,8 @@
       "values": [
         "MultiFx only",
         "Dry + MultiFx"
-      ]
+      ],
+      "default": 1
     },
     {
       "name": "CompSwitch",
