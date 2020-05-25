@@ -33,7 +33,8 @@
       "min": -48,
       "max": 48,
       "divisor": 2,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 4
     },
     {
       "description": "Hi gain",
@@ -41,7 +42,8 @@
       "min": -48,
       "max": 48,
       "divisor": 2,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 4
     },
     {
       "description": "Lo threshold",
@@ -49,7 +51,8 @@
       "min": -48,
       "max": 48,
       "divisor": 2,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": -12
     },
     {
       "description": "Hi threshold",
@@ -57,7 +60,8 @@
       "min": -48,
       "max": 48,
       "divisor": 2,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": -12
     },
     {
       "description": "Lo Ratio",
@@ -71,7 +75,8 @@
         "16:1",
         "32:1",
         "100:1"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Hi Ratio",
@@ -85,7 +90,8 @@
         "16:1",
         "32:1",
         "100:1"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Lo Knee",
@@ -95,7 +101,8 @@
         "Soft 1",
         "Soft 2",
         "Soft 3"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Hi Knee",
@@ -105,7 +112,8 @@
         "Soft 1",
         "Soft 2",
         "Soft 3"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Lo Attack",
@@ -114,7 +122,8 @@
       "max": 100,
       "valueOffset": 1,
       "divisor": 10,
-      "suffix": "ms"
+      "suffix": "ms",
+      "default": 10
     },
     {
       "description": "Hi Attack",
@@ -123,7 +132,8 @@
       "max": 100,
       "valueOffset": 1,
       "divisor": 10,
-      "suffix": "ms"
+      "suffix": "ms",
+      "default": 10
     },
     {
       "description": "Lo Release",
@@ -132,7 +142,8 @@
       "max": 99,
       "valueOffset": 1,
       "multiplier": 10,
-      "suffix": "ms"
+      "suffix": "ms",
+      "default": 4
     },
     {
       "description": "Hi Release",
@@ -141,7 +152,8 @@
       "max": 99,
       "valueOffset": 1,
       "multiplier": 10,
-      "suffix": "ms"
+      "suffix": "ms",
+      "default": 4
     }
   ]
 }

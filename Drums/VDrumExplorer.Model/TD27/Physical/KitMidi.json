@@ -4,142 +4,171 @@
     {
       "name": "Midi[1]",
       "description": "Kick note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 36
     },
     {
       "name": "Midi[2]",
       "description": "Snare head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 38
     },
     {
       "name": "Midi[3]",
       "description": "Snare rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 40
     },
     {
       "description": "Snare brush note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 23
     },
     {
       "description": "Snare xstick note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 37
     },
     {
       "name": "Midi[4]",
       "description": "Tom 1 head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 48
     },
     {
       "name": "Midi[5]",
       "description": "Tom 1 rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 50
     },
     {
       "name": "Midi[6]",
       "description": "Tom 2 head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 45
     },
     {
       "name": "Midi[7]",
       "description": "Tom 2 rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 47
     },
     {
       "name": "Midi[8]",
       "description": "Tom 3 head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 43
     },
     {
       "name": "Midi[9]",
       "description": "Tom 3 rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 58
     },
     {
       "name": "Midi[10]",
       "description": "Hi-hat open bow note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 46
     },
     {
       "name": "Midi[11]",
       "description": "Hi-hat open edge note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 26
     },
     {
       "description": "Hi-hat close bow note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 42
     },
     {
       "description": "Hi-hat close edge note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 22
     },
     {
       "description": "Hi-hat pedal note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 44
     },
     {
       "name": "Midi[12]",
       "description": "Crash 1 bow note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 49
     },
     {
       "name": "Midi[13]",
       "description": "Crash 1 edge note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 55
     },
     {
       "name": "Midi[14]",
       "description": "Crash 2 bow note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 57
     },
     {
       "name": "Midi[15]",
       "description": "Crash 2 edge note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 52
     },
     {
       "name": "Midi[16]",
       "description": "Ride bow note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 51
     },
     {
       "name": "Midi[17]",
       "description": "Ride edge note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 59
     },
     {
       "name": "Midi[18]",
       "description": "Ride bell note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 53
     },
     {
       "name": "Midi[19]",
       "description": "Aux 1 head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 27
     },
     {
       "name": "Midi[20]",
       "description": "Aux 1 rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 28
     },
     {
       "name": "Midi[21]",
       "description": "Aux 2 head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 29
     },
     {
       "name": "Midi[22]",
       "description": "Aux 2 rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 30
     },
     {
       "name": "Midi[23]",
       "description": "Aux 3 head note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 31
     },
     {
       "name": "Midi[24]",
       "description": "Aux 3 rim note",
-      "type": "midi32"
+      "type": "midi32",
+      "default": 32
     },
     {
       "description": "{item} gate time",
@@ -163,6 +192,7 @@
       "valueOffset": 1,
       "off": 16,
       "offLabel": "Global",
+      "default": 16,
       "repeat":
       {
         "items": "triggers"

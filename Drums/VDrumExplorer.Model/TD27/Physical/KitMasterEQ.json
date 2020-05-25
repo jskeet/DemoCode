@@ -47,7 +47,8 @@
         "2.0",
         "4.0",
         "8.0"
-      ]
+      ],
+      "default": 1
     },
     {
       "description": "Low Gain",
@@ -90,7 +91,8 @@
         "10kHz",
         "12.5kHz",
         "16kHz"
-      ]
+      ],
+      "default": 13
     },
     {
       "description": "Mid 1 Q",
@@ -101,7 +103,8 @@
         "2.0",
         "4.0",
         "8.0"
-      ]
+      ],
+      "default": 1
     },
     {
       "description": "Mid 1 Gain",
@@ -144,7 +147,8 @@
         "10kHz",
         "12.5kHz",
         "16kHz"
-      ]
+      ],
+      "default": 21
     },
     {
       "description": "Mid 2 Q",
@@ -155,7 +159,8 @@
         "2.0",
         "4.0",
         "8.0"
-      ]
+      ],
+      "default": 1
     },
     {
       "description": "Mid 2 Gain",
@@ -189,7 +194,8 @@
         "10kHz",
         "12.5kHz",
         "16kHz"
-      ]
+      ],
+      "default": 10
     },
     {
       "description": "High Q",
