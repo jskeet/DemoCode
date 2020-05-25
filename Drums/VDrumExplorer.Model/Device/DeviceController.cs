@@ -4,6 +4,7 @@
 
 using Commons.Music.Midi;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -89,12 +90,13 @@ namespace VDrumExplorer.Model.Device
 
         public Task SaveDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
         {
+            var containers = node.SchemaNode.DescendantFieldContainers().OrderBy(fc => fc.Address).ToList();
             var snapshot = node.Data.CreatePartialSnapshot(node.SchemaNode);
             if (targetAddress is ModuleAddress target)
             {
                 snapshot = snapshot.Relocated(node.SchemaNode.Container.Address, target);
             }
-            return SaveSnapshot(snapshot, progressHandler, cancellationToken);
+            return SaveSnapshot(snapshot, containers, progressHandler, cancellationToken);
         }
 
         public async Task LoadDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
@@ -114,7 +116,7 @@ namespace VDrumExplorer.Model.Device
             int completed = 0;
             foreach (var container in containers)
             {
-                progressHandler?.Report(new TransferProgress(completed, containers.Count, container.Path));
+                progressHandler?.Report(new TransferProgress(completed, containers.Count, $"Copying {container.Path}"));
                 var segment = await LoadSegment(container.Address, container.Size, cancellationToken);
                 completed++;
                 snapshot.Add(segment);
@@ -131,17 +133,20 @@ namespace VDrumExplorer.Model.Device
             return new DataSegment(address, data);
         }
 
-        private async Task SaveSnapshot(ModuleDataSnapshot snapshot, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        // Assumption: the list of containers is exactly the same as the segments in the snapshot.
+        // We just use this so that we can report the field path instead of the address.
+        // (An alternative would be a map from address to path...)
+        private async Task SaveSnapshot(ModuleDataSnapshot snapshot, IReadOnlyList<FieldContainer> containers, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
         {
             int completed = 0;
-            foreach (var segment in snapshot.Segments)
+            foreach (var container in containers)
             {
-                // TODO: It would be nice to 
-                progressHandler?.Report(new TransferProgress(completed, snapshot.SegmentCount, segment.Address.ToString()));
+                var segment = snapshot[container.Address];
+                progressHandler?.Report(new TransferProgress(completed, containers.Count, $"Copying {container.Path}"));
                 await SaveSegment(segment, cancellationToken);
                 completed++;
             }
-            progressHandler?.Report(new TransferProgress(snapshot.SegmentCount, snapshot.SegmentCount, "Complete"));
+            progressHandler?.Report(new TransferProgress(containers.Count, containers.Count, "Complete"));
         }
 
         private async Task SaveSegment(DataSegment segment, CancellationToken cancellationToken)
