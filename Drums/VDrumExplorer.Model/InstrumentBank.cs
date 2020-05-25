@@ -13,9 +13,9 @@ namespace VDrumExplorer.Model
     public enum InstrumentBank
     {
         [Description("Preset")]
-        Preset,
+        Preset = 0,
 
         [Description("User samples")]
-        UserSamples
+        UserSamples = 1
     }
 }
