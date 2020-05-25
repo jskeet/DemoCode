@@ -37,7 +37,7 @@ namespace VDrumExplorer.Model.Data.Fields
         internal override void Save(DataSegment segment)
         {
             segment.WriteInt32(Offset, Size, index);
-            segment.WriteInt32(SchemaField.BankOffset, SchemaField.Size, index);
+            segment.WriteInt32(SchemaField.BankOffset, 1, (int) bank);
         }
 
         public Instrument Instrument
