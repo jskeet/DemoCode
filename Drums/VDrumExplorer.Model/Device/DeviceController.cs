@@ -2,16 +2,16 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Commons.Music.Midi;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Data.Logical;
+using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.Model.Schema.Logical;
 using VDrumExplorer.Model.Schema.Physical;
 
@@ -70,7 +70,7 @@ namespace VDrumExplorer.Model.Device
             return SaveSegment(segment, cancellationToken);
         }
 
-        public async Task<Kit> LoadKitAsync(int kit, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        public async Task<Kit> LoadKitAsync(int kit, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             var kitRoot = Schema.KitRoots[kit - 1];
             var snapshot = await LoadDescendantsAsync(kitRoot, progressHandler, cancellationToken);
@@ -78,7 +78,7 @@ namespace VDrumExplorer.Model.Device
             return Kit.FromSnapshot(Schema, snapshot, kit);
         }
 
-        public async Task<Module> LoadModuleAsync(IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        public async Task<Module> LoadModuleAsync(IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             var snapshot = await LoadDescendantsAsync(Schema.LogicalRoot, progressHandler, cancellationToken);
             return Module.FromSnapshot(Schema, snapshot);
@@ -88,18 +88,22 @@ namespace VDrumExplorer.Model.Device
 
         public void Silence(int channel) => client.Silence(channel);
 
-        public Task SaveDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        public Task SaveDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             var containers = node.SchemaNode.DescendantFieldContainers().OrderBy(fc => fc.Address).ToList();
             var snapshot = node.Data.CreatePartialSnapshot(node.SchemaNode);
+            int offset = 0;
             if (targetAddress is ModuleAddress target)
             {
-                snapshot = snapshot.Relocated(node.SchemaNode.Container.Address, target);
+                var source = node.SchemaNode.Container.Address;
+                snapshot = snapshot.Relocated(source, target);
+                offset = target.LogicalValue - source.LogicalValue;
             }
-            return SaveSnapshot(snapshot, containers, progressHandler, cancellationToken);
+            var addressPaths = containers.ToDictionary(c => c.Address.PlusLogicalOffset(offset), c => c.Path);
+            return SaveSnapshot(snapshot, addressPaths, progressHandler, cancellationToken);
         }
 
-        public async Task LoadDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        public async Task LoadDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             var snapshot = await LoadDescendantsAsync(node.SchemaNode, progressHandler, cancellationToken);
             if (targetAddress is ModuleAddress target)
@@ -109,7 +113,7 @@ namespace VDrumExplorer.Model.Device
             node.Data.LoadPartialSnapshot(snapshot);
         }
 
-        private async Task<ModuleDataSnapshot> LoadDescendantsAsync(TreeNode root, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        private async Task<ModuleDataSnapshot> LoadDescendantsAsync(TreeNode root, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             var containers = root.DescendantFieldContainers().ToList();
             var snapshot = new ModuleDataSnapshot();
@@ -125,6 +129,18 @@ namespace VDrumExplorer.Model.Device
             return snapshot;
         }
 
+        public async Task SetInstrumentAsync(int kit, int trigger, Instrument instrument, CancellationToken cancellationToken)
+        {
+            // TODO: Do this in a better way!
+            var kitRoot = Schema.KitRoots[kit - 1];
+            var (container, field) = kitRoot.Container.ResolveField($"KitPadMain[{trigger}]/Instrument");
+            var segment = await LoadSegment(container.Address, container.Size, cancellationToken);
+            var dataField = new InstrumentDataField((InstrumentField) field, Schema);
+            dataField.Instrument = instrument;
+            dataField.Save(segment);
+            await SaveSegment(segment, cancellationToken);
+        }
+
         private async Task<DataSegment> LoadSegment(ModuleAddress address, int size, CancellationToken cancellationToken)
         {
             var timerToken = new CancellationTokenSource(loadSegmentTimeout).Token;
@@ -136,17 +152,16 @@ namespace VDrumExplorer.Model.Device
         // Assumption: the list of containers is exactly the same as the segments in the snapshot.
         // We just use this so that we can report the field path instead of the address.
         // (An alternative would be a map from address to path...)
-        private async Task SaveSnapshot(ModuleDataSnapshot snapshot, IReadOnlyList<FieldContainer> containers, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
+        private async Task SaveSnapshot(ModuleDataSnapshot snapshot, Dictionary<ModuleAddress, string> addressPaths, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             int completed = 0;
-            foreach (var container in containers)
+            foreach (var segment in snapshot.Segments)
             {
-                var segment = snapshot[container.Address];
-                progressHandler?.Report(new TransferProgress(completed, containers.Count, $"Copying {container.Path}"));
+                progressHandler?.Report(new TransferProgress(completed, snapshot.SegmentCount, $"Copying {addressPaths[segment.Address]}"));
                 await SaveSegment(segment, cancellationToken);
                 completed++;
             }
-            progressHandler?.Report(new TransferProgress(containers.Count, containers.Count, "Complete"));
+            progressHandler?.Report(new TransferProgress(snapshot.SegmentCount, snapshot.SegmentCount, "Complete"));
         }
 
         private async Task SaveSegment(DataSegment segment, CancellationToken cancellationToken)

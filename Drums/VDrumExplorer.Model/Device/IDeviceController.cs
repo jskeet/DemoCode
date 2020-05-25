@@ -29,12 +29,12 @@ namespace VDrumExplorer.Model.Device
         /// <summary>
         /// Loads complete module data from the device.
         /// </summary>
-        Task<Module> LoadModuleAsync(IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken);
+        Task<Module> LoadModuleAsync(IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken);
 
         /// <summary>
         /// Loads the specified kit from the device.
         /// </summary>
-        Task<Kit> LoadKitAsync(int kit, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken);
+        Task<Kit> LoadKitAsync(int kit, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken);
 
         /// <summary>
         /// Play the specified MIDI note on the device.
@@ -53,11 +53,19 @@ namespace VDrumExplorer.Model.Device
         /// <summary>
         /// Copies data from the given node and its descendants from memory onto the device.
         /// </summary>
-        Task SaveDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken);
+        Task SaveDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken);
 
         /// <summary>
         /// Copies data from the given node and its descendants from the device into memory.
         /// </summary>
-        Task LoadDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken);
+        Task LoadDescendants(DataTreeNode node, ModuleAddress? targetAddress, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Sets the main instrument for the given kit/trigger.
+        /// </summary>
+        /// <param name="kit">The 1-based kit number.</param>
+        /// <param name="trigger">The 1-based trigger number (e.g. 1 for kick)</param>
+        /// <param name="instrument">The instrument to set.</param>
+        Task SetInstrumentAsync(int kit, int trigger, Instrument instrument, CancellationToken cancellationToken);
     }
 }
