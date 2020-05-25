@@ -3,7 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Win32;
-using System;
 using System.Threading.Tasks;
 using VDrumExplorer.Gui.Dialogs;
 using VDrumExplorer.ViewModel;
@@ -60,6 +59,7 @@ namespace VDrumExplorer.Gui
             where T : class
         {
             var dialog = new DataTransferDialog { DataContext = viewModel };
+            Task<T>? task = null;
             // Ugly hack: we can't bind DialogResult to the ViewModel in XAML, so let's just do it here.
             viewModel.PropertyChanged += (sender, args) =>
             {
@@ -68,9 +68,19 @@ namespace VDrumExplorer.Gui
                     dialog.DialogResult = viewModel.DialogResult;
                 }
             };
-            var task = viewModel.TransferAsync();
+            // Second ugly hack: only start the transfer when the dialog is shown. Without this,
+            // there's a race condition: if the transfer fails immediately, we try to set DialogResult
+            // before the dialog is shown, and that's ignored.
+            dialog.Activated += (sender, args) =>
+            {
+                if (task is null)
+                {
+                    task = viewModel.TransferAsync();
+                }
+            };
+            // TODO: We don't close the dialog if this has already failed. Check what's going on.
             var result = dialog.ShowDialog();
-            return result == true ? await task : null;
+            return result == true ? await task! : null;
         }
     }
 }
