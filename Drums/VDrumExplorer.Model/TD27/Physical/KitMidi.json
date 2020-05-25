@@ -175,7 +175,6 @@
       "type": "range8",
       "min": 1,
       "max": 80,
-      "valueOffset": 1,
       "divisor": 10,
       "repeat":
       {
