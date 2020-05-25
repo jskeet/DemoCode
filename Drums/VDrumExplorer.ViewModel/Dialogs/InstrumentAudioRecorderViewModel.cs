@@ -50,6 +50,13 @@ namespace VDrumExplorer.ViewModel.Dialogs
         public bool SettingsEnabled => !CancelCommand.Enabled;
         public bool ProgressEnabled => CancelCommand.Enabled;
 
+        private ModuleAudio? recordedAudio;
+        public ModuleAudio? RecordedAudio
+        {
+            get => recordedAudio;
+            private set => SetProperty(ref recordedAudio, value);
+        }
+
         private void UpdateButtonStatus()
         {
             CancelCommand.Enabled = cancellationTokenSource is object;
@@ -67,9 +74,10 @@ namespace VDrumExplorer.ViewModel.Dialogs
         {
             cancellationTokenSource = new CancellationTokenSource();
             UpdateButtonStatus();
+            ModuleAudio? result = null;
             try
             {
-                await StartRecording(cancellationTokenSource.Token);
+                result = await StartRecording(cancellationTokenSource.Token);
             }
             catch (Exception e)
             {
@@ -80,21 +88,21 @@ namespace VDrumExplorer.ViewModel.Dialogs
                 cancellationTokenSource = null;
                 UpdateButtonStatus();
             }
+            RecordedAudio = result;
         }
 
-        public async Task StartRecording(CancellationToken token)
+        public async Task<ModuleAudio?> StartRecording(CancellationToken token)
         {
             int midiChannel = Settings.SelectedMidiChannel;
             if (Settings.SelectedInputDevice is null)
             {
-                return;
+                return null;
             }
             int? audioDeviceId = AudioDevices.GetAudioInputDeviceId(Settings.SelectedInputDevice);
             if (audioDeviceId is null)
             {
-                return;
-            }
-            
+                return null;
+            }            
 
             var originalKit = await device.GetCurrentKitAsync(token);
             logger.LogInformation($"Changing from kit {originalKit} to {Settings.KitNumber}");
@@ -108,13 +116,13 @@ namespace VDrumExplorer.ViewModel.Dialogs
             {
                 logger.LogInformation($"Recording operation canceled");
                 Progress.CurrentInstrumentRecording = "Recording cancelled";
-                return;
+                return null;
             }
             catch (Exception e)
             {
                 logger.LogError($"Recording operation failed", e);
                 Progress.CurrentInstrumentRecording = "Error - see log";
-                return;
+                return null;
             }
             finally
             {
@@ -129,6 +137,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
                 moduleAudio.Save(output);
             }
             logger.LogInformation($"Saved instrument sounds to {Settings.OutputFile}.");
+            return moduleAudio;
         }
 
         private async Task<ModuleAudio> RecordInstruments(int midiChannel, int audioDeviceId, CancellationToken token)
@@ -174,13 +183,11 @@ namespace VDrumExplorer.ViewModel.Dialogs
             {
                 Progress.CurrentInstrumentRecording = "Restoring kit data";
                 logger.LogInformation($"Restoring snapshot to kit {kitNumber}");                
-                /*
                 await device.SaveDescendants(
                     savedKit.Data.LogicalRoot,
                     targetAddress: schemaKitRoot.Container.Address,
                     progressHandler: null,
                     CancellationToken.None); // Don't cancel restoring the snapshot
-                */
             }
             return new ModuleAudio(schema, AudioDevices.AudioFormat, duration, captures.AsReadOnly());
 
