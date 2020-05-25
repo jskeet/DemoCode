@@ -109,12 +109,7 @@ namespace VDrumExplorer.Model.Device
 
         private async Task<ModuleDataSnapshot> LoadDescendantsAsync(TreeNode root, IProgress<TransferProgress> progressHandler, CancellationToken cancellationToken)
         {
-            if (!(root.Container is ContainerBase physicalRoot))
-            {
-                throw new ArgumentException("Invalid root for ModuleData");
-            }
-
-            var containers = physicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+            var containers = root.DescendantFieldContainers().ToList();
             var snapshot = new ModuleDataSnapshot();
             int completed = 0;
             foreach (var container in containers)
