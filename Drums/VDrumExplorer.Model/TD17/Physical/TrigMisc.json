@@ -1,0 +1,33 @@
+{
+  "size": "0x2d",
+  "fields": [
+    {
+      "name": "Placeholder fields",
+      "type": "placeholder32",
+      "repeat": {
+        "items": "8"
+      }
+    },
+    {
+      "description": "Pedal Hi-Hat Sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "description": "XStick Adjustment",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "XTalk Cancel Rate ({item})",
+      "type": "range8",
+      "min": 0,
+      "max": 80,
+      "repeat": {
+        "items": "pads"
+      }
+    }
+  ]
+}

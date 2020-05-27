@@ -1,0 +1,20 @@
+﻿{
+  "containers": [
+    {
+      "name": "TrigMisc",
+      "offset": "0x00",
+      "description": "Trigger Misc"
+    },
+    {
+      "name": "Trigger",
+      "offset": "0x01_00",
+      "description": "{item} Trigger",
+      "container": "Trig",
+      "repeat":
+      {
+        "items": "pads",
+        "gap": "0x1_00"
+      }
+    }
+  ]
+}

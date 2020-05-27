@@ -1,0 +1,17 @@
+﻿{
+  "fields": [
+    {
+      "description": "Pitch",
+      "type": "range32",
+      "min": -4800,
+      "max": 4800
+    },
+    {
+      "description": "Decay",
+      "type": "range32",
+      "min": 1,
+      "max": 100,
+      "default": 100
+    }
+  ]
+}

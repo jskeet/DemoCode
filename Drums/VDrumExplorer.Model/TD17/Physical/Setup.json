@@ -1,0 +1,13 @@
+﻿{
+  "containers": [
+    {
+      "name": "Click",
+      "offset": "0x02_00"
+    },
+    {
+      "name": "Misc",
+      "offset": "0x03_00",
+      "container": "SetupMisc"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+﻿{
+  "fields": [
+    {
+      "description": "Size",
+      "type": "range32",
+      "min": 0,
+      "max": 78,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "description": "Fixed",
+      "type": "enum32",
+      "values": [
+        "Normal",
+        "Fixed 1",
+        "Fixed 2",
+        "Fixed 3",
+        "Fixed 4"
+      ]
+    }
+  ]
+}

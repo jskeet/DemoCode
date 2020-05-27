@@ -1,0 +1,15 @@
+{
+  "name": "Setup",
+  "format": "Setup",
+  "path": "Setup",
+  "details": [
+    {
+      "description": "Click",
+      "path": "Click"
+    },
+    {
+      "description": "Misc",
+      "path": "Misc"
+    }
+  ]
+}

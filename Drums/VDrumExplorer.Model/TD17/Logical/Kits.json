@@ -1,0 +1,91 @@
+{
+  "name": "Kits",
+  "format": "Kits",
+  "path": ".",
+  "details": [
+    {
+      "description": "Kits",
+      "repeat": "kits",
+      "formatPaths": [
+        "Kit[{index}]/KitCommon/KitName",
+        "Kit[{index}]/KitCommon/KitSubName"
+      ],
+      "format": "Kit {index}: {0} / {1}"
+    }
+  ],
+  "children": [
+    {
+      "name": "Kits",
+      "repeat": "kits",
+      "path": "Kit[{index}]",
+      "formatPaths": [
+        "KitCommon/KitName",
+        "KitCommon/KitSubName"
+      ],
+      "format": "Kit {index}: {0}",
+      "kitOnlyFormat": "{0} / {1}",
+      "details": [
+        {
+          "description": "Kit common",
+          "path": "KitCommon"
+        },
+        {
+          "description": "Instruments",
+          "repeat": "triggers",
+          "formatPaths": [
+            "KitUnitMain[{index}]/Instrument",
+            "KitUnitSub[{index}]/Instrument"
+          ],
+          "format": "{item}: {0} / {1}"
+        },
+        {
+          "description": "Kit Midi",
+          "path": "KitMidi"
+        },
+        {
+          "description": "Kit ambience",
+          "path": "KitAmbience"
+        },
+        {
+          "description": "Kit MultiFx",
+          "path": "KitMfx"
+        }
+      ],
+      "children": [
+        {
+          "name": "Triggers",
+          "repeat": "triggers",
+          "formatPaths": [
+            "KitUnitMain[{index}]/Instrument",
+            "KitUnitSub[{index}]/Instrument"
+          ],
+          "path": ".",
+          "format": "{item}: {0} / {1}",
+          "midiNotePath": "KitMidi/Midi[{index}]",
+          "details": [
+            {
+              "description": "Common",
+              "path": "KitUnitCommon[{index}]"
+            },
+            {
+              "description": "Main instrument",
+              "path": "KitUnitMain[{index}]"
+            },
+            {
+              "description": "Main VEdit",
+              "path": "KitUnitVEditMain[{index}]"
+            },
+            {
+              "description": "Sub instrument",
+              "path": "KitUnitSub[{index}]"
+            },
+            {
+              "description": "Sub VEdit",
+              "path": "KitUnitVEditSub[{index}]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

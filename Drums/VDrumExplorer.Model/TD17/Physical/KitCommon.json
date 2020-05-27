@@ -1,0 +1,37 @@
+﻿{
+  "size": "0x2b",
+  "fields": [
+    {
+      "description": "Kit name",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "description": "Kit Sub name",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "description": "Kit volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Pedal HH volume",
+      "type": "volume32"
+    },
+    {
+      "description": "XStick volume",
+      "type": "volume32"
+    },
+    {
+      "description": "XStick on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "HH Open/Close balance",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    }
+  ]
+}
