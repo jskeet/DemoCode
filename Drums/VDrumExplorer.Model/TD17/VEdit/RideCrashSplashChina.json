@@ -1,0 +1,38 @@
+﻿{
+  "fields": [
+    {
+      "description": "Size",
+      "type": "range32",
+      "min": 0,
+      "max": 78,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "description": "Muffling",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "Tape 1",
+        "Tape 2",
+        "Tape 3",
+        "Tape 4",
+        "Tape 5",
+        "Tape 6",
+        "Tape 7",
+        "Tape 8",
+        "Tape 9",
+        "Tape 10",
+        "Tape 11",
+        "Tape 12",
+        "Tape 13",
+        "Tape 14",
+        "Tape 15",
+        "Tape 16",
+        "Tape 17",
+        "Tape 18",
+        "Tape 19"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Triggers",
+  "format": "Triggers",
+  "path": "Triggers",
+  "details": [
+    {
+      "description": "Trigger misc",
+      "path": "TrigMisc"
+    },
+    {
+      "description": "Triggers",
+      "repeat": "pads",
+      "formatPaths": [
+        "Trigger[{index}]/PadType"
+      ],
+      "format": "{item}: {0}"
+    }
+  ],
+  "children": [
+    {
+      "name": "Triggers",
+      "repeat": "pads",
+      "path": "Trigger[{index}]",
+      "formatPaths": [
+        "PadType"
+      ],
+      "format": "{item}: {0}",
+      "details": [
+        {
+          "description": "Trigger",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}

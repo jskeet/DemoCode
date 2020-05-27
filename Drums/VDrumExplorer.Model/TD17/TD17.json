@@ -1,0 +1,69 @@
+{
+  "identifier": {
+    "name": "TD-17",
+    "modelId": "0x4b",
+    "familyCode": "0x034b",
+    "familyNumberCode": "0x0"
+  },
+  "instrumentGroups": "$resource:InstrumentGroups.json",
+  "lookups": {
+    "triggers": [
+      "Kick Head",
+      "Snare Head",
+      "Snare Rim",
+      "Tom 1 Head",
+      "Tom 1 Rim",
+      "Tom 2 Head",
+      "Tom 2 Rim",
+      "Tom 3 Head",
+      "Tom 3 Rim",
+      "Hi-Hat Head",
+      "Hi-Hat Rim",
+      "Crash 1 Head",
+      "Crash 1 Rim",
+      "Crash 2 Head",
+      "Crash 2 Rim",
+      "Ride Head",
+      "Ride Rim",
+      "Ride Bell",
+      "Aux Head",
+      "Aux Rim"
+    ],
+    "pads": [
+      "Kick",
+      "Snare",
+      "Tom 1",
+      "Tom 2",
+      "Tom 3",
+      "Hi-Hat",
+      "Crash 1",
+      "Crash 2",
+      "Ride",
+      "Aux"
+    ]
+  },
+  "counts": {
+    "kits": 100,
+    "userSamples": 100
+  },
+  "containers": {
+    "Click": "$resource:Physical/Click.json",
+    "Current": "$resource:Physical/Current.json",
+    "Kit": "$resource:Physical/Kit.json",
+    "KitAmbience": "$resource:Physical/KitAmbience.json",
+    "KitCommon": "$resource:Physical/KitCommon.json",
+    "KitMfx": "$resource:Physical/KitMfx.json",
+    "KitMidi": "$resource:Physical/KitMidi.json",
+    "KitUnitCommon": "$resource:Physical/KitUnitCommon.json",
+    "KitUnitInst": "$resource:Physical/KitUnitInst.json",
+    "KitUnitVEdit": "$resource:Physical/KitUnitVEdit.json",
+    "Root": "$resource:Physical/Root.json",
+    "Setup": "$resource:Physical/Setup.json",
+    "SetupMisc": "$resource:Physical/SetupMisc.json",
+    "Trig": "$resource:Physical/Trig.json",
+    "Trigger": "$resource:Physical/Trigger.json",
+    "TrigMisc": "$resource:Physical/TrigMisc.json"
+  },
+
+  "logicalTree": "$resource:Logical/Root.json"
+}

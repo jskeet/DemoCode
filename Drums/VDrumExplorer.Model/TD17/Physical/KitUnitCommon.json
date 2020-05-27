@@ -1,0 +1,154 @@
+﻿{
+  "size": "0x18",
+  "fields": [
+    {
+      "description": "Pan",
+      "type": "range16",
+      "min": -30,
+      "max": 30
+    },
+    {
+      "description": "Sub instrument on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Layer type",
+      "type": "enum",
+      "values": [
+        "Mix",
+        "Fade1",
+        "Fade2",
+        "Switch"
+      ]
+    },
+    {
+      "description": "Fade point",
+      "type": "range8",
+      "min": 1,
+      "max": 127
+    },
+    {
+      "description": "Eq Switch on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Eq Low Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz"
+      ]
+    },
+    {
+      "description": "Eq Low Gain",
+      "type": "range16",
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
+    },
+    {
+      "description": "Eq Mid Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "description": "Eq Mid Q",
+      "type": "enum",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ]
+    },
+    {
+      "description": "Eq Mid Gain",
+      "type": "range16",
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
+    },
+    {
+      "description": "Eq High Frequency",
+      "type": "enum",
+      "values": [
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "description": "Eq High Gain",
+      "type": "range16",
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
+    },
+    {
+      "description": "Ambience Send Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Multi FX Send Level",
+      "type": "volume32"
+    }
+  ]
+}

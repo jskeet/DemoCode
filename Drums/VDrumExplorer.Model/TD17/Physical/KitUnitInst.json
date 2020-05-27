@@ -1,0 +1,18 @@
+﻿{
+  "size": "0x9",
+  "fields": [
+    {
+      "description": "Instrument",
+      "type": "instrument",
+      "bankOffset": "0x08"
+    },
+    {
+      "description": "Volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Instrument bank",
+      "type": "placeholder8"
+    }
+  ]
+}

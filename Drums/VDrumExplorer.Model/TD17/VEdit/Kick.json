@@ -1,0 +1,33 @@
+﻿{
+  "fields": [
+    {
+      "description": "Tuning",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Muffling",
+      "type": "enum32",
+      "values": [
+        "Off",
+        "Tape 1",
+        "Tape 2",
+        "Tape 3",
+        "Tape 4",
+        "Blanket 1",
+        "Blanket 2",
+        "Blanket 3",
+        "Weight 1",
+        "Weight 2"
+      ]
+    },
+    {
+      "description": "Snare buzz",
+      "type": "range32",
+      "min": 0,
+      "max": 8,
+      "off": 0
+    }
+  ]
+}
