@@ -32,6 +32,12 @@ namespace VDrumExplorer.Model.Schema.Json
         
         public Dictionary<string, List<string>>? Lookups { get; set; }
 
+        public string? KitRootPathFormat { get; set; }
+        public string? MainInstrumentPathFormat { get; set; }
+        public string? KitNamePath { get; set; }
+        public string? KitSubNamePath { get; set; }
+        public string? TriggerPathFormat { get; set; }
+
         internal static ModuleJson FromJson(JObject json)
         {
             var serializer = new JsonSerializer { Converters = { new HexInt32Converter() }, MissingMemberHandling = MissingMemberHandling.Error };
@@ -45,6 +51,10 @@ namespace VDrumExplorer.Model.Schema.Json
             ValidateNotNull(Counts, nameof(Counts));
             ValidateNotNull(Lookups, nameof(Lookups));
             ValidateNotNull(Containers, nameof(Containers));
+            ValidateNotNull(KitRootPathFormat, nameof(Containers));
+            ValidateNotNull(MainInstrumentPathFormat, nameof(MainInstrumentPathFormat));
+            ValidateNotNull(KitNamePath, nameof(KitNamePath));
+            ValidateNotNull(KitSubNamePath, nameof(KitSubNamePath));
             Validation.Validate(Containers.TryGetValue("Root", out _), "No root container present");
 
             foreach (var pair in Containers)

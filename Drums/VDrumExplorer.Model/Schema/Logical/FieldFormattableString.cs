@@ -39,7 +39,5 @@ namespace VDrumExplorer.Model.Schema.Logical
                     .AsReadOnly());
 
         public override string ToString() => FormatString;
-        
-        // TODO: The actual formatting based on data.
     }
 }

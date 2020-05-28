@@ -13,12 +13,12 @@ namespace VDrumExplorer.ViewModel
     internal static class ModelExtensions
     {
         public static int ValidateKitNumber(this ModuleSchema? schema, int value) =>
-            value >= 1 && value <= schema?.KitRoots.Count
+            value >= 1 && value <= schema?.Kits
             ? value
             : throw new ArgumentOutOfRangeException("Invalid kit number");
 
         public static int ValidateUserSampleNumber(this ModuleSchema? schema, int value) =>
-            value >= 1 && value <= schema?.UserSampleInstruments.Count
+            value >= 1 && value <= schema?.UserSamples
             ? value
             : throw new ArgumentOutOfRangeException("Invalid sample number");
     }

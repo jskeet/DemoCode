@@ -21,7 +21,7 @@ namespace VDrumExplorer.Model
 
         private Kit(ModuleData data, int defaultKitNumber) =>
             (Schema, Data, DefaultKitNumber, KitRoot) =
-            (data.Schema, data, defaultKitNumber, data.Schema.KitRoots[0]);
+            (data.Schema, data, defaultKitNumber, data.Schema.GetKitRoot(1));
 
         /// <summary>
         /// Creates a kit from the data in a snapshot.
@@ -31,15 +31,12 @@ namespace VDrumExplorer.Model
         /// <param name="kitNumber">The (1-based) number of this kit.</param>
         public static Kit FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber)
         {
-            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.KitRoots[0]);
+            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.GetKitRoot(1));
             moduleData.LoadSnapshot(snapshot);
             return new Kit(moduleData, kitNumber);
         }
 
         public string GetKitName() => GetKitName(Data, KitRoot);
-
-        // TODO: Fix this, because hardcoding it is horrible. However, putting something general
-        // into all schema nodes is pretty unpleasant too. Maybe a top-level piece of JSON?
 
         /// <summary>
         /// Returned the name of a kit from the specified data, given a logical kit root node.
@@ -49,12 +46,13 @@ namespace VDrumExplorer.Model
         /// <returns>The kit name.</returns>
         internal static string GetKitName(ModuleData data, TreeNode logicalKitRoot)
         {
+            var schema = data.Schema;
             var container = logicalKitRoot.Container;
-            var (nameContainer, nameField) = container.ResolveField("KitCommon/KitName");
-            var (subNameContainer, subNameField) = container.ResolveField("KitCommon/KitSubName");
+            var (nameContainer, nameField) = container.ResolveField(schema.KitNamePath);
+            var (subNameContainer, subNameField) = container.ResolveField(schema.KitSubNamePath);
             var name = data.GetDataField(nameContainer, nameField).FormattedText;
             var subName = data.GetDataField(subNameContainer, subNameField).FormattedText;
-            return $"{name} / {subName}";
+            return subName == "" ? name : $"{name} / {subName}";
         }
     }
 }

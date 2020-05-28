@@ -92,5 +92,17 @@
     "TrigDigital": "$resource:Physical/TrigDigital.json"
   },
 
-  "logicalTree": "$resource:Logical/Root.json"
+  "logicalTree": "$resource:Logical/Root.json",
+
+  // Paths that code needs to know about.
+
+  // After string formatting, replacing {0} with a kit number, this is the path to the kit root within the logical tree (from the root).
+  "kitRootPathFormat": "Kits/Kit[{0}]",
+  // After string formatting, replacing {0} with the trigger number, this is the path to the main instrument field for the specified trigger, from the kit's root physical container.
+  "mainInstrumentPathFormat": "KitPadMain[{0}]/Instrument",
+  // After string formatting, replacing {0} with the trigger number, this is the path to the logical tree node for the specified trigger, from the kit's root logical container.
+  "triggerPathFormat": "Triggers/Trigger[{0}]",
+  // Paths from the kit's root physical container to the name and subname fields.
+  "kitNamePath": "KitCommon/KitName",
+  "kitSubNamePath": "KitCommon/KitSubName"
 }

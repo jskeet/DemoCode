@@ -72,9 +72,9 @@ namespace VDrumExplorer.Model.Device
 
         public async Task<Kit> LoadKitAsync(int kit, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
-            var kitRoot = Schema.KitRoots[kit - 1];
+            var kitRoot = Schema.GetKitRoot(kit);
             var snapshot = await LoadDescendantsAsync(kitRoot, progressHandler, cancellationToken);
-            snapshot = snapshot.Relocated(kitRoot, Schema.KitRoots[0]);
+            snapshot = snapshot.Relocated(kitRoot, Schema.GetKitRoot(1));
             return Kit.FromSnapshot(Schema, snapshot, kit);
         }
 
@@ -131,11 +131,9 @@ namespace VDrumExplorer.Model.Device
 
         public async Task SetInstrumentAsync(int kit, int trigger, Instrument instrument, CancellationToken cancellationToken)
         {
-            // TODO: Do this in a better way!
-            var kitRoot = Schema.KitRoots[kit - 1];
-            var (container, field) = kitRoot.Container.ResolveField($"KitPadMain[{trigger}]/Instrument");
+            var (container, field) = Schema.GetMainInstrumentField(kit, trigger);
             var segment = await LoadSegment(container.Address, container.Size, cancellationToken);
-            var dataField = new InstrumentDataField((InstrumentField) field, Schema);
+            var dataField = new InstrumentDataField(field, Schema);
             dataField.Instrument = instrument;
             dataField.Save(segment);
             await SaveSegment(segment, cancellationToken);

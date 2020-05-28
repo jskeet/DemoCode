@@ -50,6 +50,6 @@ namespace VDrumExplorer.ViewModel.Data
         protected override void SaveToStream(Stream stream) => Kit.Save(stream);
 
         protected override void CopyDataToDevice() =>
-            CopyDataToDevice(Model.LogicalRoot, Model.Schema.KitRoots[KitCopyTargetNumber - 1].Container.Address);
+            CopyDataToDevice(Model.LogicalRoot, Model.Schema.GetKitRoot(KitCopyTargetNumber).Container.Address);
     }
 }

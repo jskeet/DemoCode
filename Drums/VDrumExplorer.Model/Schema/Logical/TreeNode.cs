@@ -56,11 +56,14 @@ namespace VDrumExplorer.Model.Schema.Logical
         /// </summary>
         public int? KitNumber { get; internal set; }
 
+        private readonly IDictionary<string, TreeNode> childrenByName;
+
         internal TreeNode Root => Parent?.Root ?? this;
 
         internal TreeNode(string name, string path, IContainer container, FieldFormattableString format, string? midiNotePath, IReadOnlyList<TreeNode> children, IReadOnlyList<INodeDetail> details)
         {
             (Name, Path, Container, Format, MidiNotePath, Children, Details) = (name, path, container, format, midiNotePath, children, details);
+            childrenByName = Children.ToDictionary(node => node.Name, StringComparer.Ordinal);
             foreach (TreeNode node in Children)
             {
                 node.Parent = this;
@@ -88,8 +91,11 @@ namespace VDrumExplorer.Model.Schema.Logical
             TreeNode current = this;
             foreach (var segment in segments)
             {
-                current = current.Children.FirstOrDefault(c => c.Name == segment)
-                    ?? throw new ArgumentException($"Container '{segment}' not found within container '{current.Path}'");
+                if (!current.childrenByName.TryGetValue(segment, out var next))
+                {
+                    throw new ArgumentException($"Container '{segment}' not found within container '{current.Path}'");
+                }
+                current = next;
             }
             return current;
         }

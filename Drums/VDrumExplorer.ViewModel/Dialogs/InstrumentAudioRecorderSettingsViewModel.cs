@@ -34,7 +34,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             var expectedInputDevices = new[] { $"MASTER ({midiName})", $"IN ({midiName})", $"KICK ({midiName})" };
             SelectedInputDevice = InputDevices.FirstOrDefault(inputName => expectedInputDevices.Contains(inputName));
 
-            kitNumber = schema.KitRoots.Count;
+            kitNumber = schema.Kits;
             SelectOutputFileCommand = new DelegateCommand(SelectOutputFile, true);
         }
 

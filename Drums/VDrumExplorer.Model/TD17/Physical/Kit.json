@@ -3,12 +3,12 @@
     {
       "name": "KitCommon",
       "offset": "0x00_00",
-      "description": "Kit Common",
+      "description": "Kit Common"
     },
     {
       "name": "KitMidi",
       "offset": "0x01_00",
-      "description": "Kit MIDI",
+      "description": "Kit MIDI"
     },
     {
       "name": "KitAmbience",
