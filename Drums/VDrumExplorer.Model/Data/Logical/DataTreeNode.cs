@@ -34,7 +34,7 @@ namespace VDrumExplorer.Model.Data.Logical
                     new FieldContainerDataNodeDetail(fieldContainerDetail.Description, fieldContainerDetail.Container, data),
                 ListNodeDetail listDetail =>
                     new ListDataNodeDetail(listDetail.Description, listDetail.Items.ToReadOnlyList(ffs => new DataFieldFormattableString(data, ffs))),
-                _ => throw new ArgumentException("Don't know how to convert {detail} to {nameof(IDataNodeDetail)}")
+                _ => throw new ArgumentException($"Don't know how to convert {detail} to {nameof(IDataNodeDetail)}")
             };
 
         public int? GetMidiNote()

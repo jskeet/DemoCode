@@ -160,7 +160,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
 
             // Load the details for the whole kit.
             // We don't need all of it, but it doesn't take *that* long, compared with the rest of the process.
-            var schemaKitRoot = schema.KitRoots[kitNumber - 1];
+            var schemaKitRoot = schema.GetKitRoot(kitNumber);
 
 
             var blankKit = ModuleData.FromLogicalRootNode(schemaKitRoot);
@@ -207,11 +207,9 @@ namespace VDrumExplorer.ViewModel.Dialogs
 
             int FindMidiNote(ModuleData kit)
             {
-                // TODO: Don't assume this layout, and express it more cleanly.
-                var triggerRoot = kit.LogicalRoot
-                    .Children.First(n => n.SchemaNode.Name == "Triggers")
-                    .Children.First(n => n.SchemaNode.Name == "Trigger[1]");
-                return triggerRoot.GetMidiNote() ?? throw new InvalidOperationException($"Node {triggerRoot.SchemaNode.Path} has no MIDI note");
+                var triggerSchemaRoot = kit.Schema.GetTriggerRoot(kitNumber, 1);
+                var triggerDataRoot = new DataTreeNode(kit, triggerSchemaRoot);
+                return triggerDataRoot.GetMidiNote() ?? throw new InvalidOperationException($"Node {triggerSchemaRoot.Path} has no MIDI note");
             }
         }
     }

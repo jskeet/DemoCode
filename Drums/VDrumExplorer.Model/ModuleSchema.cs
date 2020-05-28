@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using VDrumExplorer.Midi;
+using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.Model.Schema.Json;
 using VDrumExplorer.Model.Schema.Logical;
 using VDrumExplorer.Model.Schema.Physical;
@@ -44,7 +45,27 @@ namespace VDrumExplorer.Model
         public IReadOnlyList<Instrument> PresetInstruments { get; }
         public IReadOnlyList<Instrument> UserSampleInstruments { get; }
         public IReadOnlyList<InstrumentGroup> InstrumentGroups { get; }
-        public IReadOnlyList<TreeNode> KitRoots { get; }
+
+        /// <summary>
+        /// The number of kits in this module.
+        /// </summary>
+        public int Kits { get; }
+
+        /// <summary>
+        /// The number of user samples in this module.
+        /// </summary>
+        public int UserSamples { get; }
+
+        /// <summary>
+        /// The logical root node for the first kit. This is often used for relocating kit data.
+        /// </summary>
+        public TreeNode Kit1Root => kitRoots[0];
+
+        private readonly TreeNode[] kitRoots;
+        private readonly string mainInstrumentPathFormat;
+        private readonly string triggerPathFormat;
+        internal string KitNamePath { get; }
+        internal string KitSubNamePath { get; }
 
         private ModuleSchema(ModuleJson json)
         {
@@ -52,9 +73,11 @@ namespace VDrumExplorer.Model
             // construction can rely on it.
             json.Validate();
             Identifier = json.Identifier!.ToModuleIdentifier();
+            Kits = json.Counts!["kits"];
+            UserSamples = json.Counts!["userSamples"];
             InstrumentGroups = json.InstrumentGroups
                 .Select((igj, index) => igj.ToInstrumentGroup(index))
-                .Concat(new[] { InstrumentGroup.ForUserSamples(json.InstrumentGroups!.Count, json.Counts!["userSamples"]) })
+                .Concat(new[] { InstrumentGroup.ForUserSamples(json.InstrumentGroups!.Count, UserSamples) })
                 .ToReadOnlyList();
 
             PresetInstruments = InstrumentGroups
@@ -75,13 +98,33 @@ namespace VDrumExplorer.Model
 
             PhysicalRoot = json.BuildPhysicalRoot(this);
             LogicalRoot = json.BuildLogicalRoot(PhysicalRoot);
-
-            // Note: this makes an assumption about the schema, but it appears to be reasonable.
-            KitRoots = LogicalRoot.Children.Single(child => child.Name == "Kits").Children.ToReadOnlyList();
-            for (int i = 0; i < KitRoots.Count; i++)
+            kitRoots = new TreeNode[Kits];
+            for (int i = 1; i <= Kits; i++)
             {
-                KitRoots[i].KitNumber = i + 1;
+                var root = LogicalRoot.ResolveNode(string.Format(json.KitRootPathFormat, i));
+                kitRoots[i - 1] = root;
+                root.KitNumber = i;
             }
+            
+            mainInstrumentPathFormat = json.MainInstrumentPathFormat!;
+            KitNamePath = json.KitNamePath!;
+            KitSubNamePath = json.KitSubNamePath!;
+            triggerPathFormat = json.TriggerPathFormat!;
+        }
+
+        public TreeNode GetKitRoot(int kitNumber) => kitRoots[kitNumber - 1];
+
+        public TreeNode GetTriggerRoot(int kitNumber, int trigger)
+        {
+            var kitRoot = GetKitRoot(kitNumber);
+            return kitRoot.ResolveNode(string.Format(triggerPathFormat, trigger));
+        }
+
+        internal (FieldContainer, InstrumentField) GetMainInstrumentField(int kitNumber, int trigger)
+        {
+            var kitRoot = GetKitRoot(kitNumber);
+            var (container, field) = kitRoot.Container.ResolveField(string.Format(mainInstrumentPathFormat, trigger));
+            return (container, (InstrumentField) field);
         }
 
         private static Lazy<ModuleSchema> LazyFromAssemblyResources(string resourceBase, string resourceName) =>

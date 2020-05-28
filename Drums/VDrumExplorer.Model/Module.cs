@@ -25,7 +25,7 @@ namespace VDrumExplorer.Model
             return new Module(moduleData);
         }
 
-        public string GetKitName(int kitNumber) => Kit.GetKitName(Data, Schema.KitRoots[kitNumber - 1]);
+        public string GetKitName(int kitNumber) => Kit.GetKitName(Data, Schema.GetKitRoot(kitNumber));
 
         /// <summary>
         /// Copies the data in the specified kit into this module, at the specified kit number.
@@ -38,7 +38,7 @@ namespace VDrumExplorer.Model
             {
                 throw new ArgumentException($"Module and kit schemas do not match");
             }
-            var targetRoot = Schema.KitRoots[kitNumber - 1];
+            var targetRoot = Schema.GetKitRoot(kitNumber);
             var kitData = kit.Data.CreateSnapshot().Relocated(kit.KitRoot, targetRoot);
             Data.LoadPartialSnapshot(kitData);
         }
@@ -51,8 +51,8 @@ namespace VDrumExplorer.Model
         /// <returns>The extracted kit.</returns>
         public Kit ExportKit(int kitNumber)
         {
-            var root = Schema.KitRoots[kitNumber - 1];
-            var target = Schema.KitRoots[0];
+            var root = Schema.GetKitRoot(kitNumber);
+            var target = Schema.GetKitRoot(1);
             var snapshot = Data.CreatePartialSnapshot(root);
             snapshot = snapshot.Relocated(root, target);
             return Kit.FromSnapshot(Schema, snapshot, kitNumber);
