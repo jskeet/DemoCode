@@ -12,14 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VDrumExplorer.Midi\VDrumExplorer.Midi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Model\VDrumExplorer.Model.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Proto\VDrumExplorer.Proto.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NAudio" Version="1.10.0" />
-    <PackageReference Include="NodaTime" Version="2.4.7" />
+    <PackageReference Include="NodaTime" Version="3.0.0" />
   </ItemGroup>
 
 </Project>
