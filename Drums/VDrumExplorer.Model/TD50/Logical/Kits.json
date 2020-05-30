@@ -85,7 +85,7 @@
               ],
               "path": ".",
               "format": "{item}: {0} / {1}",
-              "midiNotePath": "KitMidi/Midi[{index}]",
+              "midiNotePath": "KitMidi/Midi[{item}]",
               "details": [
                 {
                   "description": "Main instrument",

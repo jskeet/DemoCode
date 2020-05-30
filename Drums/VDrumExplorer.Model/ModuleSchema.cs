@@ -98,6 +98,7 @@ namespace VDrumExplorer.Model
 
             PhysicalRoot = json.BuildPhysicalRoot(this);
             LogicalRoot = json.BuildLogicalRoot(PhysicalRoot);
+            LogicalRoot.ValidateFieldReferences();
             kitRoots = new TreeNode[Kits];
             for (int i = 1; i <= Kits; i++)
             {
