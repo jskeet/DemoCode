@@ -21,7 +21,7 @@ namespace VDrumExplorer.Model
 
         private Kit(ModuleData data, int defaultKitNumber) =>
             (Schema, Data, DefaultKitNumber, KitRoot) =
-            (data.Schema, data, defaultKitNumber, data.Schema.GetKitRoot(1));
+            (data.Schema, data, defaultKitNumber, data.Schema.Kit1Root);
 
         /// <summary>
         /// Creates a kit from the data in a snapshot.
@@ -31,7 +31,7 @@ namespace VDrumExplorer.Model
         /// <param name="kitNumber">The (1-based) number of this kit.</param>
         public static Kit FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber)
         {
-            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.GetKitRoot(1));
+            var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.Kit1Root);
             moduleData.LoadSnapshot(snapshot);
             return new Kit(moduleData, kitNumber);
         }
