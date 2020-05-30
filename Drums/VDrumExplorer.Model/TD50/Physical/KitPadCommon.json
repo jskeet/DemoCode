@@ -1,0 +1,227 @@
+﻿{
+  "size": "0x2a",
+  "fields": [
+    {
+      "description": "Pan",
+      "type": "range16",
+      "min": -30,
+      "max": 30
+    },
+    {
+      "description": "Minimum volume",
+      "type": "range8",
+      "min": 0,
+      "max": 15
+    },
+    {
+      "description": "Maximum volume",
+      "type": "range16",
+      "min": -5,
+      "max": 0
+    },
+    {
+      "description": "Mute group send",
+      "type": "range8",
+      "min": 0,
+      "max": 8,
+      "off": 0
+    },
+    {
+      "description": "Mute group receive",
+      "type": "range8",
+      "min": 0,
+      "max": 8,
+      "off": 0
+    },
+    {
+      "description": "Sub instrument on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Layer type",
+      "type": "enum",
+      "values": [
+        "Mix",
+        "Fade1",
+        "Fade2",
+        "Fade3",
+        "Switch"
+      ]
+    },
+    {
+      "description": "Reserved",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Fade point",
+      "type": "range32",
+      "min": 1,
+      // FIXME: This one may need to be formatted oddly, e.g. to "127+32"
+      "max": 159
+    },
+    {
+      "description": "Eq Switch on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Eq Low Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz"
+      ]
+    },
+    {
+      "description": "Eq Low Gain",
+      "type": "range16",
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
+    },
+    {
+      "description": "Eq Mid Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "description": "Eq Mid Q",
+      "type": "enum",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ]
+    },
+    {
+      "description": "Eq Mid Gain",
+      "type": "range16",
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
+    },
+    {
+      "description": "Eq High Frequency",
+      "type": "enum",
+      "values": [
+        "1kHz",
+        "1.25kHz",
+        "1.6kHz",
+        "2kHz",
+        "2.5kHz",
+        "3.15kHz",
+        "4kHz",
+        "5kHz",
+        "6.3kHz",
+        "8kHz",
+        "10kHz",
+        "12.5kHz",
+        "16kHz"
+      ]
+    },
+    {
+      "description": "Eq High Gain",
+      "type": "range16",
+      "suffix": "dB",
+      "min": -15,
+      "max": 15
+    },
+    {
+      "description": "Ambience Room Send Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Ambience Reverb Send Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Multi FX Send Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Multi FX Assign",
+      "type": "enum",
+      "values": [
+        "MFX1",
+        "MFX2",
+        "MFX3"
+      ]
+    },
+    {
+      "description": "Pedal Bend Range",
+      "type": "range16",
+      "min": -24,
+      "max": 24
+    },
+    {
+      "description": "Position control",
+      "type": "boolean"
+    },
+    {
+      "description": "Position area",
+      "type": "enum",
+      "values": [
+        "Inside-5",
+        "Inside-4",
+        "Inside-3",
+        "Inside-2",
+        "Inside-1",
+        "Default",
+        "Outside+1",
+        "Outside+2",
+        "Outside+3",
+        "Outside+4",
+        "Outside+5"
+      ],
+      "default": 5
+    }
+  ]
+}

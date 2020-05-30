@@ -1,0 +1,63 @@
+{
+  "name": "TriggerBanks",
+  "format": "Trigger Banks",
+  "path": ".",
+  "details": [
+    {
+      "description": "Trigger Banks",
+      "repeat": "triggerBanks",
+      "formatPaths": [
+        "TriggerBank[{index}]/TrigMisc/Name"
+      ],
+      "format": "Bank {index}: {0}"
+    }
+  ],
+  "children": [
+    {
+      "name": "Bank",
+      "repeat": "triggerBanks",
+      "path": "TriggerBank[{index}]",
+      "formatPaths": [
+        "TrigMisc/Name"
+      ],
+      "format": "Bank {index}: {0}",
+      "details": [
+        {
+          "description": "Trigger misc",
+          "path": "TrigMisc"
+        }
+      ],
+      "children": [
+        {
+          "name": "Pad",
+          "repeat": "pads",
+          "formatPaths": [
+            "PadType"
+          ],
+          "format": "{item} : {0}",
+          "path": "TrigAnalog[{index}]",
+          "details": [
+            {
+              "description": "Trigger Details",
+              "path": "."
+            }
+          ]
+        },
+        {
+          "name": "DigitalPad",
+          "repeat": "pads",
+          "formatPaths": [
+          ],
+          "format": "Digital Trigger {index}",
+          "path": "TrigDigital[{index}]",
+          "details": [
+            {
+              "description": "Digital Trigger Details",
+              "path": "."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

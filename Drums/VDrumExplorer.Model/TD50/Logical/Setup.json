@@ -1,0 +1,23 @@
+{
+  "name": "Setup",
+  "format": "Setup",
+  "path": "Setup",
+  "details": [
+    {
+      "description": "Output",
+      "path": "Output"
+    },
+    {
+      "description": "Control",
+      "path": "Control"
+    },
+    {
+      "description": "Click",
+      "path": "Click"
+    },
+    {
+      "description": "Misc",
+      "path": "Misc"
+    }
+  ]
+}

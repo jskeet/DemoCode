@@ -1,0 +1,36 @@
+﻿{
+  "size": "0x21",
+  "fields": [
+    {
+      "name": "Placeholder field",
+      "type": "placeholder8"
+    },
+    {
+      "description": "V-Edit Parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "/Kit[{kit}]/KitPad{layer}[{trigger}]/Instrument",
+        "fieldSize": 2,
+        "fieldCount": 16,
+        "fieldLists": {
+          "Off": "$resource:VEdit/Off.json",
+          "Other": "$resource:VEdit/Other.json",
+          "KickA": "$resource:VEdit/KickA.json",
+          "SnareA": "$resource:VEdit/SnareA.json",
+          "XStick": "$resource:VEdit/XStick.json",
+          "TomA": "$resource:VEdit/TomA.json",
+          "HiHat": "$resource:VEdit/HiHat.json",
+          "Ride": "$resource:VEdit/Ride.json",
+          "CrashChinaSplashStackedCymbal": "$resource:VEdit/CrashChinaSplashStackedCymbal.json",
+          "SnareBrush": "$resource:VEdit/SnareBrush.json",
+          "TomBrush": "$resource:VEdit/TomBrush.json",
+          // We could potentially configure which existing vedit category to use for
+          // user samples, but it feels simpler to give it its own entry. The only
+          // difference is that switching between samples and other "other" groups
+          // won't preserve the values.
+          "UserSamples": "$resource:VEdit/Other.json"
+        }
+      }
+    }
+  ]
+}
