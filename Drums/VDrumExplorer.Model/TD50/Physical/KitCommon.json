@@ -1,0 +1,65 @@
+﻿{
+  "size": "0x32",
+  "fields": [
+    {
+      "name": "KitName",
+      "description": "Kit name",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "name": "KitSubName",
+      "description": "Kit Sub name",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "description": "Kit volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Pedal HH volume",
+      "type": "volume32"
+    },
+    {
+      "description": "XStick on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "XStick Inst",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
+    },
+    {
+      "description": "XStick volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Brush on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Color",
+      "type": "range8",
+      "min": 0,
+      "max": 9,
+      "valueOffset": 1
+    },
+    {
+      "description": "Favorite",
+      "type": "boolean"
+    },
+    {
+      "description": "Kit Tempo",
+      "type": "boolean"
+    },
+    {
+      "description": "Tempo",
+      "type": "range32",
+      "min": 20,
+      "max": 260
+    }
+  ]
+}

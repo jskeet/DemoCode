@@ -1,0 +1,28 @@
+﻿{
+  "size": "0x07",
+  "fields": [
+    {
+      "description": "On/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Color",
+      "type": "range8",
+      "min": 0,
+      "max": 5,
+      "valueOffset": 1
+    },
+    {
+      "description": "Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Width",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "off": 0,
+      "offLabel": "Mono"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+﻿{
+  "size": "0x09",
+  "fields": [
+    {
+      "description": "Mix In Input",
+      "type": "enum",
+      "values": [
+        "L+R",
+        "L Only",
+        "R Only"
+      ]
+    },
+    {
+      "description": "Mix In Mode",
+      "type": "enum",
+      "values": [
+        "Stereo",
+        "Mono"
+      ]
+    },
+    {
+      "description": "Mix In Gain",
+      "type": "enum",
+      "values": [
+        "0dB",
+        "+6dB",
+        "+12dB"
+      ]
+    },
+    {
+      "description": "USB Audio Volume Select Input Main",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Song",
+        "Click"
+      ]
+    },
+    {
+      "description": "USB Audio Volume Select Input Sub",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Song",
+        "Click"
+      ]
+    },
+    {
+      "description": "USB Audio Input Gain",
+      "type": "range16",
+      "min": -36,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "description": "USB Audio Output Gain",
+      "type": "range16",
+      "min": -24,
+      "max": 24,
+      "suffix": "dB"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+﻿{
+  "size": "0x0b",
+  "fields": [
+    {
+      "description": "Sound",
+      "type": "enum",
+      "values": [
+        "Metronome",
+        "Click",
+        "Voice",
+        "Beep 1",
+        "Beep 2",
+        "Tek click",
+        "Sticks",
+        "Claves",
+        "Wood block",
+        "Cowbell",
+        "Triangle",
+        "Tambourine",
+        "Maracas",
+        "Cabasa"
+      ]
+    },
+    {
+      "description": "Pan",
+      "type": "range16",
+      "min": -30,
+      "max": 30
+    },
+    {
+      "description": "Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Amp (Reverb) Send",
+      "type": "volume32"
+    }
+  ]
+}

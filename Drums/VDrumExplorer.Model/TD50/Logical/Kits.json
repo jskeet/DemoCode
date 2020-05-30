@@ -1,0 +1,177 @@
+{
+  "name": "Kits",
+  "format": "Kits",
+  "path": ".",
+  "details": [
+    {
+      "description": "Kits",
+      "repeat": "kits",
+      "formatPaths": [
+        "Kit[{index}]/KitCommon/KitName",
+        "Kit[{index}]/KitCommon/KitSubName"
+      ],
+      "format": "Kit {index}: {0} / {1}"
+    }
+  ],
+  "children": [
+    {
+      "name": "Kit",
+      "repeat": "kits",
+      "path": "Kit[{index}]",
+      "formatPaths": [
+        "KitCommon/KitName",
+        "KitCommon/KitSubName"
+      ],
+      "format": "Kit {index}: {0} / {1}",
+      "kitOnlyFormat": "{0} / {1}",
+      "details": [
+        {
+          "description": "Kit common",
+          "path": "KitCommon"
+        },
+        {
+          "description": "Instruments",
+          "repeat": "triggers",
+          "formatPaths": [
+            "KitPadMain[{index}]/Instrument",
+            "KitPadSub[{index}]/Instrument"
+          ],
+          "format": "{item}: {0} / {1}"
+        },
+        {
+          "description": "Kit Room",
+          "path": "KitRoom"
+        },
+        {
+          "description": "Kit Reverb",
+          "path": "KitReverb"
+        },
+        {
+          "description": "Kit Stereo Enhancer",
+          "path": "KitStereoEnhancer"
+        },
+        {
+          "description": "Kit Master Equalizer",
+          "path": "KitMasterEQ"
+        },
+        {
+          "description": "Kit Master Compressor",
+          "path": "KitMasterComp"
+        }
+      ],
+      "children": [
+        {
+          "name": "Triggers",
+          "format": "Triggers",
+          "path": ".",
+          "details": [
+            {
+              "description": "Triggers",
+              "repeat": "triggers",
+              "formatPaths": [
+                "KitPadMain[{index}]/Instrument",
+                "KitPadSub[{index}]/Instrument"
+              ],
+              "format": "{item}: {0} / {1}"
+            }
+          ],
+          "children": [
+            {
+              "name": "Trigger",
+              "repeat": "triggers",
+              "formatPaths": [
+                "KitPadMain[{index}]/Instrument",
+                "KitPadSub[{index}]/Instrument"
+              ],
+              "path": ".",
+              "format": "{item}: {0} / {1}",
+              "midiNotePath": "KitMidi/Midi[{index}]",
+              "details": [
+                {
+                  "description": "Main instrument",
+                  "path": "KitPadMain[{index}]"
+                },
+                {
+                  "description": "Main VEdit",
+                  "path": "KitPadVEditMain[{index}]"
+                },
+                {
+                  "description": "Sub instrument",
+                  "path": "KitPadSub[{index}]"
+                },
+                {
+                  "description": "Sub VEdit",
+                  "path": "KitPadVEditSub[{index}]"
+                },
+                {
+                  "description": "Common",
+                  "path": "KitPadCommon[{index}]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PadCompressors",
+          "format": "Pad Compressors",
+          "path": ".",
+          "details": [
+            {
+              "description": "Pad Compressors",
+              "repeat": "pads",
+              "formatPaths": [
+                "KitPad[{index}]/CompType",
+                "KitPad[{index}]/CompSwitch"
+              ],
+              "format": "{item}: {0} ({1})"
+            }
+          ],
+          "children": [
+            {
+              "name": "Pad",
+              "repeat": "pads",
+              "formatPaths": [
+                "CompType",
+                "CompSwitch"
+              ],
+              "path": "KitPad[{index}]",
+              "format": "{item}: {0} ({1})",
+              "details": [
+                {
+                  "description": "Kit Pad Compressor Details",
+                  "path": "."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Midi",
+          "format": "MIDI Settings",
+          "path": "KitMidi",
+          "details": [
+            {
+              "description": "MIDI Settings",
+              "path": "."
+            }
+          ]
+        },
+        {
+          "name": "MultiFX",
+          "repeat": "mfx",
+          "formatPaths": [
+            "Type"
+          ],
+          "path": "KitMfx[{index}]",
+          "format": "Multifx {index}: {0}",
+          "details": [
+            {
+              "description": "Multifx details",
+              "path": "."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

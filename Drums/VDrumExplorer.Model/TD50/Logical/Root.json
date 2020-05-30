@@ -1,0 +1,17 @@
+{
+  "name": "Root",
+  "format": "Root",
+  "path": ".",
+  "details": [
+    {
+      "description": "Current kit",
+      "path": "Current"
+    }
+  ],
+  "children": [
+    "$resource:Logical/Setup.json",
+    "$resource:Logical/Kits.json",
+    "$resource:Logical/SetLists.json",
+    "$resource:Logical/TriggerBanks.json"
+  ]
+}
