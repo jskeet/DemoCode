@@ -74,7 +74,7 @@ namespace VDrumExplorer.Model.Device
         {
             var kitRoot = Schema.GetKitRoot(kit);
             var snapshot = await LoadDescendantsAsync(kitRoot, progressHandler, cancellationToken);
-            snapshot = snapshot.Relocated(kitRoot, Schema.GetKitRoot(1));
+            snapshot = snapshot.Relocated(kitRoot, Schema.Kit1Root);
             return Kit.FromSnapshot(Schema, snapshot, kit);
         }
 

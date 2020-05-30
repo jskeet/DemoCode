@@ -52,7 +52,7 @@ namespace VDrumExplorer.Model
         public Kit ExportKit(int kitNumber)
         {
             var root = Schema.GetKitRoot(kitNumber);
-            var target = Schema.GetKitRoot(1);
+            var target = Schema.Kit1Root;
             var snapshot = Data.CreatePartialSnapshot(root);
             snapshot = snapshot.Relocated(root, target);
             return Kit.FromSnapshot(Schema, snapshot, kitNumber);
