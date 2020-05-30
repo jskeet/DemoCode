@@ -70,6 +70,18 @@ namespace VDrumExplorer.Model.Schema.Logical
             }
         }
 
+        internal void ValidateFieldReferences()
+        {
+            if (MidiNotePath is string path)
+            {
+                Container.ResolveField(path);
+            }
+            foreach (var child in Children)
+            {
+                child.ValidateFieldReferences();
+            }
+        }
+
         /// <summary>
         /// Resolves a tree node by path.
         /// </summary>

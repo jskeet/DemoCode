@@ -2,19 +2,19 @@
   "size": "0x01_24",
   "fields": [
     {
-      "name": "Midi[1]",
+      "name": "Midi[Kick Head]",
       "description": "Kick note",
       "type": "midi32",
       "default": 36
     },
     {
-      "name": "Midi[2]",
+      "name": "Midi[Snare Head]",
       "description": "Snare head note",
       "type": "midi32",
       "default": 38
     },
     {
-      "name": "Midi[3]",
+      "name": "Midi[Snare Rim]",
       "description": "Snare rim note",
       "type": "midi32",
       "default": 40
@@ -30,63 +30,63 @@
       "default": 37
     },
     {
-      "name": "Midi[4]",
+      "name": "Midi[Tom 1 Head]",
       "description": "Tom 1 head note",
       "type": "midi32",
       "default": 48
     },
     {
-      "name": "Midi[5]",
+      "name": "Midi[Tom 1 Rim]",
       "description": "Tom 1 rim note",
       "type": "midi32",
       "default": 50
     },
     {
-      "name": "Midi[6]",
+      "name": "Midi[Tom 2 Head]",
       "description": "Tom 2 head note",
       "type": "midi32",
       "default": 45
     },
     {
-      "name": "Midi[7]",
+      "name": "Midi[Tom 2 Rim]",
       "description": "Tom 2 rim note",
       "type": "midi32",
       "default": 47
     },
     {
-      "name": "Midi[8]",
+      "name": "Midi[Tom 3 Head]",
       "description": "Tom 3 head note",
       "type": "midi32",
       "default": 43
     },
     {
-      "name": "Midi[9]",
+      "name": "Midi[Tom 3 Rim]",
       "description": "Tom 3 rim note",
       "type": "midi32",
       "default": 58
     },
     {
-      "name": "Midi[10]",
+      "name": "Midi[Tom 4 Head]",
       "description": "Tom 4 head note",
       "type": "midi32",
       "default": 43
     },
     {
       // TODO: Find out the actual default
-      "name": "Midi[11]",
+      "name": "Midi[Tom 4 Rim]",
       "description": "Tom 4 rim note",
       "type": "midi32",
       "default": 58
     },
     {
       // TODO: Find out the actual default
-      "name": "Midi[12]",
+      "name": "Midi[Hi-Hat Head]",
       "description": "Hi-hat open bow note",
       "type": "midi32",
       "default": 46
     },
     {
-      "name": "Midi[13]",
+      "name": "Midi[Hi-Hat Rim]",
       "description": "Hi-hat open edge note",
       "type": "midi32",
       "default": 26
@@ -107,92 +107,92 @@
       "default": 44
     },
     {
-      "name": "Midi[14]",
+      "name": "Midi[Crash 1 Head]",
       "description": "Crash 1 bow note",
       "type": "midi32",
       "default": 49
     },
     {
-      "name": "Midi[15]",
+      "name": "Midi[Crash 1 Rim]",
       "description": "Crash 1 edge note",
       "type": "midi32",
       "default": 55
     },
     {
-      "name": "Midi[16]",
+      "name": "Midi[Crash 2 Head]",
       "description": "Crash 2 bow note",
       "type": "midi32",
       "default": 57
     },
     {
-      "name": "Midi[17]",
+      "name": "Midi[Crash 2 Rim]",
       "description": "Crash 2 edge note",
       "type": "midi32",
       "default": 52
     },
     {
-      "name": "Midi[18]",
+      "name": "Midi[Ride Head]",
       "description": "Ride bow note",
       "type": "midi32",
       "default": 51
     },
     {
-      "name": "Midi[19]",
+      "name": "Midi[Ride Rim]",
       "description": "Ride edge note",
       "type": "midi32",
       "default": 59
     },
     {
-      "name": "Midi[20]",
+      "name": "Midi[Ride Bell]",
       "description": "Ride bell note",
       "type": "midi32",
       "default": 53
     },
     {
-      "name": "Midi[21]",
+      "name": "Midi[Aux 1 Head]",
       "description": "Aux 1 head note",
       "type": "midi32",
       "default": 27
     },
     {
-      "name": "Midi[22]",
+      "name": "Midi[Aux 1 Rim]",
       "description": "Aux 1 rim note",
       "type": "midi32",
       "default": 28
     },
     {
-      "name": "Midi[23]",
+      "name": "Midi[Aux 2 Head]",
       "description": "Aux 2 head note",
       "type": "midi32",
       "default": 29
     },
     {
-      "name": "Midi[24]",
+      "name": "Midi[Aux 2 Rim]",
       "description": "Aux 2 rim note",
       "type": "midi32",
       "default": 30
     },
     {
-      "name": "Midi[25]",
+      "name": "Midi[Aux 3 Head]",
       "description": "Aux 3 head note",
       "type": "midi32",
       "default": 31
     },
     {
-      "name": "Midi[26]",
+      "name": "Midi[Aux 3 Rim]",
       "description": "Aux 3 rim note",
       "type": "midi32",
       "default": 32
     },
     {
-      "name": "Midi[27]",
+      "name": "Midi[Aux 4 Head]",
       "description": "Aux 4 rim note",
       "type": "midi32",
       // TODO: Find out the actual default
       "default": 32
     },
     {
-      "name": "Midi[28]",
+      "name": "Midi[Aux 4 Rim]",
       "description": "Aux 4 rim note",
       "type": "midi32",
       // TODO: Find out the actual default
