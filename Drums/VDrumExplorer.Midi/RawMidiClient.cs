@@ -25,7 +25,7 @@ namespace VDrumExplorer.Midi
             this.input = input;
             InputName = inputName;
             this.output = output;
-            OutputName = inputName;
+            OutputName = outputName;
             input.MessageReceived += (sender, args) => messageHandler(ConvertMessage(args));
         }
 
@@ -37,9 +37,28 @@ namespace VDrumExplorer.Midi
         internal static async Task<RawMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, Action<RawMidiMessage> messageHandler)
         {
             // TODO: Retry this; sometimes it doesn't work first time.
-            var input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.SystemDeviceId);
+            var input = await OpenInput(inputDevice.SystemDeviceId);
             var output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.SystemDeviceId);
             return new RawMidiClient(input, inputDevice.Name, output, outputDevice.Name, messageHandler);
+        }
+
+        private static async Task<IMidiInput> OpenInput(string deviceId)
+        {
+            // Try to open the input up to 3 times. We sometimes see:
+            // System.ComponentModel.Win32Exception (4): The specified device is already in use.  Wait until it is free, and then try again. (4)
+            int failures = 0;
+            while (true)
+            {
+                try
+                {
+                    return await MidiAccessManager.Default.OpenInputAsync(deviceId);
+                }
+                catch when (failures < 3)
+                {
+                    failures++;
+                    await Task.Delay(250);
+                }
+            }
         }
 
         internal void Send(RawMidiMessage message)
