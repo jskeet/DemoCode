@@ -43,15 +43,15 @@
   </Target>
   <Target Name="BeforeBuild">
     <!-- Fetch the assembly version from the built file. -->
-    <GetAssemblyIdentity AssemblyFiles="..\VDrumExplorer.Wpf\bin\$(Configuration)\net472\VDrumExplorer.Wpf.exe">
+    <GetAssemblyIdentity AssemblyFiles="..\VDrumExplorer.Gui\bin\$(Configuration)\net472\VDrumExplorer.Gui.exe">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <!-- Take the assembly version from the result of the above. -->
     <PropertyGroup>
-      <DefineConstants>BuildVersion=%(AssemblyVersion.Version);BasePath=..\VDrumExplorer.Wpf\bin\$(Configuration)\net472</DefineConstants>
+      <DefineConstants>BuildVersion=%(AssemblyVersion.Version);BasePath=..\VDrumExplorer.Gui\bin\$(Configuration)\net472</DefineConstants>
     </PropertyGroup>
     <!-- Generate components for all files -->
-    <HeatDirectory OutputFile="ComponentsGenerated.wxs" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="PublishedComponents" SuppressCom="true" Directory="..\VDrumExplorer.Wpf\bin\$(Configuration)\net472" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" />
+    <HeatDirectory OutputFile="ComponentsGenerated.wxs" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="PublishedComponents" SuppressCom="true" Directory="..\VDrumExplorer.Gui\bin\$(Configuration)\net472" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" />
   </Target>
   <Target Name="AfterBuild">
   </Target>
