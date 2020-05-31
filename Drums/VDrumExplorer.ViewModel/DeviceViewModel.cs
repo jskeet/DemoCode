@@ -12,6 +12,8 @@ namespace VDrumExplorer.ViewModel
 {
     public sealed class DeviceViewModel : ViewModelBase
     {
+        public string ConnectedDeviceName => ConnectedDevice?.Schema.Identifier.Name ?? "(None)";
+
         private DeviceController? connectedDevice;
         public DeviceController? ConnectedDevice
         {
@@ -21,6 +23,7 @@ namespace VDrumExplorer.ViewModel
                 if (SetProperty(ref connectedDevice, value))
                 {
                     RaisePropertyChanged(nameof(DeviceConnected));
+                    RaisePropertyChanged(nameof(ConnectedDeviceName));
                 }
             }
         }
