@@ -6,10 +6,9 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Data;
 using VDrumExplorer.Midi;
+using VDrumExplorer.Model;
 
 namespace VDrumExplorer.Console
 {
@@ -46,12 +45,12 @@ namespace VDrumExplorer.Console
                 return 1;
             }
 
-            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), SchemaRegistry.KnownSchemas.Keys);
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
             if (client is null)
             {
                 return 1;
             }
-            var schema = SchemaRegistry.KnownSchemas[client.Identifier].Value;
+            var schema = ModuleSchema.KnownSchemas[client.Identifier].Value;
 
             using (client)
             {

@@ -8,12 +8,9 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using VDrumExplorer.Data;
-using VDrumExplorer.Data.Fields;
-using VDrumExplorer.Data.Layout;
+using VDrumExplorer.Model;
+using VDrumExplorer.Model.Data.Logical;
 
 namespace VDrumExplorer.Console
 {
@@ -34,10 +31,7 @@ namespace VDrumExplorer.Console
             object loaded;
             try
             {
-                using (var stream = File.OpenRead(file))
-                {
-                    loaded = SchemaRegistry.ReadStream(stream);
-                }
+                loaded = Proto.ProtoIo.LoadModel(file);
             }
             catch (Exception ex)
             {
@@ -51,48 +45,49 @@ namespace VDrumExplorer.Console
                 return Task.FromResult(1);
             }
 
-            var json = ConvertToJson(kit.KitRoot, kit.Data);
+            var dataNode = new DataTreeNode(kit.Data, kit.KitRoot);
+            var json = ConvertToJson(dataNode);
             console.WriteLine(json.ToString(Formatting.Indented));
             return Task.FromResult(0);
         }
 
-        private static JObject ConvertToJson(VisualTreeNode container, ModuleData data)
+        private static JObject ConvertToJson(DataTreeNode container)
         {
             var ret = new JObject();
             foreach (var child in container.Children)
             {
-                var description = child.KitOnlyDescription ?? child.Description;
-                ret.Add(description.Format(child.Context, data), ConvertToJson(child, data));
+                ret.Add(child.SchemaNode.Name, ConvertToJson(child));
             }
             foreach (var detail in container.Details)
             {
-                ret.Add(detail.Description, ConvertToJson(detail, container.Context, data));
+                ret.Add(detail.Description, ConvertToJson(detail));
             }
             return ret;
         }
 
-        private static JToken ConvertToJson(VisualTreeDetail detail, FixedContainer context, ModuleData data)
+        private static JToken ConvertToJson(IDataNodeDetail detail)
         {
-            if (detail.DetailDescriptions is object)
+            if (detail is ListDataNodeDetail list)
             {
                 var ret = new JArray();
-                foreach (var description in detail.DetailDescriptions)
+                foreach (var item in list.Items)
                 {
-                    ret.Add(description.Format(context, data));
+                    ret.Add(item.Text);
+                }
+                return ret;
+            }
+            else if (detail is FieldContainerDataNodeDetail fieldContainer)
+            {
+                var ret = new JObject();
+                foreach (var field in fieldContainer.Fields)
+                {
+                    ret.Add(field.SchemaField.Name, field.FormattedText);
                 }
                 return ret;
             }
             else
             {
-                var ret = new JObject();
-                var container = detail.Container;
-                var fields = container.GetPrimitiveFields(data)
-                    .Where(f => f.IsEnabled(context, data));
-                foreach (var field in fields)
-                {
-                    ret.Add(field.Description, field.GetText(container, data));
-                }
-                return ret;
+                throw new ArgumentException($"Unexpected detail type: {detail.GetType()}");
             }
         }
     }

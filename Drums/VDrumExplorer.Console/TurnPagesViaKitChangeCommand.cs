@@ -8,8 +8,10 @@ using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Data;
 using VDrumExplorer.Midi;
+using VDrumExplorer.Model;
+using VDrumExplorer.Model.Data.Logical;
+using VDrumExplorer.Model.Device;
 
 namespace VDrumExplorer.Console
 {
@@ -47,20 +49,19 @@ namespace VDrumExplorer.Console
                 return 1;
             }
 
-            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), SchemaRegistry.KnownSchemas.Keys);
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
             if (client is null)
             {
                 return 1;
             }
-            var schema = SchemaRegistry.KnownSchemas[client.Identifier].Value;
 
-            using (client)
+            using (var device = new DeviceController(client))
             {
-
+                var schema = device.Schema;
                 var channel = context.ParseResult.ValueForOption<int>("channel");
                 var keys = context.ParseResult.ValueForOption<string>("keys");
                 var targetKit = context.ParseResult.ValueForOption<int>("kit");
-                if (targetKit < 1 || targetKit + 1 > schema.KitRoots.Count)
+                if (targetKit < 1 || targetKit + 1 > schema.Kits)
                 {
                     console.WriteLine($"Kit {targetKit} is out of range for {schema.Identifier.Name} for this command.");
                     console.WriteLine("Note that one extra kit is required after the specified one.");
@@ -73,21 +74,23 @@ namespace VDrumExplorer.Console
                 var currentKit = data[0] + 1;
 
                 // Copy current kit to target kit and target kit + 1
-                var kit = await KitUtilities.ReadKit(schema, client, currentKit, console);
-                await KitUtilities.WriteKit(client, kit, targetKit, console);
-                await KitUtilities.WriteKit(client, kit, targetKit + 1, console);
+                var kit = await device.LoadKitAsync(currentKit, progressHandler: null, CreateCancellationToken());
+                var dataNode = new DataTreeNode(kit.Data, kit.KitRoot);
+                await device.SaveDescendants(dataNode, schema.GetKitRoot(targetKit).Container.Address, progressHandler: null, CreateCancellationToken());
+                await device.SaveDescendants(dataNode, schema.GetKitRoot(targetKit + 1).Container.Address, progressHandler: null, CreateCancellationToken());
 
-                SetCurrentKit(targetKit);
+                await device.SetCurrentKitAsync(targetKit, CancellationToken.None);
+
                 var programChangeCommand = (byte) (0xc0 | (channel - 1));
 
                 // Now listen for the foot switch...
-                client.MessageReceived += (sender, message) =>
+                client.MessageReceived += async (sender, message) =>
                 {
                     if (message.Data.Length == 2 && message.Data[0] == programChangeCommand)
                     {
                         console.WriteLine("Turning the page...");
                         SendKeysUtilities.SendWait(keys);
-                        SetCurrentKit(targetKit);
+                        await device.SetCurrentKitAsync(targetKit, CancellationToken.None);
                     }
                 };
                 console.WriteLine("Listening for foot switch");
@@ -95,7 +98,7 @@ namespace VDrumExplorer.Console
             }
             return 0;
 
-            void SetCurrentKit(int newKitNumber) => client.SendData(0, new[] { (byte) (newKitNumber - 1) });
+            CancellationToken CreateCancellationToken() => new CancellationTokenSource(10000).Token;
         }
     }
 }

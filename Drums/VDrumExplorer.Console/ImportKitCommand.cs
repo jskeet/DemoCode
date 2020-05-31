@@ -11,9 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Data;
-using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Midi;
+using VDrumExplorer.Model;
+using VDrumExplorer.Model.Device;
+using VDrumExplorer.Proto;
 
 namespace VDrumExplorer.Console
 {
@@ -30,34 +31,25 @@ namespace VDrumExplorer.Console
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             var console = context.Console.Out;
-            var kit = context.ParseResult.ValueForOption<int>("kit");
+            var kitNumber = context.ParseResult.ValueForOption<int>("kit");
             var file = context.ParseResult.ValueForOption<string>("file");
-            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), SchemaRegistry.KnownSchemas.Keys);
-
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
             if (client == null)
             {
                 return 1;
             }
-            var schema = SchemaRegistry.KnownSchemas[client.Identifier].Value;
-
-            using (client)
+            using (var device = new DeviceController(client))
             {
-                if (!schema.KitRoots.TryGetValue(kit, out _))
-                {
-                    console.WriteLine($"Kit {kit} out of range");
-                    return 1;
-                };
-
-                // Allow up to 30 seconds in total, and 1 second per container.
-                var overallToken = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+                // Allow up to 30 seconds in total.
                 try
                 {
                     Stopwatch sw = Stopwatch.StartNew();
-                    var kitToSave = await KitUtilities.ReadKit(schema, client, kit, console);
+                    var token = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+                    var kit = await device.LoadKitAsync(kitNumber, null, token);
                     console.WriteLine($"Finished loading in {(int) sw.Elapsed.TotalSeconds} seconds");
                     using (var stream = File.Create(file))
                     {
-                        kitToSave.Save(stream);
+                        kit.Save(stream);
                     }
                     console.WriteLine($"Saved kit to {file}");
                 }
@@ -71,7 +63,6 @@ namespace VDrumExplorer.Console
                     console.WriteLine($"Error loading data from device: {ex}");
                     return 1;
                 }
-
             }
             return 0;
         }

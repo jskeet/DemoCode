@@ -2,13 +2,10 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Schema.Fields;
