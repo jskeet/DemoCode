@@ -20,7 +20,7 @@ using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Console
 {
-    class CheckInstrumentDefaultsCommand : ICommandHandler
+    internal sealed class CheckInstrumentDefaultsCommand : DeviceCommandBase
     {
         internal static Command Command { get; } = new Command("check-instrument-defaults")
         {
@@ -29,100 +29,88 @@ namespace VDrumExplorer.Console
         }
         .AddRequiredOption<int>("--kit", "Kit number to interact with");
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
         {
-            var console = context.Console.Out;
             var kit = context.ParseResult.ValueForOption<int>("kit");
             var file = context.ParseResult.ValueForOption<string>("file");
-            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
+            var triggerRoot = device.Schema.GetTriggerRoot(kit, trigger: 1);
+            var deviceData = ModuleData.FromLogicalRootNode(triggerRoot);
+            var modelData = ModuleData.FromLogicalRootNode(triggerRoot);
+            var defaultValuesSnapshot = modelData.CreateSnapshot();
 
-            if (client == null)
+            var deviceDataRoot = new DataTreeNode(deviceData, triggerRoot);
+            await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
+            var originalSnapshot = deviceData.CreateSnapshot();
+            var (ifContainer, instrumentField) = device.Schema.GetMainInstrumentField(kit, trigger: 1);
+            var modelInstrumentField = (InstrumentDataField) modelData.GetDataField(ifContainer, instrumentField);
+
+            var instrumentContainers = triggerRoot.DescendantFieldContainers();
+
+            var differences = new List<Difference>();
+            try
             {
-                return 1;
-            }
+                // Reset the device to an empty snapshot
+                deviceData.LoadSnapshot(defaultValuesSnapshot);
+                await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
 
-            using (var device = new DeviceController(client))
-            {
-                var triggerRoot = device.Schema.GetTriggerRoot(kit, trigger: 1);
-                var deviceData = ModuleData.FromLogicalRootNode(triggerRoot);
-                var modelData = ModuleData.FromLogicalRootNode(triggerRoot);
-                var defaultValuesSnapshot = modelData.CreateSnapshot();
-
-                var deviceDataRoot = new DataTreeNode(deviceData, triggerRoot);
-                await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
-                var originalSnapshot = deviceData.CreateSnapshot();
-                var (ifContainer, instrumentField) = device.Schema.GetMainInstrumentField(kit, trigger: 1);
-                var modelInstrumentField = (InstrumentDataField) modelData.GetDataField(ifContainer, instrumentField);
-
-                var instrumentContainers = triggerRoot.DescendantFieldContainers();
-
-                var differences = new List<Difference>();
-                try
+                foreach (var instrument in device.Schema.PresetInstruments)
                 {
-                    // Reset the device to an empty snapshot
-                    deviceData.LoadSnapshot(defaultValuesSnapshot);
-                    await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
+                    // Make the change on the real module and load the data.
+                    // Assumption: the segment containing the instrument itself (e.g. KitPadInst) doesn't
+                    // have any implicit model changes to worry about.
+                    await device.SetInstrumentAsync(kit, trigger: 1, instrument, CancellationToken.None);
+                    await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
 
-                    foreach (var instrument in device.Schema.PresetInstruments)
+                    // Make the change in the model.
+                    modelData.LoadSnapshot(defaultValuesSnapshot);
+                    modelInstrumentField.Instrument = instrument;
+
+                    // Compare the two.
+                    bool anyDifferences = false;
+                    foreach (var container in instrumentContainers)
                     {
-                        // Make the change on the real module and load the data.
-                        // Assumption: the segment containing the instrument itself (e.g. KitPadInst) doesn't
-                        // have any implicit model changes to worry about.
-                        await device.SetInstrumentAsync(kit, trigger: 1, instrument, CancellationToken.None);
-                        await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
-
-                        // Make the change in the model.
-                        modelData.LoadSnapshot(defaultValuesSnapshot);
-                        modelInstrumentField.Instrument = instrument;
-
-                        // Compare the two.
-                        bool anyDifferences = false;
-                        foreach (var container in instrumentContainers)
+                        // We won't compare InstrumentDataField, TempoDataField or StringDataField this way, but that's okay.
+                        var realFields = deviceData.GetDataFields(container).SelectMany(ExpandOverlays).OfType<NumericDataFieldBase>().ToList();
+                        var modelFields = modelData.GetDataFields(container).SelectMany(ExpandOverlays).OfType<NumericDataFieldBase>().ToList();
+                        if (realFields.Count != modelFields.Count)
                         {
-                            // We won't compare InstrumentDataField, TempoDataField or StringDataField this way, but that's okay.
-                            var realFields = deviceData.GetDataFields(container).SelectMany(ExpandOverlays).OfType<NumericDataFieldBase>().ToList();
-                            var modelFields = modelData.GetDataFields(container).SelectMany(ExpandOverlays).OfType<NumericDataFieldBase>().ToList();
-                            if (realFields.Count != modelFields.Count)
+                            console.WriteLine($"Major failure: for instrument {instrument.Id} ({instrument.Group} / {instrument.Name}), found {realFields.Count} real fields and {modelFields.Count} model fields in container {container.Path}");
+                            return 1;
+                        }
+
+                        foreach (var pair in realFields.Zip(modelFields))
+                        {
+                            var real = pair.First;
+                            var model = pair.Second;
+                            if (real.SchemaField != model.SchemaField)
                             {
-                                console.WriteLine($"Major failure: for instrument {instrument.Id} ({instrument.Group} / {instrument.Name}), found {realFields.Count} real fields and {modelFields.Count} model fields in container {container.Path}");
+                                console.WriteLine($"Major failure: for instrument {instrument.Id} ({instrument.Group} / {instrument.Name}), mismatched schema field for {container.Path}: {real.SchemaField.Name} != {model.SchemaField.Name}");
                                 return 1;
                             }
-
-                            foreach (var pair in realFields.Zip(modelFields))
+                            var realValue = real.RawValue;
+                            var predictedValue = model.RawValue;
+                            if (realValue != predictedValue)
                             {
-                                var real = pair.First;
-                                var model = pair.Second;
-                                if (real.SchemaField != model.SchemaField)
-                                {
-                                    console.WriteLine($"Major failure: for instrument {instrument.Id} ({instrument.Group} / {instrument.Name}), mismatched schema field for {container.Path}: {real.SchemaField.Name} != {model.SchemaField.Name}");
-                                    return 1;
-                                }
-                                var realValue = real.RawValue;
-                                var predictedValue = model.RawValue;
-                                if (realValue != predictedValue)
-                                {
-                                    anyDifferences = true;
-                                    differences.Add(new Difference(instrument, container, real.SchemaField, realValue, predictedValue));
-                                }
+                                anyDifferences = true;
+                                differences.Add(new Difference(instrument, container, real.SchemaField, realValue, predictedValue));
                             }
                         }
-                        console.Write(anyDifferences ? "!" : ".");
                     }
+                    console.Write(anyDifferences ? "!" : ".");
                 }
-                finally
-                {
-                    // Restore the original data
-                    deviceData.LoadSnapshot(originalSnapshot);
-                    await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
-                }
-                console.WriteLine();
-                foreach (var difference in differences)
-                {
-                    console.WriteLine(difference.ToString());
-                }
-                console.WriteLine($"Total differences: {differences.Count}");
             }
-
+            finally
+            {
+                // Restore the original data
+                deviceData.LoadSnapshot(originalSnapshot);
+                await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
+            }
+            console.WriteLine();
+            foreach (var difference in differences)
+            {
+                console.WriteLine(difference.ToString());
+            }
+            console.WriteLine($"Total differences: {differences.Count}");
             return 0;
 
             IEnumerable<IDataField> ExpandOverlays(IDataField field) =>

@@ -14,7 +14,7 @@ using VDrumExplorer.Model.Data.Logical;
 
 namespace VDrumExplorer.Console
 {
-    class ShowKitCommand : ICommandHandler
+    internal sealed class ShowKitCommand : ICommandHandler
     {
         internal static Command Command { get; } = new Command("show-kit")
         {

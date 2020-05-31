@@ -28,8 +28,10 @@ namespace VDrumExplorer.Console
     /// - When a MIDI Program Change event is received, send keys to the current
     ///   application to turn the page, and reset the current kit to 99.
     /// </summary>
-    public class TurnPagesViaKitChangeCommand : ICommandHandler
+    internal sealed class TurnPagesViaKitChangeCommand : ClientCommandBase
     {
+        // Note: we don't derive from DeviceCommandBase, because we still need the client.
+
         internal static Command Command { get; } = new Command("turn-pages-kit")
         {
             Description = "Performs page turning when the kit changes (e.g. via foot switch)",
@@ -39,22 +41,8 @@ namespace VDrumExplorer.Console
         .AddOptionalOption("--keys", "SendKeys key string", "{RIGHT}")
         .AddOptionalOption("--kit", "Target kit to adopt (and the following one)", 99);
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
         {
-            var console = context.Console.Out;
-
-            if (!SendKeysUtilities.HasSendKeys)
-            {
-                console.WriteLine($"SendKeys not detected; this command can only be run on Windows.");
-                return 1;
-            }
-
-            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
-            if (client is null)
-            {
-                return 1;
-            }
-
             using (var device = new DeviceController(client))
             {
                 var schema = device.Schema;
@@ -69,9 +57,7 @@ namespace VDrumExplorer.Console
                 }
 
                 // Detect the current kit
-                // TODO: Stop assuming current kit is at address 0, although it is for TD-17, TD-50 and TD-27...
-                var data = await client.RequestDataAsync(0, 1, new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token);
-                var currentKit = data[0] + 1;
+                var currentKit = await device.GetCurrentKitAsync(CancellationToken.None);
 
                 // Copy current kit to target kit and target kit + 1
                 var kit = await device.LoadKitAsync(currentKit, progressHandler: null, CreateCancellationToken());

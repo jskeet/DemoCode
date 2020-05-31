@@ -11,7 +11,7 @@ using VDrumExplorer.Model;
 
 namespace VDrumExplorer.Console
 {
-    class ListDevicesCommand : ICommandHandler
+    internal sealed class ListDevicesCommand : ICommandHandler
     {
         internal static Command Command { get; } = new Command("list-devices")
         {

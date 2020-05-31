@@ -13,11 +13,11 @@ using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Console
 {
-    public sealed class ShowMidiEventsCommand : ICommandHandler
+    internal sealed class ShowMidiEventsCommand : ICommandHandler
     {
         internal static Command Command { get; } = new Command("show-midi-events")
         {
-            Description = "Shows the data of a kit, as JSON",
+            Description = "Displays MIDI events as they're received",
             Handler = new ShowMidiEventsCommand(),
         }
         .AddRequiredOption<string>("--device", "MIDI input device to listen to");

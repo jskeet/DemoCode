@@ -17,7 +17,7 @@ namespace VDrumExplorer.Console
     /// Command to show diagnostic stats about schemas - total number of field
     /// containers, overlays etc.
     /// </summary>
-    public class ShowSchemaStatsCommand : ICommandHandler
+    internal sealed class ShowSchemaStatsCommand : ICommandHandler
     {
         internal static Command Command { get; } = new Command("show-schema-stats")
         {
