@@ -4,25 +4,14 @@
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
         <ResourceDictionary>
-            <!-- Styles when presenting -->
-            <!--
-            <Style x:Key="WindowStyle" TargetType="Window">
-                <Setter Property="FontSize" Value="20" />
-            </Style>
-            <Thickness x:Key="ValueMargin" Left="20" Top="2" Right="0" Bottom="0" />
-            -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="RegularScaling.xaml" />
+                <!-- Uncomment for presentations -->
+                <!--
+                <ResourceDictionary Source="PresentationScaling.xaml" />
+                -->
+            </ResourceDictionary.MergedDictionaries>
 
-            <!-- Styles for development -->
-            <Style x:Key="WindowStyle" TargetType="Window">
-                <Setter Property="FontSize" Value="14" />
-            </Style>
-            <Style TargetType="Menu">
-                <Setter Property="FontSize" Value="14" />
-            </Style>
-            <Style TargetType="Button">
-                <Setter Property="Padding" Value="5,2" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
             <!-- We almost always align things centrally (vertically) -->            
             <Style TargetType="TextBlock">
                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -39,14 +28,6 @@
             <Style TargetType="Slider">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
-            
-            <!-- Margin to the left of a value when being displayed as a key/value pair. -->
-            <Thickness x:Key="ValueMargin" Left="10" Top="0" Right="0" Bottom="0" />
-            <Thickness x:Key="ValueMarginWithVertical" Left="10" Top="3" Right="0" Bottom="3" />
-            <Thickness x:Key="ValueMarginWithMarginAbove" Left="10" Top="3" Right="0" Bottom="0" />
-
-            <!-- Margin above a stack panel for vertical separation -->
-            <Thickness x:Key="PanelMargin" Left="0" Top="5" Right="0" Bottom="0" />
 
             <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
             <ControlTemplate TargetType="ItemsControl" x:Key="KeyValueTable">
