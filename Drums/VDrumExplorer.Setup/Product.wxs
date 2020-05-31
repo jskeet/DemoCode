@@ -59,12 +59,12 @@
       <ComponentGroupRef Id="PublishedComponents"/>
 		</ComponentGroup>
 
-    <DirectoryRef Id="INSTALLFOLDER" FileSource="..\VDrumExplorer.Wpf\bin\Debug\net472">
+    <DirectoryRef Id="INSTALLFOLDER" FileSource="..\VDrumExplorer.Gui\bin\Release\net472">
       
       <Component Id="MainAppShortcut" Guid="{64B92AAB-ED3B-4A65-B39B-AD1D61E1D885}">
         <Shortcut Id="MainAppShortcut"
                   Name="!(loc.ShortcutName)"
-                  Target="[INSTALLFOLDER]VDrumExplorer.Wpf.exe"
+                  Target="[INSTALLFOLDER]VDrumExplorer.Gui.exe"
                   Directory="InstallProgramMenuFolder"
                   WorkingDirectory="INSTALLFOLDER" />
 

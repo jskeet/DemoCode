@@ -9,11 +9,11 @@ then
 fi
 
 # Build executables
-dotnet build -c Release -v quiet VDrumExplorer.Wpf
+dotnet build -c Release -v quiet VDrumExplorer.Gui
 # Sign executable in-place
-signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer.Wpf/bin/Release/net472/VDrumExplorer.Wpf.exe
+signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer.Gui/bin/Release/net472/VDrumExplorer.Gui.exe
 
-version=$(grep \<Version\> VDrumExplorer.Wpf/VDrumExplorer.Wpf.csproj | sed s/\<[^\>]*\>//g | sed 's/ //g')
+version=$(grep \<Version\> VDrumExplorer.Gui/VDrumExplorer.Wpf.csproj | sed s/\<[^\>]*\>//g | sed 's/ //g')
 
 rm -rf tmp
 mkdir tmp
@@ -24,7 +24,7 @@ cd tmp
 # Desktop
 release_dir=VDrumExplorer-$version
 mkdir $release_dir
-cp ../VDrumExplorer.Wpf/bin/Release/net472/* $release_dir
+cp ../VDrumExplorer.Gui/bin/Release/net472/* $release_dir
 cp ../td17.vdrum $release_dir
 cp ../LICENSE* $release_dir
 cp ../README.md $release_dir
