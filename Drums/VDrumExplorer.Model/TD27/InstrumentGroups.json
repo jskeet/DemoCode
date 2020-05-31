@@ -37,7 +37,7 @@
       "25": "Resonance K"
     },
     "veditDefaults": {
-      "Shell depth": {
+      "ShellDepth": {
         "1": 26,
         "2": 34,
         "3": 34,
@@ -1118,7 +1118,7 @@
       "728": "Brush Tom 14\""
     },
     "veditDefaults": {
-      "Shell depth": {
+      "ShellDepth": {
         "727": 18,
         "728": 26
       }
