@@ -4,7 +4,7 @@
 
 using NodaTime;
 
-namespace VDrumExplorer.ViewModel.Home
+namespace VDrumExplorer.ViewModel.Logging
 {
     public class LogEntry
     {
