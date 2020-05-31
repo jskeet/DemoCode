@@ -13,7 +13,7 @@ using VDrumExplorer.Proto;
 
 namespace VDrumExplorer.Console
 {
-    class DumpProtoCommand : ICommandHandler
+    internal sealed class DumpProtoCommand : ICommandHandler
     {
         internal static Command Command { get; } = new Command("dump-proto")
         {
