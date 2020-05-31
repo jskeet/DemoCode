@@ -39,11 +39,13 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="Col0" />
+                                    <ColumnDefinition SharedSizeGroup="Col0" Width="Auto" />
+                                    <ColumnDefinition SharedSizeGroup="Col1" Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{Binding Timestamp}" />
-                                <TextBlock Grid.Column="1" Text="{Binding Text}" Margin="{StaticResource ResourceKey=ValueMargin}" ToolTip="{Binding ToolTip}" TextWrapping="Wrap"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Level}" Margin="{StaticResource ResourceKey=ValueMargin}" />
+                                <TextBlock Grid.Column="2" Text="{Binding Text}" Margin="{StaticResource ResourceKey=ValueMargin}" ToolTip="{Binding ToolTip}" TextWrapping="Wrap"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

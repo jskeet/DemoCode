@@ -2,16 +2,20 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using NodaTime;
+using System;
 
 namespace VDrumExplorer.ViewModel.Logging
 {
-    public class LogEntry
+    internal class LogEntry
     {
-        public Instant Timestamp { get; }
-        public string Text { get; }
+        internal Instant Timestamp { get; }
+        internal string Message { get; }
+        internal Exception? Exception { get; }
+        internal LogLevel Level { get; }
 
-        public LogEntry(Instant timestamp, string text) =>
-            (Timestamp, Text) = (timestamp, text);
+        internal LogEntry(Instant timestamp, string message, LogLevel level, Exception? exception) =>
+            (Timestamp, Message, Level, Exception) = (timestamp, message, level, exception);
     }
 }

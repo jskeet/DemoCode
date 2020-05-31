@@ -12,10 +12,10 @@ using System.Reflection;
 
 namespace VDrumExplorer.ViewModel.Logging
 {
+    // TODO: This feels more like a model...
     public class LogViewModel
     {
-        private readonly IClock clock;
-        public ObservableCollection<LogEntry> LogEntries { get; }
+        public ObservableCollection<LogEntryViewModel> LogEntries { get; }
         public ILogger Logger { get; }
 
         public LogViewModel() : this(SystemClock.Instance)
@@ -24,21 +24,8 @@ namespace VDrumExplorer.ViewModel.Logging
 
         public LogViewModel(IClock clock)
         {
-            LogEntries = new ObservableCollection<LogEntry>();
-            this.clock = clock;
-            Logger = new LoggerImpl(this);
-        }
-
-        public void Log(string text)
-        {
-            var entry = new LogEntry(clock.GetCurrentInstant(), text);
-            LogEntries.Add(entry);
-        }
-
-        public void Log(string text, Exception exception)
-        {
-            // TODO: Keep the exception in the log entry?
-            Log($"{text}: {exception.GetType().Name}: {exception.Message}");
+            LogEntries = new ObservableCollection<LogEntryViewModel>();
+            Logger = new LoggerImpl(this, clock);
         }
 
         public void Clear()
@@ -51,39 +38,37 @@ namespace VDrumExplorer.ViewModel.Logging
             var version = type.Assembly.GetCustomAttributes().OfType<AssemblyInformationalVersionAttribute>().FirstOrDefault();
             if (version != null)
             {
-                Log($"V-Drum Explorer version {version.InformationalVersion}");
+                Logger.LogInformation($"V-Drum Explorer version {version.InformationalVersion}");
             }
             else
             {
-                Log($"Version attribute not found.");
+                Logger.LogInformation("Version attribute not found.");
             }
         }
 
+        private void Log(LogEntry entry) => LogEntries.Add(new LogEntryViewModel(entry));
+
+        // TODO: Write more details.
         public void Save(string file) =>
             File.WriteAllLines(file, LogEntries.Select(entry => $"{entry.Timestamp:yyyy-MM-ddTHH:mm:ss} {entry.Text}"));
 
         private class LoggerImpl : ILogger
         {
+            private readonly IClock clock;
             private readonly LogViewModel viewModel;
 
-            internal LoggerImpl(LogViewModel viewModel) =>
-                this.viewModel = viewModel;
+            internal LoggerImpl(LogViewModel viewModel, IClock clock) =>
+                (this.viewModel, this.clock) = (viewModel, clock);
 
             public IDisposable BeginScope<TState>(TState state) => NoOpDisposable.Instance;
 
             public bool IsEnabled(LogLevel logLevel) => true;
 
-            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception, string> formatter)
             {
                 var message = formatter(state, exception);
-                if (exception is null)
-                {
-                    viewModel.Log(message);
-                }
-                else
-                {
-                    viewModel.Log(message, exception);
-                }
+                var entry = new LogEntry(clock.GetCurrentInstant(), message, logLevel, exception);
+                viewModel.Log(entry);
             }
 
             private class NoOpDisposable : IDisposable
