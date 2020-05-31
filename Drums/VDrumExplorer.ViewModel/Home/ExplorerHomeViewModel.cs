@@ -117,7 +117,7 @@ namespace VDrumExplorer.ViewModel.Logging
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error loading {file}", ex);
+                logger.LogError(ex, $"Error loading {file}");
                 return;
             }
             // TODO: Potentially declare an IDrumData interface with the Schema property and Validate method.

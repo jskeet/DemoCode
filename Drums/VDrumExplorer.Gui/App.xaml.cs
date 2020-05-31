@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System.Windows;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
@@ -25,7 +26,7 @@ namespace VDrumExplorer.Gui
             logViewModel = new LogViewModel();
             DispatcherUnhandledException += (sender, args) =>
             {
-                logViewModel.Log("Unhandled exception", args.Exception);
+                logViewModel.Logger.LogError(args.Exception, "Unhandled exception");
                 args.Handled = true;
             };
         }

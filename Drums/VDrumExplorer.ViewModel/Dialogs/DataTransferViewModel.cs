@@ -91,7 +91,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             catch (Exception e)
             {
-                logger.LogError($"Failure while loading {CurrentItem}", e);
+                logger.LogError(e, $"Failure while loading {CurrentItem}");
                 throw;
             }
             finally

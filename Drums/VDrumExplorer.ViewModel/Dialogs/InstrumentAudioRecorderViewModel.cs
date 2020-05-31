@@ -120,7 +120,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             catch (Exception e)
             {
-                logger.LogError($"Recording operation failed", e);
+                logger.LogError(e, $"Recording operation failed");
                 Progress.CurrentInstrumentRecording = "Error - see log";
                 return null;
             }
