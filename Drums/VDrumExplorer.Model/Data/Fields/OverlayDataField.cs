@@ -36,6 +36,9 @@ namespace VDrumExplorer.Model.Data.Fields
         {
             var resolved = container.ResolveField(SchemaField.SwitchPath);
             switchField = data.GetDataField(resolved.container, resolved.field);
+            // We never unsubscribe from this, but that's okay: we expect the lifetime of the
+            // data fields to be the same as the lifetime of the containing ModuleData.
+            switchField.PropertyChanged += SwitchFieldChanged;
             RefreshInstrumentFields();
         }
 
@@ -84,18 +87,6 @@ namespace VDrumExplorer.Model.Data.Fields
                     }
                 }
             }
-        }
-
-        protected override void OnPropertyChangedHasSubscribers()
-        {
-            base.OnPropertyChangedHasSubscribers();
-            switchField!.PropertyChanged += SwitchFieldChanged;
-        }
-
-        protected override void OnPropertyChangedHasNoSubscribers()
-        {
-            base.OnPropertyChangedHasNoSubscribers();
-            switchField!.PropertyChanged -= SwitchFieldChanged;
         }
 
         internal override void Load(DataSegment segment)

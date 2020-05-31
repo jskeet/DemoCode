@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.ComponentModel;
 using VDrumExplorer.Model.Schema.Fields;
 
@@ -19,20 +18,9 @@ namespace VDrumExplorer.Model.Data.Fields
             switchDataField = new BooleanDataField(field.SwitchField);
             numericDataField = new NumericDataField(field.NumericField);
             musicalNoteDataField = new EnumDataField(field.MusicalNoteField);
-        }
-
-        protected override void OnPropertyChangedHasSubscribers()
-        {
             switchDataField.PropertyChanged += HandleSwitchPropertyChanged;
             numericDataField.PropertyChanged += HandleNumericPropertyChanged;
             musicalNoteDataField.PropertyChanged += HandleMusicalNotePropertyChanged;
-        }
-
-        protected override void OnPropertyChangedHasNoSubscribers()
-        {
-            switchDataField.PropertyChanged -= HandleSwitchPropertyChanged;
-            numericDataField.PropertyChanged -= HandleNumericPropertyChanged;
-            musicalNoteDataField.PropertyChanged -= HandleMusicalNotePropertyChanged;
         }
 
         private void HandleSwitchPropertyChanged(object sender, PropertyChangedEventArgs e)

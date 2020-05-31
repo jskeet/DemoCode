@@ -25,41 +25,13 @@ namespace VDrumExplorer.Model.Data.Fields
     {
         public IField SchemaField => GetSchemaField();
 
-        private PropertyChangedEventHandler? propertyChanged;
-
-        protected virtual void OnPropertyChangedHasSubscribers()
-        {
-        }
-
-        protected virtual void OnPropertyChangedHasNoSubscribers()
-        {
-        }
-
-        // Implement the event subscription manually so ViewModels can subscribe and unsubscribe
-        // from events raised by their models.
-        public event PropertyChangedEventHandler PropertyChanged
-        {
-            add
-            {
-                if (NotifyPropertyChangedHelper.AddHandler(ref propertyChanged, value))
-                {
-                    OnPropertyChangedHasSubscribers();
-                }
-            }
-            remove
-            {
-                if (NotifyPropertyChangedHelper.RemoveHandler(ref propertyChanged, value))
-                {
-                    OnPropertyChangedHasNoSubscribers();
-                }
-            }
-        }
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void RaisePropertyChanges() =>
             RaisePropertyChanged(nameof(FormattedText));
 
         protected void RaisePropertyChanged(string name) =>
-            propertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         protected bool SetProperty<T>(ref T field, T value)
         {
