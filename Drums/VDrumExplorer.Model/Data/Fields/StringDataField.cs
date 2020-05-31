@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Text;
 using VDrumExplorer.Model.Schema.Fields;
+using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Data.Fields
 {
