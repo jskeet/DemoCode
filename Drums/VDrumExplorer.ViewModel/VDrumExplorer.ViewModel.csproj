@@ -7,8 +7,9 @@
       - An alternative would be to create an interface here and implement it (simply)
       - in each *application* that needs it.
       -->
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <Nullable>Enable</Nullable>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
