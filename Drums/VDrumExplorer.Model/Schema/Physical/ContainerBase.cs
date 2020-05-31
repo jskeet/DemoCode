@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using VDrumExplorer.Model.Schema.Fields;
+using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Schema.Physical
 {
