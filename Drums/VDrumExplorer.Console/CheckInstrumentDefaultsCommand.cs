@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -10,9 +9,14 @@ using System.CommandLine.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Data;
-using VDrumExplorer.Data.Fields;
 using VDrumExplorer.Midi;
+using VDrumExplorer.Model;
+using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Data.Fields;
+using VDrumExplorer.Model.Data.Logical;
+using VDrumExplorer.Model.Device;
+using VDrumExplorer.Model.Schema.Fields;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Console
 {
@@ -30,154 +34,115 @@ namespace VDrumExplorer.Console
             var console = context.Console.Out;
             var kit = context.ParseResult.ValueForOption<int>("kit");
             var file = context.ParseResult.ValueForOption<string>("file");
-            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), SchemaRegistry.KnownSchemas.Keys);
+            var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
 
             if (client == null)
             {
                 return 1;
             }
-            var schema = SchemaRegistry.KnownSchemas[client.Identifier].Value;
-            if (!schema.KitRoots.TryGetValue(kit, out var kitRoot))
+
+            using (var device = new DeviceController(client))
             {
-                console.WriteLine($"Kit {kit} out of range");
-                return 1;
-            };
+                var triggerRoot = device.Schema.GetTriggerRoot(kit, trigger: 1);
+                var deviceData = ModuleData.FromLogicalRootNode(triggerRoot);
+                var modelData = ModuleData.FromLogicalRootNode(triggerRoot);
+                var defaultValuesSnapshot = modelData.CreateSnapshot();
 
-            var moduleData = new ModuleData();
+                var deviceDataRoot = new DataTreeNode(deviceData, triggerRoot);
+                await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
+                var originalSnapshot = deviceData.CreateSnapshot();
+                var (ifContainer, instrumentField) = device.Schema.GetMainInstrumentField(kit, trigger: 1);
+                var modelInstrumentField = (InstrumentDataField) modelData.GetDataField(ifContainer, instrumentField);
 
-            // Note: a lot of this logic is copied from SoundRecorderDialog. It should go in a model.
-            var instrumentRoot = kitRoot.DescendantNodesAndSelf().FirstOrDefault(node => node.InstrumentNumber == 1);
-            if (instrumentRoot == null)
-            {
-                console.WriteLine($"No instrument root available. Please email a bug report to skeet@pobox.com");
-                return 1;
-            }
+                var instrumentContainers = triggerRoot.DescendantFieldContainers();
 
-            List<FixedContainer> instrumentContainers = instrumentRoot.DescendantNodesAndSelf()
-                .SelectMany(node => node.Details)
-                .Select(detail => detail.Container)
-                .Where(fc => fc != null)
-                .Distinct()
-                .ToList();
-
-            var originalData = await LoadContainers();
-            var predictedData = originalData.Clone();
-            var differences = new List<Difference>();
-            using (client)
-            {
-                var (instrumentFieldContext, instrumentField) =
-                    (from ct in instrumentContainers
-                     orderby ct.Address
-                     from field in ct.Container.Fields
-                     where field is InstrumentField
-                     select (ct, (InstrumentField) field)).FirstOrDefault();
-                if (instrumentFieldContext == null)
-                {
-                    console.WriteLine($"No instrument field available. Please email a bug report to skeet@pobox.com");
-                    return 1;
-                }
-
+                var differences = new List<Difference>();
                 try
                 {
-                    foreach (var instrument in schema.PresetInstruments)
+                    // Reset the device to an empty snapshot
+                    deviceData.LoadSnapshot(defaultValuesSnapshot);
+                    await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
+
+                    foreach (var instrument in device.Schema.PresetInstruments)
                     {
-                        predictedData.Snapshot();
                         // Make the change on the real module and load the data.
-                        await RawSetInstrument(instrumentFieldContext, instrumentField, instrument);
-                        var realData = await LoadContainers();
+                        // Assumption: the segment containing the instrument itself (e.g. KitPadInst) doesn't
+                        // have any implicit model changes to worry about.
+                        await device.SetInstrumentAsync(kit, trigger: 1, instrument, CancellationToken.None);
+                        await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
 
                         // Make the change in the model.
-                        instrumentField.SetInstrument(instrumentFieldContext, predictedData, instrument);
+                        modelData.LoadSnapshot(defaultValuesSnapshot);
+                        modelInstrumentField.Instrument = instrument;
 
                         // Compare the two.
                         bool anyDifferences = false;
                         foreach (var container in instrumentContainers)
                         {
-                            foreach (var field in container.GetChildren(realData).OfType<NumericField>())
+                            // We won't compare InstrumentDataField, TempoDataField or StringDataField this way, but that's okay.
+                            var realFields = deviceData.GetDataFields(container).SelectMany(ExpandOverlays).OfType<NumericDataFieldBase>().ToList();
+                            var modelFields = modelData.GetDataFields(container).SelectMany(ExpandOverlays).OfType<NumericDataFieldBase>().ToList();
+                            if (realFields.Count != modelFields.Count)
                             {
-                                var realValue = field.GetRawValue(container, realData);
-                                var predictedValue = field.GetRawValue(container, predictedData);
+                                console.WriteLine($"Major failure: for instrument {instrument.Id} ({instrument.Group} / {instrument.Name}), found {realFields.Count} real fields and {modelFields.Count} model fields in container {container.Path}");
+                                return 1;
+                            }
+
+                            foreach (var pair in realFields.Zip(modelFields))
+                            {
+                                var real = pair.First;
+                                var model = pair.Second;
+                                if (real.SchemaField != model.SchemaField)
+                                {
+                                    console.WriteLine($"Major failure: for instrument {instrument.Id} ({instrument.Group} / {instrument.Name}), mismatched schema field for {container.Path}: {real.SchemaField.Name} != {model.SchemaField.Name}");
+                                    return 1;
+                                }
+                                var realValue = real.RawValue;
+                                var predictedValue = model.RawValue;
                                 if (realValue != predictedValue)
                                 {
                                     anyDifferences = true;
-                                    differences.Add(new Difference(instrument, container, field, realValue, predictedValue));
+                                    differences.Add(new Difference(instrument, container, real.SchemaField, realValue, predictedValue));
                                 }
                             }
                         }
                         console.Write(anyDifferences ? "!" : ".");
-
-                        predictedData.RevertSnapshot();
                     }
                 }
                 finally
                 {
-                    await RestoreData();
+                    // Restore the original data
+                    deviceData.LoadSnapshot(originalSnapshot);
+                    await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
                 }
+                console.WriteLine();
+                foreach (var difference in differences)
+                {
+                    console.WriteLine(difference.ToString());
+                }
+                console.WriteLine($"Total differences: {differences.Count}");
             }
-            foreach (var difference in differences)
-            {
-                console.WriteLine(difference.ToString());
-            }
-            console.WriteLine($"Total differences: {differences.Count}");
+
             return 0;
 
-            async Task<ModuleData> LoadContainers()
-            {
-                var data = new ModuleData();
-                foreach (var container in instrumentContainers)
-                {
-                    await LoadContainerAsync(data, container);
-                }
-                return data;
-            }
-
-            async Task LoadContainerAsync(ModuleData data, FixedContainer context)
-            {
-                var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
-                var segment = await client.RequestDataAsync(context.Address.Value, context.Container.Size, cancellationToken);
-                data.Populate(context.Address, segment);
-            }
-
-            async Task RestoreData()
-            {
-                console.WriteLine();
-                console.WriteLine("Restoring original data");
-                foreach (var segment in originalData.GetSegments())
-                {
-                    client.SendData(segment.Start.Value, segment.CopyData());
-                    await Task.Delay(40);
-                }
-            }
-
-            // Sets the instrument directly in the module, setting *only* that field.
-            async Task RawSetInstrument(FixedContainer context, InstrumentField field, Instrument instrument)
-            {
-                var address = context.Address + field.Offset;
-                byte[] bytes  = {
-                    (byte) ((instrument.Id >> 12) & 0xf),
-                    (byte) ((instrument.Id >> 8) & 0xf),
-                    (byte) ((instrument.Id >> 4) & 0xf),
-                    (byte) ((instrument.Id >> 0) & 0xf)
-                };
-                client.SendData(address.Value, bytes);
-                await Task.Delay(40);
-            }
+            IEnumerable<IDataField> ExpandOverlays(IDataField field) =>
+                field is OverlayDataField odf ? odf.CurrentFieldList.Fields : Enumerable.Repeat(field, 1);
         }
 
         private class Difference
         {
             public Instrument Instrument { get; }
-            public FixedContainer Container { get; }
             public IField Field { get; }
+            public FieldContainer Container { get; }
             public int RealValue { get; }
             public int PredictedValue { get; }
 
-            public Difference(Instrument instrument, FixedContainer container, IField field, int realValue, int predictedValue) =>
+            public Difference(Instrument instrument, FieldContainer container, IField field, int realValue, int predictedValue) =>
                 (Instrument, Container, Field, RealValue, PredictedValue) =
                 (instrument, container, field, realValue, predictedValue);
 
             public override string ToString() =>
-                $"{Instrument.Group} / {Instrument.Id} ({Instrument.Name}) - {Container}.{Field.Name}: Real={RealValue}; Predicted={PredictedValue}";
+                $"{Instrument.Group} / {Instrument.Id} ({Instrument.Name}) - {Container.Path}/{Field.Name}: Real={RealValue}; Predicted={PredictedValue}";
         }
     }
 }
