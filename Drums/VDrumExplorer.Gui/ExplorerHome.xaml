@@ -8,16 +8,16 @@
         Style="{StaticResource WindowStyle}"
         Title="V-Drum Explorer Home" Height="450" Width="800"
         d:DataContext="{d:DesignInstance vmh:ExplorerHomeViewModel}">
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
-            <TextBlock>Connected device: </TextBlock>
+    <DockPanel Margin="5">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <TextBlock Text="Connected device:" />
             <TextBlock Text="{Binding DeviceViewModel.ConnectedDevice.Schema.Identifier.Name}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="3,3,3,3">
-            <Button Command="{Binding LoadFileCommand}">Load file</Button>
-            <Button Command="{Binding SaveLogCommand}" Margin="{StaticResource ValueMargin}">Save log file</Button>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
+            <Button Command="{Binding LoadFileCommand}" Content="Load file"/>
+            <Button Command="{Binding SaveLogCommand}" Margin="{StaticResource ValueMargin}" Content="Save log file"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding DeviceViewModel.DeviceConnected}" Margin="3,3,3,3">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding DeviceViewModel.DeviceConnected}" Margin="{StaticResource PanelMargin}">
             <!-- Note: primary reason for using labels instead of text blocks is that they reflect enabled state more simply. -->
             <Label Content="Device options:" />
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding LoadModuleFromDeviceCommand}" Content="Load all data"/>
@@ -26,8 +26,8 @@
             <TextBox Margin="{StaticResource ValueMargin}" Text="{Binding LoadKitFromDeviceNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" Width="30"/>
             <Button Margin="{StaticResource ValueMargin}"  Command="{Binding RecordInstrumentAudioCommand}" Content="Record instruments" />
         </StackPanel>
-        <Separator DockPanel.Dock="Top" />
-        <GroupBox Header="Log" Margin="5,0,5,5">
+        <Separator DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}"/>
+        <GroupBox Header="Log" Margin="{StaticResource PanelMargin}">
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding LogViewModel.LogEntries}">
                     <ItemsControl.ItemsPanel>
