@@ -6,7 +6,7 @@ using System.Windows;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.ViewModel;
-using VDrumExplorer.ViewModel.Home;
+using VDrumExplorer.ViewModel.Logging;
 using VDrumExplorer.ViewModel.LogicalSchema;
 
 namespace VDrumExplorer.Gui

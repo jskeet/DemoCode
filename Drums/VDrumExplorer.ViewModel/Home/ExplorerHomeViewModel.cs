@@ -12,7 +12,7 @@ using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
 
-namespace VDrumExplorer.ViewModel.Home
+namespace VDrumExplorer.ViewModel.Logging
 {
     public class ExplorerHomeViewModel : ViewModelBase
     {
