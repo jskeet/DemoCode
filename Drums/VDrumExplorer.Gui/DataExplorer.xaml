@@ -51,7 +51,7 @@
             <TreeView x:Name="treeView" Grid.Column="0" BorderThickness="0" ItemsSource="{Binding Root}" SelectedItemChanged="TreeView_SelectedItemChanged">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Format.Text}">
+                        <TextBlock Text="{Binding Title}">
                             <TextBlock.ContextMenu>
                                 <ContextMenu Visibility="{Binding KitContextCommandsEnabled, Converter={StaticResource VisibilityConverter}}">
                                     <MenuItem Header="Open copy in Kit Explorer" Command="{Binding Root.OpenCopyInKitExplorerCommand}" CommandParameter="{Binding .}" />

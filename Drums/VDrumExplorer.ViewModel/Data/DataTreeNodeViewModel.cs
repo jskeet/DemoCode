@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Utility;
 
@@ -11,6 +13,8 @@ namespace VDrumExplorer.ViewModel.Data
 {
     public class DataTreeNodeViewModel : ViewModelBase<DataTreeNode>
     {
+        private readonly DataFieldFormattableString formattableString;
+
         // Note: exposing the root like this is somewhat ugly, but it means we can have "4 command instances which take a parameter"
         // rather than "4 command instances per tree view node". It's relatively tricky to get back to the root datacontext
         // within the XAML for a menu item.
@@ -20,7 +24,22 @@ namespace VDrumExplorer.ViewModel.Data
 
         private readonly Lazy<IReadOnlyList<DataTreeNodeViewModel>> children;
 
-        public DataFieldFormattableString Format { get; }
+        public string Title
+        {
+            get
+            {
+                if (KitNumber is int kit)
+                {
+                    string name = Kit.GetKitName(Model);
+                    return Root.IsKitExplorer ? name : $"Kit {kit}: {name}";
+                }
+                else
+                {
+                    return formattableString.Text;
+                }
+            }
+        }
+
         public IReadOnlyList<DataTreeNodeViewModel> Children => children.Value;
 
         public int? KitNumber => Model.SchemaNode.KitNumber;
@@ -33,9 +52,24 @@ namespace VDrumExplorer.ViewModel.Data
         public DataTreeNodeViewModel(DataTreeNode model, DataExplorerViewModel root) : base(model)
         {
             Root = root;
-            Format = model.Format;
+            formattableString = model.Format;
             children = Lazy.Create(() => model.Children.ToReadOnlyList(child => new DataTreeNodeViewModel(child, root)));
         }
+
+        protected override void OnPropertyChangedHasSubscribers()
+        {
+            base.OnPropertyChangedHasSubscribers();
+            formattableString.PropertyChanged += RaiseTitleChanged;
+        }
+
+        protected override void OnPropertyChangedHasNoSubscribers()
+        {
+            base.OnPropertyChangedHasNoSubscribers();
+            formattableString.PropertyChanged -= RaiseTitleChanged;
+        }
+
+        public void RaiseTitleChanged(object sender, PropertyChangedEventArgs e) =>
+            RaisePropertyChanged(nameof(Title));
 
         internal IReadOnlyList<IDataNodeDetailViewModel> CreateDetails() => Model.Details.ToReadOnlyList(CreateDetail);
 

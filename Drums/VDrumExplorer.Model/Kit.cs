@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Schema.Logical;
 
 namespace VDrumExplorer.Model
@@ -39,7 +40,7 @@ namespace VDrumExplorer.Model
         public string GetKitName() => GetKitName(Data, KitRoot);
 
         /// <summary>
-        /// Returned the name of a kit from the specified data, given a logical kit root node.
+        /// Returns the name of a kit from the specified data, given a logical kit root node.
         /// </summary>
         /// <param name="data">The data to load the name from.</param>
         /// <param name="logicalKitRoot">The logical tree node representing the root of the kit.</param>
@@ -54,5 +55,12 @@ namespace VDrumExplorer.Model
             var subName = data.GetDataField(subNameContainer, subNameField).FormattedText;
             return subName == "" ? name : $"{name} / {subName}";
         }
+
+        /// <summary>
+        /// Returns the name of a kit from the specified data, given a logical kit root node.
+        /// </summary>
+        /// <param name="kitRoot">The logical data tree node representing the root of the kit.</param>
+        /// <returns>The kit name.</returns>
+        public static string GetKitName(DataTreeNode kitRoot) => GetKitName(kitRoot.Data, kitRoot.SchemaNode);
     }
 }
