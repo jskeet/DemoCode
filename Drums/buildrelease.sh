@@ -13,7 +13,7 @@ dotnet build -c Release -v quiet VDrumExplorer.Gui
 # Sign executable in-place
 signtool sign -a -fd SHA256 -f $PFX_PATH -p $PFX_PASSWORD -t http://timestamp.comodoca.com/authenticode VDrumExplorer.Gui/bin/Release/net472/VDrumExplorer.Gui.exe
 
-version=$(grep \<Version\> VDrumExplorer.Gui/VDrumExplorer.Wpf.csproj | sed s/\<[^\>]*\>//g | sed 's/ //g')
+version=$(grep \<Version\> VDrumExplorer.Gui/VDrumExplorer.Gui.csproj | sed s/\<[^\>]*\>//g | sed 's/ //g')
 
 rm -rf tmp
 mkdir tmp
