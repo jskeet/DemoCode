@@ -19,10 +19,10 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding DeviceViewModel.DeviceConnected}" Margin="{StaticResource PanelMargin}">
             <!-- Note: primary reason for using labels instead of text blocks is that they reflect enabled state more simply. -->
-            <Label Content="Device options:" />
+            <TextBlock Text="Device options:" />
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding LoadModuleFromDeviceCommand}" Content="Load all data"/>
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding LoadKitFromDeviceCommand}" Content="Load single kit"/>
-            <Label Margin="{StaticResource ValueMargin}" Content="Kit number:"/>
+            <TextBlock Margin="{StaticResource ValueMargin}" Text="Kit number:"/>
             <TextBox Margin="{StaticResource ValueMargin}" Text="{Binding LoadKitFromDeviceNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" Width="30"/>
             <Button Margin="{StaticResource ValueMargin}"  Command="{Binding RecordInstrumentAudioCommand}" Content="Record instruments" />
         </StackPanel>

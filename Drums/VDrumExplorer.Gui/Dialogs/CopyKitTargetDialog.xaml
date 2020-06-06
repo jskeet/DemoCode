@@ -10,7 +10,7 @@
         ResizeMode="NoResize"
         Style="{StaticResource WindowStyle}"
         d:DataContext="{d:DesignInstance vmd:CopyKitViewModel}">
-    <Grid Margin="6">
+    <Grid Margin="6,3,0,9">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -21,23 +21,23 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" MinWidth="200" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Grid.Row="0">Source kit:</Label>
-        <Label Grid.Column="0" Grid.Row="1">Destination kit number:</Label>
-        <Label Grid.Column="0" Grid.Row="2">Destination kit name:</Label>
+        <TextBlock Grid.Column="0" Grid.Row="0">Source kit:</TextBlock>
+        <TextBlock Grid.Column="0" Grid.Row="1">Destination kit number:</TextBlock>
+        <TextBlock Grid.Column="0" Grid.Row="2">Destination kit name:</TextBlock>
 
         <TextBlock Grid.Column="1" Grid.Row="0" 
-               Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" VerticalAlignment="Center"
                Text="{Binding SourceKitName}" />
         <TextBox Grid.Column="1" Grid.Row="1"
-                 Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30" 
+                 Margin="{StaticResource ValueMarginWithVertical}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30" 
                  Text="{Binding DestinationKitNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
         <TextBlock Grid.Column="1" Grid.Row="2"
-               Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" VerticalAlignment="Center"
                Text="{Binding DestinationKitName}"/>
 
-        <UniformGrid Rows="1" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-            <Button Margin="3,6,3,5" Click="Copy" IsEnabled="{Binding CopyEnabled}" VerticalAlignment="Center">Copy</Button>
-            <Button Margin="3,6,3,5" Click="Cancel" VerticalAlignment="Center">Cancel</Button>
+        <UniformGrid Rows="1" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="{StaticResource PanelMargin}">
+            <Button Click="Copy" IsEnabled="{Binding CopyEnabled}" VerticalAlignment="Center">Copy</Button>
+            <Button Margin="{StaticResource ValueMargin}" Click="Cancel" VerticalAlignment="Center">Cancel</Button>
         </UniformGrid>
     </Grid>
 </Window>

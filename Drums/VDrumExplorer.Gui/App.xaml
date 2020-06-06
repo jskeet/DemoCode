@@ -15,6 +15,11 @@
             <!-- We almost always align things centrally (vertically) -->            
             <Style TargetType="TextBlock">
                 <Setter Property="VerticalAlignment" Value="Center" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
             <Style TargetType="Label">
                 <Setter Property="VerticalAlignment" Value="Center" />
