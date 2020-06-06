@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using VDrumExplorer.Model.Schema.Physical;
+
 namespace VDrumExplorer.Model.Schema.Fields
 {
     /// <summary>
@@ -20,10 +22,13 @@ namespace VDrumExplorer.Model.Schema.Fields
         public int? ValueOffset { get; }
         public string? Suffix { get; }
 
-        internal NumericField(Parameters common, int min, int max, int @default,
+        internal NumericField(FieldContainer? parent, FieldParameters common, int min, int max, int @default,
             int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting)
-            : base(common, min, max, @default) =>
+            : base(parent, common, min, max, @default) =>
             (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) =
             (divisor, multiplier, valueOffset, suffix, customValueFormatting);
+
+        internal override FieldBase WithParent(FieldContainer parent) =>
+            new NumericField(parent, Parameters, Min, Max, Default, Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting);
     }
 }

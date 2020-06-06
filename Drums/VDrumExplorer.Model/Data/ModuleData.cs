@@ -69,8 +69,9 @@ namespace VDrumExplorer.Model.Data
         internal IReadOnlyList<IDataField> GetDataFields(FieldContainer container) => fieldsByFieldContainer[container];
 
         // TODO: Check how often this is called, and whether we need to optimize.
-        internal IDataField GetDataField(FieldContainer container, IField field) =>
-            GetDataFields(container).FirstOrDefault(dataField => dataField.SchemaField == field);
+        internal IDataField GetDataField(IField field) =>
+            GetDataFields(field.Parent ?? throw new ArgumentException($"Only parented fields can have data fields"))
+                .FirstOrDefault(dataField => dataField.SchemaField == field);
 
         /// <summary>
         /// Creates a new instance with default values for all fields.

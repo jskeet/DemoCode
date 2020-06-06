@@ -2,8 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
-using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -13,8 +12,10 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     internal class PlaceholderField : FieldBase
     {
-        internal PlaceholderField(Parameters common) : base(common)
+        internal PlaceholderField(FieldContainer? parent, FieldParameters common) : base(parent, common)
         {
         }
+
+        internal override FieldBase WithParent(FieldContainer parent) => new PlaceholderField(parent, Parameters);
     }
 }

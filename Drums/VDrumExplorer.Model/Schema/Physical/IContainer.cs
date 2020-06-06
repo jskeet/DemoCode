@@ -49,7 +49,7 @@ namespace VDrumExplorer.Model.Schema.Physical
         /// Resolves a field with the specified path, which may be relative or absolute.
         /// </summary>
         /// <param name="path">The path to resolve.</param>
-        /// <returns>The field and its parent field container.</returns>
-        (FieldContainer container, IField field) ResolveField(string path);
+        /// <returns>The resolved field.</returns>
+        IField ResolveField(string path);
     }
 }

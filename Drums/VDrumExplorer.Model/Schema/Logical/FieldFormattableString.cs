@@ -25,11 +25,11 @@ namespace VDrumExplorer.Model.Schema.Logical
         /// </summary>
         public IReadOnlyList<string> FieldPaths { get; }
 
-        internal IReadOnlyList<(FieldContainer container, IField field)>? Fields { get; }
+        internal IReadOnlyList<IField>? Fields { get; }
 
-        private FieldFormattableString(string formatString, IReadOnlyList<(FieldContainer container, IField field)>? fields) =>
+        private FieldFormattableString(string formatString, IReadOnlyList<IField>? fields) =>
             (FormatString, Fields, FieldPaths) =
-            (formatString, fields, (fields?.Select(tuple => tuple.container.Path + "/" + tuple.field.Name) ?? Enumerable.Empty<string>()).ToReadOnlyList());
+            (formatString, fields, (fields?.Select(field => field.Path) ?? Enumerable.Empty<string>()).ToReadOnlyList());
 
         internal static FieldFormattableString Create(IContainer container, string formatString, IEnumerable<string>? formatPaths, SchemaVariables variables) =>
             new FieldFormattableString(variables.Replace(formatString),

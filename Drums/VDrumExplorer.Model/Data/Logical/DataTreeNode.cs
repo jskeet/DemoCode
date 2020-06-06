@@ -43,8 +43,8 @@ namespace VDrumExplorer.Model.Data.Logical
             {
                 return null;
             }
-            var (container, field) = SchemaNode.Container.ResolveField(SchemaNode.MidiNotePath);
-            var midiField = (NumericDataField) Data.GetDataField(container, field);
+            var field = SchemaNode.Container.ResolveField(SchemaNode.MidiNotePath);
+            var midiField = (NumericDataField) Data.GetDataField(field);
             var value = midiField.RawValue;
             // 128 means "off"
             return value >= 0 && value < 128 ? value : default(int?);

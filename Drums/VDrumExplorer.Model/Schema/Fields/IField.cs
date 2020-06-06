@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using VDrumExplorer.Model.Schema.Physical;
+
 namespace VDrumExplorer.Model.Schema.Fields
 {
     /// <summary>
@@ -28,5 +30,15 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// Description of the field.
         /// </summary>
         public string Description { get; }
+
+        /// <summary>
+        /// The parent container for this field. This is null for overlaid fields.
+        /// </summary>
+        public FieldContainer? Parent { get; }
+
+        /// <summary>
+        /// The full path for this field (or just the name for overlaid fields).
+        /// </summary>
+        public string Path { get; }
     }
 }

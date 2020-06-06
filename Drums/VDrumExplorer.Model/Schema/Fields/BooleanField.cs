@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -11,9 +11,12 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public sealed class BooleanField : NumericFieldBase
     {
-        internal BooleanField(Parameters common)
-            : base(common, min: 0, max: 1, @default: 0)
+        internal BooleanField(FieldContainer? parent, FieldParameters common)
+            : base(parent, common, min: 0, max: 1, @default: 0)
         {
         }
+
+        internal override FieldBase WithParent(FieldContainer parent) =>
+            new BooleanField(parent, Parameters);
     }
 }

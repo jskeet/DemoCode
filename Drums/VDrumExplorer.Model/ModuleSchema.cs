@@ -121,11 +121,11 @@ namespace VDrumExplorer.Model
             return kitRoot.ResolveNode(string.Format(triggerPathFormat, trigger));
         }
 
-        internal (FieldContainer, InstrumentField) GetMainInstrumentField(int kitNumber, int trigger)
+        internal InstrumentField GetMainInstrumentField(int kitNumber, int trigger)
         {
             var kitRoot = GetKitRoot(kitNumber);
-            var (container, field) = kitRoot.Container.ResolveField(string.Format(mainInstrumentPathFormat, trigger));
-            return (container, (InstrumentField) field);
+            var field = kitRoot.Container.ResolveField(string.Format(mainInstrumentPathFormat, trigger));
+            return (InstrumentField) field;
         }
 
         private static Lazy<ModuleSchema> LazyFromAssemblyResources(string resourceBase, string resourceName) =>

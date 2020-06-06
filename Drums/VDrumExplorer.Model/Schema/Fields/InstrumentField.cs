@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using VDrumExplorer.Model.Schema.Physical;
+
 namespace VDrumExplorer.Model.Schema.Fields
 {
     /// <summary>
@@ -15,7 +17,9 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// </summary>
         internal ModuleOffset BankOffset { get; }
 
-        internal InstrumentField(Parameters common, ModuleOffset bankOffset) : base(common) =>
+        internal InstrumentField(FieldContainer? parent, FieldParameters common, ModuleOffset bankOffset) : base(parent, common) =>
             BankOffset = bankOffset;
+
+        internal override FieldBase WithParent(FieldContainer parent) => new InstrumentField(parent, Parameters, BankOffset);
     }
 }

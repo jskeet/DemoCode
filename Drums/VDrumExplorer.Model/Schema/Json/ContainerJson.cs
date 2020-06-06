@@ -61,7 +61,7 @@ namespace VDrumExplorer.Model.Schema.Json
         /// Field containers have their fields resolved once, then reused across
         /// multiple parent containers.
         /// </summary>
-        private IReadOnlyList<IField>? resolvedFields;
+        private IReadOnlyList<FieldBase>? resolvedFields;
 
         /// <summary>
         /// If none of the fields are overlays, we can just use resolvedFields directly.
@@ -94,9 +94,9 @@ namespace VDrumExplorer.Model.Schema.Json
             }
         }
 
-        private IReadOnlyList<IField> ResolveFields(ModuleJson module)
+        private IReadOnlyList<FieldBase> ResolveFields(ModuleJson module)
         {
-            var resolved = new List<IField>();
+            var resolved = new List<FieldBase>();
             foreach (var field in Fields)
             {
                 var lastField = resolved.LastOrDefault();
@@ -112,11 +112,11 @@ namespace VDrumExplorer.Model.Schema.Json
             string path = PathUtilities.AppendPath(parentPath, name);
             if (Fields is object)
             {
-                var fieldList = requiresOverlayResolution ? resolvedFields.Select(FinalizeField).ToList().AsReadOnly() : resolvedFields;
+                var fieldList = requiresOverlayResolution ? resolvedFields.ToReadOnlyList(FinalizeField) : resolvedFields;
                 var realSize = ModuleOffset.FromDisplayValue(Size.Value).LogicalValue;
                 return new FieldContainer(schema, name, description, address, path, realSize, fieldList);
 
-                IField FinalizeField(IField field) =>
+                FieldBase FinalizeField(FieldBase field) =>
                     field is OverlayField overlay ? overlay.WithPath(variables.Replace(overlay.SwitchPath)) : field;
             }
             else

@@ -89,7 +89,7 @@ namespace VDrumExplorer.Model.Schema.Physical
         }
 
         /// <inheritdoc />
-        public (FieldContainer container, IField field) ResolveField(string path)
+        public IField ResolveField(string path)
         {
             // First separate the path into "container" and "field".
             int lastSlash = path.LastIndexOf('/');
@@ -99,7 +99,7 @@ namespace VDrumExplorer.Model.Schema.Physical
             // Now find the container, and the field within it.
             IContainer container = ResolveContainer(containerPath);
             return container is FieldContainer fc
-                ? (fc, fc.FieldsByName.GetValueOrDefault(fieldName) ?? throw new ArgumentException($"No field '{fieldName}' within container '{fc.Path}'"))
+                ? fc.FieldsByName.GetValueOrDefault(fieldName) ?? throw new ArgumentException($"No field '{fieldName}' within container '{fc.Path}'")
                 : throw new ArgumentException($"Container '{container.Path}' is not a field container, so cannot contain field '{fieldName}'");
         }
     }

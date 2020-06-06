@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using VDrumExplorer.Model.Schema.Physical;
+
 namespace VDrumExplorer.Model.Schema.Fields
 {
     /// <summary>
@@ -14,8 +16,8 @@ namespace VDrumExplorer.Model.Schema.Fields
         public int Max { get; }
         public int Default { get; }
 
-        private protected NumericFieldBase(Parameters common, int min, int max, int @default)
-            : base(common) =>
+        private protected NumericFieldBase(FieldContainer? parent, FieldParameters common, int min, int max, int @default)
+            : base(parent, common) =>
             (Min, Max, Default) = (min, max, @default);
     }
 }
