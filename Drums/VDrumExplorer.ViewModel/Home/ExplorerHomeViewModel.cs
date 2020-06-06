@@ -95,7 +95,7 @@ namespace VDrumExplorer.ViewModel.Logging
 
         private void SaveLog()
         {
-            var file = viewServices.ShowSaveFileDialog(FileFilters.TextFiles);
+            var file = viewServices.ShowSaveFileDialog(FileFilters.LogFiles);
             if (file == null)
             {
                 return;

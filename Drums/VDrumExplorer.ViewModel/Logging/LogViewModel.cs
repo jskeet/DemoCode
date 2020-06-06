@@ -3,7 +3,9 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NodaTime;
+using NodaTime.Serialization.JsonNet;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -78,9 +80,13 @@ namespace VDrumExplorer.ViewModel.Logging
             }
         }
 
-        // TODO: Write more details.
-        public void Save(string file) =>
-            File.WriteAllLines(file, LogEntries.Select(entry => $"{entry.Timestamp:yyyy-MM-ddTHH:mm:ss} {entry.Text}"));
+        public void Save(string file)
+        {
+            var jsonEntries = allLogEntries.Select(entry => new JsonLogEntry(entry)).ToList();
+            var jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+            string json = JsonConvert.SerializeObject(jsonEntries, Formatting.Indented, jsonSettings);
+            File.WriteAllText(file, json);
+        }
 
         private class LoggerImpl : ILogger
         {
