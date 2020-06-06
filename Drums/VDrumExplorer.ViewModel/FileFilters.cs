@@ -13,6 +13,6 @@ namespace VDrumExplorer.ViewModel
         internal const string ModuleFiles = "V-Drum Explorer module files|*.vdrum";
         internal const string InstrumentAudioFiles = "V-Drum Explorer audio files|*.vaudio";
         internal const string AllExplorerFiles = "All explorer files|*.vdrum;*.vkit;*.vaudio|Module files|*.vdrum|Kit files|*.vkit|Audio files|*.vaudio";
-        internal const string TextFiles = "Text files|*.txt";
+        internal const string LogFiles = "Log files|*.json";
     }
 }
