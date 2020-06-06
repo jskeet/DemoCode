@@ -131,8 +131,8 @@ namespace VDrumExplorer.Model.Device
 
         public async Task SetInstrumentAsync(int kit, int trigger, Instrument instrument, CancellationToken cancellationToken)
         {
-            var (container, field) = Schema.GetMainInstrumentField(kit, trigger);
-            var segment = await LoadSegment(container.Address, container.Size, cancellationToken);
+            var field = Schema.GetMainInstrumentField(kit, trigger);
+            var segment = await LoadSegment(field.Parent!.Address, field.Parent!.Size, cancellationToken);
             var dataField = new InstrumentDataField(field, Schema);
             dataField.Instrument = instrument;
             dataField.Save(segment);

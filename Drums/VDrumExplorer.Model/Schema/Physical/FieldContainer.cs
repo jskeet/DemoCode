@@ -32,10 +32,13 @@ namespace VDrumExplorer.Model.Schema.Physical
         public int Size { get; }
 
         internal FieldContainer(ModuleSchema schema, string name, string description, ModuleAddress address, string path,
-            int size, IReadOnlyList<IField> fields)
-            : base(schema, name, description, address, path) =>
-            (Size, Fields, FieldsByName) = (size, fields, fields.ToDictionary(f => f.Name).AsReadOnly());
-
+            int size, IReadOnlyList<FieldBase> fields)
+            : base(schema, name, description, address, path)
+        {
+            Fields = fields.ToReadOnlyList(field => field.WithParent(this));
+            Size = size;
+            FieldsByName = Fields.ToDictionary(f => f.Name).AsReadOnly();
+        }
 
         public class AddressComparerImpl : IComparer<FieldContainer>
         {

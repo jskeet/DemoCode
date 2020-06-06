@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System.Collections.Generic;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -29,11 +30,15 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// </summary>
         public int NestedFieldCount { get; }
 
-        internal OverlayField(Parameters common, int nestedFieldCount, string switchPath, IReadOnlyDictionary<string, FieldList> fieldLists) : base(common) =>
+        internal OverlayField(FieldContainer? parent, FieldParameters common, int nestedFieldCount, string switchPath, IReadOnlyDictionary<string, FieldList> fieldLists)
+            : base(parent, common) =>
             (NestedFieldCount, SwitchPath, FieldLists) = (nestedFieldCount, switchPath, fieldLists);
 
         internal OverlayField WithPath(string newSwitchPath) =>
-            newSwitchPath == SwitchPath ? this : new OverlayField(new Parameters(Name, Description, Offset, Size), NestedFieldCount, newSwitchPath, FieldLists);
+            newSwitchPath == SwitchPath ? this : new OverlayField(Parent, Parameters, NestedFieldCount, newSwitchPath, FieldLists);
+
+        internal override FieldBase WithParent(FieldContainer parent) =>
+            new OverlayField(parent, Parameters, NestedFieldCount, SwitchPath, FieldLists);
 
         public sealed class FieldList
         {

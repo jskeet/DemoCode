@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -44,12 +45,21 @@ namespace VDrumExplorer.Model.Schema.Fields
         public NumericField NumericField { get; }
         public EnumField MusicalNoteField { get; }
 
-        internal TempoField(Parameters common, int min, int max, int @default,
-            int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting) : base(common)
+        internal TempoField(FieldContainer? parent, FieldParameters common, int min, int max, int @default,
+            int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting)
+            : this(
+                parent, common,
+                new BooleanField(parent, new FieldParameters(common.Name + "Sync", common.Description + " Sync", common.Offset, 4)),
+                new NumericField(parent, new FieldParameters(common.Name + "Numeric", common.Description + " FIXME", common.Offset + 4, 4), min, max, @default, divisor, multiplier, valueOffset, suffix, customValueFormatting),
+                new EnumField(parent, new FieldParameters(common.Name + "Note", common.Description + " FIXME", common.Offset + 8, 4), MusicalNoteValues, 0, 0))
         {
-            SwitchField = new BooleanField(new Parameters(Name + "Sync", Description + " Sync", Offset, 4));
-            NumericField = new NumericField(new Parameters(Name + "Numeric", Description + " FIXME", Offset + 4, 4), min, max, @default, divisor, multiplier, valueOffset, suffix, customValueFormatting);
-            MusicalNoteField = new EnumField(new Parameters(Name + "Note", Description + " FIXME", Offset + 8, 4), MusicalNoteValues, 0, 0);
         }
+
+        private TempoField(FieldContainer? parent, FieldParameters common, BooleanField switchField, NumericField numericField, EnumField musicalNoteField)
+            : base(parent, common) =>
+            (SwitchField, NumericField, MusicalNoteField) = (switchField, numericField, musicalNoteField);
+
+        internal override FieldBase WithParent(FieldContainer parent) =>
+            new TempoField(parent, Parameters, (BooleanField) SwitchField.WithParent(parent), (NumericField) NumericField.WithParent(parent), (EnumField) MusicalNoteField.WithParent(parent));
     }
 }

@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Schema.Physical;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Schema.Fields
@@ -19,8 +19,12 @@ namespace VDrumExplorer.Model.Schema.Fields
 
         internal IReadOnlyDictionary<string, int> RawNumberByName;
 
-        internal EnumField(Parameters common, IReadOnlyList<string> values, int min, int @default)
-            : base(common, min, values.Count + min - 1, @default)
+        internal EnumField(FieldContainer parent, EnumField other)
+            : base(parent, other.Parameters, other.Min, other.Max, other.Default) =>
+            (Values, RawNumberByName) = (other.Values, other.RawNumberByName);
+
+        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyList<string> values, int min, int @default)
+            : base(parent, common, min, values.Count + min - 1, @default)
         {
             Values = values;
             RawNumberByName = Values
@@ -28,5 +32,8 @@ namespace VDrumExplorer.Model.Schema.Fields
                 .ToDictionary(pair => pair.value, pair => pair.index + min, StringComparer.Ordinal)
                 .AsReadOnly();
         }
+
+        internal override FieldBase WithParent(FieldContainer parent) => new EnumField(parent, this);
+
     }
 }

@@ -35,7 +35,7 @@ namespace VDrumExplorer.Model.Data.Fields
         internal override void ResolveFields(ModuleData data, FieldContainer container)
         {
             var resolved = container.ResolveField(SchemaField.SwitchPath);
-            switchField = data.GetDataField(resolved.container, resolved.field);
+            switchField = data.GetDataField(resolved);
             // We never unsubscribe from this, but that's okay: we expect the lifetime of the
             // data fields to be the same as the lifetime of the containing ModuleData.
             switchField.PropertyChanged += SwitchFieldChanged;
@@ -122,7 +122,7 @@ namespace VDrumExplorer.Model.Data.Fields
             public FieldList(OverlayField.FieldList schemaFieldList, ModuleSchema schema)
             {
                 Description = schemaFieldList.Description;
-                Fields = schemaFieldList.Fields.ToReadOnlyList(field => DataFieldBase.CreateDataField(field, schema));
+                Fields = schemaFieldList.Fields.ToReadOnlyList(field => CreateDataField(field, schema));
             }
         }
 

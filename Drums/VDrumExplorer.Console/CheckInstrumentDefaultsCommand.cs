@@ -41,8 +41,8 @@ namespace VDrumExplorer.Console
             var deviceDataRoot = new DataTreeNode(deviceData, triggerRoot);
             await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
             var originalSnapshot = deviceData.CreateSnapshot();
-            var (ifContainer, instrumentField) = device.Schema.GetMainInstrumentField(kit, trigger: 1);
-            var modelInstrumentField = (InstrumentDataField) modelData.GetDataField(ifContainer, instrumentField);
+            var instrumentField = device.Schema.GetMainInstrumentField(kit, trigger: 1);
+            var modelInstrumentField = (InstrumentDataField) modelData.GetDataField(instrumentField);
 
             var instrumentContainers = triggerRoot.DescendantFieldContainers();
 

@@ -49,10 +49,10 @@ namespace VDrumExplorer.Model
         {
             var schema = data.Schema;
             var container = logicalKitRoot.Container;
-            var (nameContainer, nameField) = container.ResolveField(schema.KitNamePath);
-            var (subNameContainer, subNameField) = container.ResolveField(schema.KitSubNamePath);
-            var name = data.GetDataField(nameContainer, nameField).FormattedText;
-            var subName = data.GetDataField(subNameContainer, subNameField).FormattedText;
+            var nameField = container.ResolveField(schema.KitNamePath);
+            var subNameField = container.ResolveField(schema.KitSubNamePath);
+            var name = data.GetDataField(nameField).FormattedText;
+            var subName = data.GetDataField(subNameField).FormattedText;
             return subName == "" ? name : $"{name} / {subName}";
         }
 

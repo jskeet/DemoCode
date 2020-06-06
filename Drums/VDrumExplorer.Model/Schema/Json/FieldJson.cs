@@ -91,7 +91,7 @@ namespace VDrumExplorer.Model.Schema.Json
 
         public override string ToString() => Description ?? Name ?? "(No description)";
 
-        public IEnumerable<IField> ToFields(ModuleJson module, ModuleOffset offset)
+        internal IEnumerable<FieldBase> ToFields(ModuleJson module, ModuleOffset offset)
         {
             AssertNotNull(ResolvedName);
             AssertNotNull(ResolvedDescription);
@@ -118,27 +118,27 @@ namespace VDrumExplorer.Model.Schema.Json
             }
         }
 
-        internal IField ToFieldForOverlay(ModuleJson module, ModuleOffset offset)
+        internal FieldBase ToFieldForOverlay(ModuleJson module, ModuleOffset offset)
         {
             AssertNotNull(ResolvedName);
             Validate(Repeat is null, "Repeated fields are not valid in overlays");
             return ToField(module, AssertNotNull(ResolvedName), AssertNotNull(ResolvedDescription), offset);
         }
 
-        private IField ToField(ModuleJson module, string name, string description, ModuleOffset offset)
+        internal FieldBase ToField(ModuleJson module, string name, string description, ModuleOffset offset)
         {
             return Type switch
             {
-                "boolean" => new BooleanField(BuildCommon(1)),
-                "boolean32" => new BooleanField(BuildCommon(4)),
-                "placeholder8" => new PlaceholderField(BuildCommon(1)),
-                "placeholder16" => new PlaceholderField(BuildCommon(2)),
-                "placeholder32" => new PlaceholderField(BuildCommon(4)),
+                "boolean" => new BooleanField(null, BuildCommon(1)),
+                "boolean32" => new BooleanField(null, BuildCommon(4)),
+                "placeholder8" => new PlaceholderField(null, BuildCommon(1)),
+                "placeholder16" => new PlaceholderField(null, BuildCommon(2)),
+                "placeholder32" => new PlaceholderField(null, BuildCommon(4)),
                 "enum" => BuildEnumField(1),
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
-                "instrument" => new InstrumentField(BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
-                "midi32" => new NumericField(BuildCommon(4), 0, 128, Default ?? 0, null, null, null, null, (128, "Off")),
+                "instrument" => new InstrumentField(null, BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
+                "midi32" => new NumericField(null, BuildCommon(4), 0, 128, Default ?? 0, null, null, null, null, (128, "Off")),
                 "overlay" => BuildOverlay(),
                 "range8" => BuildNumericField(1),
                 "range16" => BuildNumericField(2),
@@ -146,18 +146,18 @@ namespace VDrumExplorer.Model.Schema.Json
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
                 "tempo" => BuildTempoField(),
-                "volume32" => new NumericField(BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "-INF")),
+                "volume32" => new NumericField(null, BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "-INF")),
                 _ => throw new InvalidOperationException($"Invalid field type: '{Type}'")
             };
 
             EnumField BuildEnumField(int size) =>
-                new EnumField(BuildCommon(size), ValidateNotNull(Values, nameof(Values)).AsReadOnly(), Min ?? 0, GetDefaultValue());
+                new EnumField(null, BuildCommon(size), ValidateNotNull(Values, nameof(Values)).AsReadOnly(), Min ?? 0, GetDefaultValue());
 
             StringField BuildStringField(int bytesPerChar)
             {
                 var length = ValidateNotNull(Length, nameof(Length));
                 var common = BuildCommon(length * bytesPerChar);
-                return new StringField(common, length);
+                return new StringField(null, common, length);
             }
 
             TempoField BuildTempoField()
@@ -165,7 +165,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 var min = ValidateNotNull(Min, nameof(Min));
                 var max = ValidateNotNull(Max, nameof(Max));
                 Validate(max >= 0, $"Unexpected all-negative field: {name}");
-                return new TempoField(BuildCommon(12),
+                return new TempoField(null, BuildCommon(12),
                     min, max, GetDefaultValue(),
                     Divisor, Multiplier, ValueOffset, Suffix,
                     Off == null ? default((int, string)?) : (Off.Value, OffLabel));
@@ -176,7 +176,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 var min = ValidateNotNull(Min, nameof(Min));
                 var max = ValidateNotNull(Max, nameof(Max));
                 Validate(max >= 0, $"Unexpected all-negative field: {name}");
-                return new NumericField(BuildCommon(size),
+                return new NumericField(null, BuildCommon(size),
                     min, max, GetDefaultValue(),
                     Divisor, Multiplier, ValueOffset, Suffix,
                     Off == null ? default((int, string)?) : (Off.Value, OffLabel));
@@ -189,7 +189,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 var fieldsBySwitchValue = Overlay.FieldLists
                     .ToDictionary(pair => pair.Key, pair => ConvertFieldList(pair.Value))
                     .AsReadOnly();
-                return new OverlayField(BuildCommon(Overlay.FieldCount * Overlay.FieldSize), Overlay.FieldCount, AssertNotNull(Overlay.SwitchPath), fieldsBySwitchValue);
+                return new OverlayField(null, BuildCommon(Overlay.FieldCount * Overlay.FieldSize), Overlay.FieldCount, AssertNotNull(Overlay.SwitchPath), fieldsBySwitchValue);
 
                 OverlayField.FieldList ConvertFieldList(DynamicOverlayJson.OverlaidFieldListJson fieldList)
                 {
@@ -212,7 +212,7 @@ namespace VDrumExplorer.Model.Schema.Json
             }
 
 
-            FieldBase.Parameters BuildCommon(int size) => new FieldBase.Parameters(name, description, offset, size);
+            FieldBase.FieldParameters BuildCommon(int size) => new FieldBase.FieldParameters(name, description, offset, size);
 
             // The default is:
             // - Default if specified

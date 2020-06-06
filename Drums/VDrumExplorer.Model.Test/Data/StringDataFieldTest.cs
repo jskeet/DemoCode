@@ -11,8 +11,8 @@ namespace VDrumExplorer.Model.Test.Data.Fields
         private StringDataField CreateField()
         {
             Module module = TestData.LoadTD27();
-            var (fieldContainer, field) = module.Schema.PhysicalRoot.ResolveField("/Kit[12]/KitCommon/KitName");
-            return (StringDataField) module.Data.GetDataField(fieldContainer, field);
+            var field = module.Schema.PhysicalRoot.ResolveField("/Kit[12]/KitCommon/KitName");
+            return (StringDataField) module.Data.GetDataField(field);
         }
 
         /*
