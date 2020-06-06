@@ -27,7 +27,11 @@
             <Button Margin="{StaticResource ValueMargin}"  Command="{Binding RecordInstrumentAudioCommand}" Content="Record instruments" />
         </StackPanel>
         <Separator DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}"/>
-        <GroupBox Header="Log" Margin="{StaticResource PanelMargin}">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
+            <TextBlock Text="Log level:"/>
+            <ComboBox Margin="{StaticResource ValueMargin}" ItemsSource="{Binding LogViewModel.AllFilterLevels}" SelectedItem="{Binding LogViewModel.FilterLevel}" />
+        </StackPanel>
+        <GroupBox Header="Log" Margin="{StaticResource PanelMargin}" DockPanel.Dock="Top">
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding LogViewModel.LogEntries}">
                     <ItemsControl.ItemsPanel>
