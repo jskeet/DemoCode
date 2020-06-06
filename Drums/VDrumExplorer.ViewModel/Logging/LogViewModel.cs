@@ -5,6 +5,7 @@
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -13,10 +14,32 @@ using System.Reflection;
 namespace VDrumExplorer.ViewModel.Logging
 {
     // TODO: This feels more like a model...
-    public class LogViewModel
+    public class LogViewModel : ViewModelBase
     {
-        public ObservableCollection<LogEntryViewModel> LogEntries { get; }
+        private List<LogEntry> allLogEntries = new List<LogEntry>();
+        public ObservableCollection<LogEntryViewModel> LogEntries { get; private set; }
+
         public ILogger Logger { get; }
+
+        public IReadOnlyList<LogLevel> AllFilterLevels { get; } = Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>().ToList().AsReadOnly();
+
+        private LogLevel filterLevel = LogLevel.Information;
+        public LogLevel FilterLevel
+        {
+            get => filterLevel;
+            set
+            {
+                if (SetProperty(ref filterLevel, value))
+                {
+                    // Changing the source is simpler than trying to handle the bulk update.
+                    var matchingEntries = allLogEntries.Where(ShouldShowEntry).Select(entry => new LogEntryViewModel(entry));
+                    LogEntries = new ObservableCollection<LogEntryViewModel>(matchingEntries);
+                    RaisePropertyChanged(nameof(LogEntries));
+                }
+            }
+        }
+
+        private bool ShouldShowEntry(LogEntry entry) => entry.Level >= FilterLevel;
 
         public LogViewModel() : this(SystemClock.Instance)
         {
@@ -46,7 +69,14 @@ namespace VDrumExplorer.ViewModel.Logging
             }
         }
 
-        private void Log(LogEntry entry) => LogEntries.Add(new LogEntryViewModel(entry));
+        private void Log(LogEntry entry)
+        {
+            allLogEntries.Add(entry);
+            if (ShouldShowEntry(entry))
+            {
+                LogEntries.Add(new LogEntryViewModel(entry));
+            }
+        }
 
         // TODO: Write more details.
         public void Save(string file) =>
