@@ -10,12 +10,9 @@
         d:DataContext="{d:DesignInstance vmh:ExplorerHomeViewModel}">
     <DockPanel Margin="5">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <TextBlock Text="Connected device:" />
-            <TextBlock Text="{Binding DeviceViewModel.ConnectedDeviceName}" Margin="{StaticResource ValueMargin}"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
             <Button Command="{Binding LoadFileCommand}" Content="Load file"/>
-            <Button Command="{Binding SaveLogCommand}" Margin="{StaticResource ValueMargin}" Content="Save log file"/>
+            <TextBlock Text="Connected device:" Margin="{StaticResource ValueMargin}" />
+            <TextBlock Text="{Binding DeviceViewModel.ConnectedDeviceName}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding DeviceViewModel.DeviceConnected}" Margin="{StaticResource PanelMargin}">
             <!-- Note: primary reason for using labels instead of text blocks is that they reflect enabled state more simply. -->
@@ -30,6 +27,7 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
             <TextBlock Text="Log level:"/>
             <ComboBox Margin="{StaticResource ValueMargin}" ItemsSource="{Binding LogViewModel.AllFilterLevels}" SelectedItem="{Binding LogViewModel.FilterLevel}" />
+            <Button Command="{Binding SaveLogCommand}" Margin="{StaticResource ValueMargin}" Content="Save log file"/>
         </StackPanel>
         <GroupBox Header="Log" Margin="{StaticResource PanelMargin}" DockPanel.Dock="Top">
             <ScrollViewer>
