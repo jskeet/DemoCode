@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System.Windows;
 using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Audio;
+using VDrumExplorer.NAudio;
 using VDrumExplorer.ViewModel;
 using VDrumExplorer.ViewModel.Logging;
 using VDrumExplorer.ViewModel.LogicalSchema;
@@ -17,11 +19,13 @@ namespace VDrumExplorer.Gui
     /// </summary>
     public partial class App : Application
     {
+        private readonly IAudioDeviceManager audioDeviceManager;
         private DeviceViewModel deviceViewModel;
         private LogViewModel logViewModel;
 
         public App()
         {
+            audioDeviceManager = new NAudioDeviceManager();
             deviceViewModel = new DeviceViewModel();
             logViewModel = new LogViewModel();
             DispatcherUnhandledException += (sender, args) =>
@@ -35,7 +39,7 @@ namespace VDrumExplorer.Gui
         {
             base.OnStartup(e);
 
-            var viewModel = new ExplorerHomeViewModel(ViewServices.Instance, logViewModel, deviceViewModel);
+            var viewModel = new ExplorerHomeViewModel(ViewServices.Instance, logViewModel, deviceViewModel, audioDeviceManager);
             MainWindow = new ExplorerHome { DataContext = viewModel };
             MainWindow.Show();
             logViewModel.LogVersion(GetType());

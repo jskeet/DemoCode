@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VDrumExplorer.NAudio\VDrumExplorer.NAudio.csproj" />
     <ProjectReference Include="..\VDrumExplorer.ViewModel\VDrumExplorer.ViewModel.csproj" />
   </ItemGroup>
 

@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Utility", "VD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Benchmarks", "VDrumExplorer.Benchmarks\VDrumExplorer.Benchmarks.csproj", "{9B52264C-6557-4492-8C84-70181EB823FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDrumExplorer.NAudio", "VDrumExplorer.NAudio\VDrumExplorer.NAudio.csproj", "{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,18 @@ Global
 		{9B52264C-6557-4492-8C84-70181EB823FE}.Release|x64.Build.0 = Release|Any CPU
 		{9B52264C-6557-4492-8C84-70181EB823FE}.Release|x86.ActiveCfg = Release|Any CPU
 		{9B52264C-6557-4492-8C84-70181EB823FE}.Release|x86.Build.0 = Release|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x64.Build.0 = Release|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

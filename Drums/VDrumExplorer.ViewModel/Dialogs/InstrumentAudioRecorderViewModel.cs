@@ -33,13 +33,13 @@ namespace VDrumExplorer.ViewModel.Dialogs
         public CommandBase CancelCommand { get; }
         public string Title { get; }
 
-        public InstrumentAudioRecorderViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel)
+        public InstrumentAudioRecorderViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel, IAudioDeviceManager deviceManager)
         {
             this.logger = logger;
             device = deviceViewModel.ConnectedDevice ?? throw new InvalidOperationException("Cannot record audio without a connected device");
             schema = device.Schema;
 
-            Settings = new InstrumentAudioRecorderSettingsViewModel(viewServices, schema, device.InputName);
+            Settings = new InstrumentAudioRecorderSettingsViewModel(viewServices, deviceManager, schema, device.InputName);
             Progress = new InstrumentAudioRecorderProgressViewModel();
             Title = $"Instrument Audio Recorder ({schema.Identifier.Name})";
             StartRecordingCommand = new DelegateCommand(StartRecording, false);
@@ -98,11 +98,6 @@ namespace VDrumExplorer.ViewModel.Dialogs
             {
                 return null;
             }
-            int? audioDeviceId = AudioDevices.GetAudioInputDeviceId(Settings.SelectedInputDevice);
-            if (audioDeviceId is null)
-            {
-                return null;
-            }            
 
             var originalKit = await device.GetCurrentKitAsync(token);
             logger.LogInformation($"Changing from kit {originalKit} to {Settings.KitNumber}");
@@ -110,7 +105,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             ModuleAudio moduleAudio;
             try
             {
-                moduleAudio = await RecordInstruments(midiChannel, audioDeviceId.Value, token);
+                moduleAudio = await RecordInstruments(Settings.SelectedInputDevice, midiChannel, token);
             }
             catch (OperationCanceledException)
             {
@@ -140,7 +135,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             return moduleAudio;
         }
 
-        private async Task<ModuleAudio> RecordInstruments(int midiChannel, int audioDeviceId, CancellationToken token)
+        private async Task<ModuleAudio> RecordInstruments(IAudioInput audioInput, int midiChannel, CancellationToken token)
         {
             int attack = Settings.Attack;
             TimeSpan duration = TimeSpan.FromSeconds((double) Settings.RecordingTime);
@@ -189,7 +184,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
                     progressHandler: null,
                     CancellationToken.None); // Don't cancel restoring the snapshot
             }
-            return new ModuleAudio(schema, AudioDevices.AudioFormat, duration, captures.AsReadOnly());
+            return new ModuleAudio(schema, audioInput.AudioFormat, duration, captures.AsReadOnly());
 
             async Task<InstrumentAudio> RecordInstrument(Instrument instrument)
             {
@@ -197,7 +192,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
 
                 device.Silence(Settings.SelectedMidiChannel);
                 await device.SetInstrumentAsync(kitNumber, trigger: 1, instrument, token);
-                var recordingTask = AudioDevices.RecordAudio(audioDeviceId, duration, token);
+                var recordingTask = audioInput.RecordAudioAsync(duration, token);
                 device.PlayNote(midiChannel, midiNote, attack);
                 var audio = await recordingTask;
 

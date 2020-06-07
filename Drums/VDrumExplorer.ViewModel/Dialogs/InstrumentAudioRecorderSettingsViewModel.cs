@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
-using VDrumExplorer.ViewModel.Audio;
+using VDrumExplorer.Model.Audio;
 
 namespace VDrumExplorer.ViewModel.Dialogs
 {
@@ -17,7 +16,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
         private readonly IViewServices viewServices;
         private readonly ModuleSchema schema;
 
-        public InstrumentAudioRecorderSettingsViewModel(IViewServices viewServices, ModuleSchema schema, string midiName)
+        public InstrumentAudioRecorderSettingsViewModel(IViewServices viewServices, IAudioDeviceManager deviceManager, ModuleSchema schema, string midiName)
         {
             this.viewServices = viewServices;
             this.schema = schema;
@@ -28,11 +27,11 @@ namespace VDrumExplorer.ViewModel.Dialogs
             groups.Insert(0, "(All)");
             InstrumentGroups = groups;
             selectedInstrumentGroup = groups[0];
-            InputDevices = AudioDevices.GetInputDeviceNames();
+            InputDevices = deviceManager.GetInputs();
 
             // Try to guess at a reasonable input based on known inputs including the MIDI name.
             var expectedInputDevices = new[] { $"MASTER ({midiName})", $"IN ({midiName})", $"KICK ({midiName})" };
-            SelectedInputDevice = InputDevices.FirstOrDefault(inputName => expectedInputDevices.Contains(inputName));
+            SelectedInputDevice = InputDevices.FirstOrDefault(input => expectedInputDevices.Contains(input.Name));
 
             kitNumber = schema.Kits;
             SelectOutputFileCommand = new DelegateCommand(SelectOutputFile, true);
@@ -69,14 +68,14 @@ namespace VDrumExplorer.ViewModel.Dialogs
             set => SetProperty(ref userSamples, value, value >= 0 && value <= schema?.UserSampleInstruments.Count);
         }
 
-        private string? selectedInputDevice = null;
-        public string? SelectedInputDevice
+        private IAudioInput? selectedInputDevice = null;
+        public IAudioInput? SelectedInputDevice
         {
             get => selectedInputDevice;
             set => SetProperty(ref selectedInputDevice, value);
         }
 
-        public IReadOnlyList<string> InputDevices { get; }
+        public IReadOnlyList<IAudioInput> InputDevices { get; }
 
         private int kitNumber;
         public int KitNumber
