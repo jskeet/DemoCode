@@ -44,7 +44,7 @@
 
             <!-- Device selection -->
             <TextBlock Grid.Column="0" Grid.Row="3">Input Device:</TextBlock>
-            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding InputDevices}" Text="{Binding SelectedInputDevice}" HorizontalAlignment="Left" />
+            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding InputDevices}" SelectedItem="{Binding SelectedInputDevice}" HorizontalAlignment="Left" DisplayMemberPath="Name" />
 
             <!-- Kit selection -->
             <TextBlock Padding="0,2" Grid.Column="0" Grid.Row="4">Kit to use:</TextBlock>

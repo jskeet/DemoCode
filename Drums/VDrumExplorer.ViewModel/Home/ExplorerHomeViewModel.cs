@@ -18,6 +18,7 @@ namespace VDrumExplorer.ViewModel.Logging
     {
         private readonly IViewServices viewServices;
         private readonly ILogger logger;
+        private readonly IAudioDeviceManager audioDeviceManager;
 
         public LogViewModel LogViewModel { get; }
         public DeviceViewModel DeviceViewModel { get; }
@@ -28,9 +29,10 @@ namespace VDrumExplorer.ViewModel.Logging
         public ICommand SaveLogCommand { get; }
         public ICommand LoadFileCommand { get; }
 
-        public ExplorerHomeViewModel(IViewServices viewServices, LogViewModel logViewModel, DeviceViewModel deviceViewModel)
+        public ExplorerHomeViewModel(IViewServices viewServices, LogViewModel logViewModel, DeviceViewModel deviceViewModel, IAudioDeviceManager audioDeviceManager)
         {
             this.viewServices = viewServices;
+            this.audioDeviceManager = audioDeviceManager;
             LogViewModel = logViewModel;
             logger = LogViewModel.Logger;
             DeviceViewModel = deviceViewModel;
@@ -83,12 +85,12 @@ namespace VDrumExplorer.ViewModel.Logging
 
         private void RecordInstrumentAudio()
         {
-            var vm = new InstrumentAudioRecorderViewModel(viewServices, logger, DeviceViewModel);
+            var vm = new InstrumentAudioRecorderViewModel(viewServices, logger, DeviceViewModel, audioDeviceManager);
             viewServices.ShowInstrumentRecorderDialog(vm);
             // If we finished successfully, show the instrument explorer.
             if (vm.RecordedAudio is ModuleAudio audio)
             {
-                var resultVm = new InstrumentAudioExplorerViewModel(audio, vm.Settings.OutputFile);
+                var resultVm = new InstrumentAudioExplorerViewModel(audioDeviceManager, audio, vm.Settings.OutputFile);
                 viewServices.ShowInstrumentAudioExplorer(resultVm);
             }
         }
@@ -138,7 +140,7 @@ namespace VDrumExplorer.ViewModel.Logging
                 case ModuleAudio audio:
                     {
                         // TODO: Maybe refactor for consistency?
-                        var vm = new InstrumentAudioExplorerViewModel(audio, file);
+                        var vm = new InstrumentAudioExplorerViewModel(audioDeviceManager, audio, file);
                         viewServices.ShowInstrumentAudioExplorer(vm);
                         break;
                     }

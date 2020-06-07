@@ -60,7 +60,7 @@
                     </Grid.ColumnDefinitions>
                     <!-- Output device -->
                     <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Output device:"/>
-                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" ItemsSource="{Binding OutputDevices}" SelectedItem="{Binding SelectedOutputDevice}" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" ItemsSource="{Binding OutputDevices}" SelectedItem="{Binding SelectedOutputDevice}" DisplayMemberPath="Name" VerticalAlignment="Center"/>
                     
                     <!-- Instruments-->
                     <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Text="Instruments:" />

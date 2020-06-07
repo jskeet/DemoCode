@@ -15,12 +15,12 @@ namespace VDrumExplorer.ViewModel.Audio
     {
         public string Title { get; }
 
-        public IReadOnlyList<string> OutputDevices { get; }
+        public IReadOnlyList<IAudioOutput> OutputDevices { get; }
         public string ModuleName => Model.Schema.Identifier.Name;
         public string AudioFormat { get; }
 
-        private string selectedOutputDevice;
-        public string SelectedOutputDevice
+        private IAudioOutput? selectedOutputDevice;
+        public IAudioOutput? SelectedOutputDevice
         {
             get => selectedOutputDevice;
             set => SetProperty(ref selectedOutputDevice, value);
@@ -54,7 +54,7 @@ namespace VDrumExplorer.ViewModel.Audio
             set => SetProperty(ref selectedAudio, value);
         }
 
-        public InstrumentAudioExplorerViewModel(ModuleAudio model, string? file) : base(model)
+        public InstrumentAudioExplorerViewModel(IAudioDeviceManager deviceManager, ModuleAudio model, string? file) : base(model)
         {
             Title = file is null
                 ? $"Instrument Audio Explorer ({model.Schema.Identifier.Name})"
@@ -62,8 +62,8 @@ namespace VDrumExplorer.ViewModel.Audio
 
             var format = model.Format;
             AudioFormat = $"Channels: {format.Channels}; Bits: {format.Bits}; Frequency: {format.Frequency}";
-            OutputDevices = AudioDevices.GetOutputDeviceNames();
-            selectedOutputDevice = OutputDevices.FirstOrDefault() ?? "";
+            OutputDevices = deviceManager.GetOutputs();
+            selectedOutputDevice = OutputDevices.FirstOrDefault();
 
             Groups = model.Captures
                 .GroupBy(ia => ia.Instrument.Group)
@@ -79,12 +79,7 @@ namespace VDrumExplorer.ViewModel.Audio
             {
                 return;
             }
-            int? outputDeviceId = AudioDevices.GetAudioOutputDeviceId(SelectedOutputDevice);
-            if (outputDeviceId is null)
-            {
-                return;
-            }
-            await AudioDevices.PlayAudio(outputDeviceId.Value, Model.Format, SelectedAudio.Audio, CancellationToken.None);
+            await SelectedOutputDevice.PlayAudioAsync(Model.Format, SelectedAudio.Audio, CancellationToken.None);
         }
     }
 }
