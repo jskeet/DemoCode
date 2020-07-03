@@ -33,9 +33,10 @@ namespace VDrumExplorer.ViewModel.LogicalSchema
                     EnumField f => $"Enum ({f.Values.Count} values)",
                     NumericField f => $"Numeric: {f.Min}-{f.Max}",
                     StringField f => $"String ({f.Length})",
+                    TempoField f => "Tempo",
                     _ => throw new InvalidOperationException($"Unexpected field type: {field?.GetType()}")
                 };
-                yield return new KeyValueViewModel(field.Description, value);
+                yield return new KeyValueViewModel($"{field.Offset}: {field.Description}", value);
             }
         }
 

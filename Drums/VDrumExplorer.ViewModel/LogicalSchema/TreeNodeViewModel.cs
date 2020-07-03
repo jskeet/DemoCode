@@ -36,6 +36,7 @@ namespace VDrumExplorer.ViewModel.LogicalSchema
                 new KeyValueViewModel("Name", Model.Name),
                 new KeyValueViewModel("Node path", Model.Path),
                 new KeyValueViewModel("Container path", Model.Container.Path),
+                new KeyValueViewModel("Container address", Model.Container.Address.ToString())
             }.Concat(Format.Table);
         }
     }
