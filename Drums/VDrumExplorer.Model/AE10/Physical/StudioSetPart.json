@@ -13,6 +13,10 @@
       "type": "boolean"
     },
     {
+      "name": "Placeholder",
+      "type": "placeholder56"
+    },
+    {
       "description": "Part Level (CC# 7)",
       "type": "range8",
       "min": 0,
@@ -31,6 +35,10 @@
       "min": 16,
       "max": 112,
       "valueOffset": -64
+    },
+    {
+      "name": "Placeholder",
+      "type": "placeholder16"
     },
     {
       "description": "Part Fine Tune (RPN# 1)",
@@ -127,6 +135,10 @@
       "max": 67,
       "valueOffset": -64
     },
+    {
+      "name": "Placeholder",
+      "type": "placeholder8"
+    },
     // TODO: Display these better?
     {
       "description": "Keyboard Range Lower",
@@ -139,6 +151,10 @@
       "type": "range8",
       "min": 0,
       "max": 127
+    },
+    {
+      "name": "Placeholder",
+      "type": "placeholder56"
     },
     {
       "description": "Part Dry Send Level",
@@ -173,6 +189,10 @@
         "MFX1",
         "MFX2"
       ]
+    },
+    {
+      "name": "Placeholder",
+      "type": "placeholder128"
     },
     {
       "description": "Receive Bender",

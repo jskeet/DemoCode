@@ -3,11 +3,15 @@
   "fields": [
     {
       "description": "Master Tune",
-      "type": "range8",
+      "type": "range32",
       "min": 24,
       "max": 2024,
       "valueOffset": -1024,
       "divisor": 100
+    },
+    {
+      "description": "Placeholder",
+      "type": "placeholder8"
     },
     {
       "description": "Master Level",

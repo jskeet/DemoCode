@@ -20,7 +20,7 @@
       "formatPaths": [
         "Common/StudioSetName"
       ],
-      "format": "Kit {index}: {0}",
+      "format": "Set {index}: {0}",
       "details": [
         {
           "description": "Studio Set Common",

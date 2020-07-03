@@ -52,6 +52,10 @@
       "max": 127
     },
     {
+      "name": "Placeholder",
+      "type": "placeholder104"
+      },
+    {
       "name": "Parameters",
       "description": "MFX parameters",
       "type": "overlay",
