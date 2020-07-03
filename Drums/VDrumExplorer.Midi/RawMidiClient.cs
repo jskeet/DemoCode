@@ -36,7 +36,6 @@ namespace VDrumExplorer.Midi
 
         internal static async Task<RawMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, Action<RawMidiMessage> messageHandler)
         {
-            // TODO: Retry this; sometimes it doesn't work first time.
             var input = await OpenInput(inputDevice.SystemDeviceId);
             var output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.SystemDeviceId);
             return new RawMidiClient(input, inputDevice.Name, output, outputDevice.Name, messageHandler);
