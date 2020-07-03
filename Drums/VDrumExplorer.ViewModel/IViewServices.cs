@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
+using VDrumExplorer.ViewModel.LogicalSchema;
 
 namespace VDrumExplorer.ViewModel
 {
@@ -31,6 +32,7 @@ namespace VDrumExplorer.ViewModel
         string? ShowSaveFileDialog(string filter);
 
         int? ChooseCopyKitTarget(CopyKitViewModel viewModel);
+        void ShowSchemaExplorer(ModuleSchemaViewModel viewModel);
         void ShowKitExplorer(KitExplorerViewModel viewModel);
         void ShowModuleExplorer(ModuleExplorerViewModel viewModel);
         void ShowInstrumentAudioExplorer(InstrumentAudioExplorerViewModel viewModel);

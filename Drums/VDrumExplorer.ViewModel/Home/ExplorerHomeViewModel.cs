@@ -4,13 +4,17 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Windows.Input;
+using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
 using VDrumExplorer.Proto;
+using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
+using VDrumExplorer.ViewModel.LogicalSchema;
 
 namespace VDrumExplorer.ViewModel.Logging
 {
@@ -23,11 +27,21 @@ namespace VDrumExplorer.ViewModel.Logging
         public LogViewModel LogViewModel { get; }
         public DeviceViewModel DeviceViewModel { get; }
 
+        public ICommand OpenSchemaExplorerCommand { get; }
         public ICommand LoadKitFromDeviceCommand { get; }
         public ICommand LoadModuleFromDeviceCommand { get; }
         public ICommand RecordInstrumentAudioCommand { get; }
         public ICommand SaveLogCommand { get; }
         public ICommand LoadFileCommand { get; }
+
+        public IReadOnlyList<ModuleIdentifier> KnownSchemas { get; }
+
+        private ModuleIdentifier selectedSchema;
+        public ModuleIdentifier SelectedSchema
+        {
+            get => selectedSchema;
+            set => SetProperty(ref selectedSchema, value);
+        }
 
         public ExplorerHomeViewModel(IViewServices viewServices, LogViewModel logViewModel, DeviceViewModel deviceViewModel, IAudioDeviceManager audioDeviceManager)
         {
@@ -36,11 +50,14 @@ namespace VDrumExplorer.ViewModel.Logging
             LogViewModel = logViewModel;
             logger = LogViewModel.Logger;
             DeviceViewModel = deviceViewModel;
+            OpenSchemaExplorerCommand = new DelegateCommand(OpenSchemaExplorer, true);
             LoadModuleFromDeviceCommand = new DelegateCommand(LoadModuleFromDevice, true);
             LoadKitFromDeviceCommand = new DelegateCommand(LoadKitFromDevice, true);
             RecordInstrumentAudioCommand = new DelegateCommand(RecordInstrumentAudio, true);
             SaveLogCommand = new DelegateCommand(SaveLog, true);
             LoadFileCommand = new DelegateCommand(LoadFile, true);
+            KnownSchemas = ModuleSchema.KnownSchemas.Keys.ToReadOnlyList();
+            selectedSchema = KnownSchemas[0];
         }
 
         private int loadKitFromDeviceNumber = 1;
@@ -49,6 +66,8 @@ namespace VDrumExplorer.ViewModel.Logging
             get => loadKitFromDeviceNumber;
             set => SetProperty(ref loadKitFromDeviceNumber, (DeviceViewModel.ConnectedDevice?.Schema).ValidateKitNumber(value));
         }
+
+        private void OpenSchemaExplorer() => viewServices.ShowSchemaExplorer(new ModuleSchemaViewModel(ModuleSchema.KnownSchemas[SelectedSchema].Value));
 
         private async void LoadModuleFromDevice()
         {

@@ -14,6 +14,11 @@
             <TextBlock Text="Connected device:" Margin="{StaticResource ValueMargin}" />
             <TextBlock Text="{Binding DeviceViewModel.ConnectedDeviceName}" Margin="{StaticResource ValueMargin}"/>
         </StackPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="{StaticResource PanelMargin}">
+            <TextBlock Text="Known schemas:" />
+            <ComboBox Margin="{StaticResource ValueMargin}" ItemsSource="{Binding KnownSchemas}" SelectedItem="{Binding SelectedSchema}" DisplayMemberPath="Name" />
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding OpenSchemaExplorerCommand}" Content="Explore" />
+        </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" IsEnabled="{Binding DeviceViewModel.DeviceConnected}" Margin="{StaticResource PanelMargin}">
             <!-- Note: primary reason for using labels instead of text blocks is that they reflect enabled state more simply. -->
             <TextBlock Text="Device options:" />
