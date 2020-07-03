@@ -19,4 +19,6 @@
 
     <!-- Margin above a stack panel for vertical separation -->
     <Thickness x:Key="PanelMargin" Left="0" Top="10" Right="0" Bottom="0" />
+
+    <Thickness x:Key="AllAroundMargin" Left="10" Top="10" Right="10" Bottom="10" />
 </ResourceDictionary>
