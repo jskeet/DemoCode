@@ -1,0 +1,43 @@
+{
+  "identifier": {
+    "name": "AE-10",
+    "modelId": "0x2f",
+    "familyCode": "0x032f",
+    "familyNumberCode": "0x0"
+  },
+  "instrumentGroups": "$resource:InstrumentGroups.json",
+  "lookups": {
+  },
+  "counts": {
+    "kits": 100,
+    "studioSetParts": 4,
+    "userSamples": 0
+  },
+  "containers": {
+    "Root": "$resource:Physical/Root.json",
+    "Setup": "$resource:Physical/Setup.json",
+    "StudioSet": "$resource:Physical/StudioSet.json",
+    "StudioSetCommon": "$resource:Physical/StudioSetCommon.json",
+    "StudioSetCommonMfx": "$resource:Physical/StudioSetCommonMfx.json",
+    "StudioSetCommonChorus": "$resource:Physical/StudioSetCommonChorus.json",
+    "StudioSetCommonReverb": "$resource:Physical/StudioSetCommonReverb.json",
+    "StudioSetPart": "$resource:Physical/StudioSetPart.json",
+    "System": "$resource:Physical/System.json",
+    "SystemCommon": "$resource:Physical/SystemCommon.json"
+  },
+
+  "logicalTree": "$resource:Logical/Root.json",
+
+  // Paths that code needs to know about. FIXME - these don't all make sense for an Aerophone.
+
+  // After string formatting, replacing {0} with a kit number, this is the path to the kit root within the logical tree (from the root).
+  "kitRootPathFormat": "StudioSets/StudioSet[{0}]",
+  // After string formatting, replacing {0} with the trigger number, this is the path to the main instrument field, from the kit's root physical container.
+  "mainInstrumentPathFormat": "KitUnitMain[{0}]/Instrument",
+  // After string formatting, replacing {0} with the trigger number, this is the path to the logical tree node for the specified trigger, from the kit's root logical container.
+  "triggerPathFormat": "StudioSetPart[{0}]",
+  // Paths from the kit's root physical container to the name and subname fields.
+  "kitNamePath": "StudioSetCommon/StudioSetName",
+  // FIXME: Allow us to not specify this
+  "kitSubNamePath": "StudioSetCommon/StudioSetName"
+}

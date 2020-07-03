@@ -3,19 +3,22 @@
 // as found in the LICENSE.txt file.
 
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using VDrumExplorer.Midi;
 
 namespace VDrumExplorer.Model.Test
 {
     public class ModuleSchemaTest
     {
+        private static readonly List<ModuleIdentifier> KnownSchemaIdentifiers = ModuleSchema.KnownSchemas.Keys.ToList();
+
         [Test]
-        public void KnownSchemasLoadWithCorrectIdentifier()
+        [TestCaseSource(nameof(KnownSchemaIdentifiers))]
+        public void KnownSchemasLoadWithCorrectIdentifier(ModuleIdentifier id)
         {
-            foreach (var pair in ModuleSchema.KnownSchemas)
-            {
-                var schema = pair.Value.Value;
-                Assert.AreEqual(pair.Key, schema.Identifier);
-            }
+            var schema = ModuleSchema.KnownSchemas[id].Value;
+            Assert.AreEqual(id, schema.Identifier);
         }
     }
 }

@@ -1,0 +1,41 @@
+{
+  "size": "0x63",
+  "fields": [
+    {
+      "description": "Reverb Type",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Reverb",
+        "Srv Room",
+        "Srv Hall",
+        "Srv Plate",
+        "GM2 Reverb"
+      ]
+    },
+    {
+      "description": "Reverb Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "name": "Parameters",
+      "description": "MFX parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "ReverbType",
+        "fieldCount": 24,
+        "fieldSize": 4,
+        "fieldLists": {
+          "GM2 Reverb": "$resource:Reverb/Gm2Reverb.json",
+          "Off": "$resource:Reverb/Off.json",
+          "Reverb": "$resource:Reverb/Reverb.json",
+          "Srv Hall": "$resource:Reverb/SrvHall.json",
+          "Srv Room": "$resource:Reverb/SrvRoom.json",
+          "Srv Plate": "$resource:Reverb/SrvPlate.json"
+        }
+      }
+    }
+  ]
+}

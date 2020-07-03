@@ -1,0 +1,13 @@
+﻿{
+  // While it's really odd to have a container (System) that just contains
+  // one other container (System Common) we might as well
+  // represent the documented structure from the start. The logical
+  // tree can skip the extraneous level of indirection.
+  "containers": [
+    {
+      "name": "SystemCommon",
+      "description": "System Common",
+      "offset": "0x0"
+    }
+  ]
+}

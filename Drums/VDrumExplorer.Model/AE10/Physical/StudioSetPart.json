@@ -1,0 +1,182 @@
+{
+  "size": "0x44",
+  "fields": [
+    {
+      "description": "Receive Channel",
+      "type": "range8",
+      "min": 0,
+      "max": 15,
+      "valueOffset": 1
+    },
+    {
+      "description": "Part Switch",
+      "type": "boolean"
+    },
+    {
+      "description": "Part Level (CC# 7)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Part Pan (CC# 10)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Course Tune (RPN# 2)",
+      "type": "range8",
+      "min": 16,
+      "max": 112,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Fine Tune (RPN# 1)",
+      "type": "range8",
+      "min": 14,
+      "max": 114,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Pitch Bend Range (RPN# 0)",
+      "type": "range8",
+      "min": 0,
+      "max": 25,
+      "off": 25,
+      "offLabel": "Tone"
+    },
+    {
+      "description": "Part Portamento Switch (CC# 65)",
+      "type": "enum",
+      "values": [
+        "Off",
+        "On",
+        "Tone"
+      ]
+    },
+    {
+      "description": "Part Portamento Time (CC# 5)",
+      "type": "range16",
+      "min": 0,
+      "max": 128,
+      "off": 128,
+      "offLabel": "Tone"
+    },
+    {
+      "description": "Part Cutoff Offset (CC# 74)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Resonance Offset (CC# 71)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Attack Time Offset (CC# 73)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Decay Time Offset (CC# 75)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Release Time Offset (CC# 72)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Vibrato Rate (CC# 76)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Vibrato Depth (CC# 77)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Vibrato Decay (CC# 78)",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64
+    },
+    {
+      "description": "Part Octave Shift",
+      "type": "range8",
+      "min": 61,
+      "max": 67,
+      "valueOffset": -64
+    },
+    // TODO: Display these better?
+    {
+      "description": "Keyboard Range Lower",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Keyboard Range Upper",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Part Dry Send Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Part Chorus Send Level (CC# 93)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Part Reverb Send Level (CC# 91)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Part Output Assign",
+      "type": "enum",
+      "values": [
+        "MFX",
+        "Output"
+      ]
+    },
+    {
+      "description": "Part Output MFX Select",
+      "type": "enum",
+      "values": [
+        "MFX1",
+        "MFX2"
+      ]
+    },
+    {
+      "description": "Receive Bender",
+      "type": "boolean"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Root",
+  "format": "Root",
+  "path": ".",
+  "details": [
+    {
+      "description": "Setup",
+      "path": "Setup"
+    },
+    {
+      "description": "System",
+      "path": "System/SystemCommon"
+    }
+  ],
+  "children": [
+    // TODO: TemporaryStudioSet
+    "$resource:Logical/StudioSets.json"
+  ]
+}

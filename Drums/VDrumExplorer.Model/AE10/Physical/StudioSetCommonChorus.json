@@ -1,0 +1,46 @@
+{
+  "size": "0x54",
+  "fields": [
+    {
+      "description": "Chorus Type",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Chorus",
+        "Delay",
+        "GM2 Chorus"
+      ]
+    },
+    {
+      "description": "Chorus Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Chorus Output Select",
+      "type": "enum",
+      "values": [
+        "Main",
+        "Rev",
+        "Main+Rev"
+      ]
+    },
+    {
+      "name": "Parameters",
+      "description": "MFX parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "ChorusType",
+        "fieldCount": 20,
+        "fieldSize": 4,
+        "fieldLists": {
+          "Chorus": "$resource:Chorus/Chorus.json",
+          "Delay": "$resource:Chorus/Delay.json",
+          "GM2 Chorus": "$resource:Chorus/Gm2Chorus.json",
+          "Off": "$resource:Chorus/Off.json"
+        }
+      }
+    }
+  ]
+}
