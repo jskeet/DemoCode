@@ -131,9 +131,7 @@ namespace VDrumExplorer.Model.Schema.Json
             {
                 "boolean" => new BooleanField(null, BuildCommon(1)),
                 "boolean32" => new BooleanField(null, BuildCommon(4)),
-                "placeholder8" => new PlaceholderField(null, BuildCommon(1)),
-                "placeholder16" => new PlaceholderField(null, BuildCommon(2)),
-                "placeholder32" => new PlaceholderField(null, BuildCommon(4)),
+                string ph when ph.StartsWith("placeholder") => new PlaceholderField(null, BuildCommon(int.Parse(ph.Substring("placeholder".Length)) / 8)),
                 "enum" => BuildEnumField(1),
                 "enum16" => BuildEnumField(2),
                 "enum32" => BuildEnumField(4),
