@@ -1,0 +1,41 @@
+{
+  "containers": [
+    {
+      "description": "Common",
+      "container": "StudioSetCommon",
+      "offset": "0x00_00"
+    },
+    {
+      "name": "MFX1",
+      "description": "Studio Set Common MFX1",
+      "container": "StudioSetCommonMfx",
+      "offset": "0x02_00"
+    },
+    {
+      "description": "Chorus",
+      "container": "StudioSetCommonChorus",
+      "offset": "0x04_00"
+    },
+    {
+      "description": "Reverb",
+      "container": "StudioSetCommonReverb",
+      "offset": "0x06_00"
+    },
+    {
+      "name": "MFX2",
+      "description": "Studio Set Common MFX2",
+      "container": "StudioSetCommonMfx",
+      "offset": "0x07_00"
+    },
+    {
+      "name": "Part",
+      "container": "StudioSetPart",
+      "offset": "0x20_00",
+      "description": "Part {index}",
+      "repeat": {
+        "items": "studioSetParts",
+        "gap": "0x01_00"
+      }
+    }
+  ]
+}

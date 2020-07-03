@@ -1,0 +1,34 @@
+﻿{
+  "size": "0x53",
+  "fields": [
+    {
+      "description": "Placeholder0",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Side 1 Studio Set BS MSB CC#0",
+      "type": "range8",
+      "min": 85,
+      "max": 85
+    },
+    {
+      "description": "Side 1 Studio Set BS LSB CC#32",
+      // Ideally this would be an enum, with values 0=User and 64=Preset. But
+      // currently our enum mappings have to be sequential.
+      // Even as a range8, we can end up saving values we shouldn't. Hmm.
+      // When we know what this field actually means, it'll be easier to work out
+      // what to do.
+      "type": "range8",
+      "min": 0,
+      "max": 64
+    },
+    {
+      "description": "Side 1 Studio Set PC",
+      "type": "range8",
+      "min": 0,
+      "max": 99,
+      // This is an assumption about the meaning of the field.
+      "valueOffset": 1
+    }
+  ]
+}

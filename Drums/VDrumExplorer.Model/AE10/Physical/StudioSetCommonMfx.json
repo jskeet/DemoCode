@@ -1,0 +1,91 @@
+﻿{
+  "size": "0x01_11",
+  "fields": [
+    {
+      "description": "Type",
+      "type": "enum",
+      // Note: any edits to these values should be reflected in map in the overlay below
+      // FIXME: The enum values are actually far more spaced out :(
+      "values": [
+        "Off",
+        "Equalizer",
+        "Low Boost",
+        "Enhancer",
+        "Auto Wah",
+        "Humanizer",
+        "Phaser",
+        "Ring Modulator",
+        "Tremolo",
+        "Auto Pan",
+        "Rotary",
+        "Flanger",
+        "Space-D",
+        "Overdrive",
+        "Distortion",
+        "Compressor",
+        "Limiter",
+        "Gate",
+        "Delay",
+        "Long Delay",
+        "3-Tap Pan Delay",
+        "Telephone",
+        "Pitch Shifter",
+        "Gated Reverb"
+      ]
+    },
+    {
+      "description": "MFX Dry Send Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "MFX Chorus Send Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "MFX Reverb Send Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "name": "Parameters",
+      "description": "MFX parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "Type",
+        "fieldCount": 32,
+        "fieldSize": 4,
+        "fieldLists": {
+          "Off": "$resource:MultiFx/Off.json",
+          "Equalizer": "$resource:MultiFx/Equalizer.json",
+          "Low Boost": "$resource:MultiFx/LowBoost.json",
+          "Enhancer": "$resource:MultiFx/Enhancer.json",
+          "Auto Wah": "$resource:MultiFx/AutoWah.json",
+          "Humanizer": "$resource:MultiFx/Humanizer.json",
+          "Phaser": "$resource:MultiFx/Phaser.json",
+          "Ring Modulator": "$resource:MultiFx/RingModulator.json",
+          "Tremolo": "$resource:MultiFx/Tremolo.json",
+          "Auto Pan": "$resource:MultiFx/AutoPan.json",
+          "Rotary": "$resource:MultiFx/Rotary.json",
+          "Flanger": "$resource:MultiFx/Flanger.json",
+          "Space-D": "$resource:MultiFx/SpaceD.json",
+          "Overdrive": "$resource:MultiFx/Overdrive.json",
+          "Distortion": "$resource:MultiFx/Distortion.json",
+          "Compressor": "$resource:MultiFx/Compressor.json",
+          "Limiter": "$resource:MultiFx/Limiter.json",
+          "Gate": "$resource:MultiFx/Gate.json",
+          "Delay": "$resource:MultiFx/Delay.json",
+          "Long Delay": "$resource:MultiFx/LongDelay.json",
+          "3-Tap Pan Delay": "$resource:MultiFx/3TapPanDelay.json",
+          "Telephone": "$resource:MultiFx/Telephone.json",
+          "Pitch Shifter": "$resource:MultiFx/PitchShifter.json",
+          "Gated Reverb": "$resource:MultiFx/GatedReverb.json"
+        }
+      }
+    }
+  ]
+}

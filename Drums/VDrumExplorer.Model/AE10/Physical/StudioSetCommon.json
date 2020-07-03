@@ -1,0 +1,371 @@
+{
+  "size": "0x113",
+  "fields": [
+    {
+      "description": "Studio Set Name",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "description": "Studio Set Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Transpose Value",
+      "type": "range8",
+      "min": 59,
+      "max": 70,
+      "valueOffset": -64
+    },
+    {
+      "description": "Octave Shift",
+      "type": "range8",
+      "min": 61,
+      "max": 67,
+      "valueOffset": -64
+    },
+    // TODO: These "control assign" fields are begging for templating,
+    // as well as a better way of representing the 128 enum values.
+    {
+      "description": "Breath 1 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 1 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 1 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 1 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Breath 2 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 2 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 2 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 2 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Bite 1 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bite 1 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bite 1 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bite 1 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Bite 2 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bite 2 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bite 2 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Bite 2 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Up 1 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Up 1 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Up 1 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Up 1 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Up 2 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Up 2 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Up 2 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Up 2 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Down 1 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Down 1 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Down 1 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Down 1 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Down 2 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Down 2 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Down 2 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Down 2 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Left 1 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Left 1 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Left 1 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Left 1 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Left 2 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Left 2 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Left 2 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Left 2 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Right 1 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Right 1 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Right 1 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Right 1 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Right 2 Control Assign",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Right 2 Control Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Right 2 Control Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Right 2 Control Toggle",
+      "type": "boolean"
+    },
+
+    {
+      "description": "Octave Key Mode",
+      "type": "enum",
+      "values": [
+        "Oct1",
+        "Oct2",
+        "Oct3"
+      ]
+    },
+    {
+      "description": "Hold Switch",
+      "type": "boolean"
+    },
+    {
+      "description": "Vibrato Upper Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 64
+    },
+    {
+      "description": "Vibrato Lower Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 64
+    },
+    {
+      "description": "Velocity Min Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Velocity Max Value",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tone Control 1 Source",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Tone Control 2 Source",
+      // Really a huge enum, but let's not go there yet...
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

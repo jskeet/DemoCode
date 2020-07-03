@@ -1,0 +1,19 @@
+﻿{
+  "size": "0x2b",
+  "fields": [
+    {
+      "description": "Master Tune",
+      "type": "range8",
+      "min": 24,
+      "max": 2024,
+      "valueOffset": -1024,
+      "divisor": 100
+    },
+    {
+      "description": "Master Level",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    }
+  ]
+}

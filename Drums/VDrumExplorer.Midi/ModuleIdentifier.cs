@@ -12,6 +12,7 @@ namespace VDrumExplorer.Midi
     /// </summary>
     public sealed class ModuleIdentifier : IEquatable<ModuleIdentifier?>
     {
+        public static ModuleIdentifier AE10 { get; } = new ModuleIdentifier("AE-10", 0x2f, 0x32f, 0);
         public static ModuleIdentifier TD17 { get; } = new ModuleIdentifier("TD-17", 0x4b, 0x34b, 0);
         public static ModuleIdentifier TD27 { get; } = new ModuleIdentifier("TD-27", 0x63, 0x363, 0);
         public static ModuleIdentifier TD50 { get; } = new ModuleIdentifier("TD-50", 0x24, 0x324, 0);
