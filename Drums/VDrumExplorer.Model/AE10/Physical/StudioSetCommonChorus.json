@@ -18,6 +18,10 @@
       "max": 127
     },
     {
+      "name": "Placeholder",
+      "type": "placeholder8"
+    },
+    {
       "description": "Chorus Output Select",
       "type": "enum",
       "values": [
@@ -28,7 +32,7 @@
     },
     {
       "name": "Parameters",
-      "description": "MFX parameters",
+      "description": "Chorus Parameters",
       "type": "overlay",
       "overlay": {
         "switchPath": "ChorusType",

@@ -20,8 +20,12 @@
       "max": 127
     },
     {
+      "name": "Placeholder",
+      "type": "placeholder8"
+    },
+    {
       "name": "Parameters",
-      "description": "MFX parameters",
+      "description": "Reverb Parameters",
       "type": "overlay",
       "overlay": {
         "switchPath": "ReverbType",

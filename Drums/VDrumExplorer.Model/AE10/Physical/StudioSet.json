@@ -25,7 +25,7 @@
       "name": "MFX2",
       "description": "Studio Set Common MFX2",
       "container": "StudioSetCommonMfx",
-      "offset": "0x07_00"
+      "offset": "0x08_00"
     },
     {
       "name": "Part",
