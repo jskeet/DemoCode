@@ -16,7 +16,8 @@
         </Grid.ColumnDefinitions>
         
         <!-- Tree of container nodes. -->
-        <TreeView x:Name="treeView" Grid.Column="0" BorderThickness="0" ItemsSource="{Binding Root}" SelectedItemChanged="TreeView_SelectedItemChanged">
+        <TreeView x:Name="treeView" Grid.Column="0" BorderThickness="0" ItemsSource="{Binding Root}" SelectedItemChanged="TreeView_SelectedItemChanged"
+                  Margin="{StaticResource AllAroundMargin}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Format.FormatString}" />
