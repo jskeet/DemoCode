@@ -9,6 +9,7 @@ using VDrumExplorer.ViewModel;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
+using VDrumExplorer.ViewModel.LogicalSchema;
 
 namespace VDrumExplorer.Gui
 {
@@ -48,6 +49,9 @@ namespace VDrumExplorer.Gui
 
         public void ShowModuleExplorer(ModuleExplorerViewModel viewModel) =>
             new DataExplorer { DataContext = viewModel }.Show();
+
+        public void ShowSchemaExplorer(ModuleSchemaViewModel viewModel) =>
+            new SchemaExplorer { DataContext = viewModel }.Show();
 
         public void ShowInstrumentRecorderDialog(InstrumentAudioRecorderViewModel viewModel)
         {

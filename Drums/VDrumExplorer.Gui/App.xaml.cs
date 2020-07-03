@@ -51,12 +51,5 @@ namespace VDrumExplorer.Gui
             base.OnExit(e);
             deviceViewModel?.ConnectedDevice?.Dispose();
         }
-
-        // TODO: Need to get at this somewhere...
-        private Window CreateSchemaExplorer()
-        {
-            var schema = ModuleSchema.KnownSchemas[ModuleIdentifier.TD27].Value;
-            return new SchemaExplorer { DataContext = new ModuleSchemaViewModel(schema) };
-        }
     }
 }
