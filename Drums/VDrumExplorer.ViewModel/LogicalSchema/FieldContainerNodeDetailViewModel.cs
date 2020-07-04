@@ -36,7 +36,12 @@ namespace VDrumExplorer.ViewModel.LogicalSchema
                     TempoField f => "Tempo",
                     _ => throw new InvalidOperationException($"Unexpected field type: {field?.GetType()}")
                 };
-                yield return new KeyValueViewModel($"{field.Offset}: {field.Description}", value);
+                string? valueToolTip = field switch
+                {
+                    EnumField f => string.Join("\r\n", f.Values.Select(value => $"{f.RawNumberByName[value]}: {value}")),
+                    _ => null
+                };
+                yield return new KeyValueViewModel($"{field.Offset}: {field.Description}", value, keyToolTip: null, valueToolTip);
             }
         }
 
