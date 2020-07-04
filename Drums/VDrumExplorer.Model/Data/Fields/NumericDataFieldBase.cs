@@ -45,7 +45,7 @@ namespace VDrumExplorer.Model.Data.Fields
         internal override void Save(DataSegment segment) =>
             segment.WriteInt32(SchemaField.Offset, SchemaField.Size, RawValue);
 
-        internal bool TrySetRawValue(int value)
+        internal virtual bool TrySetRawValue(int value)
         {
             if (value < Min || value > Max)
             {

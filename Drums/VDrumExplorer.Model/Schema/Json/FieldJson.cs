@@ -80,6 +80,11 @@ namespace VDrumExplorer.Model.Schema.Json
         public List<string>? Values { get; set; }
 
         /// <summary>
+        /// The values for enum fields that don't have contiguous values.
+        /// </summary>
+        public Dictionary<string, string>? ValuesByNumber { get; set; }
+
+        /// <summary>
         /// For instrument fields only, the offset of the bank switch field, in the same container.
         /// </summary>
         public HexInt32? BankOffset { get; set; }
@@ -148,8 +153,25 @@ namespace VDrumExplorer.Model.Schema.Json
                 _ => throw new InvalidOperationException($"Invalid field type: '{Type}'")
             };
 
-            EnumField BuildEnumField(int size) =>
-                new EnumField(null, BuildCommon(size), ValidateNotNull(Values, nameof(Values)).AsReadOnly(), Min ?? 0, GetDefaultValue());
+            EnumField BuildEnumField(int size)
+            {
+                IReadOnlyDictionary<int, string> valuesByNumber;
+                if (Values is object)
+                {
+                    int min = Min ?? 0;
+                    ValidateNull(ValuesByNumber, nameof(ValuesByNumber), nameof(Values));
+                    valuesByNumber = Values
+                        .Select((value, index) => (value, index))
+                        .ToDictionary(pair => pair.index + min, pair => pair.value)
+                        .AsReadOnly();
+                }
+                else
+                {
+                    ValidateNotNull(ValuesByNumber, nameof(ValuesByNumber));
+                    valuesByNumber = ValuesByNumber.ToDictionary(pair => int.Parse(pair.Key), pair => pair.Value).AsReadOnly();
+                }
+                return new EnumField(null, BuildCommon(size), valuesByNumber, GetDefaultValue());
+            }
 
             StringField BuildStringField(int bytesPerChar)
             {
