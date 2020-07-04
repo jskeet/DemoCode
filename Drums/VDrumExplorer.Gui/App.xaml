@@ -49,8 +49,8 @@
                                     <ColumnDefinition SharedSizeGroup="Col0" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Key}" />
-                                <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="{StaticResource ValueMargin}" ToolTip="{Binding ToolTip}" />
+                                <TextBlock Grid.Column="0" Text="{Binding Key}" ToolTip="{Binding KeyToolTip}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="{StaticResource ValueMargin}" ToolTip="{Binding ValueToolTip}" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
