@@ -2,28 +2,25 @@
   "size": "0x53",
   "fields": [
     {
-      "description": "Placeholder0",
+      "description": "Placeholder",
       "type": "placeholder32"
     },
     {
-      "description": "Side 1 Studio Set BS MSB CC#0",
+      "description": "Side 1 Studio Set Bank Select MSB (CC# 0)",
       "type": "range8",
       "min": 85,
       "max": 85
     },
     {
-      "description": "Side 1 Studio Set BS LSB CC#32",
-      // Ideally this would be an enum, with values 0=User and 64=Preset. But
-      // currently our enum mappings have to be sequential.
-      // Even as a range8, we can end up saving values we shouldn't. Hmm.
-      // When we know what this field actually means, it'll be easier to work out
-      // what to do.
-      "type": "range8",
-      "min": 0,
-      "max": 64
+      "description": "Side 1 Studio Set Bank Select LSB (CC# 32)",
+      "type": "enum",
+      "valuesByNumber": {
+        "0": "User",
+        "64": "Preset"
+      }
     },
     {
-      "description": "Side 1 Studio Set PC",
+      "description": "Side 1 Studio Set Program Change",
       "type": "range8",
       "min": 0,
       "max": 99,
