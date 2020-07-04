@@ -4,8 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VDrumExplorer.Model.Schema.Physical;
+using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -15,7 +17,7 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public sealed class TempoField : FieldBase
     {
-        private static readonly IReadOnlyList<string> MusicalNoteValues = new List<string>
+        private static readonly IReadOnlyDictionary<int, string> MusicalNoteValues = new List<string>
         {
             "Hemidemisemiquaver triplet \U0001d163\u00b3",
             "Hemidemisemiquaver \U0001d163",
@@ -39,7 +41,7 @@ namespace VDrumExplorer.Model.Schema.Fields
             "Breve triplet \U0001d15c\u00b3",
             "Dotted semibreve \U0001d15d.",
             "Breve \U0001d15c",
-        }.AsReadOnly();
+        }.Select((value, index) => (value, index)).ToDictionary(pair => pair.index, pair => pair.value).AsReadOnly();
 
         public BooleanField SwitchField { get; }
         public NumericField NumericField { get; }
@@ -51,7 +53,7 @@ namespace VDrumExplorer.Model.Schema.Fields
                 parent, common,
                 new BooleanField(parent, new FieldParameters(common.Name + "Sync", common.Description + " Sync", common.Offset, 4)),
                 new NumericField(parent, new FieldParameters(common.Name + "Numeric", common.Description + " FIXME", common.Offset + 4, 4), min, max, @default, divisor, multiplier, valueOffset, suffix, customValueFormatting),
-                new EnumField(parent, new FieldParameters(common.Name + "Note", common.Description + " FIXME", common.Offset + 8, 4), MusicalNoteValues, 0, 0))
+                new EnumField(parent, new FieldParameters(common.Name + "Note", common.Description + " FIXME", common.Offset + 8, 4), MusicalNoteValues, 0))
         {
         }
 

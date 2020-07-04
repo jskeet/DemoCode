@@ -3,15 +3,12 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using System.Collections.Generic;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
 {
     public class EnumDataField : NumericDataFieldBase<EnumField>
     {
-        private IReadOnlyList<string> Values => SchemaField.Values;
-
         internal EnumDataField(EnumField field) : base(field)
         {
         }
@@ -22,9 +19,12 @@ namespace VDrumExplorer.Model.Data.Fields
             RaisePropertyChanged(nameof(Value));
         }
 
+        internal override bool TrySetRawValue(int value) =>
+            SchemaField.NameByRawNumber.ContainsKey(value) && base.TrySetRawValue(value);
+
         public string Value
         {
-            get => Values[RawValue - Min];
+            get => SchemaField.NameByRawNumber[RawValue];
             set
             {
                 if (!TrySetValue(value))

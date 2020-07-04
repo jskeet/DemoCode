@@ -15,25 +15,29 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public sealed class EnumField : NumericFieldBase
     {
+        /// <summary>
+        /// The valid values, in numeric order, but with no indication of the specific values involved.
+        /// </summary>
         public IReadOnlyList<string> Values { get; }
 
-        internal IReadOnlyDictionary<string, int> RawNumberByName;
+        /// <summary>
+        /// The raw number associated with each value. (Primarily public for the purposes of diagnostics.)
+        /// </summary>
+        public IReadOnlyDictionary<string, int> RawNumberByName { get; }
+        internal IReadOnlyDictionary<int, string> NameByRawNumber { get; }
 
         internal EnumField(FieldContainer parent, EnumField other)
             : base(parent, other.Parameters, other.Min, other.Max, other.Default) =>
-            (Values, RawNumberByName) = (other.Values, other.RawNumberByName);
+            (Values, RawNumberByName, NameByRawNumber) = (other.Values, other.RawNumberByName, other.NameByRawNumber);
 
-        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyList<string> values, int min, int @default)
-            : base(parent, common, min, values.Count + min - 1, @default)
+        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyDictionary<int, string> valuesByNumber, int @default)
+            : base(parent, common, valuesByNumber.Keys.Min(), valuesByNumber.Keys.Max(), @default)
         {
-            Values = values;
-            RawNumberByName = Values
-                .Select((value, index) => (value, index))
-                .ToDictionary(pair => pair.value, pair => pair.index + min, StringComparer.Ordinal)
-                .AsReadOnly();
+            Values = valuesByNumber.OrderBy(pair => pair.Key).ToReadOnlyList(pair => pair.Value);
+            RawNumberByName = valuesByNumber.ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
+            NameByRawNumber = valuesByNumber;
         }
 
         internal override FieldBase WithParent(FieldContainer parent) => new EnumField(parent, this);
-
     }
 }
