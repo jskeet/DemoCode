@@ -141,13 +141,13 @@
     },
     // TODO: Display these better?
     {
-      "description": "Keyboard Range Lower",
+      "description": "Key Range Lower",
       "type": "range8",
       "min": 0,
       "max": 127
     },
     {
-      "description": "Keyboard Range Upper",
+      "description": "Key Range Upper",
       "type": "range8",
       "min": 0,
       "max": 127
