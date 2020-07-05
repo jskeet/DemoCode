@@ -35,15 +35,16 @@ namespace VDrumExplorer.Midi
         public static async Task<IReadOnlyList<DeviceIdentity>> ListDeviceIdentities(MidiInputDevice input, MidiOutputDevice output, TimeSpan timeout)
         {
             List<DeviceIdentity> identities = new List<DeviceIdentity>();
-            using (var client = await RawMidiClient.CreateAsync(input, output, HandleMessage))
+            using (var client = await RawMidiClient.CreateAsync(input, output))
             {
+                client.MessageReceived += HandleMessage;
                 // Identity request message for all devices IDs.
                 client.Send(new RawMidiMessage(new byte[] { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }));
                 await Task.Delay(timeout);
             }
             return identities.AsReadOnly();
             
-            void HandleMessage(RawMidiMessage message)
+            void HandleMessage(object sender, RawMidiMessage message)
             {
                 // TODO: Handle 17-byte messages for "long" manufacturer IDs
                 var data = message.Data;

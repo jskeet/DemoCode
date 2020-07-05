@@ -20,13 +20,20 @@ namespace VDrumExplorer.Midi
         private readonly IMidiInput input;
         private readonly IMidiOutput output;
 
-        private RawMidiClient(IMidiInput input, string inputName, IMidiOutput output, string outputName, Action<RawMidiMessage> messageHandler)
+        public event EventHandler<RawMidiMessage>? MessageReceived;
+
+        private RawMidiClient(IMidiInput input, string inputName, IMidiOutput output, string outputName)
         {
             this.input = input;
             InputName = inputName;
             this.output = output;
             OutputName = outputName;
-            input.MessageReceived += (sender, args) => messageHandler(ConvertMessage(args));
+            input.MessageReceived += HandleMessage;
+        }
+
+        private void HandleMessage(object sender, MidiReceivedEventArgs args)
+        {
+            MessageReceived?.Invoke(this, ConvertMessage(args));
         }
 
         private static RawMidiMessage ConvertMessage(MidiReceivedEventArgs args) =>
@@ -34,11 +41,11 @@ namespace VDrumExplorer.Midi
             ? new RawMidiMessage(args.Data)
             : new RawMidiMessage(args.Data.Skip(args.Start).Take(args.Length).ToArray());
 
-        internal static async Task<RawMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, Action<RawMidiMessage> messageHandler)
+        internal static async Task<RawMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice)
         {
             var input = await OpenInput(inputDevice.SystemDeviceId);
             var output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.SystemDeviceId);
-            return new RawMidiClient(input, inputDevice.Name, output, outputDevice.Name, messageHandler);
+            return new RawMidiClient(input, inputDevice.Name, output, outputDevice.Name);
         }
 
         private static async Task<IMidiInput> OpenInput(string deviceId)
