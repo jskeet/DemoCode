@@ -51,6 +51,20 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
         }
 
+        private int recordToPlayDelay = 20;
+        public int RecordToPlayDelay
+        {
+            get => recordToPlayDelay;
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                SetProperty(ref recordToPlayDelay, value);
+            }
+        }
+
         public IReadOnlyList<string> InstrumentGroups { get; }
 
         private string selectedInstrumentGroup;

@@ -139,6 +139,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
         {
             int attack = Settings.Attack;
             TimeSpan duration = TimeSpan.FromSeconds((double) Settings.RecordingTime);
+            TimeSpan recordToPlayDelay = TimeSpan.FromMilliseconds(Settings.RecordToPlayDelay);
             int kitNumber = Settings.KitNumber;
 
             var selectedInstrumentGroup = schema.InstrumentGroups.FirstOrDefault(ig => ig.Description == Settings.SelectedInstrumentGroup);
@@ -193,6 +194,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
                 device.Silence(Settings.SelectedMidiChannel);
                 await device.SetInstrumentAsync(kitNumber, trigger: 1, instrument, token);
                 var recordingTask = audioInput.RecordAudioAsync(duration, token);
+                await Task.Delay(recordToPlayDelay);
                 device.PlayNote(midiChannel, midiNote, attack);
                 var audio = await recordingTask;
 

@@ -22,6 +22,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -34,35 +35,41 @@
                 <TextBox Margin="{StaticResource ValueMargin}" Width="30" HorizontalAlignment="Left" Text="{Binding RecordingTime, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBlock Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left">(seconds)</TextBlock>
             </StackPanel>
+            <!-- Pre-strike delay -->
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Record-to-play delay:" />
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Margin="{StaticResource PanelMargin}">
+                <TextBox Margin="{StaticResource ValueMargin}" Width="30" HorizontalAlignment="Left" Text="{Binding RecordToPlayDelay, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left">(milliseconds)</TextBlock>
+            </StackPanel>
             <!-- Instrument group -->
-            <TextBlock Grid.Column="0" Grid.Row="1" Text="Instrument group to record:" />
-            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" ItemsSource="{Binding InstrumentGroups}" SelectedItem="{Binding SelectedInstrumentGroup}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Instrument group to record:" />
+            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" ItemsSource="{Binding InstrumentGroups}" SelectedItem="{Binding SelectedInstrumentGroup}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" />
 
             <!-- User samples -->
-            <TextBlock Grid.Column="0" Grid.Row="2" Text="User samples to record:" />
-            <TextBox Margin="{StaticResource ValueMarginWithVertical}" Width="30" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Text="{Binding UserSamples, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Column="0" Grid.Row="3" Text="User samples to record:" />
+            <TextBox Margin="{StaticResource ValueMarginWithVertical}" Width="30" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Text="{Binding UserSamples, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- Device selection -->
-            <TextBlock Grid.Column="0" Grid.Row="3">Input Device:</TextBlock>
-            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding InputDevices}" SelectedItem="{Binding SelectedInputDevice}" HorizontalAlignment="Left" DisplayMemberPath="Name" />
+            <TextBlock Grid.Column="0" Grid.Row="4">Input Device:</TextBlock>
+            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" Grid.Column="1" Grid.Row="4" ItemsSource="{Binding InputDevices}" SelectedItem="{Binding SelectedInputDevice}" HorizontalAlignment="Left" DisplayMemberPath="Name" />
 
             <!-- Kit selection -->
-            <TextBlock Padding="0,2" Grid.Column="0" Grid.Row="4">Kit to use:</TextBlock>
-            <TextBox Margin="{StaticResource ValueMarginWithVertical}" Width="30" Grid.Column="1" Grid.Row="4" Text="{Binding KitNumber, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"></TextBox>
+            <TextBlock Padding="0,2" Grid.Column="0" Grid.Row="5">Kit to use:</TextBlock>
+            <TextBox Margin="{StaticResource ValueMarginWithVertical}" Width="30" Grid.Column="1" Grid.Row="5" Text="{Binding KitNumber, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"></TextBox>
 
             <!-- Midi channel -->
-            <TextBlock Grid.Column="0" Grid.Row="5" Text="Midi Channel:" />
-            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" ItemsSource="{Binding MidiChannels}" SelectedItem="{Binding SelectedMidiChannel}" />
+            <TextBlock Grid.Column="0" Grid.Row="6" Text="Midi Channel:" />
+            <ComboBox Margin="{StaticResource ValueMarginWithVertical}" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" ItemsSource="{Binding MidiChannels}" SelectedItem="{Binding SelectedMidiChannel}" />
 
             <!-- Attack -->
-            <TextBlock Grid.Column="0" Grid.Row="6" Text="Attack:"/>
-            <Slider Grid.Column="1" Grid.Row="6" Margin="{StaticResource ValueMarginWithVertical}" Minimum="{Binding MinAttack}" Maximum="{Binding MaxAttack}" Value="{Binding Attack}" Width="100" IsSnapToTickEnabled="True" TickFrequency="1" />
-            <TextBlock Grid.Column="2" Grid.Row="6" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" Text="{Binding Attack}"/>
+            <TextBlock Grid.Column="0" Grid.Row="7" Text="Attack:"/>
+            <Slider Grid.Column="1" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" Minimum="{Binding MinAttack}" Maximum="{Binding MaxAttack}" Value="{Binding Attack}" Width="100" IsSnapToTickEnabled="True" TickFrequency="1" />
+            <TextBlock Grid.Column="2" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" HorizontalAlignment="Left" Text="{Binding Attack}"/>
             
             <!-- Output file -->
-            <TextBlock Grid.Column="0" Grid.Row="7" Text="Output File:" />
-            <TextBlock Grid.Column="1" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" Text="{Binding OutputFile}" HorizontalAlignment="Left" />
-            <Button Grid.Column="2" Grid.Row="7" Margin="{StaticResource ValueMarginWithVertical}" Command="{Binding SelectOutputFileCommand}" HorizontalAlignment="Left" Content="Select file"/>
+            <TextBlock Grid.Column="0" Grid.Row="8" Text="Output File:" />
+            <TextBlock Grid.Column="1" Grid.Row="8" Margin="{StaticResource ValueMarginWithVertical}" Text="{Binding OutputFile}" HorizontalAlignment="Left" />
+            <Button Grid.Column="2" Grid.Row="8" Margin="{StaticResource ValueMarginWithVertical}" Command="{Binding SelectOutputFileCommand}" HorizontalAlignment="Left" Content="Select file"/>
 
         </Grid>
         <Separator DockPanel.Dock="Top" />
