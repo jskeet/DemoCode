@@ -40,24 +40,18 @@ namespace VDrumExplorer.Midi
         private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, ModuleIdentifier identifier)
         {
             this.rawClient = rawClient;
+            rawClient.MessageReceived += HandleMessage;
             this.rawDeviceId = rawDeviceId;
             this.Identifier = identifier;
         }
 
         internal static async Task<RolandMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, byte rawDeviceId, ModuleIdentifier identifier)
         {
-            // This is all a bit nasty... we can't create a RolandMidiClient instance until we have the raw client, and we can't
-            // create the raw client until we've got a method to call. LocalHandleMessage acts as a sort of trampoline.
-            // If we could make the constructor asynchronous, it wouldn't be a problem.
-            RolandMidiClient? ret = null;
-            var rawClient = await RawMidiClient.CreateAsync(inputDevice, outputDevice, LocalHandleMessage);
-            ret = new RolandMidiClient(rawClient, rawDeviceId, identifier);
-            return ret;
-
-            void LocalHandleMessage(RawMidiMessage message) => ret?.HandleMessage(message);
+            var rawClient = await RawMidiClient.CreateAsync(inputDevice, outputDevice);
+            return new RolandMidiClient(rawClient, rawDeviceId, identifier);
         }
 
-        private void HandleMessage(RawMidiMessage message)
+        private void HandleMessage(object sender, RawMidiMessage message)
         {
             // If it's a Data Set message aimed at this device, handle it...
             if (DataSetMessage.TryParse(message, out var result) &&
