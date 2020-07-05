@@ -24,6 +24,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
             rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
             rootCommand.AddCommand(DumpProtoCommand.Command);
+            rootCommand.AddCommand(ProxyMidiCommand.Command);
             return rootCommand.InvokeAsync(args);
         }
     }
