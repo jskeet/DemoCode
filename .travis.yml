@@ -1,0 +1,25 @@
+dist: xenial
+
+language: csharp
+mono: none
+dotnet: 3.1.301
+
+jobs:
+  include:
+    - name: "Default terminal, no-op program"
+      script: TravisConsole/run-dotnet.sh 0
+      
+    - name: "Default terminal, write two lines"
+      script: TravisConsole/run-dotnet.sh 2
+
+    - name: "Mystery terminal, no-op program"
+      env: TERM=mystery
+      script: TravisConsole/run-dotnet.sh 0
+      
+    - name: "Mystery terminal, write two lines"
+      env: TERM=mystery
+      script: TravisConsole/run-dotnet.sh 2
+
+    - name: "Mystery terminal, write two lines, no logo"
+      env: TERM=mystery DOTNET_NOLOGO=true
+      script: TravisConsole/run-dotnet.sh 2
