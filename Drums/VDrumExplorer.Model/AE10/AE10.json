@@ -5,7 +5,7 @@
     "familyCode": "0x032f",
     "familyNumberCode": "0x0"
   },
-  "instrumentGroups": "$resource:InstrumentGroups.json",
+  "instrumentGroups": [],
   "lookups": {
   },
   "counts": {
@@ -37,7 +37,7 @@
   // After string formatting, replacing {0} with the trigger number, this is the path to the logical tree node for the specified trigger, from the kit's root logical container.
   "triggerPathFormat": "StudioSetPart[{0}]",
   // Paths from the kit's root physical container to the name and subname fields.
-  "kitNamePath": "StudioSetCommon/StudioSetName",
+  "kitNamePath": "Common/StudioSetName",
   // FIXME: Allow us to not specify this
-  "kitSubNamePath": "StudioSetCommon/StudioSetName"
+  "kitSubNamePath": "Common/StudioSetName"
 }

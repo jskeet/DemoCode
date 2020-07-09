@@ -32,7 +32,10 @@
           "name": "Part",
           "repeat": "studioSetParts",
           "path": "Part[{index}]",
-          "format": "Part {index}",
+          "formatPaths":  [
+            "Instrument"
+          ],
+          "format": "Part {index}: {0}",
           "details": [
             {
               "description": "Part details",
