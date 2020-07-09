@@ -19,15 +19,7 @@
       "suffix": "cent"
     },
     {
-      "description": "Tempo Sync",
-      "type": "enum32",
-      "values": [
-        "Off",
-        "On"
-      ]
-    },
-    {
-      "description": "Delay time",
+      "description": "Delay",
       "type": "tempo",
       "suffix": "ms",
       "min": 1,
