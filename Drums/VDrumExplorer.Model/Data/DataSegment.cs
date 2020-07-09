@@ -32,6 +32,7 @@ namespace VDrumExplorer.Model.Data
         /// The expected format of the data depends on how many bytes are being read.
         /// A single-byte value uses all 7 usable bits; two-byte and four-byte values each
         /// use 4 bits from each byte.
+        /// 3-byte values (only used on the Aerophone) use all seven bits.
         /// </summary>
         /// <param name="offset">The offset for the start of the data.</param>
         /// <param name="size">The number of bytes to read. Must be 1, 2 or 4.</param>
@@ -44,6 +45,10 @@ namespace VDrumExplorer.Model.Data
             {
                 1 => data[start],
                 2 => (sbyte) ((data[start] << 4) | data[start + 1]),
+                3 => 
+                    (data[start] << 14) |
+                    (data[start + 1] << 7) |
+                    (data[start + 2] << 0),
                 4 => (short) (
                     (data[start] << 12) |
                     (data[start + 1] << 8) |
@@ -69,6 +74,11 @@ namespace VDrumExplorer.Model.Data
                 case 2:
                     data[start] = (byte) ((value >> 4) & 0xf);
                     data[start + 1] = (byte) ((value >> 0) & 0xf);
+                    break;
+                case 3:
+                    data[start] = (byte) ((value >> 14) & 0x7f);
+                    data[start + 1] = (byte) ((value >> 7) & 0x7f);
+                    data[start + 2] = (byte) ((value >> 0) & 0x7f);
                     break;
                 case 4:
                     data[start] = (byte) ((value >> 12) & 0xf);
