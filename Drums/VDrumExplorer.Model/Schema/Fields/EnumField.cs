@@ -16,7 +16,7 @@ namespace VDrumExplorer.Model.Schema.Fields
     public sealed class EnumField : NumericFieldBase
     {
         /// <summary>
-        /// The valid values, in numeric order, but with no indication of the specific values involved.
+        /// The valid values, in display order, but with no indication of the specific values involved.
         /// </summary>
         public IReadOnlyList<string> Values { get; }
 
@@ -30,12 +30,12 @@ namespace VDrumExplorer.Model.Schema.Fields
             : base(parent, other.Parameters, other.Min, other.Max, other.Default) =>
             (Values, RawNumberByName, NameByRawNumber) = (other.Values, other.RawNumberByName, other.NameByRawNumber);
 
-        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyDictionary<int, string> valuesByNumber, int @default)
-            : base(parent, common, valuesByNumber.Keys.Min(), valuesByNumber.Keys.Max(), @default)
+        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyList<(int number, string value)> numberValuePairs, int @default)
+            : base(parent, common, numberValuePairs.Select(pair => pair.number).Min(), numberValuePairs.Select(pair => pair.number).Max(), @default)
         {
-            Values = valuesByNumber.OrderBy(pair => pair.Key).ToReadOnlyList(pair => pair.Value);
-            RawNumberByName = valuesByNumber.ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
-            NameByRawNumber = valuesByNumber;
+            Values = numberValuePairs.ToReadOnlyList(pair => pair.value);
+            RawNumberByName = numberValuePairs.ToDictionary(pair => pair.value, pair => pair.number, StringComparer.Ordinal);
+            NameByRawNumber = numberValuePairs.ToDictionary(pair => pair.number, pair => pair.value);
         }
 
         internal override FieldBase WithParent(FieldContainer parent) => new EnumField(parent, this);
