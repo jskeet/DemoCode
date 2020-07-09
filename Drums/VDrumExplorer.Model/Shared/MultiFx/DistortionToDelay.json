@@ -15,15 +15,11 @@
       "valueOffset": -64
     },
     {
-      "description": "Tempo Sync",
-      "type": "boolean32"
-    },
-    {
-      "description": "Delay time",
+      "description": "Delay",
       "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300
+      "max": 2600
     },
     {
       "description": "Delay Feedback",
