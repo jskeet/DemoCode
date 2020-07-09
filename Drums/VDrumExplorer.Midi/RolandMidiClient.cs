@@ -37,6 +37,11 @@ namespace VDrumExplorer.Midi
         /// </summary>
         internal EventHandler<RawMidiMessage>? MessageReceived;
 
+        /// <summary>
+        /// An event handler for DataSet messages (regardless of whether they're "expected" or not).
+        /// </summary>
+        internal EventHandler<DataSetMessage>? DataSetMessageReceived;
+
         private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, ModuleIdentifier identifier)
         {
             this.rawClient = rawClient;
@@ -97,6 +102,7 @@ namespace VDrumExplorer.Midi
 
         private void HandleDataSetMessage(DataSetMessage message)
         {
+            DataSetMessageReceived?.Invoke(this, message);
             LinkedList<TaskCompletionSource<byte[]>> sourcesToComplete = new LinkedList<TaskCompletionSource<byte[]>>();
 
             lock (sync)
@@ -118,6 +124,13 @@ namespace VDrumExplorer.Midi
                 source.TrySetResult(message.Data);
             }
         }
+
+        /// <summary>
+        /// Requests data at a given address, but without performing any validation of the size or address,
+        /// or attempting to consume the resulting messages.
+        /// </summary>
+        internal void SendDataRequestMessage(int address, int size) =>
+            rawClient.Send(CreateDataRequestMessage(address, size));
 
         /// <summary>
         /// Requests data at a given address.
@@ -146,7 +159,7 @@ namespace VDrumExplorer.Midi
                 consumers.AddLast(consumer);
             }
 
-            rawClient.Send(CreateDataRequestMessage(address, size));
+            SendDataRequestMessage(address, size);
 
             var tcs = consumer.TaskCompletionSource;
             return cancellationToken.CanBeCanceled ? WaitWithCancellation() : tcs.Task;
