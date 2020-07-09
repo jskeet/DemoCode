@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Logical;
@@ -31,6 +32,7 @@ namespace VDrumExplorer.ViewModel.Data
         public DelegateCommand SaveFileCommand { get; }
         public DelegateCommand SaveFileAsCommand { get; }
         public CommandBase CopyDataToDeviceCommand { get; }
+        public virtual ICommand CopyToTemporaryStudioSetCommand => CommandBase.NotImplemented;
 
         public void SaveHandler(object sender, EventArgs e)
         {
@@ -60,6 +62,7 @@ namespace VDrumExplorer.ViewModel.Data
         // Ugly, but simple.
         public bool IsKitExplorer => this is KitExplorerViewModel;
         public bool IsModuleExplorer => !IsKitExplorer;
+        public bool IsAerophoneKitExplorer => IsKitExplorer && Model.Schema.Identifier.Equals(ModuleIdentifier.AE10);
 
         public string CopyDataTitle => IsKitExplorer ? "Copy Kit" : "Copy Data";
 

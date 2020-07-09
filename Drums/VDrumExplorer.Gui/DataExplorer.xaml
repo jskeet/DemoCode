@@ -32,12 +32,13 @@
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding CopyDataToDeviceCommand}" CommandParameter="{Binding SelectedNode}" Content="{Binding CopyDataTitle}" VerticalAlignment="Center"/>
             <TextBlock Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center">Kit to copy to:</TextBlock>
             <TextBox Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center" Text="{Binding KitCopyTargetNumber, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" Width="30"/>
-            <Button Margin="{StaticResource ValueMargin}" Command="{Binding PlayNoteCommand}" VerticalAlignment="Center">Play note</Button>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding PlayNoteCommand}" VerticalAlignment="Center" Content="Play note"/>
             <TextBlock Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" Text="Midi Channel:"/>
             <ComboBox Margin="{StaticResource ValueMargin}" ItemsSource="{Binding MidiChannels}" SelectedItem="{Binding SelectedMidiChannel}" VerticalAlignment="Center"/>
             <TextBlock Margin="{StaticResource ValueMargin}" VerticalAlignment="Center" Text="Attack:"/>
             <Slider Margin="{StaticResource ValueMargin}" Minimum="{Binding MinAttack}" Maximum="{Binding MaxAttack}" Value="{Binding Attack}" VerticalAlignment="Center" Width="100" IsSnapToTickEnabled="True" TickFrequency="1" />
             <TextBlock Margin="{StaticResource ValueMargin}" HorizontalAlignment="Left" Text="{Binding Attack}" VerticalAlignment="Center"/>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding CopyToTemporaryStudioSetCommand}" VerticalAlignment="Center" Visibility="{Binding IsAerophoneKitExplorer, Converter={StaticResource VisibilityConverter}}" Content="Test settings"/>
         </StackPanel>
         <Separator DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}"/>
         <Grid>

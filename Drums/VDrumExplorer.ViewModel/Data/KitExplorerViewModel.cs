@@ -37,12 +37,14 @@ namespace VDrumExplorer.ViewModel.Data
         {
             Kit = kit;
             kitCopyTargetNumber = kit.DefaultKitNumber;
+            CopyToTemporaryStudioSetCommand = new DelegateCommand(CopyDataToTemporaryStudioSet, true);
         }
 
         public override ICommand OpenCopyInKitExplorerCommand => CommandBase.NotImplemented;
         public override ICommand CopyKitCommand => CommandBase.NotImplemented;
         public override ICommand ImportKitFromFileCommand => CommandBase.NotImplemented;
         public override ICommand ExportKitCommand => CommandBase.NotImplemented;
+        public override ICommand CopyToTemporaryStudioSetCommand { get; }
 
         protected override string ExplorerName => "Kit Explorer";
         public override string SaveFileFilter => FileFilters.KitFiles;
@@ -51,5 +53,8 @@ namespace VDrumExplorer.ViewModel.Data
 
         protected override void CopyDataToDevice() =>
             CopyDataToDevice(Model.LogicalRoot, Model.Schema.GetKitRoot(KitCopyTargetNumber).Container.Address);
+
+        private void CopyDataToTemporaryStudioSet() =>
+            CopyDataToDevice(Model.LogicalRoot, Model.Schema.PhysicalRoot.ResolveContainer("TemporaryStudioSet").Address);
     }
 }
