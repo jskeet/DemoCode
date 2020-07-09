@@ -17,7 +17,7 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public sealed class TempoField : FieldBase
     {
-        private static readonly IReadOnlyDictionary<int, string> MusicalNoteValues = new List<string>
+        private static readonly IReadOnlyList<(int number, string value)> MusicalNoteValues = new List<string>
         {
             "Hemidemisemiquaver triplet \U0001d163\u00b3",
             "Hemidemisemiquaver \U0001d163",
@@ -41,7 +41,7 @@ namespace VDrumExplorer.Model.Schema.Fields
             "Breve triplet \U0001d15c\u00b3",
             "Dotted semibreve \U0001d15d.",
             "Breve \U0001d15c",
-        }.Select((value, index) => (value, index)).ToDictionary(pair => pair.index, pair => pair.value).AsReadOnly();
+        }.Select((value, index) => (index, value)).ToReadOnlyList();
 
         public BooleanField SwitchField { get; }
         public NumericField NumericField { get; }

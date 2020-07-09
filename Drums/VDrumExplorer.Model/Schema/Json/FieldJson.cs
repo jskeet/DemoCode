@@ -4,6 +4,7 @@
 
 #nullable disable warnings
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,9 +81,10 @@ namespace VDrumExplorer.Model.Schema.Json
         public List<string>? Values { get; set; }
 
         /// <summary>
-        /// The values for enum fields that don't have contiguous values.
+        /// The values for enum fields that don't have contiguous values. Each array should consist
+        /// of a number and then a string.
         /// </summary>
-        public Dictionary<string, string>? ValuesByNumber { get; set; }
+        public List<JArray>? ValuesByNumber { get; set; }
 
         /// <summary>
         /// For instrument fields only, the offset of the bank switch field, in the same container.
@@ -139,13 +141,14 @@ namespace VDrumExplorer.Model.Schema.Json
                 string ph when ph.StartsWith("placeholder") => new PlaceholderField(null, BuildCommon(int.Parse(ph.Substring("placeholder".Length)) / 8)),
                 "enum" => BuildEnumField(1),
                 "enum16" => BuildEnumField(2),
+                "enum24" => BuildEnumField(3),
                 "enum32" => BuildEnumField(4),
                 "instrument" => new InstrumentField(null, BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
                 "midi32" => new NumericField(null, BuildCommon(4), 0, 128, Default ?? 0, null, null, null, null, (128, "Off")),
                 "overlay" => BuildOverlay(),
-                "range8" => BuildNumericField(1),
-                "range16" => BuildNumericField(2),
-                "range32" => BuildNumericField(4),
+                "range8" => BuildNumericField(1, 0, 127),
+                "range16" => BuildNumericField(2, -128, 127),
+                "range32" => BuildNumericField(4, short.MinValue, short.MaxValue),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
                 "tempo" => BuildTempoField(),
@@ -155,22 +158,23 @@ namespace VDrumExplorer.Model.Schema.Json
 
             EnumField BuildEnumField(int size)
             {
-                IReadOnlyDictionary<int, string> valuesByNumber;
+                IReadOnlyList<(int number, string value)> numberValuePairs;
                 if (Values is object)
                 {
                     int min = Min ?? 0;
                     ValidateNull(ValuesByNumber, nameof(ValuesByNumber), nameof(Values));
-                    valuesByNumber = Values
-                        .Select((value, index) => (value, index))
-                        .ToDictionary(pair => pair.index + min, pair => pair.value)
-                        .AsReadOnly();
+                    numberValuePairs = Values
+                        .Select((value, index) => (index, value))
+                        .ToReadOnlyList();
                 }
                 else
                 {
                     ValidateNotNull(ValuesByNumber, nameof(ValuesByNumber));
-                    valuesByNumber = ValuesByNumber.ToDictionary(pair => int.Parse(pair.Key), pair => pair.Value).AsReadOnly();
+                    Validate(ValuesByNumber.All(array => array.Count == 2 && array[0] is JToken { Type: JTokenType.Integer } && array[1] is JToken { Type: JTokenType.String }),
+                        "All arrays in {0} must be [number, value] pairs", nameof(ValuesByNumber));
+                    numberValuePairs = ValuesByNumber.ToReadOnlyList(array => ((int) array[0], (string) array[1]));
                 }
-                return new EnumField(null, BuildCommon(size), valuesByNumber, GetDefaultValue());
+                return new EnumField(null, BuildCommon(size), numberValuePairs, GetDefaultValue());
             }
 
             StringField BuildStringField(int bytesPerChar)
@@ -191,11 +195,13 @@ namespace VDrumExplorer.Model.Schema.Json
                     Off == null ? default((int, string)?) : (Off.Value, OffLabel));
             }
 
-            NumericField BuildNumericField(int size)
+            NumericField BuildNumericField(int size, int minMin, int maxMax)
             {
                 var min = ValidateNotNull(Min, nameof(Min));
                 var max = ValidateNotNull(Max, nameof(Max));
                 Validate(max >= 0, $"Unexpected all-negative field: {name}");
+                Validate(min >= minMin, $"Field {name} has min value {min}, below {minMin}");
+                Validate(max <= maxMax, $"Field {name} has max value {max}, above {maxMax}");
                 return new NumericField(null, BuildCommon(size),
                     min, max, GetDefaultValue(),
                     Divisor, Multiplier, ValueOffset, Suffix,
