@@ -5,32 +5,32 @@
       "description": "Type",
       "type": "enum",
       // Note: any edits to these values should be reflected in map in the overlay below
-      "valuesByNumber": {
-        "0": "Off",
-        "1": "Equalizer",
-        "4": "Low Boost",
-        "7": "Enhancer",
-        "8": "Auto Wah",
-        "9": "Humanizer",
-        "11": "Phaser",
-        "15": "Ring Modulator",
-        "17": "Tremolo",
-        "18": "Auto Pan",
-        "22": "Rotary",
-        "24": "Flanger",
-        "28": "Space-D",
-        "35": "Overdrive",
-        "36": "Distortion",
-        "40": "Compressor",
-        "41": "Limiter",
-        "42": "Gate",
-        "43": "Delay",
-        "44": "Long Delay",
-        "47": "3-Tap Pan Delay",
-        "59": "Telephone",
-        "51": "Pitch Shifter",
-        "65": "Gated Reverb"
-      }
+      "valuesByNumber": [
+        [ 0, "Off" ],
+        [ 1, "Equalizer" ],
+        [ 4, "Low Boost" ],
+        [ 7, "Enhancer" ],
+        [ 8, "Auto Wah" ],
+        [ 9, "Humanizer" ],
+        [ 11, "Phaser" ],
+        [ 15, "Ring Modulator" ],
+        [ 17, "Tremolo" ],
+        [ 18, "Auto Pan" ],
+        [ 22, "Rotary" ],
+        [ 24, "Flanger" ],
+        [ 28, "Space-D" ],
+        [ 35, "Overdrive" ],
+        [ 36, "Distortion" ],
+        [ 40, "Compressor" ],
+        [ 41, "Limiter" ],
+        [ 42, "Gate" ],
+        [ 43, "Delay" ],
+        [ 44, "Long Delay" ],
+        [ 47, "3-Tap Pan Delay" ],
+        [ 59, "Telephone" ],
+        [ 51, "Pitch Shifter" ],
+        [ 65, "Gated Reverb" ]
+      ]
     },
     {
       "description": "MFX Dry Send Level",
@@ -53,7 +53,7 @@
     {
       "name": "Placeholder",
       "type": "placeholder104"
-      },
+    },
     {
       "name": "Parameters",
       "description": "MFX parameters",

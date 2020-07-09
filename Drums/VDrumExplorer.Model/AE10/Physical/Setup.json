@@ -14,17 +14,17 @@
     {
       "description": "Side 1 Studio Set Bank Select LSB (CC# 32)",
       "type": "enum",
-      "valuesByNumber": {
-        "0": "User",
-        "64": "Preset"
-      }
+      "valuesByNumber": [
+        [ 0, "User" ],
+        [ 64, "Preset" ],
+        [ 65, "Preset (extended)" ]
+      ]
     },
     {
       "description": "Side 1 Studio Set Program Change",
       "type": "range8",
       "min": 0,
-      "max": 99,
-      // This is an assumption about the meaning of the field.
+      "max": 127,
       "valueOffset": 1
     }
   ]

@@ -14,7 +14,13 @@
     },
     {
       "name": "Placeholder",
-      "type": "placeholder56"
+      "type": "placeholder32"
+    },
+    {
+      "name": "Instrument",
+      "type": "enum24",
+      "valuesByNumber": "$resource:Enums/Instruments.json",
+      "default": 1425436
     },
     {
       "description": "Part Level (CC# 7)",
@@ -37,15 +43,15 @@
       "valueOffset": -64
     },
     {
-      "name": "Placeholder",
-      "type": "placeholder16"
-    },
-    {
       "description": "Part Fine Tune (RPN# 1)",
       "type": "range8",
       "min": 14,
       "max": 114,
       "valueOffset": -64
+    },
+    {
+      "name": "Placeholder",
+      "type": "placeholder16"
     },
     {
       "description": "Part Pitch Bend Range (RPN# 0)",
@@ -67,9 +73,11 @@
     {
       "description": "Part Portamento Time (CC# 5)",
       "type": "range16",
-      "min": 0,
-      "max": 128,
-      "off": 128,
+      // FIXME: Values -127 to -1 aren't valid.
+      // This is the only "unsigned" range16 as far as I'm aware.
+      "min": -128,
+      "max": 127,
+      "off": -128,
       "offLabel": "Tone"
     },
     {
