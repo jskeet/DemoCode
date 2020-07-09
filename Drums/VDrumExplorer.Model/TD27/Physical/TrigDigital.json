@@ -84,50 +84,50 @@
     {
       "description": "Digital Trigger Advanced Parameter 1 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 2 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 3 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 4 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 5 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 6 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 7 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     },
     {
       "description": "Digital Trigger Advanced Parameter 8 (FIXME)",
       "type": "range16",
-      "min": 0,
-      "max": 1000
+      "min": -127,
+      "max": 127
     }
   ]
 }
