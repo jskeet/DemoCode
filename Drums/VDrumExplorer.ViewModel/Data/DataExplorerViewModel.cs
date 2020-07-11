@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using VDrumExplorer.Midi;
+using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Logical;

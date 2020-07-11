@@ -5,7 +5,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using VDrumExplorer.Midi;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Model.Test
 {

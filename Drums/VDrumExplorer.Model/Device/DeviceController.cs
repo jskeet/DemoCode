@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
+using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Data.Logical;

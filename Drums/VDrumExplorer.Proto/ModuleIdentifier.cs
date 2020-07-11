@@ -3,16 +3,17 @@
 // as found in the LICENSE.txt file.
 
 using System.IO;
+
 using VDrumExplorer.Model;
 
 namespace VDrumExplorer.Proto
 {
     internal partial class ModuleIdentifier
     {
-        internal Midi.ModuleIdentifier ToModel() =>
-            new Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
+        internal Model.Midi.ModuleIdentifier ToModel() =>
+            new Model.Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
         
-        internal static ModuleIdentifier FromModel(Midi.ModuleIdentifier id) =>
+        internal static ModuleIdentifier FromModel(Model.Midi.ModuleIdentifier id) =>
             new ModuleIdentifier
             {
                 Name = id.Name,

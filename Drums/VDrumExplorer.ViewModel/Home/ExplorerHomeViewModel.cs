@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using VDrumExplorer.Midi;
+using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
 using VDrumExplorer.Proto;

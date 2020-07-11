@@ -4,6 +4,7 @@
 
 using System.CommandLine;
 using System.Threading.Tasks;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -11,6 +12,8 @@ namespace VDrumExplorer.Console
     {
         static Task<int> Main(string[] args)
         {
+            MidiDevices.Manager = new Midi.ManagedMidi.MidiManager();
+
             var rootCommand = new RootCommand
             {
                 Description = "V-Drum Explorer console interface"

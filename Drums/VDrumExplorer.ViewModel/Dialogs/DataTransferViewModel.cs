@@ -4,14 +4,10 @@
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using VDrumExplorer.Midi;
-using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Device;
-using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.ViewModel.Dialogs
 {

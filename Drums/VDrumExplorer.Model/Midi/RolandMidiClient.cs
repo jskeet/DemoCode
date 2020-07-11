@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     /// <summary>
     /// A MIDI client that's aware of Roland-specific system exclusive (data request, data set) messages.
@@ -22,41 +22,39 @@ namespace VDrumExplorer.Midi
         private const byte DataRequestCommand = 0x11;
         private const byte DataSetCommand = 0x12;
 
-        private readonly RawMidiClient rawClient;
+        private readonly IMidiInput input;
+        private readonly IMidiOutput output;
         private readonly byte rawDeviceId;
 
         private readonly object sync = new object();
         private readonly LinkedList<Consumer> consumers = new LinkedList<Consumer>();
 
         public ModuleIdentifier Identifier { get; }
-        public string InputName => rawClient.InputName;
-        public string OutputName => rawClient.OutputName;
+        public string InputName { get; }
+        public string OutputName { get; }
 
         /// <summary>
         /// An event handler for MIDI messages other than the data send/receive messages.
         /// </summary>
-        internal EventHandler<RawMidiMessage>? MessageReceived;
+        internal EventHandler<MidiMessage>? MessageReceived;
 
         /// <summary>
         /// An event handler for DataSet messages (regardless of whether they're "expected" or not).
         /// </summary>
         internal EventHandler<DataSetMessage>? DataSetMessageReceived;
 
-        private RolandMidiClient(RawMidiClient rawClient, byte rawDeviceId, ModuleIdentifier identifier)
+        internal RolandMidiClient(IMidiInput input, IMidiOutput output, string inputName, string outputName, byte rawDeviceId, ModuleIdentifier identifier)
         {
-            this.rawClient = rawClient;
-            rawClient.MessageReceived += HandleMessage;
+            this.input = input;
+            this.output = output;
+            input.MessageReceived += HandleMessage;
+            InputName = inputName;
+            OutputName = outputName;
             this.rawDeviceId = rawDeviceId;
             this.Identifier = identifier;
         }
 
-        internal static async Task<RolandMidiClient> CreateAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, byte rawDeviceId, ModuleIdentifier identifier)
-        {
-            var rawClient = await RawMidiClient.CreateAsync(inputDevice, outputDevice);
-            return new RolandMidiClient(rawClient, rawDeviceId, identifier);
-        }
-
-        private void HandleMessage(object sender, RawMidiMessage message)
+        private void HandleMessage(object sender, MidiMessage message)
         {
             // If it's a Data Set message aimed at this device, handle it...
             if (DataSetMessage.TryParse(message, out var result) &&
@@ -79,14 +77,14 @@ namespace VDrumExplorer.Midi
                 (byte) note,
                 (byte) velocity
             };
-            rawClient.Send(new RawMidiMessage(noteOnMessage));
+            output.Send(new MidiMessage(noteOnMessage));
             var noteOffMessage = new byte[]
             {
                 (byte) (NoteOffStatus | (channel - 1)),
                 (byte) note,
                 0x64 // Fixed for NoteOff
             };
-            rawClient.Send(new RawMidiMessage(noteOffMessage));
+            output.Send(new MidiMessage(noteOffMessage));
         }
 
         public void Silence(int channel)
@@ -97,7 +95,7 @@ namespace VDrumExplorer.Midi
                 AllSoundsOffCommand,
                 0x0 // Fixed for AllSoundsOff
             };
-            rawClient.Send(new RawMidiMessage(allSoundsOffMessage));
+            output.Send(new MidiMessage(allSoundsOffMessage));
         }
 
         private void HandleDataSetMessage(DataSetMessage message)
@@ -130,7 +128,9 @@ namespace VDrumExplorer.Midi
         /// or attempting to consume the resulting messages.
         /// </summary>
         internal void SendDataRequestMessage(int address, int size) =>
-            rawClient.Send(CreateDataRequestMessage(address, size));
+            output.Send(CreateDataRequestMessage(address, size));
+
+        // TODO: Use ModuleAddress and ModuleOffset here.
 
         /// <summary>
         /// Requests data at a given address.
@@ -187,16 +187,16 @@ namespace VDrumExplorer.Midi
             WriteBigEndianInt32(messageData, 8, address);
             Buffer.BlockCopy(bytes, 0, messageData, 12, bytes.Length);
             ApplyChecksum(messageData);
-            rawClient.Send(new RawMidiMessage(messageData));
+            output.Send(new MidiMessage(messageData));
         }
 
-        private RawMidiMessage CreateDataRequestMessage(int address, int size)
+        private MidiMessage CreateDataRequestMessage(int address, int size)
         {
             var data = CreateMessage(DataRequestCommand, 8);
             WriteBigEndianInt32(data, 8, address);
             WriteBigEndianInt28(data, 12, size);
             ApplyChecksum(data);
-            return new RawMidiMessage(data);
+            return new MidiMessage(data);
         }
 
         private class Consumer
@@ -252,7 +252,11 @@ namespace VDrumExplorer.Midi
             message[message.Length - 2] = (byte) ((0x80 - (sum & 0x7f)) & 0x7f);
         }
 
-        public void Dispose() => rawClient.Dispose();
+        public void Dispose()
+        {
+            input.Dispose();
+            output.Dispose();
+        }
 
         private void WriteBigEndianInt32(byte[] data, int offset, int value)
         {

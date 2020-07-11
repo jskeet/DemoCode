@@ -9,8 +9,8 @@ using System.CommandLine.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model.Schema.Json;
 
 namespace VDrumExplorer.Console

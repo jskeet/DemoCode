@@ -8,12 +8,12 @@
 namespace System.Diagnostics.CodeAnalysis
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false)]
-    public sealed class NotNullAttribute : Attribute
+    internal sealed class NotNullAttribute : Attribute
     {
     }
 
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false)]
-    public sealed class NotNullIfNotNullAttribute : Attribute
+    internal sealed class NotNullIfNotNullAttribute : Attribute
     {
         public string ParameterName { get; set; }
 
@@ -22,7 +22,7 @@ namespace System.Diagnostics.CodeAnalysis
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class DoesNotReturnIfAttribute : Attribute
+    internal sealed class DoesNotReturnIfAttribute : Attribute
     {
         public DoesNotReturnIfAttribute(bool parameterValue)
         {

@@ -2,20 +2,26 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     /// <summary>
     /// A raw, uninterpreted MIDI message.
     /// </summary>
-    internal sealed class RawMidiMessage
+    public sealed class MidiMessage
     {
-        internal byte[] Data { get; }
+        public byte[] Data { get; }
+        public long Timestamp { get; }
 
-        internal RawMidiMessage(byte[] data) => Data = data;
+        public MidiMessage(byte[] data) : this(data, 0L)
+        {
+        }
+
+        public MidiMessage(byte[] data, long timestamp) =>
+            (Data, Timestamp) = (data, timestamp);
 
         /// <summary>
         /// The status byte of the message, which is the first byte of data.
         /// </summary>
-        internal int Status => Data[0];
+        public int Status => Data[0];
     }
 }

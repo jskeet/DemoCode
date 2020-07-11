@@ -24,4 +24,13 @@ namespace System.Diagnostics.CodeAnalysis
         public NotNullWhenAttribute(bool returnValue) =>
             ReturnValue = returnValue;
     }
+
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false)]
+    internal sealed class NotNullIfNotNullAttribute : Attribute
+    {
+        public string ParameterName { get; set; }
+
+        public NotNullIfNotNullAttribute(string parameterName) =>
+            ParameterName = parameterName;
+    }
 }
