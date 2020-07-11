@@ -15,6 +15,8 @@ namespace VDrumExplorer.Model.Data
         public DataSegment(ModuleAddress address, byte[] data) =>
             (Address, this.data) = (address, data);
 
+        internal DataSegment Clone() => new DataSegment(Address, CopyData());
+
         /// <summary>
         /// Creates a new data segment sharing the data with this one, but at the given new address.
         /// </summary>
