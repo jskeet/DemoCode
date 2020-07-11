@@ -28,17 +28,20 @@ namespace VDrumExplorer.Model.Data
         public ModuleSchema Schema => LogicalRoot.SchemaNode.Container.Schema;
 
         private readonly IReadOnlyDictionary<FieldContainer, IReadOnlyList<IDataField>> fieldsByFieldContainer;
+        private readonly Dictionary<FieldContainer, DataSegment> originalSegmentsByFieldContainer;
             
         private ModuleData(TreeNode logicalSchemaRoot)
         {
             var schema = logicalSchemaRoot.Container.Schema;
             var fieldContainers = logicalSchemaRoot.DescendantFieldContainers().ToList();
+            originalSegmentsByFieldContainer = new Dictionary<FieldContainer, DataSegment>();
 
             // First populate the containers
             var fieldMap = new SortedDictionary<FieldContainer, IReadOnlyList<IDataField>>(FieldContainer.AddressComparer);
             foreach (var fieldContainer in fieldContainers)
             {
                 fieldMap[fieldContainer] = fieldContainer.Fields.ToReadOnlyList(field => DataFieldBase.CreateDataField(field, schema));
+                originalSegmentsByFieldContainer[fieldContainer] = new DataSegment(fieldContainer.Address, new byte[fieldContainer.Size]);
             }
             fieldsByFieldContainer = fieldMap;
 
@@ -105,9 +108,9 @@ namespace VDrumExplorer.Model.Data
             return snapshot;
         }
 
-        private static DataSegment CreateDataSegment(FieldContainer fieldContainer, IReadOnlyList<IDataField> fields)
+        private DataSegment CreateDataSegment(FieldContainer fieldContainer, IReadOnlyList<IDataField> fields)
         {
-            var segment = new DataSegment(fieldContainer.Address, new byte[fieldContainer.Size]);
+            var segment = originalSegmentsByFieldContainer[fieldContainer].Clone();
             foreach (DataFieldBase field in fields)
             {
                 field.Save(segment);
@@ -128,6 +131,7 @@ namespace VDrumExplorer.Model.Data
             {
                 if (snapshot.TryGetSegment(container.Address, out var segment))
                 {
+                    originalSegmentsByFieldContainer[container] = segment.Clone();
                     foreach (DataFieldBase field in fieldList)
                     {
                         field.Load(segment);
@@ -155,6 +159,7 @@ namespace VDrumExplorer.Model.Data
             foreach (var (fieldContainer, fieldList) in fieldsByFieldContainer)
             {
                 var segment = snapshot[fieldContainer.Address];
+                originalSegmentsByFieldContainer[fieldContainer] = segment.Clone();
                 foreach (DataFieldBase field in fieldList)
                 {
                     field.Load(segment);
