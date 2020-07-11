@@ -9,14 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
 using VDrumExplorer.Model.Data;
-using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Device;
-using VDrumExplorer.ViewModel.Audio;
 using static VDrumExplorer.Proto.ModelExtensions;
 
 namespace VDrumExplorer.ViewModel.Dialogs

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Midi", "VDrumExplorer.Midi\VDrumExplorer.Midi.csproj", "{1F233567-18DA-47DB-AB55-7BEE9DB1336D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Console", "VDrumExplorer.Console\VDrumExplorer.Console.csproj", "{2346D21D-F46F-4EEC-933E-5181993ADA67}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "VDrumExplorer.Setup", "VDrumExplorer.Setup\VDrumExplorer.Setup.wixproj", "{23A40C39-8777-43ED-80B1-0320B0422837}"
@@ -25,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Utility", "VD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Benchmarks", "VDrumExplorer.Benchmarks\VDrumExplorer.Benchmarks.csproj", "{9B52264C-6557-4492-8C84-70181EB823FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDrumExplorer.NAudio", "VDrumExplorer.NAudio\VDrumExplorer.NAudio.csproj", "{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.NAudio", "VDrumExplorer.NAudio\VDrumExplorer.NAudio.csproj", "{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDrumExplorer.Midi.ManagedMidi", "VDrumExplorer.Midi.ManagedMidi\VDrumExplorer.Midi.ManagedMidi.csproj", "{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,18 +37,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Debug|x64.Build.0 = Debug|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Debug|x86.Build.0 = Debug|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Release|x64.ActiveCfg = Release|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Release|x64.Build.0 = Release|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Release|x86.ActiveCfg = Release|Any CPU
-		{1F233567-18DA-47DB-AB55-7BEE9DB1336D}.Release|x86.Build.0 = Release|Any CPU
 		{2346D21D-F46F-4EEC-933E-5181993ADA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2346D21D-F46F-4EEC-933E-5181993ADA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2346D21D-F46F-4EEC-933E-5181993ADA67}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -177,6 +165,18 @@ Global
 		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x64.Build.0 = Release|Any CPU
 		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x86.ActiveCfg = Release|Any CPU
 		{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}.Release|x86.Build.0 = Release|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Debug|x64.Build.0 = Debug|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Debug|x86.Build.0 = Debug|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x64.ActiveCfg = Release|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x64.Build.0 = Release|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x86.ActiveCfg = Release|Any CPU
+		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

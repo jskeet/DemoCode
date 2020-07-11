@@ -6,8 +6,8 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Linq;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {

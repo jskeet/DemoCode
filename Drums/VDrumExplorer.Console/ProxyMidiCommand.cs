@@ -8,8 +8,7 @@ using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
-using VDrumExplorer.Model;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -50,10 +49,11 @@ namespace VDrumExplorer.Console
             int inputChannel = context.ParseResult.ValueForOption<int>("inputChannel");
             int outputChannel = context.ParseResult.ValueForOption<int>("outputChannel");
 
-            // This is really ugly in terms of the handler needing the client, and the client needing the handler.
-            using var client = await RawMidiClient.CreateAsync(inputDevice, outputDevice);
+            using var input = await MidiDevices.Manager.OpenInputAsync(inputDevice);
+            using var output = await MidiDevices.Manager.OpenOutputAsync(outputDevice);
+
             console.WriteLine("Proxying");
-            client.MessageReceived += (sender, message) =>
+            input.MessageReceived += (sender, message) =>
             {
                 var type = message.Status & 0xf0;
                 switch (type)
@@ -67,14 +67,13 @@ namespace VDrumExplorer.Console
                         {
                             message.Data[0] = (byte) (type | outputChannel);
                         }
-                        client.Send(message);
+                        output.Send(message);
                         break;
                     case 0b1011: // Control change
                     case 0b1100: // Program change
                     case 0b1111: // System exclusive
                         break;
                 }
-                client.Send(message);
             };
 
             // Effectively "forever unless I forget to turn things off".

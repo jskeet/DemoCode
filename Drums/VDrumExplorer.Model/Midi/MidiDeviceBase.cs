@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     /// <summary>
     /// Base class for MIDI devices. The subclasses only exist for type safety purposes.
@@ -12,7 +12,7 @@ namespace VDrumExplorer.Midi
         /// <summary>
         /// Local device ID, used to create an InputDevice/OutputDevice.
         /// </summary>
-        internal string SystemDeviceId { get; }
+        public string SystemDeviceId { get; }
 
         /// <summary>
         /// Human-readable device name
@@ -35,7 +35,7 @@ namespace VDrumExplorer.Midi
     /// </summary>
     public sealed class MidiInputDevice : MidiDeviceBase
     {
-        internal MidiInputDevice(string systemDeviceId, string name, string manufacturer)
+        public MidiInputDevice(string systemDeviceId, string name, string manufacturer)
             : base(systemDeviceId, name, manufacturer)
         {
         }
@@ -46,7 +46,7 @@ namespace VDrumExplorer.Midi
     /// </summary>
     public sealed class MidiOutputDevice : MidiDeviceBase
     {
-        internal MidiOutputDevice(string systemDeviceId, string name, string manufacturer)
+        public MidiOutputDevice(string systemDeviceId, string name, string manufacturer)
             : base(systemDeviceId, name, manufacturer)
         {
         }

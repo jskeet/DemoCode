@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     /// <summary>
     /// Everything required to confidently identify a module. This is

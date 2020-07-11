@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     /// <summary>
     /// Very partial list of manufacturer IDs.

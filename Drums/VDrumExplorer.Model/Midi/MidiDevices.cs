@@ -2,14 +2,14 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Commons.Music.Midi;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VDrumExplorer.Utility;
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     /// <summary>
     /// MIDI device discovery methods.
@@ -17,34 +17,35 @@ namespace VDrumExplorer.Midi
     public static class MidiDevices
     {
         /// <summary>
+        /// System-wide MIDI manager. Set this before using other methods.
+        /// TODO: Make this more DI-friendly.
+        /// </summary>
+        public static IMidiManager Manager { get; set; } = null!;
+
+        /// <summary>
         /// Lists all the currently-connected input devices.
         /// </summary>
-        public static IReadOnlyList<MidiInputDevice> ListInputDevices() => MidiAccessManager.Default.Inputs
-            .Select(port => new MidiInputDevice(port.Id, port.Name, port.Manufacturer))
-            .ToList()
-            .AsReadOnly();
+        public static IReadOnlyList<MidiInputDevice> ListInputDevices() =>
+            Manager.ListInputDevices().ToReadOnlyList();
 
         /// <summary>
         /// Lists all the currently-connected output devices.
         /// </summary>
-        public static IReadOnlyList<MidiOutputDevice> ListOutputDevices() => MidiAccessManager.Default.Outputs
-            .Select(port => new MidiOutputDevice(port.Id, port.Name, port.Manufacturer))
-            .ToList()
-            .AsReadOnly();
+        public static IReadOnlyList<MidiOutputDevice> ListOutputDevices() =>
+            Manager.ListOutputDevices().ToReadOnlyList();
 
-        public static async Task<IReadOnlyList<DeviceIdentity>> ListDeviceIdentities(MidiInputDevice input, MidiOutputDevice output, TimeSpan timeout)
+        public static async Task<IReadOnlyList<DeviceIdentity>> ListDeviceIdentities(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, TimeSpan timeout)
         {
             List<DeviceIdentity> identities = new List<DeviceIdentity>();
-            using (var client = await RawMidiClient.CreateAsync(input, output))
-            {
-                client.MessageReceived += HandleMessage;
-                // Identity request message for all devices IDs.
-                client.Send(new RawMidiMessage(new byte[] { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }));
-                await Task.Delay(timeout);
-            }
+            using var input = await Manager.OpenInputAsync(inputDevice);
+            using var output = await Manager.OpenOutputAsync(outputDevice);
+            input.MessageReceived += HandleMessage;
+            // Identity request message for all devices IDs.
+            output.Send(new MidiMessage(new byte[] { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }));
+            await Task.Delay(timeout);
             return identities.AsReadOnly();
             
-            void HandleMessage(object sender, RawMidiMessage message)
+            void HandleMessage(object sender, MidiMessage message)
             {
                 // TODO: Handle 17-byte messages for "long" manufacturer IDs
                 var data = message.Data;
@@ -64,8 +65,12 @@ namespace VDrumExplorer.Midi
             }
         }
 
-        public static Task<RolandMidiClient> CreateRolandMidiClientAsync(MidiInputDevice input, MidiOutputDevice output, DeviceIdentity deviceIdentity, ModuleIdentifier identifier) =>
-            RolandMidiClient.CreateAsync(input, output, deviceIdentity.RawDeviceId, identifier);
+        public static async Task<RolandMidiClient> CreateRolandMidiClientAsync(MidiInputDevice inputDevice, MidiOutputDevice outputDevice, DeviceIdentity deviceIdentity, ModuleIdentifier identifier)
+        {
+            var input = await Manager.OpenInputAsync(inputDevice);
+            var output = await Manager.OpenOutputAsync(outputDevice);
+            return new RolandMidiClient(input, output, inputDevice.Name, outputDevice.Name, deviceIdentity.RawDeviceId, identifier);
+        }
 
         /// <summary>
         /// Detects a single Roland MIDI client, or null if there are 0 or multiple known devices.

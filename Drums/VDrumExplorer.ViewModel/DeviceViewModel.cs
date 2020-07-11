@@ -4,9 +4,9 @@
 
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Device;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.ViewModel
 {

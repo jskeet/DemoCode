@@ -5,7 +5,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace VDrumExplorer.Midi
+namespace VDrumExplorer.Model.Midi
 {
     // TODO: Remove? Move to a private class in RolandMidiClient?
     // TODO: Use logical addresses instead of display addresses?
@@ -25,7 +25,7 @@ namespace VDrumExplorer.Midi
         internal DataSetMessage(byte rawDeviceId, int modelId, int address, byte[] data) =>
             (RawDeviceId, ModelId, Address, this.data) = (rawDeviceId, modelId, address, data);
 
-        internal static bool TryParse(RawMidiMessage message, [NotNullWhen(true)] out DataSetMessage? result)
+        internal static bool TryParse(MidiMessage message, [NotNullWhen(true)] out DataSetMessage? result)
         {
             var messageData = message.Data;
             int length = messageData.Length;

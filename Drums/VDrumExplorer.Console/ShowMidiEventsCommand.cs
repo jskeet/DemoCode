@@ -2,14 +2,13 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Commons.Music.Midi;
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using VDrumExplorer.Midi;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -38,7 +37,7 @@ namespace VDrumExplorer.Console
 
             // It's slightly annoying to use the underlying MIDI implementation rather than RawMidiClient, but we can always change
             // it if necessary, and RawMidiClient expects input *and* output (and is currently internal).
-            using (var input = await MidiAccessManager.Default.OpenInputAsync(device.SystemDeviceId))
+            using (var input = await MidiDevices.Manager.OpenInputAsync(device))
             {
                 console.WriteLine($"Listening for one minute - or press Ctrl-C to quit.");
                 input.MessageReceived += DisplayMessage;
@@ -47,15 +46,8 @@ namespace VDrumExplorer.Console
             }
             return 0;
 
-            void DisplayMessage(object sender, MidiReceivedEventArgs e)
-            {
-                var data =
-                    e.Start == 0 && e.Length == e.Data.Length
-                    ? e.Data
-                    : e.Data.Skip(e.Start).Take(e.Length).ToArray();
-
-                console.WriteLine($"Received: {BitConverter.ToString(data)}");
-            }
+            void DisplayMessage(object sender, MidiMessage message) =>
+                console.WriteLine($"Received: {BitConverter.ToString(message.Data)}");
         }
     }
 }

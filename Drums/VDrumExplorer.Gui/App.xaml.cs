@@ -4,13 +4,11 @@
 
 using Microsoft.Extensions.Logging;
 using System.Windows;
-using VDrumExplorer.Midi;
-using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
+using VDrumExplorer.Model.Midi;
 using VDrumExplorer.NAudio;
 using VDrumExplorer.ViewModel;
 using VDrumExplorer.ViewModel.Logging;
-using VDrumExplorer.ViewModel.LogicalSchema;
 
 namespace VDrumExplorer.Gui
 {
@@ -25,6 +23,7 @@ namespace VDrumExplorer.Gui
 
         public App()
         {
+            MidiDevices.Manager = new Midi.ManagedMidi.MidiManager();
             audioDeviceManager = new NAudioDeviceManager();
             deviceViewModel = new DeviceViewModel();
             logViewModel = new LogViewModel();
