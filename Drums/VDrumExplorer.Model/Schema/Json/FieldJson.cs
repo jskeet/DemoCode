@@ -164,7 +164,7 @@ namespace VDrumExplorer.Model.Schema.Json
                     int min = Min ?? 0;
                     ValidateNull(ValuesByNumber, nameof(ValuesByNumber), nameof(Values));
                     numberValuePairs = Values
-                        .Select((value, index) => (index, value))
+                        .Select((value, index) => (index + min, value))
                         .ToReadOnlyList();
                 }
                 else
