@@ -147,6 +147,26 @@ namespace VDrumExplorer.Model.Device
             return new DataSegment(address, data);
         }
 
+        public async Task<string> LoadKitNameAsync(int kit, CancellationToken cancellationToken)
+        {
+            var kitRoot = Schema.GetKitRoot(kit);
+            var rootContainer = kitRoot.Container;
+            var nameField = rootContainer.ResolveField(Schema.KitNamePath);
+            var subNameField = rootContainer.ResolveField(Schema.KitSubNamePath);
+
+            var containersToLoad = new[] { nameField.Parent, subNameField.Parent }.Where(c => c is object).Select(c => c!).Distinct();
+            var snapshot = new ModuleDataSnapshot();
+            foreach (var container in containersToLoad)
+            {
+                var segment = await LoadSegment(container.Address, container.Size, cancellationToken);
+                snapshot.Add(segment);
+            }
+            var data = ModuleData.FromLogicalRootNode(kitRoot);
+            data.LoadPartialSnapshot(snapshot);
+
+            return Kit.GetKitName(data, kitRoot);
+        }
+
         // Assumption: the list of containers is exactly the same as the segments in the snapshot.
         // We just use this so that we can report the field path instead of the address.
         // (An alternative would be a map from address to path...)
