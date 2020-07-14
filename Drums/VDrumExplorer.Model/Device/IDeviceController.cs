@@ -37,6 +37,11 @@ namespace VDrumExplorer.Model.Device
         Task<Kit> LoadKitAsync(int kit, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Loads the specified kit name from the device.
+        /// </summary>
+        Task<string> LoadKitNameAsync(int kit, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Play the specified MIDI note on the device.
         /// </summary>
         /// <param name="channel">The MIDI channel, typically 10.</param>
