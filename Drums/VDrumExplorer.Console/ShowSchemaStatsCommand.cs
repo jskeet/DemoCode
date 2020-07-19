@@ -55,6 +55,8 @@ namespace VDrumExplorer.Console
             console.WriteLine($"All overlaid fields: {allOverlayFields.Count()}");
             console.WriteLine($"Distinct overlaid fields: {allDistinctOverlayFields.Count()}");
 
+            console.WriteLine($"Logical node descendants: {schema.LogicalRoot.DescendantsAndSelf().Count()}");
+
             return Task.FromResult(0);
         }
     }
