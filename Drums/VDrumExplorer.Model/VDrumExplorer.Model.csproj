@@ -10,13 +10,10 @@
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />    
     
-    <EmbeddedResource Include="AE10/**/*.json" />
-    <EmbeddedResource Include="TD17/**/*.json" />
-    <EmbeddedResource Include="TD27/**/*.json" />
-    <EmbeddedResource Include="TD50/**/*.json" />
-    <EmbeddedResource Include="Shared/**/*.json" />
     <ProjectReference Include="..\VDrumExplorer.Utility\VDrumExplorer.Utility.csproj" />
+
+    <EmbeddedResource Include="SchemaResources/**/*.json" />
   </ItemGroup>
 </Project>
