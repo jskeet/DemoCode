@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Benchmarks", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.NAudio", "VDrumExplorer.NAudio\VDrumExplorer.NAudio.csproj", "{D1B9B690-5BA7-46B3-AF2D-0A025C49C1D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDrumExplorer.Midi.ManagedMidi", "VDrumExplorer.Midi.ManagedMidi\VDrumExplorer.Midi.ManagedMidi.csproj", "{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Midi.ManagedMidi", "VDrumExplorer.Midi.ManagedMidi\VDrumExplorer.Midi.ManagedMidi.csproj", "{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VDrumExplorer.Blazor", "VDrumExplorer.Blazor\VDrumExplorer.Blazor.csproj", "{03BB73C3-36EF-45F7-BF52-B250F982EC5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -177,6 +179,18 @@ Global
 		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x64.Build.0 = Release|Any CPU
 		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x86.ActiveCfg = Release|Any CPU
 		{CEF2DED9-E055-4AA2-BFEE-E21A3762648D}.Release|x86.Build.0 = Release|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Debug|x64.Build.0 = Debug|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Debug|x86.Build.0 = Debug|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Release|x64.ActiveCfg = Release|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Release|x64.Build.0 = Release|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Release|x86.ActiveCfg = Release|Any CPU
+		{03BB73C3-36EF-45F7-BF52-B250F982EC5A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
