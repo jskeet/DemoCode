@@ -41,6 +41,8 @@ local.properties
 *.user
 *.sln.docstates
 
+launchSettings.json
+
 # Roslyn (?) files
 *.sln.ide
 
