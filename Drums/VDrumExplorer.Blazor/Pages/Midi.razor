@@ -1,0 +1,47 @@
+﻿@page "/"
+
+<h1>V-Drum Explorer Blazor Demo</h1>
+
+<p>
+    This page demonstrates using <a href="https://blazor.net">Blazor</a> to run C# code in the
+    browser, interacting with the <a href="https://www.w3.org/TR/webmidi/#listing-inputs-and-outputs">Web MIDI API</a>
+    to list information about selected Roland instruments. (Currently supported: the V-Drums TD-17, TD-27 and TD-50; the Aerophone AE-10.)
+    This is a small sample of the functionality of V-Drum explorer:
+    <ul>
+        <li><a href="https://jskeet.github.io/DemoCode/Drums">WPF app documentation</a></li>
+        <li><a href="https://github.com/jskeet/DemoCode/tree/master/Drums">Code</a></li>
+        <li><a href="https://codeblog.jonskeet.uk/category/v-drums/">Blog posts</a></li>
+    </ul>
+</p>
+
+<p>
+    When you click the "List kits" button below, you may need to accept a request to use your local MIDI devices,
+    as the page requires access to make System Exclusive requests.
+</p>
+
+<p>
+    I <em>expect</em> the code to work on Chrome everywhere, as well as the Chromium-based version of Edge, but
+    I definitely make no guarantees. I don't expect it to work in Safari or Firefox (at least right now - it's July 2020
+    at the time of writing this page).
+</p>
+
+<p>
+    Note that the code will give up if it detects multiple supported Roland devices (or none). If you change which devices
+    are connected, just reload the page and press the button again. There's no fancy hot-refresh right now.
+</p>
+
+<p><button class="btn btn-primary" @onclick="ListKits">List kits</button></p>
+
+<p>MIDI Status: @status</p>
+<p>Input ports detected: @inputDevices</p>
+<p>Output ports detected: @outputDevices</p>
+
+<p>
+    Log:
+    <ul>
+        @foreach (var message in @messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
+</p>

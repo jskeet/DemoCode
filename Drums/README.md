@@ -16,3 +16,7 @@ library is licensed under the BSD 2.0 license. See
 The [NAudio]
 library is licensed under the Microsoft Public License (Ms-PL).
 See [LICENSE.NAudio.txt](LICENSE.NAudio.txt) for details.
+
+The [byte-base64]() library (used in the Blazor app) is licensed
+under the MIT Licesnse. See
+[LICENSE.byte-base64.txt](LICENSE.byte-base64.txt) for details.
