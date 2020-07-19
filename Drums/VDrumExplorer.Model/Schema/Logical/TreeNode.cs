@@ -114,7 +114,7 @@ namespace VDrumExplorer.Model.Schema.Logical
 
         public override string ToString() => $"Name: {Name}; Format: {Format}; Path: '{Container.Path}'; Children: {Children.Count}; Details: {Details.Count}";
 
-        private IEnumerable<TreeNode> DescendantsAndSelf()
+        internal IEnumerable<TreeNode> DescendantsAndSelf()
         {
             Queue<TreeNode> queue = new Queue<TreeNode>();
             queue.Enqueue(this);
