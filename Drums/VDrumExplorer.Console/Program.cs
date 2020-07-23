@@ -31,6 +31,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(DumpAllDataCommand.Command);
             rootCommand.AddCommand(ProxyMidiCommand.Command);
             rootCommand.AddCommand(ListAerophoneStudioSets.Command);
+            rootCommand.AddCommand(CopyAerophoneStudioSets.Command);
             return rootCommand.InvokeAsync(args);
         }
     }
