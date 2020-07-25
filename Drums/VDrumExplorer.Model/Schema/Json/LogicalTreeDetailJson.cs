@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Model.Schema.Logical;
 using VDrumExplorer.Model.Schema.Physical;
+using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Schema.Json
 {
@@ -59,10 +60,7 @@ namespace VDrumExplorer.Model.Schema.Json
             else
             {
                 var formattableFields = module.GetRepeatSequence(Repeat, SchemaVariables.Empty)
-                    .Select(tuple => tuple.variables)
-                    .Select(variables => FieldFormattableString.Create(nodeContainer, Format, FormatPaths, variables))
-                    .ToList()
-                    .AsReadOnly();
+                    .ToReadOnlyList(tuple => FieldFormattableString.Create(nodeContainer, Format, FormatPaths, tuple.variables));
                 return new ListNodeDetail(Description, formattableFields);
             }
         }
