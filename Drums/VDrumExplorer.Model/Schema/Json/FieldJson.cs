@@ -109,12 +109,12 @@ namespace VDrumExplorer.Model.Schema.Json
             }
             else
             {
-                Preconditions.AssertNotNull(Repeat.Items);
+                AssertNotNull(Repeat.Items);
                 var variables = SchemaVariables.Empty;
                 int? gap = Repeat.Gap?.Value;
                 foreach (var tuple in module.GetRepeatSequence(Repeat.Items, variables))
                 {
-                    var itemVariables = variables.WithVariable(Repeat.IndexVariable, tuple.index);
+                    var itemVariables = variables.WithVariable(Repeat.IndexVariable, tuple.index, Repeat.IndexTemplate);
 
                     var formattedDescription = tuple.variables.Replace(ResolvedDescription);
                     var formattedName = Invariant($"{ResolvedName}[{tuple.index}]");

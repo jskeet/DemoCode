@@ -9,7 +9,7 @@ namespace VDrumExplorer.Model
     /// <summary>
     /// Used within schema population to keep track of things like the kit number.
     /// </summary>
-    internal class SchemaVariables
+    internal sealed class SchemaVariables
     {
         private readonly SchemaVariables? parent;
         private readonly string key;
@@ -17,13 +17,18 @@ namespace VDrumExplorer.Model
         private readonly string template;
 
         internal static SchemaVariables Empty { get; } =
-            new SchemaVariables(null, "", "");
+            new SchemaVariables(null, "", "", "{}");
 
-        private SchemaVariables(SchemaVariables? parent, string key, string value) =>
-            (this.parent, this.key, this.value, template) = (parent, key, value, '{' + key + '}');
+        private SchemaVariables(SchemaVariables? parent, string key, string value, string template) =>
+            (this.parent, this.key, this.value, this.template) = (parent, key, value, template);
 
-        internal SchemaVariables WithVariable(string? key, string value) =>
-            key is null ? this : new SchemaVariables(this, key, value);
+        /// <summary>
+        /// Returns a new instance with the given variable overlaid.
+        /// Note that <paramref name="template"/> must equal <paramref name="key"/> with '{' and '}'
+        /// as a prefix/suffix. While this could be performed dynamically, that involves constructing a lot of new strings.
+        /// </summary>
+        internal SchemaVariables WithVariable(string? key, string value, string template) =>
+            key is null ? this : new SchemaVariables(this, key, value, template);
 
         internal SchemaVariables WithVariables(IDictionary<string, string>? variables)
         {
@@ -34,7 +39,7 @@ namespace VDrumExplorer.Model
             var current = this;
             foreach (var pair in variables)
             {
-                current = current.WithVariable(pair.Key, pair.Value);
+                current = current.WithVariable(pair.Key, pair.Value, '{' + pair.Key + '}');
             }
             return current;
         }

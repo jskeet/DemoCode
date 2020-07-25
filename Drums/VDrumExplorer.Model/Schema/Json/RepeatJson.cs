@@ -15,11 +15,24 @@ namespace VDrumExplorer.Model.Schema.Json
         /// </summary>
         public string? Items { get; set; }
 
+        private string? indexVariable;
+        private string? indexTemplate;
+
         /// <summary>
         /// The variable to introduce to represent the repetition index from
         /// within the context of the repeated field itself.
         /// </summary>
-        public string? IndexVariable { get; set; }
+        public string? IndexVariable
+        {
+            get => indexVariable;
+            set
+            {
+                indexVariable = value;
+                indexTemplate = value is null ? null : '{' + value + '}';
+            }
+        }
+
+        internal string? IndexTemplate => indexTemplate;
 
         /// <summary>
         /// The gap between repeated fields (from the start of field X to the start of field X+1).
