@@ -28,6 +28,12 @@ namespace VDrumExplorer.Model.Data
         public ModuleSchema Schema => LogicalRoot.SchemaNode.Container.Schema;
 
         private readonly IReadOnlyDictionary<FieldContainer, IReadOnlyList<IDataField>> fieldsByFieldContainer;
+
+        /// <summary>
+        /// Originally-loaded data segments, potentially containing data not associated
+        /// with any known field. (This helps for schemas where not all fields are fully
+        /// understood, e.g. the AE-10.)
+        /// </summary>
         private readonly Dictionary<FieldContainer, DataSegment> originalSegmentsByFieldContainer;
             
         private ModuleData(TreeNode logicalSchemaRoot)
