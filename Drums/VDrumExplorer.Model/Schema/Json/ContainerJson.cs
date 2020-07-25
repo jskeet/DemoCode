@@ -112,7 +112,7 @@ namespace VDrumExplorer.Model.Schema.Json
             string path = PathUtilities.AppendPath(parentPath, name);
             if (Fields is object)
             {
-                var fieldList = requiresOverlayResolution ? resolvedFields.ToReadOnlyList(FinalizeField) : resolvedFields;
+                var fieldList = requiresOverlayResolution ? resolvedFields.Select(FinalizeField) : resolvedFields;
                 var realSize = ModuleOffset.FromDisplayValue(Size.Value).LogicalValue;
                 return new FieldContainer(schema, name, description, address, path, realSize, fieldList);
 
