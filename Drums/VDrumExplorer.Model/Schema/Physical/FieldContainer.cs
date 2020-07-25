@@ -35,7 +35,7 @@ namespace VDrumExplorer.Model.Schema.Physical
         public int Size { get; }
 
         internal FieldContainer(ModuleSchema schema, string name, string description, ModuleAddress address, string path,
-            int size, IReadOnlyList<FieldBase> fields)
+            int size, IEnumerable<FieldBase> fields)
             : base(schema, name, description, address, path)
         {
             Fields = fields.ToReadOnlyList(field => field.WithParent(this));
