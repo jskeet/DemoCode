@@ -19,6 +19,7 @@ namespace VDrumExplorer.Console
                 Description = "V-Drum Explorer console interface"
             };
             rootCommand.AddCommand(ListDevicesCommand.Command);
+            rootCommand.AddCommand(ListKitsCommand.Command);
             rootCommand.AddCommand(ImportKitCommand.Command);
             rootCommand.AddCommand(ShowKitCommand.Command);
             rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
