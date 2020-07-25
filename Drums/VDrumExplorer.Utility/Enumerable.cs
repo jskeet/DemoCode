@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace VDrumExplorer.Utility
@@ -34,7 +35,21 @@ namespace VDrumExplorer.Utility
         /// <param name="source">The sequence to convert.</param>
         /// <param name="selector">A transform function to apply to each element.</param>
         /// <returns>A read-only wrapper around a <see cref="List{T}"/> containing the items in the sequence.</returns>
-        public static IReadOnlyList<TResult> ToReadOnlyList<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) =>
-            source.Select(selector).ToList().AsReadOnly();
+        public static IReadOnlyList<TResult> ToReadOnlyList<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+        {
+            if (source is IList<TSource> list)
+            {
+                var result = new TResult[list.Count];
+                for (int i = 0; i < list.Count; i++)
+                {
+                    result[i] = selector(list[i]);
+                }
+                return new ReadOnlyCollection<TResult>(result);
+            }
+            else
+            {
+                return source.Select(selector).ToList().AsReadOnly();
+            }
+        }
     }
 }
