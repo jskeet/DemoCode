@@ -35,7 +35,7 @@ namespace VDrumExplorer.Model.Schema.Physical
         /// <inheritdoc />
         public override string ToString() => Description;
 
-        private IContainer Root => Parent?.Root ?? this;
+        private ContainerBase Root => Parent?.Root ?? this;
 
         // Note: this method knows that it only needs to recurse for ContainerContainer, which is a little odd, but simplifies the code.
         public IEnumerable<IContainer> DescendantsAndSelf()
@@ -57,32 +57,41 @@ namespace VDrumExplorer.Model.Schema.Physical
         }
 
         /// <inheritdoc />
-        public IContainer ResolveContainer(string path)
+        public IContainer ResolveContainer(string path) => ResolveContainer(path.AsSpan());
+
+        private IContainer ResolveContainer(ReadOnlySpan<char> span)
         {
-            if (path == "." || path == "")
+            if (span.Length == 0 || (span.Length == 1 && span[0] == '.'))
             {
                 return this;
             }
-            if (path.StartsWith("../"))
+            // StartsWith("../")
+            if (span[0] == '.' && span.Length >= 3 && span[1] == '.' && span[2] == '/')
             {
-                return Parent?.ResolveContainer(path.Substring(3)) ?? throw new ArgumentException("Can't use .. in path from root container");
+                return Parent?.ResolveContainer(span.Slice(3)) ?? throw new ArgumentException("Can't use .. in path from root container");
             }
-            if (path.StartsWith("/"))
+            if (span[0] == '/')
             {
-                return Root.ResolveContainer(path.Substring(1));
+                return Root.ResolveContainer(span.Slice(1));
             }
-            var segments = path.Split('/');
+
             IContainer current = this;
-            foreach (var segment in segments)
+            int segmentStart = 0;
+            for (int i = 0; i <= span.Length; i++)
             {
-                if (current is ContainerContainer cc)
+                if (i == span.Length || span[i] == '/')
                 {
-                    current = cc.ContainersByName.GetValueOrDefault(segment)
-                        ?? throw new ArgumentException($"Container '{segment}' not found within container '{cc.Path}'");
-                }
-                else
-                {
-                    throw new ArgumentException($"Path segment '{segment}' in path '{path}' not found, resolving against '{Path}'");
+                    var segment = span.Slice(segmentStart, i - segmentStart);
+                    if (current is ContainerContainer cc)
+                    {
+                        current = cc.GetContainerOrNull(segment)
+                            ?? throw new ArgumentException($"Container '{segment.ToString()}' not found within container '{cc.Path}'");
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Path segment '{segment.ToString()}' in path '{span.ToString()}' not found, resolving against '{Path}'");
+                    }
+                    segmentStart = i + 1;
                 }
             }
             return current;
@@ -92,15 +101,15 @@ namespace VDrumExplorer.Model.Schema.Physical
         public IField ResolveField(string path)
         {
             // First separate the path into "container" and "field".
+            var span = path.AsSpan();
             int lastSlash = path.LastIndexOf('/');
-            string containerPath = lastSlash == -1 ? "." : path.Substring(0, lastSlash);
-            string fieldName = lastSlash == -1 ? path : path.Substring(lastSlash + 1);
+            var fieldName = lastSlash == -1 ? span : span.Slice(lastSlash + 1);
 
             // Now find the container, and the field within it.
-            IContainer container = ResolveContainer(containerPath);
+            IContainer container = lastSlash == -1 ? this : ResolveContainer(span.Slice(0, lastSlash));
             return container is FieldContainer fc
-                ? fc.FieldsByName.GetValueOrDefault(fieldName) ?? throw new ArgumentException($"No field '{fieldName}' within container '{fc.Path}'")
-                : throw new ArgumentException($"Container '{container.Path}' is not a field container, so cannot contain field '{fieldName}'");
+                ? fc.GetFieldOrNull(fieldName)?? throw new ArgumentException($"No field '{fieldName.ToString()}' within container '{fc.Path}'")
+                : throw new ArgumentException($"Container '{container.Path}' is not a field container, so cannot contain field '{fieldName.ToString()}'");
         }
     }
 }
