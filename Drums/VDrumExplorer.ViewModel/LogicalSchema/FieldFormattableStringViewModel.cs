@@ -21,10 +21,11 @@ namespace VDrumExplorer.ViewModel.LogicalSchema
 
         private IEnumerable<KeyValueViewModel> GenerateTable()
         {
+            yield return new KeyValueViewModel("Container path", Model.Container.Path);
             yield return new KeyValueViewModel("Format string", Model.FormatString);
-            for (int i = 0; i < Model.FieldPaths.Count; i++)
+            for (int i = 0; i < Model.FormatPaths.Count; i++)
             {
-                yield return new KeyValueViewModel($"Field path {i}", Model.FieldPaths[i]);
+                yield return new KeyValueViewModel($"Field path {i}", Model.FormatPaths[i]);
             }
         }
 
