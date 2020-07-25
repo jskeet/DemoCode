@@ -78,7 +78,21 @@ namespace VDrumExplorer.Model.Schema.Json
                 .Select((item, index) => (item, index: (index + 1).ToString(CultureInfo.InvariantCulture)))
                 .Select(tuple => (tuple.item, tuple.index, initialVariables.WithVariable("item", tuple.item, "{item}").WithVariable("index", tuple.index, "{index}")));
 
-        private IEnumerable<string> GetRepeatSequence(string items) =>
+        private Dictionary<string, List<string>> repeatSequenceCache = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+        private IEnumerable<string> GetRepeatSequence(string items)
+        {
+            if (repeatSequenceCache.TryGetValue(items, out var result))
+            {
+                return result;
+            }
+            var uncached = GetRepeatSequenceUncached(items);
+            var list = uncached as List<string> ?? uncached.ToList();
+            repeatSequenceCache[items] = list;
+            return list;
+        }
+
+        private IEnumerable<string> GetRepeatSequenceUncached(string items) =>
             Lookups!.TryGetValue(items, out var sequence) ? sequence
             : Counts!.TryGetValue(items, out var count) ? GenerateCountSequence(count)
             : int.TryParse(items, out count) ? GenerateCountSequence(count)
