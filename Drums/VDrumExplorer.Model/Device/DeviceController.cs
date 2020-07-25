@@ -188,6 +188,16 @@ namespace VDrumExplorer.Model.Device
             await Task.Delay(WriteDelay, cancellationToken);
         }
 
-        public void Dispose() => client.Dispose();
+        public void Dispose()
+        {
+            try
+            {
+                client.Dispose();
+            }
+            catch
+            {
+                // It's rare to get errors when disposing of the client, but it can happen - and it's not worth reporting.
+            }
+        }
     }
 }
