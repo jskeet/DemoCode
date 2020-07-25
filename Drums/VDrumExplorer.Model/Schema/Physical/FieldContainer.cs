@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Model.Schema.Fields;
@@ -24,7 +25,9 @@ namespace VDrumExplorer.Model.Schema.Physical
         /// <summary>
         /// A map from field name to field.
         /// </summary>
-        public IReadOnlyDictionary<string, IField> FieldsByName { get; }
+        private IReadOnlyDictionary<string, IField> FieldsByName => fieldsByName.Value;
+
+        private readonly Lazy<IReadOnlyDictionary<string, IField>> fieldsByName;
 
         /// <summary>
         /// The size of this container, in bytes.
@@ -37,7 +40,7 @@ namespace VDrumExplorer.Model.Schema.Physical
         {
             Fields = fields.ToReadOnlyList(field => field.WithParent(this));
             Size = size;
-            FieldsByName = Fields.ToDictionary(f => f.Name).AsReadOnly();
+            fieldsByName = Lazy.Create(() => Fields.ToDictionary(f => f.Name).AsReadOnly());
         }
 
         public class AddressComparerImpl : IComparer<FieldContainer>
@@ -45,5 +48,7 @@ namespace VDrumExplorer.Model.Schema.Physical
             public int Compare(FieldContainer x, FieldContainer y) =>
                 x.Address.CompareTo(y.Address);
         }
+
+        internal IField? GetFieldOrNull(ReadOnlySpan<char> fieldName) => FieldsByName.GetValueOrDefault(fieldName.ToString());
     }
 }
