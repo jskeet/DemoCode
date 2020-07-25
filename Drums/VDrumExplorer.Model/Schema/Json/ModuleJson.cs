@@ -76,7 +76,7 @@ namespace VDrumExplorer.Model.Schema.Json
         internal IEnumerable<(string item, string index, SchemaVariables variables)> GetRepeatSequence(string items, SchemaVariables initialVariables) =>
             GetRepeatSequence(items)
                 .Select((item, index) => (item, index: (index + 1).ToString(CultureInfo.InvariantCulture)))
-                .Select(tuple => (tuple.item, tuple.index, initialVariables.WithVariable("item", tuple.item).WithVariable("index", tuple.index)));
+                .Select(tuple => (tuple.item, tuple.index, initialVariables.WithVariable("item", tuple.item, "{item}").WithVariable("index", tuple.index, "{index}")));
 
         private IEnumerable<string> GetRepeatSequence(string items) =>
             Lookups!.TryGetValue(items, out var sequence) ? sequence

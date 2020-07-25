@@ -63,7 +63,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 int gap = ModuleOffset.FromDisplayValue(Repeat.Gap.Value).LogicalValue;
                 foreach (var tuple in module.GetRepeatSequence(Repeat.Items, variables))
                 {
-                    var itemVariables = variables.WithVariable(Repeat.IndexVariable, tuple.index);
+                    var itemVariables = variables.WithVariable(Repeat.IndexVariable, tuple.index, Repeat.IndexTemplate);
                     var formattedDescription = tuple.variables.Replace(ResolvedDescription);
                     var formattedName = Invariant($"{ResolvedName}[{tuple.index}]");
                     yield return resolvedContainer.ToContainer(schema, module, formattedName, formattedDescription,
