@@ -15,28 +15,28 @@ namespace VDrumExplorer.Model.Schema.Logical
     /// </summary>
     public sealed class FieldFormattableString
     {
+        private static readonly IReadOnlyList<string> EmptyFormatPaths = new string[0];
+
         /// <summary>
         /// The format string, suitable for use with <see cref="string.Format(string, object[])"/>.
         /// </summary>
         public string FormatString { get; }
 
         /// <summary>
-        /// The absolute paths of the fields being formatted. This is never null, but may be empty.
+        /// The container that the format paths should be resolved relative to.
         /// </summary>
-        public IReadOnlyList<string> FieldPaths { get; }
+        public IContainer Container { get; }
 
-        internal IReadOnlyList<IField>? Fields { get; }
+        /// <summary>
+        /// The paths (relative or absolute) of the fields being formatted. This is never null, but may be empty.
+        /// </summary>
+        public IReadOnlyList<string> FormatPaths { get; }
 
-        private FieldFormattableString(string formatString, IReadOnlyList<IField>? fields) =>
-            (FormatString, Fields, FieldPaths) =
-            (formatString, fields, (fields?.Select(field => field.Path) ?? Enumerable.Empty<string>()).ToReadOnlyList());
+        private FieldFormattableString(IContainer container, string formatString, IReadOnlyList<string>? formatPaths) =>
+            (Container, FormatString, FormatPaths) = (container, formatString, formatPaths ?? EmptyFormatPaths);
 
         internal static FieldFormattableString Create(IContainer container, string formatString, IEnumerable<string>? formatPaths, SchemaVariables variables) =>
-            new FieldFormattableString(variables.Replace(formatString),
-                formatPaths?
-                    .Select(formatPath => container.ResolveField(variables.Replace(formatPath)))
-                    .ToList()
-                    .AsReadOnly());
+            new FieldFormattableString(container, variables.Replace(formatString), formatPaths?.ToReadOnlyList(formatPath => variables.Replace(formatPath)));
 
         public override string ToString() => FormatString;
     }
