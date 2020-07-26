@@ -24,18 +24,21 @@ namespace VDrumExplorer.Model.Schema.Fields
         public int? ValueOffset => numericFieldParameters.ValueOffset;
         public string? Suffix => numericFieldParameters.Suffix;
 
-        private NumericField(FieldContainer? parent, FieldParameters common, int min, int max, int @default, NumericFieldParameters numericFieldParameters)
-            : base(parent, common, min, max, @default) =>
+        private NumericField(FieldContainer? parent, FieldParameters common,
+            NumericFieldBaseParameters numericBaseParameters, NumericFieldParameters numericFieldParameters)
+            : base(parent, common, numericBaseParameters) =>
             this.numericFieldParameters = numericFieldParameters;
 
-        internal NumericField(FieldContainer? parent, FieldParameters common, int min, int max, int @default,
+        internal NumericField(FieldContainer? parent, FieldParameters common, int min, int max, int @default, NumericCodec codec,
             int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting)
-            : this(parent, common, min, max, @default, new NumericFieldParameters(divisor, multiplier, valueOffset, suffix, customValueFormatting))
+            : this(parent, common,
+                  new NumericFieldBaseParameters(min, max, @default, codec),
+                  new NumericFieldParameters(divisor, multiplier, valueOffset, suffix, customValueFormatting))
         {
         }
 
         internal override FieldBase WithParent(FieldContainer parent) =>
-            new NumericField(parent, Parameters, Min, Max, Default, numericFieldParameters);
+            new NumericField(parent, Parameters, NumericBaseParameters, numericFieldParameters);
 
         private class NumericFieldParameters
         {

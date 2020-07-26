@@ -27,11 +27,11 @@ namespace VDrumExplorer.Model.Schema.Fields
         internal IReadOnlyDictionary<int, string> NameByRawNumber { get; }
 
         internal EnumField(FieldContainer parent, EnumField other)
-            : base(parent, other.Parameters, other.Min, other.Max, other.Default) =>
+            : base(parent, other.Parameters, other.NumericBaseParameters) =>
             (Values, RawNumberByName, NameByRawNumber) = (other.Values, other.RawNumberByName, other.NameByRawNumber);
 
-        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyList<(int number, string value)> numberValuePairs, int @default)
-            : base(parent, common, numberValuePairs.Select(pair => pair.number).Min(), numberValuePairs.Select(pair => pair.number).Max(), @default)
+        internal EnumField(FieldContainer? parent, FieldParameters common, IReadOnlyList<(int number, string value)> numberValuePairs, int @default, NumericCodec codec)
+            : base(parent, common, CreateBaseParameters(numberValuePairs, @default, codec))
         {
             Values = numberValuePairs.ToReadOnlyList(pair => pair.value);
             RawNumberByName = numberValuePairs.ToDictionary(pair => pair.value, pair => pair.number, StringComparer.Ordinal);
@@ -39,5 +39,12 @@ namespace VDrumExplorer.Model.Schema.Fields
         }
 
         internal override FieldBase WithParent(FieldContainer parent) => new EnumField(parent, this);
+
+        private static NumericFieldBaseParameters CreateBaseParameters(IReadOnlyList<(int number, string value)> numberValuePairs, int @default, NumericCodec codec)
+        {
+            var min = numberValuePairs.Min(pair => pair.number);
+            var max = numberValuePairs.Max(pair => pair.number);
+            return new NumericFieldBaseParameters(min, max, @default, codec);
+        }
     }
 }

@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data
 {
@@ -37,58 +38,20 @@ namespace VDrumExplorer.Model.Data
         /// 3-byte values (only used on the Aerophone) use all seven bits.
         /// </summary>
         /// <param name="offset">The offset for the start of the data.</param>
-        /// <param name="size">The number of bytes to read. Must be 1, 2 or 4.</param>
+        /// <param name="size">The codec to use to interpret the data.</param>
         /// <returns>An integer read from the data.</returns>
-        internal int ReadInt32(ModuleOffset offset, int size)
+        internal int ReadInt32(ModuleOffset offset, NumericCodec codec)
         {
-            ValidateRange(offset, size);
-            int start = offset.LogicalValue;
-            return size switch
-            {
-                1 => data[start],
-                2 => (sbyte) ((data[start] << 4) | data[start + 1]),
-                3 => 
-                    (data[start] << 14) |
-                    (data[start + 1] << 7) |
-                    (data[start + 2] << 0),
-                4 => (short) (
-                    (data[start] << 12) |
-                    (data[start + 1] << 8) |
-                    (data[start + 2] << 4) |
-                    (data[start + 3] << 0)),
-                _ => throw new InvalidOperationException($"Cannot read numeric value with size {size}")
-            };
+            ValidateRange(offset, codec.Size);
+            var slice = data.AsSpan().Slice(offset.LogicalValue, codec.Size);
+            return codec.ReadInt32(slice);
         }
 
-        internal void WriteInt32(ModuleOffset offset, int size, int value)
+        internal void WriteInt32(ModuleOffset offset, NumericCodec codec, int value)
         {
-            ValidateRange(offset, size);
-            if (ReadInt32(offset, size) == value)
-            {
-                return;
-            }
-            int start = offset.LogicalValue;
-            switch (size)
-            {
-                case 1:
-                    data[start] = (byte) value;
-                    break;
-                case 2:
-                    data[start] = (byte) ((value >> 4) & 0xf);
-                    data[start + 1] = (byte) ((value >> 0) & 0xf);
-                    break;
-                case 3:
-                    data[start] = (byte) ((value >> 14) & 0x7f);
-                    data[start + 1] = (byte) ((value >> 7) & 0x7f);
-                    data[start + 2] = (byte) ((value >> 0) & 0x7f);
-                    break;
-                case 4:
-                    data[start] = (byte) ((value >> 12) & 0xf);
-                    data[start + 1] = (byte) ((value >> 8) & 0xf);
-                    data[start + 2] = (byte) ((value >> 4) & 0xf);
-                    data[start + 3] = (byte) ((value >> 0) & 0xf);
-                    break;
-            }
+            ValidateRange(offset, codec.Size);
+            var slice = data.AsSpan().Slice(offset.LogicalValue, codec.Size);
+            codec.WriteInt32(slice, value);
         }
 
         /// <summary>

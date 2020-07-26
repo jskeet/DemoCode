@@ -40,10 +40,10 @@ namespace VDrumExplorer.Model.Data.Fields
 
         // TODO: Validation? Currently just throws.
         internal override void Load(DataSegment segment) =>
-            RawValue = segment.ReadInt32(SchemaField.Offset, SchemaField.Size);
+            RawValue = segment.ReadInt32(SchemaField.Offset, SchemaField.Codec);
 
         internal override void Save(DataSegment segment) =>
-            segment.WriteInt32(SchemaField.Offset, SchemaField.Size, RawValue);
+            segment.WriteInt32(SchemaField.Offset, SchemaField.Codec, RawValue);
 
         internal virtual bool TrySetRawValue(int value)
         {
