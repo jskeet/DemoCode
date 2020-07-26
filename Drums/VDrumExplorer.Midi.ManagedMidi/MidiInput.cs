@@ -14,6 +14,7 @@ namespace VDrumExplorer.Midi.ManagedMidi
     /// </summary>
     internal class MidiInput : Model.Midi.IMidiInput
     {
+        private bool disposed = false;
         private readonly Commons.Music.Midi.IMidiInput managedInput;
 
         public event EventHandler<Model.Midi.MidiMessage>? MessageReceived;
@@ -34,6 +35,12 @@ namespace VDrumExplorer.Midi.ManagedMidi
 
         public void Dispose()
         {
+            if (disposed)
+            {
+                return;
+            }
+            disposed = true;
+            
             // Calling CloseAsync is significantly faster than calling Dispose.
             // This is slightly odd, as the implementation for desktop seems to call
             // CloseAsync too. Not sure what's going on, and maybe we should be waiting

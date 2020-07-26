@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Midi.ManagedMidi
@@ -12,6 +11,7 @@ namespace VDrumExplorer.Midi.ManagedMidi
     /// </summary>
     internal class MidiOutput : IMidiOutput
     {
+        private bool disposed = false;
         private readonly Commons.Music.Midi.IMidiOutput managedOutput;
 
         internal MidiOutput(Commons.Music.Midi.IMidiOutput managedOutput)
@@ -26,11 +26,12 @@ namespace VDrumExplorer.Midi.ManagedMidi
 
         public void Dispose()
         {
-            // Calling CloseAsync is significantly faster than calling Dispose.
-            // This is slightly odd, as the implementation for desktop seems to call
-            // CloseAsync too. Not sure what's going on, and maybe we should be waiting
-            // the task to complete... but it doesn't seem to cause any harm.
-            managedOutput.CloseAsync();
+            if (disposed)
+            {
+                return;
+            }
+            disposed = true;
+            managedOutput.Dispose();
         }
     }
 }
