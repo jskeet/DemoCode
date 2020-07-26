@@ -61,7 +61,7 @@ namespace VDrumExplorer.Model.Device
         public async Task<int> GetCurrentKitAsync(CancellationToken cancellationToken)
         {
             var segment = await LoadSegment(CurrentKitAddress, 1, cancellationToken);
-            return segment.ReadInt32(ModuleOffset.Zero, 1) + 1;
+            return segment.ReadInt32(ModuleOffset.Zero, NumericCodec.Range8) + 1;
         }
 
         public Task SetCurrentKitAsync(int kit, CancellationToken cancellationToken)

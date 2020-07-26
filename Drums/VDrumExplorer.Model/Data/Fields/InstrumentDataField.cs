@@ -30,14 +30,14 @@ namespace VDrumExplorer.Model.Data.Fields
 
         internal override void Load(DataSegment segment)
         {
-            index = segment.ReadInt32(Offset, Size);
-            bank = (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset, 1);
+            index = segment.ReadInt32(Offset, NumericCodec.Range32);
+            bank = (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset, NumericCodec.Range8);
         }
 
         internal override void Save(DataSegment segment)
         {
-            segment.WriteInt32(Offset, Size, index);
-            segment.WriteInt32(SchemaField.BankOffset, 1, (int) bank);
+            segment.WriteInt32(Offset, NumericCodec.Range32, index);
+            segment.WriteInt32(SchemaField.BankOffset, NumericCodec.Range8, (int) bank);
         }
 
         public Instrument Instrument

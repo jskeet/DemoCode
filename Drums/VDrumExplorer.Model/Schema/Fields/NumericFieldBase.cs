@@ -12,12 +12,29 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public abstract class NumericFieldBase : FieldBase
     {
-        public int Min { get; }
-        public int Max { get; }
-        public int Default { get; }
+        public int Min => NumericBaseParameters.Min;
+        public int Max => NumericBaseParameters.Max;
+        public int Default => NumericBaseParameters.Default;
+        internal NumericCodec Codec => NumericBaseParameters.Codec;
 
-        private protected NumericFieldBase(FieldContainer? parent, FieldParameters common, int min, int max, int @default)
+        protected NumericFieldBaseParameters NumericBaseParameters { get; }
+
+        private protected NumericFieldBase(
+            FieldContainer? parent,
+            FieldParameters common,
+            NumericFieldBaseParameters numericBaseParameters)
             : base(parent, common) =>
-            (Min, Max, Default) = (min, max, @default);
+            NumericBaseParameters = numericBaseParameters;            
+
+        protected class NumericFieldBaseParameters
+        {
+            internal int Min { get; }
+            internal int Max { get; }
+            internal int Default { get; }
+            internal NumericCodec Codec { get; }
+
+            internal NumericFieldBaseParameters(int min, int max, int @default, NumericCodec codec) =>
+                (Min, Max, Default, Codec) = (min, max, @default, codec);
+        }
     }
 }

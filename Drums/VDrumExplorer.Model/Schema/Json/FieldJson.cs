@@ -139,24 +139,24 @@ namespace VDrumExplorer.Model.Schema.Json
                 "boolean" => new BooleanField(null, BuildCommon(1)),
                 "boolean32" => new BooleanField(null, BuildCommon(4)),
                 string ph when ph.StartsWith("placeholder") => new PlaceholderField(null, BuildCommon(int.Parse(ph.Substring("placeholder".Length)) / 8)),
-                "enum" => BuildEnumField(1),
-                "enum16" => BuildEnumField(2),
-                "enum24" => BuildEnumField(3),
-                "enum32" => BuildEnumField(4),
+                "enum" => BuildEnumField(NumericCodec.Range8),
+                "enum16" => BuildEnumField(NumericCodec.Range16),
+                "enum24" => BuildEnumField(NumericCodec.Full24),
+                "enum32" => BuildEnumField(NumericCodec.Range32),
                 "instrument" => new InstrumentField(null, BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
-                "midi32" => new NumericField(null, BuildCommon(4), 0, 128, Default ?? 0, null, null, null, null, (128, "Off")),
+                "midi32" => new NumericField(null, BuildCommon(4), 0, 128, Default ?? 0, NumericCodec.Range32, null, null, null, null, (128, "Off")),
                 "overlay" => BuildOverlay(),
-                "range8" => BuildNumericField(1, 0, 127),
-                "range16" => BuildNumericField(2, -128, 127),
-                "range32" => BuildNumericField(4, short.MinValue, short.MaxValue),
+                "range8" => BuildNumericField(NumericCodec.Range8),
+                "range16" => BuildNumericField(NumericCodec.Range16),
+                "range32" => BuildNumericField(NumericCodec.Range32),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
                 "tempo" => BuildTempoField(),
-                "volume32" => new NumericField(null, BuildCommon(4), -601, 60, 0, 10, null, 0, "dB", (-601, "-INF")),
+                "volume32" => new NumericField(null, BuildCommon(4), -601, 60, 0, NumericCodec.Range32, 10, null, 0, "dB", (-601, "-INF")),
                 _ => throw new InvalidOperationException($"Invalid field type: '{Type}'")
             };
 
-            EnumField BuildEnumField(int size)
+            EnumField BuildEnumField(NumericCodec codec)
             {
                 IReadOnlyList<(int number, string value)> numberValuePairs;
                 if (Values is object)
@@ -174,7 +174,7 @@ namespace VDrumExplorer.Model.Schema.Json
                         "All arrays in {0} must be [number, value] pairs", nameof(ValuesByNumber));
                     numberValuePairs = ValuesByNumber.ToReadOnlyList(array => ((int) array[0], (string) array[1]));
                 }
-                return new EnumField(null, BuildCommon(size), numberValuePairs, GetDefaultValue());
+                return new EnumField(null, BuildCommon(codec.Size), numberValuePairs, GetDefaultValue(), codec);
             }
 
             StringField BuildStringField(int bytesPerChar)
@@ -195,15 +195,15 @@ namespace VDrumExplorer.Model.Schema.Json
                     Off == null ? default((int, string)?) : (Off.Value, OffLabel));
             }
 
-            NumericField BuildNumericField(int size, int minMin, int maxMax)
+            NumericField BuildNumericField(NumericCodec codec)
             {
                 var min = ValidateNotNull(Min, nameof(Min));
                 var max = ValidateNotNull(Max, nameof(Max));
                 Validate(max >= 0, $"Unexpected all-negative field: {name}");
-                Validate(min >= minMin, $"Field {name} has min value {min}, below {minMin}");
-                Validate(max <= maxMax, $"Field {name} has max value {max}, above {maxMax}");
-                return new NumericField(null, BuildCommon(size),
-                    min, max, GetDefaultValue(),
+                Validate(min >= codec.Min, $"Field {name} has min value {min}, below {codec.Min}");
+                Validate(max <= codec.Max, $"Field {name} has max value {max}, above {codec.Max}");
+                return new NumericField(null, BuildCommon(codec.Size),
+                    min, max, GetDefaultValue(), codec,
                     Divisor, Multiplier, ValueOffset, Suffix,
                     Off == null ? default((int, string)?) : (Off.Value, OffLabel));
             }
