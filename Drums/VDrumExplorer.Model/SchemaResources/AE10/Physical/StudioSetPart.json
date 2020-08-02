@@ -72,12 +72,10 @@
     },
     {
       "description": "Part Portamento Time (CC# 5)",
-      "type": "range16",
-      // FIXME: Values -127 to -1 aren't valid.
-      // This is the only "unsigned" range16 as far as I'm aware.
-      "min": -128,
-      "max": 127,
-      "off": -128,
+      "type": "urange16",
+      "min": 0,
+      "max": 128,
+      "off": 128,
       "offLabel": "Tone"
     },
     {

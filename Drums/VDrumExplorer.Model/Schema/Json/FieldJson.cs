@@ -148,6 +148,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 "overlay" => BuildOverlay(),
                 "range8" => BuildNumericField(NumericCodec.Range8),
                 "range16" => BuildNumericField(NumericCodec.Range16),
+                "urange16" => BuildNumericField(NumericCodec.URange16),
                 "range32" => BuildNumericField(NumericCodec.Range32),
                 "string" => BuildStringField(1),
                 "string16" => BuildStringField(2),
