@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Part",
+    "repeat": "studioSetParts",
+    "path": "Part[{index}]",
+    "formatPaths": [
+      "Instrument"
+    ],
+    "format": "Part {index}: {0}",
+    "details": [
+      {
+        "description": "Part details",
+        "path": "."
+      }
+    ]
+  },
+  {
+    "name": "MFX1",
+    "format": "MultiFX 1: {0}",
+    "formatPaths": [
+      "Type"
+    ],
+    "path": "MFX1",
+    "details": [
+      {
+        "description": "MultiFx 1 details",
+        "path": "."
+      }
+    ]
+  },
+  {
+    "name": "MFX2",
+    "format": "MultiFX 2: {0}",
+    "formatPaths": [
+      "Type"
+    ],
+    "path": "MFX2",
+    "details": [
+      {
+        "description": "MultiFx 2 details",
+        "path": "."
+      }
+    ]
+  },
+  {
+    "name": "Chorus",
+    "path": "Chorus",
+    "format": "Chorus: {0}",
+    "formatPaths": [
+      "ChorusType"
+    ],
+    "details": [
+      {
+        "description": "Chorus details",
+        "path": "."
+      }
+    ]
+  },
+  {
+    "name": "Reverb",
+    "path": "Reverb",
+    "format": "Reverb: {0}",
+    "formatPaths": [
+      "ReverbType"
+    ],
+    "details": [
+      {
+        "description": "Reverb details",
+        "path": "."
+      }
+    ]
+  }
+]
