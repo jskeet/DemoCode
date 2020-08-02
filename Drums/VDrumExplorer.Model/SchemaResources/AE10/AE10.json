@@ -37,7 +37,5 @@
   // After string formatting, replacing {0} with the trigger number, this is the path to the logical tree node for the specified trigger, from the kit's root logical container.
   "triggerPathFormat": "StudioSetPart[{0}]",
   // Paths from the kit's root physical container to the name and subname fields.
-  "kitNamePath": "Common/StudioSetName",
-  // FIXME: Allow us to not specify this
-  "kitSubNamePath": "Common/StudioSetName"
+  "kitNamePath": "Common/StudioSetName"
 }

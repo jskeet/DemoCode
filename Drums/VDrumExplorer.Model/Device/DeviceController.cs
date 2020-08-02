@@ -152,9 +152,9 @@ namespace VDrumExplorer.Model.Device
             var kitRoot = Schema.GetKitRoot(kit);
             var rootContainer = kitRoot.Container;
             var nameField = rootContainer.ResolveField(Schema.KitNamePath);
-            var subNameField = rootContainer.ResolveField(Schema.KitSubNamePath);
+            var subNameField = Schema.KitSubNamePath is string subNamePath ? rootContainer.ResolveField(subNamePath) : null;
 
-            var containersToLoad = new[] { nameField.Parent, subNameField.Parent }.Where(c => c is object).Select(c => c!).Distinct();
+            var containersToLoad = new[] { nameField.Parent, subNameField?.Parent }.Where(c => c is object).Select(c => c!).Distinct();
             var snapshot = new ModuleDataSnapshot();
             foreach (var container in containersToLoad)
             {

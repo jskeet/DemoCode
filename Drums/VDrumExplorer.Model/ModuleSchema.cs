@@ -66,7 +66,7 @@ namespace VDrumExplorer.Model
         private readonly string mainInstrumentPathFormat;
         private readonly string triggerPathFormat;
         internal string KitNamePath { get; }
-        internal string KitSubNamePath { get; }
+        internal string? KitSubNamePath { get; }
 
         private ModuleSchema(ModuleJson json)
         {
@@ -110,7 +110,7 @@ namespace VDrumExplorer.Model
             
             mainInstrumentPathFormat = json.MainInstrumentPathFormat!;
             KitNamePath = json.KitNamePath!;
-            KitSubNamePath = json.KitSubNamePath!;
+            KitSubNamePath = json.KitSubNamePath;
             triggerPathFormat = json.TriggerPathFormat!;
         }
 

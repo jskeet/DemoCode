@@ -50,8 +50,12 @@ namespace VDrumExplorer.Model
             var schema = data.Schema;
             var container = logicalKitRoot.Container;
             var nameField = container.ResolveField(schema.KitNamePath);
-            var subNameField = container.ResolveField(schema.KitSubNamePath);
             var name = data.GetDataField(nameField).FormattedText;
+            if (schema.KitSubNamePath is null)
+            {
+                return name;
+            }
+            var subNameField = container.ResolveField(schema.KitSubNamePath);
             var subName = data.GetDataField(subNameField).FormattedText;
             return subName == "" ? name : $"{name} / {subName}";
         }
