@@ -9,6 +9,8 @@ namespace VDrumExplorer.Model.Schema.Fields
     {
         internal static NumericCodec Range8 { get; } = new NumericCodec(1, ReadRange8, WriteRange8, 0, 127);
         internal static NumericCodec Range16 { get; } = new NumericCodec(2, ReadRange16, WriteRange16, -128, 127);
+        // Like Range16, but treating it as unsiged.
+        internal static NumericCodec URange16 { get; } = new NumericCodec(2, ReadURange16, WriteURange16, 0, 255);
         internal static NumericCodec Full24 { get; } = new NumericCodec(3, ReadFull24, WriteFull24, 0, (1 << 21) - 1);
         internal static NumericCodec Range32 { get; } = new NumericCodec(4, ReadRange32, WriteRange32, short.MinValue, short.MaxValue);
 
@@ -33,6 +35,8 @@ namespace VDrumExplorer.Model.Schema.Fields
         private static int ReadRange16(ReadOnlySpan<byte> data) =>
             (sbyte) ((data[0] << 4) | data[1]);
 
+        private static int ReadURange16(ReadOnlySpan<byte> data) =>
+            (byte) ((data[0] << 4) | data[1]);
 
         private static int ReadFull24(ReadOnlySpan<byte> data) =>
             (data[0] << 14) |
@@ -52,6 +56,13 @@ namespace VDrumExplorer.Model.Schema.Fields
         }
 
         private static void WriteRange16(Span<byte> data, int value)
+        {
+            data[0] = (byte) ((value >> 4) & 0xf);
+            data[1] = (byte) ((value >> 0) & 0xf);
+        }
+
+        // Same implementation as WriteRange16, but a separate method for consistency.
+        private static void WriteURange16(Span<byte> data, int value)
         {
             data[0] = (byte) ((value >> 4) & 0xf);
             data[1] = (byte) ((value >> 0) & 0xf);
