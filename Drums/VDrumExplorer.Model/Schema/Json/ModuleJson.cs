@@ -54,7 +54,6 @@ namespace VDrumExplorer.Model.Schema.Json
             ValidateNotNull(KitRootPathFormat, nameof(Containers));
             ValidateNotNull(MainInstrumentPathFormat, nameof(MainInstrumentPathFormat));
             ValidateNotNull(KitNamePath, nameof(KitNamePath));
-            ValidateNotNull(KitSubNamePath, nameof(KitSubNamePath));
             Validation.Validate(Containers.TryGetValue("Root", out _), "No root container present");
 
             foreach (var pair in Containers)
