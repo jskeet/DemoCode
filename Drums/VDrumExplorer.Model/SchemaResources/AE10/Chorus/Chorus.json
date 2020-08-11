@@ -1,5 +1,73 @@
 {
   "description": "Off",
   "fields": [
+    {
+      "description": "Pre delay",
+      "type": "fixme_range32",
+      // FIXME: This has variable-sensitivity
+      "min": 0,
+      "max": 100
+    },
+    {
+      "description": "Rate",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 199,
+      "valueOffset": 1,
+      "divisor": 20
+    },
+    {
+      "description": "Depth",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Filter type",
+      "type": "fixme_enum32",
+      "valuesByNumber": [
+        [0, "Off"],
+        [5, "LPF"],
+        [10, "HPF"]
+      ]
+    },
+    {
+      "description": "Filter cutoff",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "FIXME",
+        "FIXME 2"
+      ]
+    },
+    {
+      "description": "Phase",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 180,
+      "suffix": "deg"
+    }
   ]
 }

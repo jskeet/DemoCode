@@ -136,8 +136,8 @@ namespace VDrumExplorer.Model.Schema.Json
         {
             return Type switch
             {
-                "boolean" => new BooleanField(null, BuildCommon(1)),
-                "boolean32" => new BooleanField(null, BuildCommon(4)),
+                "boolean" => new BooleanField(null, BuildCommon(1), NumericCodec.Range8),
+                "boolean32" => new BooleanField(null, BuildCommon(4), NumericCodec.Range32),
                 string ph when ph.StartsWith("placeholder") => new PlaceholderField(null, BuildCommon(int.Parse(ph.Substring("placeholder".Length)) / 8)),
                 "enum" => BuildEnumField(NumericCodec.Range8),
                 "enum16" => BuildEnumField(NumericCodec.Range16),
@@ -154,6 +154,9 @@ namespace VDrumExplorer.Model.Schema.Json
                 "string16" => BuildStringField(2),
                 "tempo" => BuildTempoField(),
                 "volume32" => new NumericField(null, BuildCommon(4), -601, 60, 0, NumericCodec.Range32, 10, null, 0, "dB", (-601, "-INF")),
+                "fixme_enum32" => BuildEnumField(NumericCodec.Fixme32),
+                "fixme_range32" => BuildNumericField(NumericCodec.Fixme32),
+                "fixme_boolean32" => new BooleanField(null, BuildCommon(4), NumericCodec.Fixme32),
                 _ => throw new InvalidOperationException($"Invalid field type: '{Type}'")
             };
 

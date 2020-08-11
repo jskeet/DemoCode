@@ -31,7 +31,7 @@ namespace VDrumExplorer.Model.Data.Fields
             {
                 if (!TrySetRawValue(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(value), $"Invalid raw value {value} for field {SchemaField.Path}");
                 }
             }
         }

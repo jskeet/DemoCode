@@ -14,6 +14,8 @@ namespace VDrumExplorer.Model.Schema.Fields
         internal static NumericCodec Full24 { get; } = new NumericCodec(3, ReadFull24, WriteFull24, 0, (1 << 21) - 1);
         internal static NumericCodec Range32 { get; } = new NumericCodec(4, ReadRange32, WriteRange32, short.MinValue, short.MaxValue);
 
+        internal static NumericCodec Fixme32 { get; } = new NumericCodec(4, ReadFixme32, WriteFixme32, -20000, 2000);
+
         private delegate void Int32Writer(Span<byte> data, int value);
         private delegate int Int32Reader(ReadOnlySpan<byte> data);
 
@@ -77,6 +79,24 @@ namespace VDrumExplorer.Model.Schema.Fields
 
         private static void WriteRange32(Span<byte> data, int value)
         {
+            data[0] = (byte) ((value >> 12) & 0xf);
+            data[1] = (byte) ((value >> 8) & 0xf);
+            data[2] = (byte) ((value >> 4) & 0xf);
+            data[3] = (byte) ((value >> 0) & 0xf);
+        }
+
+        // FIXME: I don't really understand these, but they're the reverb values on the AE-10
+
+        private static int ReadFixme32(ReadOnlySpan<byte> data) =>
+            (short)
+            ((data[0] & 0x0700_0000 << 12) |
+            (data[1] << 8) |
+            (data[2] << 4) |
+            (data[3] << 0));
+
+        private static void WriteFixme32(Span<byte> data, int value)
+        {
+            value = value | 0x0800_0000;
             data[0] = (byte) ((value >> 12) & 0xf);
             data[1] = (byte) ((value >> 8) & 0xf);
             data[2] = (byte) ((value >> 4) & 0xf);
