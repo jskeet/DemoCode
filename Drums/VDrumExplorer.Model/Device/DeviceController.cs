@@ -120,12 +120,12 @@ namespace VDrumExplorer.Model.Device
             int completed = 0;
             foreach (var container in containers)
             {
-                progressHandler?.Report(new TransferProgress(completed, containers.Count, $"Copying {container.Path}"));
+                progressHandler?.Report(new TransferProgress(completed, containers.Count, container.Path));
                 var segment = await LoadSegment(container.Address, container.Size, cancellationToken);
                 completed++;
                 snapshot.Add(segment);
             }
-            progressHandler?.Report(new TransferProgress(containers.Count, containers.Count, "Complete"));
+            progressHandler?.Report(new TransferProgress(containers.Count, containers.Count, "complete"));
             return snapshot;
         }
 
@@ -143,8 +143,15 @@ namespace VDrumExplorer.Model.Device
         {
             var timerToken = new CancellationTokenSource(loadSegmentTimeout).Token;
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timerToken).Token;
-            var data = await client.RequestDataAsync(address.DisplayValue, size, effectiveToken);
-            return new DataSegment(address, data);
+            try
+            {
+                var data = await client.RequestDataAsync(address.DisplayValue, size, effectiveToken);
+                return new DataSegment(address, data);
+            }
+            catch (OperationCanceledException) when (timerToken.IsCancellationRequested)
+            {
+                throw new TimeoutException("Timed out waiting for data from device");
+            }
         }
 
         public async Task<string> LoadKitNameAsync(int kit, CancellationToken cancellationToken)
@@ -175,11 +182,11 @@ namespace VDrumExplorer.Model.Device
             int completed = 0;
             foreach (var segment in snapshot.Segments)
             {
-                progressHandler?.Report(new TransferProgress(completed, snapshot.SegmentCount, $"Copying {addressPaths[segment.Address]}"));
+                progressHandler?.Report(new TransferProgress(completed, snapshot.SegmentCount, addressPaths[segment.Address]));
                 await SaveSegment(segment, cancellationToken);
                 completed++;
             }
-            progressHandler?.Report(new TransferProgress(snapshot.SegmentCount, snapshot.SegmentCount, "Complete"));
+            progressHandler?.Report(new TransferProgress(snapshot.SegmentCount, snapshot.SegmentCount, "complete"));
         }
 
         private async Task SaveSegment(DataSegment segment, CancellationToken cancellationToken)

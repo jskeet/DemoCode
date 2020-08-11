@@ -76,7 +76,7 @@ namespace VDrumExplorer.ViewModel.Logging
             {
                 return;
             }
-            var transferViewModel = new DataTransferViewModel<Module>(logger, "Loading module data", device.LoadModuleAsync);
+            var transferViewModel = new DataTransferViewModel<Module>(logger, "Loading module data", "Loading {0}", device.LoadModuleAsync);
             var module = await viewServices.ShowDataTransferDialog(transferViewModel);
             if (module is object)
             {
@@ -93,7 +93,7 @@ namespace VDrumExplorer.ViewModel.Logging
                 return;
             }
             var kitNumber = LoadKitFromDeviceNumber;
-            var transferViewModel = new DataTransferViewModel<Kit>(logger, "Loading kit data", (progress, token) => device.LoadKitAsync(kitNumber, progress, token));
+            var transferViewModel = new DataTransferViewModel<Kit>(logger, "Loading kit data", "Loading {0}", (progress, token) => device.LoadKitAsync(kitNumber, progress, token));
             var kit = await viewServices.ShowDataTransferDialog(transferViewModel);
             if (kit is object)
             {
