@@ -1,5 +1,38 @@
 {
-  "description": "Off",
+  "description": "GM2 Reverb",
   "fields": [
+    {
+      "description": "Character",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 7
+    },
+    {
+      "description": "Pre-LPF",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 7
+    },
+    {
+      "description": "Time",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 64
+    },
+    {
+      "description": "Delay Feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 64
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 64
+    }
   ]
 }
