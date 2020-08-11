@@ -211,7 +211,7 @@ namespace VDrumExplorer.ViewModel.Data
                 return;
             }
             // We may or may not really need to bring up the dialog box, but it's simplest to always do that.
-            var viewModel = new DataTransferViewModel<string>(Logger, "Copying data to device",
+            var viewModel = new DataTransferViewModel<string>(Logger, "Copying data to device", "Copying {0}",
                 async (progress, token) => { await device.SaveDescendants(node, targetAddress, progress, token); return ""; });
             await ViewServices.ShowDataTransferDialog(viewModel);
         }

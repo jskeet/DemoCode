@@ -34,11 +34,18 @@ namespace VDrumExplorer.ViewModel.Dialogs
             protected set => SetProperty(ref total, value);
         }
 
-        private string currentItem = "Progress";
+        private string currentItem = "";
         public string CurrentItem
         {
             get => currentItem;
             protected set => SetProperty(ref currentItem, value);
+        }
+
+        private string progressDescription = "Progress";
+        public string ProgressDescription
+        {
+            get => progressDescription;
+            protected set => SetProperty(ref progressDescription, value);
         }
 
         private bool? dialogResult;
@@ -61,14 +68,16 @@ namespace VDrumExplorer.ViewModel.Dialogs
 
     public sealed class DataTransferViewModel<T> : DataTransferViewModel
     {
+        private readonly string progressFormat;
         private readonly ILogger logger;
         private readonly Func<IProgress<TransferProgress>, CancellationToken, Task<T>> transferFunction;
 
-        public DataTransferViewModel(ILogger logger, string title, Func<IProgress<TransferProgress>, CancellationToken, Task<T>> transferFunction)
+        public DataTransferViewModel(ILogger logger, string title, string progressFormat, Func<IProgress<TransferProgress>, CancellationToken, Task<T>> transferFunction)
             : base(title)
         {
-            this.transferFunction = transferFunction;
             this.logger = logger;
+            this.progressFormat = progressFormat;
+            this.transferFunction = transferFunction;
         }
 
         public async Task<T> TransferAsync()
@@ -87,7 +96,7 @@ namespace VDrumExplorer.ViewModel.Dialogs
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"Failure while loading {CurrentItem}");
+                logger.LogError(e, $"Failure while transferring {CurrentItem}");
                 throw;
             }
             finally
@@ -97,6 +106,6 @@ namespace VDrumExplorer.ViewModel.Dialogs
         }
 
         private void UpdateProgress(TransferProgress progress) =>
-            (Total, Completed, CurrentItem) = (progress.Total, progress.Completed, progress.Current);
+            (Total, Completed, ProgressDescription, CurrentItem) = (progress.Total, progress.Completed, string.Format(progressFormat, progress.Current), progress.Current);
     }
 }

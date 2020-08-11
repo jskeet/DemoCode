@@ -10,7 +10,7 @@
         Style="{StaticResource WindowStyle}"
         Closing="HandleClosing">
     <StackPanel Margin="6">
-        <TextBlock Text="{Binding CurrentItem}" />
+        <TextBlock Text="{Binding ProgressDescription}" />
         <Grid Margin="0,8,0,0" Height="23">
             <ProgressBar Value="{Binding Completed, Mode=OneWay}" Maximum="{Binding Total}" />
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
