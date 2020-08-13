@@ -5,10 +5,11 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Input;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
+using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Proto;
 using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Audio;
@@ -134,7 +135,7 @@ namespace VDrumExplorer.ViewModel.Logging
             object loaded;
             try
             {
-                loaded = ProtoIo.LoadModel(file);
+                loaded = Timing.LogTiming(logger, $"Loaded {Path.GetFileName(file)}", () => ProtoIo.LoadModel(file));
             }
             catch (Exception ex)
             {
