@@ -5,7 +5,9 @@
     <Nullable>Enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
   </ItemGroup>
 </Project>
