@@ -5,3 +5,4 @@
 using System.Runtime.CompilerServices;
 [assembly:InternalsVisibleTo("VDrumExplorer.Model.Test")]
 [assembly:InternalsVisibleTo("VDrumExplorer.Console")]
+[assembly:InternalsVisibleTo("VDrumExplorer.NetFrameworkProfiling")]
