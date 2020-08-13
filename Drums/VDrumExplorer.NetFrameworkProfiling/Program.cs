@@ -2,6 +2,14 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
+using System.Diagnostics;
+using System.Linq;
+using VDrumExplorer.Model;
+using VDrumExplorer.Model.Schema.Physical;
+using VDrumExplorer.Proto;
+using VDrumExplorer.Utility;
+
 namespace VDrumExplorer.NetFrameworkProfiling
 {
     /// <summary>
@@ -14,6 +22,14 @@ namespace VDrumExplorer.NetFrameworkProfiling
     {
         static void Main(string[] args)
         {
+            string file = args[0];
+            for (int i = 0; i < 10; i++)
+            {
+                var model = (Module) Timing.DebugConsoleLogTiming("Loaded model", () => ProtoIo.LoadModel(file));
+
+                var containers = model.Schema.PhysicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
+                Timing.DebugConsoleLogTiming("Populated dictionaries", () => containers.ForEach(fc => fc.GetFieldOrNull("".AsSpan())));
+            }
         }
     }
 }
