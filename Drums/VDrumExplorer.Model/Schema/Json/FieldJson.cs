@@ -217,10 +217,20 @@ namespace VDrumExplorer.Model.Schema.Json
                 Validate(max >= 0, $"Unexpected all-negative field: {name}");
                 Validate(min >= codec.Min, $"Field {name} has min value {min}, below {codec.Min}");
                 Validate(max <= codec.Max, $"Field {name} has max value {max}, above {codec.Max}");
-                return new NumericField(null, BuildCommon(codec.Size),
-                    min, max, GetDefaultValue(), codec,
-                    Divisor, Multiplier, ValueOffset, Suffix,
-                    Off == null ? default((int, string)?) : (Off.Value, OffLabel));
+                if (Values is null)
+                {
+                    // Most numeric fields use divisor, multiplier etc for formatting.
+                    return new NumericField(null, BuildCommon(codec.Size),
+                        min, max, GetDefaultValue(), codec,
+                        Divisor, Multiplier, ValueOffset, Suffix,
+                        Off == null ? default((int, string)?) : (Off.Value, OffLabel));
+                }
+                else
+                {
+                    // Some fields need custom formatting, via the Values array.
+                    return new NumericField(null, BuildCommon(codec.Size),
+                        min, max, GetDefaultValue(), codec, Values.ToReadOnlyList());
+                }
             }
 
             OverlayField BuildOverlay()

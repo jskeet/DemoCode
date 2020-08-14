@@ -36,12 +36,12 @@
       "default": 6
     },
     {
-      // TODO: This is awkward. See Chorus for details.
       "description": "Pre Delay",
       "type": "range32",
       "min": 0,
       "max": 125,
-      "default": 20
+      "default": 20,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
     },
     {
       "description": "Rate",
