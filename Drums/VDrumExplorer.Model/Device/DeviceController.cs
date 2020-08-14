@@ -195,7 +195,8 @@ namespace VDrumExplorer.Model.Device
             progressHandler?.Report(new TransferProgress(snapshot.SegmentCount, snapshot.SegmentCount, "complete"));
         }
 
-        private async Task SaveSegment(DataSegment segment, CancellationToken cancellationToken)
+        // Internal to allow simple changing of MFX in CheckMfxDefaultsCommand.
+        internal async Task SaveSegment(DataSegment segment, CancellationToken cancellationToken)
         {
             client.SendData(segment.Address.DisplayValue, segment.CopyData());
             await Task.Delay(WriteDelay, cancellationToken);

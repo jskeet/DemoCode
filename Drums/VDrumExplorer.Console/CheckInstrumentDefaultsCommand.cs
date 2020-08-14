@@ -31,7 +31,6 @@ namespace VDrumExplorer.Console
         protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
         {
             var kit = context.ParseResult.ValueForOption<int>("kit");
-            var file = context.ParseResult.ValueForOption<string>("file");
             var triggerRoot = device.Schema.GetTriggerRoot(kit, trigger: 1);
             var deviceData = ModuleData.FromLogicalRootNode(triggerRoot);
             var modelData = ModuleData.FromLogicalRootNode(triggerRoot);
