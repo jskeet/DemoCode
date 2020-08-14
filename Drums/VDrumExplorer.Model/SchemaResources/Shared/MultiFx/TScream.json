@@ -5,19 +5,22 @@
       "description": "Distortion",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Tone",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 80
     }
   ]
 }

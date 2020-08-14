@@ -5,25 +5,29 @@
       "description": "Cutoff",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 100
     },
     {
       "description": "Resonance",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 30
     },
     {
       "description": "Drive",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 100
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 50
     }
   ]
 }

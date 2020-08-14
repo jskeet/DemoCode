@@ -6,14 +6,18 @@
       "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300
+      "max": 1300,
+      "default": 150,
+      "noteDefault": 12
     },
     {
       "description": "Delay right",
       "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 1300
+      "max": 1300,
+      "default": 150,
+      "noteDefault": 12
     },
     {
       "description": "Phase Left",
@@ -46,7 +50,8 @@
       "max": 98,
       "valueOffset": -49,
       "multiplier": 2,
-      "suffix": "%"
+      "suffix": "%",
+      "default": 74
     },
     {
       "description": "High Frequency Damp",
@@ -70,7 +75,8 @@
         "6300Hz",
         "8000Hz",
         "Bypass"
-      ]
+      ],
+      "default": 17
     },
     {
       "description": "Low Gain",
@@ -78,7 +84,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "High Gain",
@@ -86,7 +93,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "name": "Placeholder field",
@@ -96,7 +104,8 @@
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     }
   ]
 }

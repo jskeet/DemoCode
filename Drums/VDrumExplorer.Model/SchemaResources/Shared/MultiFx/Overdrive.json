@@ -5,17 +5,20 @@
       "description": "Drive",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     },
     {
       "description": "Tone",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 50
     },
     {
       "description": "Amp Switch",
-      "type": "boolean32"
+      "type": "boolean32",
+      "default": 1
     },
     {
       "description": "Amp Type",
@@ -33,7 +36,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "High Gain",
@@ -41,20 +45,23 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "Pan",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "valueOffset": -64
+      "valueOffset": -64,
+      "default": 64
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     }
   ]
 }

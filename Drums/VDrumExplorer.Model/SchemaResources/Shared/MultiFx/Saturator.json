@@ -5,31 +5,36 @@
       "description": "Saturator Gain",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Saturator Drive",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 90
     },
     {
       "description": "Saturator Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Comp Depth",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Comp Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Hi Gain",
@@ -37,13 +42,15 @@
       "min": 3,
       "max": 21,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 12
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 50
     }
   ]
 }

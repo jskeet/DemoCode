@@ -11,20 +11,23 @@
         "Stage 2",
         "Hall 1",
         "Hall 2"
-      ]
+      ],
+      "default": 2
     },
     {
       // TODO: This is awkward. See Chorus for details.
       "description": "Pre Delay",
       "type": "range32",
       "min": 0,
-      "max": 125
+      "max": 125,
+      "default": 10
     },
     {
       "description": "Time",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "High Frequency Damp",
@@ -48,7 +51,8 @@
         "6300Hz",
         "8000Hz",
         "Bypass"
-      ]
+      ],
+      "default": 17
     },
     {
       "description": "Low Gain",
@@ -56,7 +60,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "High Gain",
@@ -64,7 +69,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "name": "Placeholder field",
@@ -74,7 +80,8 @@
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     }
   ]
 }

@@ -5,21 +5,25 @@
       "description": "Distortion Drive",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 30
     },
     {
       "description": "Distortion Pan",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "valueOffset": -64
+      "valueOffset": -64,
+      "default": 64
     },
     {
       "description": "Delay",
       "type": "tempo",
       "suffix": "ms",
       "min": 1,
-      "max": 2600
+      "max": 2600,
+      "default": 300,
+      "noteDefault": 12
     },
     {
       "description": "Delay Feedback",
@@ -28,7 +32,8 @@
       "max": 98,
       "valueOffset": -49,
       "multiplier": 2,
-      "suffix": "%"
+      "suffix": "%",
+      "default": 74
     },
     {
       "description": "Delay High Frequency Damp",
@@ -52,19 +57,22 @@
         "6300Hz",
         "8000Hz",
         "Bypass"
-      ]
+      ],
+      "default": 17
     },
     {
       "description": "Delay Balance",
       "type": "range32",
       "min": 0,
-      "max": 100
+      "max": 100,
+      "default": 20
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 50
     }
   ]
 }
