@@ -15,12 +15,12 @@
       "default": 2
     },
     {
-      // TODO: This is awkward. See Chorus for details.
       "description": "Pre Delay",
       "type": "range32",
       "min": 0,
       "max": 125,
-      "default": 10
+      "default": 10,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
     },
     {
       "description": "Time",

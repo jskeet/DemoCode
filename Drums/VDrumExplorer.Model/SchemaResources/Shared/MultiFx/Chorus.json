@@ -36,17 +36,12 @@
       "default": 3
     },
     {
-      // TODO: This is awkward.
-      // 0-4.9ms is in 0.1ms increments (50 values)
-      // 5ms-9.5ms is in 0.5ms increments (10 values)
-      // 10ms-49ms is in 1ms increments (40 values)
-      // 50-100ms is in 2ms increments (26 values)
-      // We could use an enum for this, but it'll look pretty nasty. Everything looks nasty...
       "description": "Pre Delay",
       "type": "range32",
       "min": 0,
       "max": 125,
-      "default": 70
+      "default": 70,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
     },
     {
       "description": "Rate",

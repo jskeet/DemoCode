@@ -4,9 +4,9 @@
     {
       "description": "Pre delay",
       "type": "fixme_range32",
-      // FIXME: This has variable-sensitivity
       "min": 0,
-      "max": 100
+      "max": 125,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
     },
     {
       "description": "Time",
