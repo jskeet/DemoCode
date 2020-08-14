@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using VDrumExplorer.Model.Schema.Physical;
+using static System.FormattableString;
 
 namespace VDrumExplorer.Model.Schema.Fields
 {
@@ -12,17 +13,6 @@ namespace VDrumExplorer.Model.Schema.Fields
     public sealed class NumericField : NumericFieldBase
     {
         private readonly NumericFieldParameters numericFieldParameters;
-
-        /// <summary>
-        /// Some fields have a single "special" value (e.g. "Off", or "-INF").
-        /// If this property is non-null, it provides the raw value and appropriate text.
-        /// </summary>
-        public (int value, string text)? CustomValueFormatting => numericFieldParameters.CustomValueFormatting;
-        public string? OffLabel => numericFieldParameters.OffLabel;
-        public int? Divisor => numericFieldParameters.Divisor;
-        public int? Multiplier => numericFieldParameters.Multiplier;
-        public int? ValueOffset => numericFieldParameters.ValueOffset;
-        public string? Suffix => numericFieldParameters.Suffix;
 
         private NumericField(FieldContainer? parent, FieldParameters common,
             NumericFieldBaseParameters numericBaseParameters, NumericFieldParameters numericFieldParameters)
@@ -40,6 +30,9 @@ namespace VDrumExplorer.Model.Schema.Fields
         internal override FieldBase WithParent(FieldContainer parent) =>
             new NumericField(parent, Parameters, NumericBaseParameters, numericFieldParameters);
 
+
+        internal string FormatRawValue(int rawValue) => numericFieldParameters.FormatRawValue(rawValue);
+
         private class NumericFieldParameters
         {
             public (int value, string text)? CustomValueFormatting { get; }
@@ -52,6 +45,24 @@ namespace VDrumExplorer.Model.Schema.Fields
             internal NumericFieldParameters (int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting) =>
                 (Divisor, Multiplier, ValueOffset, Suffix, CustomValueFormatting) =
                 (divisor, multiplier, valueOffset, suffix, customValueFormatting);
+
+            internal string FormatRawValue(int rawValue)
+            {
+                if (CustomValueFormatting is (int customValue, string customValueText) && rawValue == customValue)
+                {
+                    return customValueText;
+                }
+
+                decimal scaled = ScaleRawValueForFormatting(rawValue);
+                return Invariant($"{scaled}{Suffix}");
+            }
+
+            private decimal ScaleRawValueForFormatting(int value)
+            {
+                value += ValueOffset ?? 0;
+                value *= Multiplier ?? 1;
+                return value / (Divisor ?? 1m);
+            }
         }
     }
 }

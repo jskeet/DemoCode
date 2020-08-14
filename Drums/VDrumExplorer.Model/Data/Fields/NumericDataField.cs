@@ -3,34 +3,15 @@
 // as found in the LICENSE.txt file.
 
 using VDrumExplorer.Model.Schema.Fields;
-using static System.FormattableString;
 
 namespace VDrumExplorer.Model.Data.Fields
 {
-    public class NumericDataField : NumericDataFieldBase<NumericField>
+    public sealed class NumericDataField : NumericDataFieldBase<NumericField>
     {
         internal NumericDataField(NumericField field) : base(field)
         {
         }
 
-        public override string FormattedText => GetText();
-
-        private string GetText()
-        {
-            int value = RawValue;
-            if (SchemaField.CustomValueFormatting is (int customValue, string text) && value == customValue)
-            {
-                return text;
-            }
-            decimal scaled = ScaleRawValueForFormatting(value);
-            return Invariant($"{scaled}{SchemaField.Suffix}");
-        }
-
-        private decimal ScaleRawValueForFormatting(int value)
-        {
-            value += SchemaField.ValueOffset ?? 0;
-            value *= SchemaField.Multiplier ?? 1;
-            return value / (SchemaField.Divisor ?? 1m);
-        }
+        public override string FormattedText => SchemaField.FormatRawValue(RawValue);
     }
 }
