@@ -12,17 +12,17 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public sealed class BooleanField : NumericFieldBase
     {
-        private static ConcurrentDictionary<NumericCodec, NumericFieldBaseParameters> parameterCache =
-            new ConcurrentDictionary<NumericCodec, NumericFieldBaseParameters>();
+        private static ConcurrentDictionary<(NumericCodec, int), NumericFieldBaseParameters> parameterCache =
+            new ConcurrentDictionary<(NumericCodec, int), NumericFieldBaseParameters>();
 
         private BooleanField(FieldContainer? parent, FieldParameters common, NumericFieldBaseParameters numericBaseParameters)
             : base(parent, common, numericBaseParameters)
         {
         }
 
-        internal BooleanField(FieldContainer? parent, FieldParameters common, NumericCodec codec)
+        internal BooleanField(FieldContainer? parent, FieldParameters common, NumericCodec codec, int @default = 0)
             : this(parent, common,
-                  parameterCache.GetOrAdd(codec, c => new NumericFieldBaseParameters(min: 0, max: 1, @default: 0, c)))
+                  parameterCache.GetOrAdd((codec, @default), pair => new NumericFieldBaseParameters(min: 0, max: 1, @default: pair.Item2, pair.Item1)))
         {
         }
 

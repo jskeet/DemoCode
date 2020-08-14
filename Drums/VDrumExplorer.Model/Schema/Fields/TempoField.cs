@@ -47,13 +47,13 @@ namespace VDrumExplorer.Model.Schema.Fields
         public NumericField NumericField { get; }
         public EnumField MusicalNoteField { get; }
 
-        internal TempoField(FieldContainer? parent, FieldParameters common, int min, int max, int @default,
+        internal TempoField(FieldContainer? parent, FieldParameters common, int min, int max, int syncDefault, int numericDefault, int noteDefault,
             int? divisor, int? multiplier, int? valueOffset, string? suffix, (int value, string text)? customValueFormatting)
             : this(
                 parent, common,
-                new BooleanField(parent, new FieldParameters(common.Name + "Sync", common.Description + " Sync", common.Offset, 4), NumericCodec.Range32),
-                new NumericField(parent, new FieldParameters(common.Name + "Numeric", common.Description + " FIXME", common.Offset + 4, 4), min, max, @default, NumericCodec.Range32, divisor, multiplier, valueOffset, suffix, customValueFormatting),
-                new EnumField(parent, new FieldParameters(common.Name + "Note", common.Description + " FIXME", common.Offset + 8, 4), MusicalNoteValues, 0, NumericCodec.Range32))
+                new BooleanField(parent, new FieldParameters(common.Name + "Sync", common.Description + " Sync", common.Offset, 4), NumericCodec.Range32, syncDefault),
+                new NumericField(parent, new FieldParameters(common.Name + "Numeric", common.Description + " (Numeric)", common.Offset + 4, 4), min, max, numericDefault, NumericCodec.Range32, divisor, multiplier, valueOffset, suffix, customValueFormatting),
+                new EnumField(parent, new FieldParameters(common.Name + "Note", common.Description + " (Note)", common.Offset + 8, 4), MusicalNoteValues, noteDefault, NumericCodec.Range32))
         {
         }
 
