@@ -115,8 +115,8 @@ namespace VDrumExplorer.Console
                             break;
                         case TempoDataField tempo:
                             yield return tempo.SwitchDataField;
-                            yield return tempo.MusicalNoteDataField;
                             yield return tempo.NumericDataField;
+                            yield return tempo.MusicalNoteDataField;
                             break;
                         default:
                             throw new InvalidOperationException($"Can't convert {field.GetType()} into a numeric field");
