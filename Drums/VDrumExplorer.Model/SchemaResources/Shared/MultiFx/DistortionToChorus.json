@@ -5,21 +5,24 @@
       "description": "Distortion Drive",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     },
     {
       "description": "Distortion Pan",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "valueOffset": -64
+      "valueOffset": -64,
+      "default": 64
     },
     {
       // TODO: This is awkward. See Chorus for details.
       "description": "Pre Delay",
       "type": "range32",
       "min": 0,
-      "max": 125
+      "max": 125,
+      "default": 20
     },
     {
       "description": "Chorus Rate",
@@ -27,26 +30,31 @@
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "suffix": "Hz"
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
     },
     {
       "description": "Chorus Depth",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 20
     },
     {
       "description": "Chorus Balance",
       "type": "range32",
       "min": 0,
-      "max": 100
+      "max": 100,
+      "default": 100
     },
 
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 70
     }
   ]
 }

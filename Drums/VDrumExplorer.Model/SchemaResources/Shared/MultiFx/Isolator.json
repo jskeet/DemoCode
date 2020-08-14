@@ -15,7 +15,8 @@
       "min": 0,
       "max": 64,
       "valueOffset": -60,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 60
     },
     {
       "description": "Boost/Cut High",
@@ -23,7 +24,8 @@
       "min": 0,
       "max": 64,
       "valueOffset": -60,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 60
     },
     {
       "description": "Anti Phase Low Switch",
@@ -33,7 +35,8 @@
       "description": "Anti Phase Low Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     },
     {
       "description": "Anti Phase Mid Switch",
@@ -43,7 +46,8 @@
       "description": "Anti Phase Mid Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     },
     {
       "description": "Low Boost Switch",
@@ -53,13 +57,15 @@
       "description": "Low Boost Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     }
   ]
 }

@@ -7,19 +7,22 @@
       "values": [
         "Low-pass Filter",
         "High-pass Filter"
-      ]
+      ],
+      "default": 1
     },
     {
       "description": "Manual",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 60
     },
     {
       "description": "Peak",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 40
     },
     {
       "description": "Sens",
@@ -41,13 +44,16 @@
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "suffix": "Hz"
+      "suffix": "Hz",
+      "default": 40,
+      "noteDefault": 12
     },
     {
       "description": "Depth",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 60
     },
     {
       "description": "Phase",
@@ -63,7 +69,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "High Gain",
@@ -71,13 +78,15 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 60
     }
   ]
 }

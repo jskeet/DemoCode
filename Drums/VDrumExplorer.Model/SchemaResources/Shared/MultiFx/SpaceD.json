@@ -6,7 +6,8 @@
       "description": "Pre Delay",
       "type": "range32",
       "min": 0,
-      "max": 125
+      "max": 125,
+      "default": 20
     },
     {
       "description": "Rate",
@@ -14,13 +15,16 @@
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "suffix": "Hz"
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
     },
     {
       "description": "Depth",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 20
     },
     {
       "description": "Phase",
@@ -28,7 +32,8 @@
       "min": 0,
       "max": 90,
       "multiplier": 2,
-      "suffix": "deg"
+      "suffix": "deg",
+      "default": 90
     },
     {
       "description": "Low Gain",
@@ -36,7 +41,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "High Gain",
@@ -44,7 +50,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "name": "Placeholder field",
@@ -54,7 +61,8 @@
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 100
     }
   ]
 }

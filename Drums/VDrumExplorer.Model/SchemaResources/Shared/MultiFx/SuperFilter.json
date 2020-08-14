@@ -9,7 +9,8 @@
         "Low Pass Filter",
         "High Pass Filter",
         "Notch"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Filter Slope",
@@ -18,19 +19,22 @@
         "-12dB",
         "-24dB",
         "-36dB"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Filter Cutoff",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 40
     },
     {
       "description": "Filter Resonance",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 40
     },
     {
       "description": "Filter Gain",
@@ -41,7 +45,8 @@
     },
     {
       "description": "Modulation Switch",
-      "type": "boolean32"
+      "type": "boolean32",
+      "default": 1
     },
     {
       "description": "Modulation Wave",
@@ -60,25 +65,30 @@
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "suffix": "Hz"
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
     },
     {
       "description": "Depth",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 80
     },
     {
       "description": "Attack",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 50
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 80
     }
   ]
 }

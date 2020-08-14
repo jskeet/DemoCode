@@ -8,13 +8,15 @@
         "4-Stage",
         "8-Stage",
         "12-Stage"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Manual",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 64
     },
     {
       "description": "Rate",
@@ -22,13 +24,16 @@
       "min": 1,
       "max": 200,
       "divisor": 20,
-      "suffix": "Hz"
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
     },
     {
       "description": "Depth",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 40
     },
     {
       "description": "Polarity",
@@ -36,13 +41,15 @@
       "values": [
         "Inverse",
         "Synchro"
-      ]
+      ],
+      "default": 1
     },
     {
       "description": "Resonance",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 40
     },
     {
       "description": "Cross Feedback",
@@ -51,7 +58,8 @@
       "max": 98,
       "valueOffset": -49,
       "multiplier": 2,
-      "suffix": "%"
+      "suffix": "%",
+      "default": 49
     },
     {
       "name": "Placeholder field",
@@ -63,7 +71,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 12
     },
     {
       "description": "High Gain",
@@ -71,13 +80,15 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 80
     }
   ]
 }

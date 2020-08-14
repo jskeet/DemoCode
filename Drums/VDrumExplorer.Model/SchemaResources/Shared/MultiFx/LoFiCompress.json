@@ -6,14 +6,16 @@
       "type": "range32",
       "min": 0,
       "max": 5,
-      "valueOffset": 1
+      "valueOffset": 1,
+      "default": 1
     },
     {
       "description": "LoFi Type",
       "type": "range32",
       "min": 0,
       "max": 8,
-      "valueOffset": 1
+      "valueOffset": 1,
+      "default": 4
     },
     {
       "description": "PostFilter Type",
@@ -22,7 +24,8 @@
         "Off",
         "Low Pass Filter",
         "High Pass Filter"
-      ]
+      ],
+      "default": 1
     },
     {
       "description": "PostFilter Cutoff",
@@ -45,7 +48,8 @@
         "5000Hz",
         "6300Hz",
         "8000Hz"
-      ]
+      ],
+      "default": 13
     },
     {
       "description": "Low Gain",
@@ -53,7 +57,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "description": "High Gain",
@@ -61,7 +66,8 @@
       "min": 0,
       "max": 30,
       "valueOffset": -15,
-      "suffix": "dB"
+      "suffix": "dB",
+      "default": 15
     },
     {
       "name": "Placeholder field",
@@ -71,7 +77,8 @@
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 100
     }
   ]
 }
