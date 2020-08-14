@@ -3,6 +3,8 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDrumExplorer.Model.Schema.Fields;
@@ -40,8 +42,9 @@ namespace VDrumExplorer.Model.Data.Fields
 
         public override void Reset() => Text = "";
 
-        internal override void Load(DataSegment segment)
+        internal override IEnumerable<DataValidationError> Load(DataSegment segment)
         {
+            // TODO: Really no validation?
             Span<byte> buffer = stackalloc byte[Size];
             segment.ReadBytes(Offset, buffer);
             switch (BytesPerChar)
@@ -60,6 +63,7 @@ namespace VDrumExplorer.Model.Data.Fields
                 default:
                     throw new InvalidOperationException($"Can't get a string with bytesPerChar of {BytesPerChar}");
             }
+            return DataValidationError.None;
         }
 
         private bool TrySetText(string value)

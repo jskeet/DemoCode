@@ -14,6 +14,7 @@ using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Dialogs;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace VDrumExplorer.ViewModel.Data
 {
@@ -155,7 +156,8 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void CancelEdit()
         {
-            data.LoadSnapshot(snapshot!);
+            // We don't really need to log errors here, given that we're going back to where we were.
+            data.LoadSnapshot(snapshot!, NullLogger.Instance);
             ReadOnly = true;
         }
 

@@ -94,7 +94,9 @@ namespace VDrumExplorer.ViewModel.Logging
                 return;
             }
             var kitNumber = LoadKitFromDeviceNumber;
-            var transferViewModel = new DataTransferViewModel<Kit>(logger, "Loading kit data", "Loading {0}", (progress, token) => device.LoadKitAsync(kitNumber, progress, token));
+            var transferViewModel = new DataTransferViewModel<Kit>(
+                logger, "Loading kit data", "Loading {0}",
+                (progress, token) => device.LoadKitAsync(kitNumber, progress, token));
             var kit = await viewServices.ShowDataTransferDialog(transferViewModel);
             if (kit is object)
             {
@@ -135,7 +137,7 @@ namespace VDrumExplorer.ViewModel.Logging
             object loaded;
             try
             {
-                loaded = Timing.LogTiming(logger, $"Loaded {Path.GetFileName(file)}", () => ProtoIo.LoadModel(file));
+                loaded = Timing.LogTiming(logger, $"Loaded {Path.GetFileName(file)}", () => ProtoIo.LoadModel(file, logger));
             }
             catch (Exception ex)
             {

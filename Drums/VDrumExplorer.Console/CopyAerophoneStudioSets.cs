@@ -30,7 +30,7 @@ namespace VDrumExplorer.Console
             var schema = ModuleSchema.KnownSchemas[ModuleIdentifier.AE10].Value;
             var instrumentField = schema.PhysicalRoot.ResolveField("TemporaryStudioSet/Part[1]/Instrument");
             var instrumentDataField = new EnumDataField((EnumField) instrumentField);
-            var deviceController = new DeviceController(client);
+            var deviceController = new DeviceController(client, new ConsoleLogger(console));
 
             var temporaryKitRoot = schema.LogicalRoot.ResolveNode("TemporaryStudioSet");
 

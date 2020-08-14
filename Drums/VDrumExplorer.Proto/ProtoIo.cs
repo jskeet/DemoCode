@@ -3,8 +3,10 @@
 // as found in the LICENSE.txt file.
 
 using Google.Protobuf;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text;
+using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Proto
 {
@@ -20,14 +22,15 @@ namespace VDrumExplorer.Proto
         /// Creates a model from the data in a stream.
         /// </summary>
         /// <param name="stream">The stream to read data from.</param>
+        /// <param name="validationResult">The result of validating the data.</param>
         /// <returns>The model data. The type depends on the data in the stream.</returns>
-        public static object ReadModel(Stream stream)
+        public static object ReadModel(Stream stream, ILogger logger)
         {
             var file = ReadDrumFile(stream);
             return file.FileCase switch
             {
-                DrumFile.FileOneofCase.Kit => (object) file.Kit.ToModel(),
-                DrumFile.FileOneofCase.Module => file.Module.ToModel(),
+                DrumFile.FileOneofCase.Kit => (object) file.Kit.ToModel(logger),
+                DrumFile.FileOneofCase.Module => file.Module.ToModel(logger),
                 DrumFile.FileOneofCase.ModuleAudio => file.ModuleAudio.ToModel(),
                 _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
             };
@@ -38,12 +41,13 @@ namespace VDrumExplorer.Proto
         /// <see cref="ReadModel(Stream)"/> using a file.
         /// </summary>
         /// <param name="file">The file to load.</param>
+        /// <param name="logger">The logger to write validation results to.</param>
         /// <returns>The model data. The type depends on the data in the stream.</returns>
-        public static object LoadModel(string file)
+        public static object LoadModel(string file, ILogger logger)
         {
             using (var stream = File.OpenRead(file))
             {
-                return ReadModel(stream);
+                return ReadModel(stream, logger);
             }
         }
 

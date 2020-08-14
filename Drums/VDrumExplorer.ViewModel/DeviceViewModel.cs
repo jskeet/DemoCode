@@ -33,7 +33,7 @@ namespace VDrumExplorer.ViewModel
         public async Task DetectModule(ILogger logger)
         {
             var client = await MidiDevices.DetectSingleRolandMidiClientAsync(logger, ModuleSchema.KnownSchemas.Keys);
-            ConnectedDevice = client is null ? null : new DeviceController(client);
+            ConnectedDevice = client is null ? null : new DeviceController(client, logger);
             RaisePropertyChanged(nameof(ConnectedDevice));
         }
     }

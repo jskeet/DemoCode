@@ -3,6 +3,8 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
@@ -28,10 +30,25 @@ namespace VDrumExplorer.Model.Data.Fields
 
         public override void Reset() => Instrument = Schema.PresetInstruments[0];
 
-        internal override void Load(DataSegment segment)
+        internal override IEnumerable<DataValidationError> Load(DataSegment segment)
         {
-            index = segment.ReadInt32(Offset, NumericCodec.Range32);
-            bank = (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset, NumericCodec.Range8);
+            var indexValue = segment.ReadInt32(Offset, NumericCodec.Range32);
+            var bankValue = (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset, NumericCodec.Range8);
+
+            if (bankValue == InstrumentBank.Preset && indexValue >= 0 && indexValue < Schema.PresetInstruments.Count)
+            {
+                Instrument = Schema.PresetInstruments[indexValue];
+                return DataValidationError.None;
+            }
+            else if (bankValue == InstrumentBank.UserSamples && indexValue >= 0 && indexValue < Schema.UserSampleInstruments.Count)
+            {
+                Instrument = Schema.UserSampleInstruments[indexValue];
+                return DataValidationError.None;
+            }
+            else
+            {
+                return new[] { new DataValidationError(this, $"Invalid instrument field bank/index combination: {bankValue}/{indexValue}") };
+            }
         }
 
         internal override void Save(DataSegment segment)

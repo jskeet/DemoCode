@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Schema.Logical;
@@ -30,10 +31,10 @@ namespace VDrumExplorer.Model
         /// <param name="moduleSchema">The schema of the module that this kit comes from.</param>
         /// <param name="snapshot">Snapshot of data in the kit, expected to start at the root of the normal "kit 1".</param>
         /// <param name="kitNumber">The (1-based) number of this kit.</param>
-        public static Kit FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber)
+        public static Kit FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, int kitNumber, ILogger logger)
         {
             var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.Kit1Root);
-            moduleData.LoadSnapshot(snapshot);
+            moduleData.LoadSnapshot(snapshot, logger);
             return new Kit(moduleData, kitNumber);
         }
 

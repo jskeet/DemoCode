@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using VDrumExplorer.Model.Data;
 
@@ -18,10 +20,10 @@ namespace VDrumExplorer.Model
 
         public Module(ModuleData data) => (Schema, Data) = (data.Schema, data);
 
-        public static Module FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot)
+        public static Module FromSnapshot(ModuleSchema moduleSchema, ModuleDataSnapshot snapshot, ILogger logger)
         {
             var moduleData = ModuleData.FromLogicalRootNode(moduleSchema.LogicalRoot);
-            moduleData.LoadSnapshot(snapshot);
+            moduleData.LoadSnapshot(snapshot, logger);
             return new Module(moduleData);
         }
 
@@ -40,7 +42,7 @@ namespace VDrumExplorer.Model
             }
             var targetRoot = Schema.GetKitRoot(kitNumber);
             var kitData = kit.Data.CreateSnapshot().Relocated(kit.KitRoot, targetRoot);
-            Data.LoadPartialSnapshot(kitData);
+            Data.LoadPartialSnapshot(kitData, NullLogger.Instance);
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace VDrumExplorer.Model
             var target = Schema.Kit1Root;
             var snapshot = Data.CreatePartialSnapshot(root);
             snapshot = snapshot.Relocated(root, target);
-            return Kit.FromSnapshot(Schema, snapshot, kitNumber);
+            return Kit.FromSnapshot(Schema, snapshot, kitNumber, NullLogger.Instance);
         }
     }
 }

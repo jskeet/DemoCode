@@ -52,7 +52,7 @@ namespace VDrumExplorer.Model.Data.Fields
         {
         }
 
-        internal abstract void Load(DataSegment segment);
+        internal abstract IEnumerable<DataValidationError> Load(DataSegment segment);
         internal abstract void Save(DataSegment segment);
 
         internal static IDataField CreateDataField(IField field, ModuleSchema schema)
