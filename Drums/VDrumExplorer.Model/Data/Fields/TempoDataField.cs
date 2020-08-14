@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,18 +11,20 @@ namespace VDrumExplorer.Model.Data.Fields
 {
     public class TempoDataField : DataFieldBase<TempoField>
     {
-        private readonly BooleanDataField switchDataField;
-        private readonly NumericDataField numericDataField;
-        private readonly EnumDataField musicalNoteDataField;
+        // Visible for tools that find raw values more convenient,
+        // e.g. CheckMfxDefaultsCommand.
+        internal BooleanDataField SwitchDataField { get; }
+        internal NumericDataField NumericDataField { get; }
+        internal EnumDataField MusicalNoteDataField { get; }
 
         internal TempoDataField(TempoField field) : base(field)
         {
-            switchDataField = new BooleanDataField(field.SwitchField);
-            numericDataField = new NumericDataField(field.NumericField);
-            musicalNoteDataField = new EnumDataField(field.MusicalNoteField);
-            switchDataField.PropertyChanged += HandleSwitchPropertyChanged;
-            numericDataField.PropertyChanged += HandleNumericPropertyChanged;
-            musicalNoteDataField.PropertyChanged += HandleMusicalNotePropertyChanged;
+            SwitchDataField = new BooleanDataField(field.SwitchField);
+            NumericDataField = new NumericDataField(field.NumericField);
+            MusicalNoteDataField = new EnumDataField(field.MusicalNoteField);
+            SwitchDataField.PropertyChanged += HandleSwitchPropertyChanged;
+            NumericDataField.PropertyChanged += HandleNumericPropertyChanged;
+            MusicalNoteDataField.PropertyChanged += HandleMusicalNotePropertyChanged;
         }
 
         private void HandleSwitchPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -46,43 +47,43 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         internal override IEnumerable<DataValidationError> Load(DataSegment segment) =>
-            switchDataField.Load(segment)
-                .Concat(numericDataField.Load(segment))
-                .Concat(musicalNoteDataField.Load(segment));
+            SwitchDataField.Load(segment)
+                .Concat(NumericDataField.Load(segment))
+                .Concat(MusicalNoteDataField.Load(segment));
 
         internal override void Save(DataSegment segment)
         {
-            switchDataField.Save(segment);
-            numericDataField.Save(segment);
-            musicalNoteDataField.Save(segment);
+            SwitchDataField.Save(segment);
+            NumericDataField.Save(segment);
+            MusicalNoteDataField.Save(segment);
         }
 
         public bool TempoSync
         {
-            get => switchDataField.Value;
-            set => switchDataField.Value = value;
+            get => SwitchDataField.Value;
+            set => SwitchDataField.Value = value;
         }
 
         public int RawNumericValue
         {
-            get => numericDataField.RawValue;
-            set => numericDataField.RawValue = value;
+            get => NumericDataField.RawValue;
+            set => NumericDataField.RawValue = value;
         }
 
         public string MusicalNote
         {
-            get => musicalNoteDataField.Value;
-            set => musicalNoteDataField.Value = value;
+            get => MusicalNoteDataField.Value;
+            set => MusicalNoteDataField.Value = value;
         }
 
-        public string NumericFormattedText => numericDataField.FormattedText;
-        public override string FormattedText => TempoSync ? $"Tempo sync: {MusicalNote}" : $"Fixed: {numericDataField.FormattedText}";
+        public string NumericFormattedText => NumericDataField.FormattedText;
+        public override string FormattedText => TempoSync ? $"Tempo sync: {MusicalNote}" : $"Fixed: {NumericDataField.FormattedText}";
 
         public override void Reset()
         {
-            switchDataField.Reset();
-            numericDataField.Reset();
-            musicalNoteDataField.Reset();
+            SwitchDataField.Reset();
+            NumericDataField.Reset();
+            MusicalNoteDataField.Reset();
         }
     }
 }

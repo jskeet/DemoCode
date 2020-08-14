@@ -23,6 +23,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ImportKitCommand.Command);
             rootCommand.AddCommand(ShowKitCommand.Command);
             rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
+            rootCommand.AddCommand(CheckMfxDefaultsCommand.Command);
             rootCommand.AddCommand(ShowMidiEventsCommand.Command);
             rootCommand.AddCommand(ShowSchemaStatsCommand.Command);
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
