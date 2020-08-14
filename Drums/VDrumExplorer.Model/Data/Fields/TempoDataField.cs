@@ -2,7 +2,10 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
@@ -42,12 +45,10 @@ namespace VDrumExplorer.Model.Data.Fields
             RaisePropertyChanged(nameof(FormattedText));
         }
 
-        internal override void Load(DataSegment segment)
-        {
-            switchDataField.Load(segment);
-            numericDataField.Load(segment);
-            musicalNoteDataField.Load(segment);
-        }
+        internal override IEnumerable<DataValidationError> Load(DataSegment segment) =>
+            switchDataField.Load(segment)
+                .Concat(numericDataField.Load(segment))
+                .Concat(musicalNoteDataField.Load(segment));
 
         internal override void Save(DataSegment segment)
         {

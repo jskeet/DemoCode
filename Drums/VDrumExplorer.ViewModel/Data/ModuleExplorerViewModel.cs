@@ -64,7 +64,7 @@ namespace VDrumExplorer.ViewModel.Data
             object loaded;
             try
             {
-                loaded = ProtoIo.LoadModel(file);
+                loaded = ProtoIo.LoadModel(file, Logger);
             }
             catch (Exception ex)
             {

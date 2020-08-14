@@ -17,7 +17,7 @@ namespace VDrumExplorer.Console
     {
         protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
         {
-            using (var device = new DeviceController(client))
+            using (var device = new DeviceController(client, new ConsoleLogger(console)))
             {
                 return await InvokeAsync(context, console, device);
             }

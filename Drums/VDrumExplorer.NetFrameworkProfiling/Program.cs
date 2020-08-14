@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace VDrumExplorer.NetFrameworkProfiling
             string file = args[0];
             for (int i = 0; i < 10; i++)
             {
-                var model = (Module) Timing.DebugConsoleLogTiming("Loaded model", () => ProtoIo.LoadModel(file));
+                var model = (Module) Timing.DebugConsoleLogTiming("Loaded model", () => ProtoIo.LoadModel(file, NullLogger.Instance));
 
                 var containers = model.Schema.PhysicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
                 Timing.DebugConsoleLogTiming("Populated dictionaries", () => containers.ForEach(fc => fc.GetFieldOrNull("".AsSpan())));

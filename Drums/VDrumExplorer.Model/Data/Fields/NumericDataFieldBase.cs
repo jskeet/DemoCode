@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections.Generic;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
@@ -38,9 +39,13 @@ namespace VDrumExplorer.Model.Data.Fields
 
         public override void Reset() => RawValue = SchemaField.Default;
 
-        // TODO: Validation? Currently just throws.
-        internal override void Load(DataSegment segment) =>
-            RawValue = segment.ReadInt32(SchemaField.Offset, SchemaField.Codec);
+        internal override IEnumerable<DataValidationError> Load(DataSegment segment)
+        {
+            int rawValue = segment.ReadInt32(SchemaField.Offset, SchemaField.Codec);
+            return TrySetRawValue(rawValue)
+                ? DataValidationError.None
+                : new[] { new DataValidationError(this, $"Invalid raw value {rawValue}") };
+        }
 
         internal override void Save(DataSegment segment) =>
             segment.WriteInt32(SchemaField.Offset, SchemaField.Codec, RawValue);

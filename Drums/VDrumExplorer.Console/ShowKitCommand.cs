@@ -31,7 +31,7 @@ namespace VDrumExplorer.Console
             object loaded;
             try
             {
-                loaded = Proto.ProtoIo.LoadModel(file);
+                loaded = Proto.ProtoIo.LoadModel(file, new ConsoleLogger(console));
             }
             catch (Exception ex)
             {

@@ -4,6 +4,7 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,7 @@ namespace VDrumExplorer.Blazor.Pages
                 await Task.Yield();
                 var schema = ModuleSchema.KnownSchemas[client.Identifier].Value;
                 Log($"Listing {schema.Identifier.Name} kits:");
-                var deviceController = new DeviceController(client);
+                var deviceController = new DeviceController(client, NullLogger.Instance);
                 for (int i = 1; i <= schema.Kits; i++)
                 {
                     var name = await deviceController.LoadKitNameAsync(i, CancellationToken.None);

@@ -89,14 +89,18 @@ namespace VDrumExplorer.Model.Data.Fields
             }
         }
 
-        internal override void Load(DataSegment segment)
+        internal override IEnumerable<DataValidationError> Load(DataSegment segment)
         {
             // FIXME: Can we assume that the switch field has already been loaded? Feels brittle.
             // Probably okay if we validate it in tests.
             switchIndex = GetSwitchIndex();
             foreach (DataFieldBase field in CurrentFieldList.Fields)
             {
-                field.Load(segment);
+                var errors = field.Load(segment);
+                foreach (var error in errors)
+                {
+                    yield return new DataValidationError(error.Field, error.Message, this, CurrentFieldList.Description);
+                }
             }
         }
 

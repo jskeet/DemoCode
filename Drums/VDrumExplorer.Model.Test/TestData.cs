@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging.Abstractions;
 using VDrumExplorer.Proto;
 
 namespace VDrumExplorer.Model.Test
@@ -13,7 +14,8 @@ namespace VDrumExplorer.Model.Test
         {
             using (var stream = typeof(ModuleSchemaTest).Assembly.GetManifestResourceStream("td27.vdrum"))
             {
-                return (Module) ProtoIo.ReadModel(stream);
+                // TODO: Validate that there are no validation errors via a logger.
+                return (Module) ProtoIo.ReadModel(stream, NullLogger.Instance);
             }
         }
     }

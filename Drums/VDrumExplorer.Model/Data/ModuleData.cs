@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -129,7 +130,7 @@ namespace VDrumExplorer.Model.Data
         /// in this object. This is internal as it's inherently somewhat dangerous - it should only be called
         /// for well-defined snapshots, e.g. "a whole kit".
         /// </summary>
-        internal void LoadPartialSnapshot(ModuleDataSnapshot snapshot)
+        internal void LoadPartialSnapshot(ModuleDataSnapshot snapshot, ILogger logger)
         {
             // TODO: This is more awkward than it should be, because we keep a map based on field containers rather than
             // addresses. We could change the map... then we might not need the FieldContainer.AddressComparer, either.
@@ -140,13 +141,18 @@ namespace VDrumExplorer.Model.Data
                     originalSegmentsByFieldContainer[container] = segment.Clone();
                     foreach (DataFieldBase field in fieldList)
                     {
-                        field.Load(segment);
+                        var errors = field.Load(segment);
+                        foreach (var error in errors)
+                        {
+                            // Just treat data validation errors as warnings; they're not *program* errors.
+                            logger.LogWarning(error.ToString());
+                        }
                     }
                 }
             }
         }
 
-        public void LoadSnapshot(ModuleDataSnapshot snapshot)
+        public void LoadSnapshot(ModuleDataSnapshot snapshot, ILogger logger)
         {
             if (snapshot.SegmentCount != fieldsByFieldContainer.Count)
             {
@@ -162,15 +168,7 @@ namespace VDrumExplorer.Model.Data
                 }
             }
 
-            foreach (var (fieldContainer, fieldList) in fieldsByFieldContainer)
-            {
-                var segment = snapshot[fieldContainer.Address];
-                originalSegmentsByFieldContainer[fieldContainer] = segment.Clone();
-                foreach (DataFieldBase field in fieldList)
-                {
-                    field.Load(segment);
-                }
-            }
+            LoadPartialSnapshot(snapshot, logger);
         }
     }
 }

@@ -46,10 +46,11 @@ namespace VDrumExplorer.Console
             var instrumentContainers = triggerRoot.DescendantFieldContainers();
 
             var differences = new List<Difference>();
+            var logger = new ConsoleLogger(console);
             try
             {
                 // Reset the device to an empty snapshot
-                deviceData.LoadSnapshot(defaultValuesSnapshot);
+                deviceData.LoadSnapshot(defaultValuesSnapshot, logger);
                 await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
 
                 foreach (var instrument in device.Schema.PresetInstruments)
@@ -61,7 +62,7 @@ namespace VDrumExplorer.Console
                     await device.LoadDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
 
                     // Make the change in the model.
-                    modelData.LoadSnapshot(defaultValuesSnapshot);
+                    modelData.LoadSnapshot(defaultValuesSnapshot, logger);
                     modelInstrumentField.Instrument = instrument;
 
                     // Compare the two.
@@ -101,7 +102,7 @@ namespace VDrumExplorer.Console
             finally
             {
                 // Restore the original data
-                deviceData.LoadSnapshot(originalSnapshot);
+                deviceData.LoadSnapshot(originalSnapshot, logger);
                 await device.SaveDescendants(deviceDataRoot, targetAddress: null, progressHandler: null, CancellationToken.None);
             }
             console.WriteLine();

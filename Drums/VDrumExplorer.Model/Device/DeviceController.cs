@@ -14,6 +14,7 @@ using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.Model.Schema.Logical;
 using VDrumExplorer.Model.Schema.Physical;
+using Microsoft.Extensions.Logging;
 
 namespace VDrumExplorer.Model.Device
 {
@@ -44,19 +45,24 @@ namespace VDrumExplorer.Model.Device
         /// </summary>
         private readonly RolandMidiClient client;
 
+        /// <summary>
+        /// Logger to use when reporting validation errors.
+        /// </summary>
+        private readonly ILogger logger;
+
         public ModuleSchema Schema { get; }
 
         public string InputName => client.InputName;
 
         public string OutputName => client.OutputName;
 
-        public DeviceController(RolandMidiClient client) : this(client, TimeSpan.FromSeconds(1))
+        public DeviceController(RolandMidiClient client, ILogger logger) : this(client, logger, TimeSpan.FromSeconds(1))
         {
         }
 
-        private DeviceController(RolandMidiClient client, TimeSpan loadSegmentTimeout) =>
-            (this.client, this.loadSegmentTimeout, Schema) =
-            (client, loadSegmentTimeout, ModuleSchema.KnownSchemas[client.Identifier].Value);
+        private DeviceController(RolandMidiClient client, ILogger logger, TimeSpan loadSegmentTimeout) =>
+            (this.client, this.logger, this.loadSegmentTimeout, Schema) =
+            (client, logger, loadSegmentTimeout, ModuleSchema.KnownSchemas[client.Identifier].Value);
 
         public async Task<int> GetCurrentKitAsync(CancellationToken cancellationToken)
         {
@@ -75,13 +81,13 @@ namespace VDrumExplorer.Model.Device
             var kitRoot = Schema.GetKitRoot(kit);
             var snapshot = await LoadDescendantsAsync(kitRoot, progressHandler, cancellationToken);
             snapshot = snapshot.Relocated(kitRoot, Schema.Kit1Root);
-            return Kit.FromSnapshot(Schema, snapshot, kit);
+            return Kit.FromSnapshot(Schema, snapshot, kit, logger);
         }
 
         public async Task<Module> LoadModuleAsync(IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
         {
             var snapshot = await LoadDescendantsAsync(Schema.LogicalRoot, progressHandler, cancellationToken);
-            return Module.FromSnapshot(Schema, snapshot);
+            return Module.FromSnapshot(Schema, snapshot, logger);
         }
 
         public void PlayNote(int channel, int note, int velocity) => client.PlayNote(channel, note, velocity);
@@ -110,7 +116,7 @@ namespace VDrumExplorer.Model.Device
             {
                 snapshot = snapshot.Relocated(node.SchemaNode.Container.Address, target);
             }
-            node.Data.LoadPartialSnapshot(snapshot);
+            node.Data.LoadPartialSnapshot(snapshot, logger);
         }
 
         private async Task<ModuleDataSnapshot> LoadDescendantsAsync(TreeNode root, IProgress<TransferProgress>? progressHandler, CancellationToken cancellationToken)
@@ -169,7 +175,7 @@ namespace VDrumExplorer.Model.Device
                 snapshot.Add(segment);
             }
             var data = ModuleData.FromLogicalRootNode(kitRoot);
-            data.LoadPartialSnapshot(snapshot);
+            data.LoadPartialSnapshot(snapshot, logger);
 
             return Kit.GetKitName(data, kitRoot);
         }
