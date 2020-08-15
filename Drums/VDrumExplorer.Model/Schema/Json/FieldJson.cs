@@ -258,7 +258,20 @@ namespace VDrumExplorer.Model.Schema.Json
                             "Field {0} in overlay list {1} has inappropriate size",
                             field.Name, fieldList.Description);
                     }
-                    return new OverlayField.FieldList(fieldList.Description, ret.Where(field => !(field is PlaceholderField)).ToReadOnlyList());
+                    var fields = ret.Where(field => !(field is PlaceholderField)).ToList();
+                    if (fieldList.Order is List<string> order)
+                    {
+                        Validate(order.Distinct().Count() == order.Count, $"Order has duplicate fields");
+                        Validate(order.Count == fields.Count, $"Order has {order.Count} fields; actual field list has {fields.Count} fields");
+                        fields = order.Select(name =>
+                        {
+                            var field = fields.FirstOrDefault(f => f.Name == name);
+                            Validate(field is object, $"Field {name} from order not found");
+                            return field;
+                        })
+                        .ToList();
+                    }
+                    return new OverlayField.FieldList(fieldList.Description, fields.AsReadOnly());
                 }
             }
 
