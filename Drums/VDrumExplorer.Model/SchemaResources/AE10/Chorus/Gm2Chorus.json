@@ -8,19 +8,22 @@
       "description": "Pre-LPF",
       "type": "fixme_range32",
       "min": 0,
-      "max": 7
+      "max": 7,
+      "default": 2
     },
     {
       "description": "Level",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 6
     },
     {
       "description": "Feedback",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 20
     },
     {
       "description": "Delay",
@@ -32,19 +35,22 @@
       "description": "Rate",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 10
     },
     {
       "description": "Depth",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 18
     },
     {
       "description": "Send to Reverb",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 127
     }
   ]
 }

@@ -8,7 +8,8 @@
       "description": "Character",
       "type": "fixme_range32",
       "min": 0,
-      "max": 7
+      "max": 7,
+      "default": 3
     },
     {
       "description": "Pre-LPF",
@@ -21,21 +22,21 @@
       "type": "fixme_range32",
       "min": 0,
       "max": 127,
-      "default": 64
+      "default": 16
     },
     {
       "description": "Time",
       "type": "fixme_range32",
       "min": 0,
       "max": 127,
-      "default": 64
+      "default": 0
     },
     {
       "description": "Delay Feedback",
       "type": "fixme_range32",
       "min": 0,
       "max": 127,
-      "default": 64
+      "default": 0
     }
   ]
 }

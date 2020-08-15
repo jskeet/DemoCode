@@ -14,7 +14,8 @@
       "description": "Time (left)",
       "type": "fixme_range32",
       "min": 0,
-      "max": 1000
+      "max": 1000,
+      "default": 6
     },
     {
       "description": "placeholder",
@@ -28,7 +29,8 @@
       "description": "Time (right)",
       "type": "fixme_range32",
       "min": 0,
-      "max": 1000
+      "max": 1000,
+      "default": 10
     },
     {
       "description": "placeholder",
@@ -42,7 +44,8 @@
       "description": "Time (center)",
       "type": "fixme_range32",
       "min": 0,
-      "max": 1000
+      "max": 1000,
+      "default": 90
     },
     {
       "description": "placeholder",

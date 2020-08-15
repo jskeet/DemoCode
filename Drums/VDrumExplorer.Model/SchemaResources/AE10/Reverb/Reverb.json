@@ -16,13 +16,15 @@
         "Hall 2",
         "Delay",
         "Pan-Delay"
-      ]
+      ],
+      "default": 3
     },
     {
       "description": "Time",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 84
     },
     {
       "description": "HF Damp",
@@ -46,7 +48,8 @@
         "5000Hz",
         "6400Hz",
         "8000Hz"
-      ]
+      ],
+      "default": 16
     },
     {
       "description": "Delay Feedback",
