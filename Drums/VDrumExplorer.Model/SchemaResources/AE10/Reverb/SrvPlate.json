@@ -14,13 +14,15 @@
       "type": "fixme_range32",
       "min": 0,
       "max": 125,
-      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json",
+      "default": 3
     },
     {
       "description": "Time",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 84
     },
     {
       "description": "Size",

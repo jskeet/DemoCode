@@ -11,7 +11,8 @@
         "Off",
         "LPF",
         "HPF"
-      ]
+      ],
+      "default": 2
     },
     {
       "description": "Filter cutoff",
@@ -36,14 +37,16 @@
         "8000Hz",
         "FIXME",
         "FIXME 2"
-      ]
+      ],
+      "default": 6
     },
     {
       "description": "Pre delay",
       "type": "fixme_range32",
       "min": 0,
       "max": 125,
-      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json",
+      "default": 20
     },
     {
       "description": "placeholder",
@@ -54,13 +57,15 @@
       "type": "fixme_range32",
       "min": 1,
       "max": 200,
-      "divisor": 20
+      "divisor": 20,
+      "default": 10
     },
     {
       "description": "Depth",
       "type": "fixme_range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 18
     },
     {
       "description": "placeholder",
@@ -72,7 +77,8 @@
       "min": 0,
       "max": 90,
       "suffix": "deg",
-      "multiplier": 2
+      "multiplier": 2,
+      "default": 90
     },
     {
       "description": "Feedback",
