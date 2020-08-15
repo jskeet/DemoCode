@@ -29,6 +29,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
             rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
             rootCommand.AddCommand(DumpDataCommand.Command);
+            rootCommand.AddCommand(DumpDeviceSegmentCommand.Command);
             rootCommand.AddCommand(DumpProtoCommand.Command);
             rootCommand.AddCommand(DumpAllDataCommand.Command);
             rootCommand.AddCommand(ProxyMidiCommand.Command);

@@ -145,7 +145,8 @@ namespace VDrumExplorer.Model.Device
             await SaveSegment(segment, cancellationToken);
         }
 
-        private async Task<DataSegment> LoadSegment(ModuleAddress address, int size, CancellationToken cancellationToken)
+        // Internal to allow simple loading of segments in DumpDeviceSegmentCommand.
+        internal async Task<DataSegment> LoadSegment(ModuleAddress address, int size, CancellationToken cancellationToken)
         {
             var timerToken = new CancellationTokenSource(loadSegmentTimeout).Token;
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timerToken).Token;
