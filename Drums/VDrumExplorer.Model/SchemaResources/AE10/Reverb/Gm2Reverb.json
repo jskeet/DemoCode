@@ -1,5 +1,8 @@
 {
   "description": "GM2 Reverb",
+  "order": [
+    "Character", "PreLPF", "Time", "DelayFeedback", "Level"
+  ],
   "fields": [
     {
       "description": "Character",

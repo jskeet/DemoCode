@@ -1,5 +1,8 @@
 {
   "description": "GM2 Chorus",
+  "order": [
+    "Delay", "Rate", "Depth", "PreLPF", "Feedback", "Level", "SendToReverb"
+  ],
   "fields": [
     {
       "description": "Pre-LPF",

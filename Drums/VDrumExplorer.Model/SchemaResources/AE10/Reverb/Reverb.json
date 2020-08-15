@@ -1,5 +1,8 @@
 {
   "description": "Reverb",
+  "order": [
+    "Type", "Time", "HFDamp", "DelayFeedback"
+  ],
   "fields": [
     {
       "description": "Type",

@@ -1,5 +1,10 @@
 {
   "description": "Delay",
+  "order": [
+    "TimeLeft", "TimeCenter", "TimeRight",
+    "LevelLeft", "LevelCenter", "LevelRight",
+    "CenterFeedback", "HFDamp"
+  ],
   "fields": [
     {
       "description": "placeholder",
