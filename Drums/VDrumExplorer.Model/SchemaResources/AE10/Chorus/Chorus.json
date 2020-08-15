@@ -1,40 +1,13 @@
 {
-  "description": "Off",
+  "description": "Chorus",
   "fields": [
-    {
-      "description": "Pre delay",
-      "type": "fixme_range32",
-      "min": 0,
-      "max": 125,
-      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
-    },
-    {
-      "description": "Rate",
-      "type": "fixme_range32",
-      "min": 0,
-      "max": 199,
-      "valueOffset": 1,
-      "divisor": 20
-    },
-    {
-      "description": "Depth",
-      "type": "fixme_range32",
-      "min": 0,
-      "max": 127
-    },
-    {
-      "description": "Feedback",
-      "type": "fixme_range32",
-      "min": 0,
-      "max": 127
-    },
     {
       "description": "Filter type",
       "type": "fixme_enum32",
-      "valuesByNumber": [
-        [0, "Off"],
-        [5, "LPF"],
-        [10, "HPF"]
+      "values": [
+        "Off",
+        "LPF",
+        "HPF"
       ]
     },
     {
@@ -63,11 +36,46 @@
       ]
     },
     {
+      "description": "Pre delay",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 125,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Rate",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20
+    },
+    {
+      "description": "Depth",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
       "description": "Phase",
       "type": "fixme_range32",
       "min": 0,
-      "max": 180,
-      "suffix": "deg"
+      "max": 90,
+      "suffix": "deg",
+      "multiplier": 2
+    },
+    {
+      "description": "Feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
     }
   ]
 }

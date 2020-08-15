@@ -1,5 +1,47 @@
 {
-  "description": "Off",
+  "description": "GM2 Chorus",
   "fields": [
+    {
+      "description": "Pre-LPF",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 7
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Delay",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Rate",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Depth",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Send to Reverb",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }

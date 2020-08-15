@@ -1,5 +1,97 @@
 {
-  "description": "Off",
+  "description": "Delay",
   "fields": [
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Time (left)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Time (right)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Time (center)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Center feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 99,
+      "multiplier": 2,
+      "valueOffset": -49
+    },
+    {
+      "description": "HF Damp",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "320Hz",
+        "400Hz",
+        "500Hz",
+        "640Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3200Hz",
+        "4000Hz",
+        "5000Hz",
+        "6400Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "description": "Level (left)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level (right)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level (center)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    }
   ]
 }
