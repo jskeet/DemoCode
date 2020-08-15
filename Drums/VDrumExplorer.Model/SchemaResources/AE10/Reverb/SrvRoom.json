@@ -17,8 +17,9 @@
     {
       "description": "Size",
       "type": "fixme_range32",
-      "min": 1,
-      "max": 8
+      "min": 0,
+      "max": 7,
+      "valueOffset": 1
     },
     {
       "description": "High cut",
@@ -60,24 +61,74 @@
       "max": 127
     },
     {
-      "description": "Equalizer switch",
-      "type": "fixme_boolean32"
-    },
-    {
-      "description": "Equalizer high freq",
+      "description": "Low freq damp (frequency)",
       "type": "fixme_enum32",
       "values": [
+        "50Hz",
+        "64Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz",
+        "250Hz",
+        "320Hz",
+        "400Hz",
+        "500Hz",
+        "640Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
         "2000Hz",
-        "4000Hz",
-        "8000Hz"
+        "2500Hz",
+        "3200Hz",
+        "4000Hz"
       ]
     },
     {
-      "description": "Equality high freq gain",
+      "description": "Low freq damp (gain)",
       "type": "fixme_range32",
-      "min": -15,
-      "max": 15,
-      "suffix": "dB"
+      "min": 0,
+      "max": 36,
+      "suffix": "dB",
+      "valueOffset": -36
+    },
+    {
+      "description": "High freq damp (frequency)",
+      "type": "fixme_enum32",
+      "values": [
+        "4000Hz",
+        "5000Hz",
+        "6400Hz",
+        "8000Hz",
+        "10000Hz",
+        "12500Hz"
+      ]
+    },
+    {
+      "description": "High freq damp (gain)",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 36,
+      "suffix": "dB",
+      "valueOffset": -36
+    },
+    {
+      "description": "Equalizer low freq",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "400Hz"
+      ]
+    },
+    {
+      "description": "Equality low freq gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15,
     },
     {
       "description": "Equalizer mid freq",
@@ -103,6 +154,14 @@
       ]
     },
     {
+      "description": "Equality mid freq gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15
+    },
+    {
       "description": "Equality mid freq Q",
       "type": "fixme_enum32",
       "values": [
@@ -114,30 +173,33 @@
       ]
     },
     {
-      "description": "Equality mid freq gain",
-      "type": "fixme_range32",
-      "min": -15,
-      "max": 15,
-      "suffix": "dB"
-    },
-    {
-      "description": "Equalizer low freq",
+      "description": "Equalizer high freq",
       "type": "fixme_enum32",
       "values": [
-        "200Hz",
-        "400Hz"
+        "2000Hz",
+        "4000Hz",
+        "8000Hz"
       ]
     },
     {
-      "description": "Equality low freq gain",
+      "description": "Equality high freq gain",
       "type": "fixme_range32",
-      "min": -15,
-      "max": 15,
-      "suffix": "dB"
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15
     },
     {
-      "description": "Compressor switch",
+      "description": "Equalizer switch",
       "type": "fixme_boolean32"
+    },
+    {
+      "description": "Compressor post gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 18,
+      "suffix": "dB",
+      "valueOffset": -18
     },
     {
       "description": "Compressor attack",
@@ -152,11 +214,8 @@
       "max": 127
     },
     {
-      "description": "Compressor post gain",
-      "type": "fixme_range32",
-      "min": -18,
-      "max": 0,
-      "suffix": "dB"
+      "description": "Compressor switch",
+      "type": "fixme_boolean32"
     }
   ]
 }
