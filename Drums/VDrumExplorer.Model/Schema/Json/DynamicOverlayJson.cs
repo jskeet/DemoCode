@@ -33,6 +33,7 @@ namespace VDrumExplorer.Model.Schema.Json
 
         internal sealed class OverlaidFieldListJson
         {
+            public List<string>? Order { get; set; }
             public string? Description { get; set; }
             public List<FieldJson>? Fields { get; set; }
         }
