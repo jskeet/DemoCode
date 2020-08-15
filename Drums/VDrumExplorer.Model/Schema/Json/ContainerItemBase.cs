@@ -42,7 +42,7 @@ namespace VDrumExplorer.Model.Schema.Json
 
         internal virtual void ValidateJson(ModuleJson module)
         {
-            ResolvedName = Validation.ValidateNotNull(Name ?? ToPascalCase(Description), "Neither Name nor Description is set");
+            ResolvedName = Validation.ValidateNotNull(Name ?? ToPascalCase(Description), "Name or Description");
             ResolvedDescription = Description ?? Name;
         }
 

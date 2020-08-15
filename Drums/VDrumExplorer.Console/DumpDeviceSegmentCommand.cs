@@ -55,6 +55,7 @@ namespace VDrumExplorer.Console
 
             if (interpret)
             {
+                console.WriteLine();
                 console.WriteLine("Interpreted data:");
                 var data = ModuleData.FromLogicalRootNode(root);
                 var snapshot = new ModuleDataSnapshot();
