@@ -1,5 +1,8 @@
 {
   "description": "Chorus",
+  "order": [
+    "PreDelay", "Rate", "Depth", "Feedback", "FilterType", "FilterCutoff", "Phase"
+  ],
   "fields": [
     {
       "description": "Filter type",

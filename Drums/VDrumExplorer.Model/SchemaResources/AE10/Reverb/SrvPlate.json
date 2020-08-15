@@ -1,5 +1,13 @@
 {
   "description": "Srv Plate",
+  "order": [
+    "PreDelay", "Time", "Size", "HighCut", "Density", "Diffusion",
+    "HighFreqDampFrequency", "HighFreqDampGain", "LowFreqDampFrequency", "LowFreqDampGain",
+    "EqualizerSwitch", "EqualizerHighFreq", "EqualizerHighFreqGain",
+    "EqualizerMidFreq", "EqualizerMidFreqQ", "EqualizerMidFreqGain",
+    "EqualizerLowFreq", "EqualizerLowFreqGain",
+    "CompressorSwitch", "CompressorAttack", "CompressorThreshold", "CompressorPostGain"
+  ],
   "fields": [
     {
       "description": "Pre delay",
@@ -123,12 +131,12 @@
       ]
     },
     {
-      "description": "Equality low freq gain",
+      "description": "Equalizer low freq gain",
       "type": "fixme_range32",
       "min": 0,
       "max": 30,
       "suffix": "dB",
-      "valueOffset": -15,
+      "valueOffset": -15
     },
     {
       "description": "Equalizer mid freq",
@@ -154,7 +162,7 @@
       ]
     },
     {
-      "description": "Equality mid freq gain",
+      "description": "Equalizer mid freq gain",
       "type": "fixme_range32",
       "min": 0,
       "max": 30,
@@ -162,7 +170,7 @@
       "valueOffset": -15
     },
     {
-      "description": "Equality mid freq Q",
+      "description": "Equalizer mid freq Q",
       "type": "fixme_enum32",
       "values": [
         "0.5",
@@ -182,7 +190,7 @@
       ]
     },
     {
-      "description": "Equality high freq gain",
+      "description": "Equalizer high freq gain",
       "type": "fixme_range32",
       "min": 0,
       "max": 30,
