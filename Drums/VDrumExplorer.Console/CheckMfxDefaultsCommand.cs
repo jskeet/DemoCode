@@ -11,13 +11,10 @@ using System.CommandLine.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Fields;
-using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Model.Device;
 using VDrumExplorer.Model.Schema.Fields;
-using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Console
 {
@@ -28,23 +25,20 @@ namespace VDrumExplorer.Console
             Description = "Checks the default settings for each MFX option",
             Handler = new CheckMfxDefaultsCommand(),
         }
-        .AddRequiredOption<int>("--kit", "Kit number to interact with");
+        .AddRequiredOption<string>("--path", "Path to logical node containing MFX")
+        .AddOptionalOption("--switch", "Field name for switch", "Type")
+        .AddOptionalOption("--parameters", "Field name for parameters", "Parameters");
 
         protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
         {
-            var kitNumber = context.ParseResult.ValueForOption<int>("kit");
+            var path = context.ParseResult.ValueForOption<string>("path");
+            var switchFieldName = context.ParseResult.ValueForOption<string>("switch");
+            var parametersFieldName = context.ParseResult.ValueForOption<string>("parameters");
 
-            // TODO: This is fine for drums, but maybe have the same for an Aerophone?
-            if (device.Schema.Identifier.Name != "TD-27")
-            {
-                console.WriteLine($"MFX checking is only supported on the TD-27 (for simplicity)");
-                return 1;
-            }
-
-            var mfxNode = device.Schema.GetKitRoot(kitNumber).ResolveNode("MultiFX[1]");
+            var mfxNode = device.Schema.LogicalRoot.ResolveNode(path);
             var mfxContainer = mfxNode.Container;
-            var typeField = (EnumField) mfxContainer.ResolveField("Type");
-            var parametersField = (OverlayField) mfxContainer.ResolveField("Parameters");
+            var switchField = (EnumField) mfxContainer.ResolveField(switchFieldName);
+            var parametersField = (OverlayField) mfxContainer.ResolveField(parametersFieldName);
 
             var deviceData = ModuleData.FromLogicalRootNode(mfxNode);
             var deviceParametersField = (OverlayDataField) deviceData.GetDataField(parametersField);
@@ -54,18 +48,19 @@ namespace VDrumExplorer.Console
             var originalSnapshot = deviceData.CreateSnapshot();
 
             var modelData = ModuleData.FromLogicalRootNode(mfxNode);
-            var modelTypeField = (EnumDataField) modelData.GetDataField(typeField);
+            var modelTypeField = (EnumDataField) modelData.GetDataField(switchField);
             var modelParametersField = (OverlayDataField) modelData.GetDataField(parametersField);
 
             try
             {
                 // Set it to the max value so that we'll be resetting it.
-                await SetDeviceMfx(typeField.Max);
-                for (int mfxType = typeField.Min; mfxType <= typeField.Max; mfxType++)
+                await SetDeviceMfx(switchField.Max);
+                for (int mfxType = switchField.Min; mfxType <= switchField.Max; mfxType++)
                 {
                     // Make the change on the device...
                     await SetDeviceMfx(mfxType);
                     await device.LoadDescendants(deviceData.LogicalRoot, null, null, default);
+
                     // Make the change in the model...
                     modelTypeField.RawValue = mfxType;
 
@@ -100,7 +95,7 @@ namespace VDrumExplorer.Console
 
             async Task SetDeviceMfx(int type)
             {
-                var segment = new DataSegment(mfxContainer.Address + typeField.Offset, new[] { (byte) type });
+                var segment = new DataSegment(mfxContainer.Address + switchField.Offset, new[] { (byte) type });
                 await device.SaveSegment(segment, CancellationToken.None);
             }
 
