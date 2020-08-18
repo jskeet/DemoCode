@@ -1,5 +1,124 @@
 {
   "description": "Humanizer",
+  "order": [
+    "DriveSwitch",
+    "Drive",
+    "Vowel1",
+    "Vowel2",
+    "Rate",
+    "Depth",
+    "InputSyncSwitch",
+    "InputSyncThreshold",
+    "Manual",
+    "HighGain",
+    "LowGain",
+    "Pan",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Drive switch",
+      "type": "fixme_boolean32"
+    },
+    {
+      "description": "Drive",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Vowel 1",
+      "type": "fixme_enum32",
+      "values": [
+        "a",
+        "e",
+        "i",
+        "o",
+        "u"
+      ]
+    },
+    {
+      "description": "Vowel 2",
+      "type": "fixme_enum32",
+      "values": [
+        "a",
+        "e",
+        "i",
+        "o",
+        "u"
+      ]
+    },  {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Rate",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "default": 10,
+      "suffix": "Hz"
+    },
+        {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Depth",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    
+    {
+      "description": "Input sync switch",
+      "type": "fixme_boolean32"
+    },
+    {
+      "description": "Input sync threshold",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Manual",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Pan",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64,
+      "default": 64
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

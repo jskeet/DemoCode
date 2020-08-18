@@ -1,5 +1,75 @@
 {
   "description": "Gated Reverb",
+  "order": [
+    "Type",
+    "PreDelay",
+    "GateTime",
+    "HighGain",
+    "LowGain",
+    "Balance",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Type",
+      "type": "fixme_enum32",
+      "values": [
+        "Normal",
+        "Reverse",
+        "Sweep 1",
+        "Sweep 2"
+      ],
+      "default": 0
+    },
+    {
+      "description": "Pre delay",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 125,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json",
+      "default": 20
+    },
+    {
+      "description": "Gate time",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 99,
+      "multiplier": 5,
+      "valueOffset": 1,
+      "suffix": "ms"
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Balance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "default": 100,
+      "values": "$resource:../Shared/CustomNumeric/Balance.json"
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

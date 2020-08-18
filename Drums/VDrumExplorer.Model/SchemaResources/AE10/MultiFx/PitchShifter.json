@@ -1,5 +1,92 @@
 {
   "description": "Pitch Shifter",
+  "order": [
+    "Coarse",
+    "Fine",
+    "DelayTime",
+    "Feedback",
+    "HighGain",
+    "LowGain",
+    "Balance",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Coarse",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 36,
+      "valueOffset": -24,
+      "default": 29,
+      "suffix": "semi"
+    },
+    {
+      "description": "Fine",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "valueOffset": -50,
+      "default": 50,
+      "multiplier": 2,
+      "suffix": "cent"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Delay time",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 1300,
+      "suffix": "ms"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%",
+      "default": 49
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Balance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "values": "$resource:../Shared/CustomNumeric/Balance.json"
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

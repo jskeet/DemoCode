@@ -1,5 +1,145 @@
 {
   "description": "3-Tap Pan Delay",
+  "order": [
+    "DelayLeft", "DelayCenter", "DelayRight", "CenterFeedback", "HFDamp",
+    "LeftLevel", "CenterLevel", "RightLevel", "HighGain", "LowGain", "Balance", "Level"
+  ],
   "fields": [
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      // 2
+      "description": "Delay left",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 2600,
+      "suffix": "ms"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      // 5
+      "description": "Delay right",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 2600,
+      "suffix": "ms"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      // 8
+      "description": "Delay center",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 2600,
+      "suffix": "ms"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      // 10
+      "description": "Center feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 98,
+      "multiplier": 2,
+      "valueOffset": -49,
+      "suffix": "%"
+    },
+    {
+      // 11
+      "description": "HF Damp",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "320Hz",
+        "400Hz",
+        "500Hz",
+        "640Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3200Hz",
+        "4000Hz",
+        "5000Hz",
+        "6400Hz",
+        "8000Hz",
+        "Bypass"
+      ]
+    },
+    {
+      "description": "Left level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Right level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Center level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Balance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "default": 50
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

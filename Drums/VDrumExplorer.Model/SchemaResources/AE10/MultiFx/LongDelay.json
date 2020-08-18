@@ -1,5 +1,115 @@
 {
   "description": "Long Delay",
+  "order": [
+    "DelayTime",
+    "Phase",
+    "Feedback",
+    "HFDamp",
+    "Pan",
+    "HighGain",
+    "LowGain",
+    "Balance",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Delay time",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 2600,
+      "default": 800,
+      "suffix": "ms"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Phase",
+      "type": "fixme_enum32",
+      "values": [
+        "Normal",
+        "Inverse"
+      ]
+    },
+    {
+      "description": "Feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 99,
+      "multiplier": 2,
+      "valueOffset": -49,
+      "Suffix": "%"
+    },
+    {
+      "description": "HF Damp",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ],
+      "default": 17
+    },
+    {
+      "description": "Pan",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64,
+      "default": 64
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Balance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "values": "$resource:../Shared/CustomNumeric/Balance.json"
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }
