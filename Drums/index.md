@@ -14,6 +14,9 @@ skeet@pobox.com or [file an
 issue](https://github.com/jskeet/DemoCode/issues/new) to let me know
 how you get on with this.
 
+**Note: this user guide is accurate to 1.0.0-alpha05; it needs
+updating for 1.0.0-alpha06, with new screenshots etc.**
+
 # Requirements
 
 - Windows 8.1 or Windows 10
@@ -22,7 +25,7 @@ how you get on with this.
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha05/VDrumExplorer-Setup-1.0.0-alpha05.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha06/VDrumExplorer-Setup-1.0.0-alpha06.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -35,12 +38,15 @@ you're using the zip file, you want to run VDrumExplorer.Wpf.exe.
 If Windows SmartScreen gives a warning, click on "More Info", check that it is signed
 by me ("Jonathan Skeet") and then choose the option to run it.
 
-**Important note for drum kit connection**
+**Important notes for drum kit connection**
 
 The USB Driver Mode must be "vendor" for the V-Drum Explorer to
 detect it. The "generic" USB mode is the factory default, so you'll
 need to change this (which includes a drum kit reboot) before
 starting the Explorer.
+
+Additionally, in MIDI settings, the "Receive Exclusive" option must
+be set to "On".
 
 # Usage
 
@@ -370,6 +376,26 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha06 (2020-08-11)
+
+This is the first version with a complete new user interface
+implementation. While much of it looks the same as previous
+versions, it's all changed under the hood - which means there may
+well be some bugs lurking. On the other hand, there are plenty of
+new features too:
+
+- Better instrument recording and a cleaner Instrument Explorer
+  interface.
+- Early support for the Aerophone AE-10. Yes, I realize
+  the Aerophone isn't a drum kit, but it uses the same protocol
+  for configuration (at least largely). There are various known
+  issues with this at the moment, particularly around the
+  Chorus/Reverb/MFX schema being very, very incomplete.
+- "Schema Explorer" allowing you to inspect the containers and
+  fields for any supported instrument.
+- Many updates to schema aspects which were inaccurate in previous
+  releases.
 
 ## Version 1.0.0-alpha05 (2020-05-24)
 
