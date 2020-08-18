@@ -18,6 +18,10 @@
       "type": "range8",
       "min": 0,
       "max": 127
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder296"
     }
   ]
 }

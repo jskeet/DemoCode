@@ -26,6 +26,10 @@
       "min": 0,
       "max": 127,
       "valueOffset": 1
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder608"
     }
   ]
 }

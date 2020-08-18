@@ -203,6 +203,10 @@
     {
       "description": "Receive Bender",
       "type": "boolean"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder64"
     }
   ]
 }
