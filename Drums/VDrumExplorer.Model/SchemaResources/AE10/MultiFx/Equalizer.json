@@ -1,5 +1,142 @@
 {
   "description": "Equalizer",
+  "order": [
+    "HighFreq",
+    "HighFreqGain",
+    "Mid1Freq",
+    "Mid1FreqQ",
+    "Mid1FreqGain",
+    "Mid2Freq",
+    "Mid2FreqQ",
+    "Mid2FreqGain",
+    "LowFreq",
+    "LowFreqGain",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Low freq",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "400Hz"
+      ]
+    },
+    {
+      "description": "Low freq gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15
+    },
+    {
+      "description": "Mid 1 freq",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz"
+      ]
+    },
+    {
+      "description": "Mid 1 freq gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15
+    },
+    {
+      "description": "Mid 1 freq Q",
+      "type": "fixme_enum32",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ]
+    },
+    {
+      "description": "Mid 2 freq",
+      "type": "fixme_enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz"
+      ]
+    },
+    {
+      "description": "Mid 2 freq gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15
+    },
+    {
+      "description": "Mid 2 freq Q",
+      "type": "fixme_enum32",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ]
+    },
+    {
+      "description": "High freq",
+      "type": "fixme_enum32",
+      "values": [
+        "2000Hz",
+        "4000Hz",
+        "8000Hz"
+      ]
+    },
+    {
+      "description": "High freq gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "suffix": "dB",
+      "valueOffset": -15
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

@@ -1,5 +1,65 @@
 {
   "description": "Gate",
+  "order": [
+    "Threshold",
+    "Mode",
+    "Attack",
+    "Hold",
+    "Release",
+    "Balance",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Threshold",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 0
+    },
+    {
+      "description": "Mode",
+      "type": "fixme_enum32",
+      "values": [
+        "Gate",
+        "Duck"
+      ],
+      "default": 0
+    },
+    {
+      "description": "Attack",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 0
+    },
+    {
+      "description": "Hold",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 0
+    },
+    {
+      "description": "Release",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 0
+    },
+    {
+      "description": "Balance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "default": 100
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

@@ -1,5 +1,41 @@
 {
   "description": "Telephone",
+  "order": [
+    "VoiceQuality",
+    "Treble",
+    "Balance",
+    "Level"
+    ],
   "fields": [
+    {
+      "description": "Voice quality",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 15,
+      "default": 6
+    },
+    {
+      "description": "Treble",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "default": 15,
+      "valueOffset": -15
+    },
+    {
+      "description": "Balance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 100,
+      "default": 100,
+      "values": "$resource:../Shared/CustomNumeric/Balance.json"
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

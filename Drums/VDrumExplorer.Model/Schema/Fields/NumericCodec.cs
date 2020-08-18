@@ -14,7 +14,7 @@ namespace VDrumExplorer.Model.Schema.Fields
         internal static NumericCodec Full24 { get; } = new NumericCodec(3, ReadFull24, WriteFull24, 0, (1 << 21) - 1);
         internal static NumericCodec Range32 { get; } = new NumericCodec(4, ReadRange32, WriteRange32, short.MinValue, short.MaxValue);
 
-        internal static NumericCodec Fixme32 { get; } = new NumericCodec(4, ReadFixme32, WriteFixme32, -20000, 2000);
+        internal static NumericCodec Fixme32 { get; } = new NumericCodec(4, ReadFixme32, WriteFixme32, -16384, 16383);
 
         private delegate void Int32Writer(Span<byte> data, int value);
         private delegate int Int32Reader(ReadOnlySpan<byte> data);

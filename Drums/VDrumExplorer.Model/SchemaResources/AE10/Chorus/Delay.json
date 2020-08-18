@@ -57,7 +57,8 @@
       "min": 0,
       "max": 99,
       "multiplier": 2,
-      "valueOffset": -49
+      "valueOffset": -49,
+      "Suffix": "%"
     },
     {
       "description": "HF Damp",

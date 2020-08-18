@@ -1,5 +1,64 @@
 {
   "description": "Distortion",
+  "order": [
+    "Drive",
+    "AmpType",
+    "HighGain",
+    "LowGain",
+    "Pan",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Drive",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Amp type",
+      "type": "fixme_enum32",
+      "values": [
+        "Small",
+        "Built-in",
+        "2-stack",
+        "3-stack"
+      ],
+      "default": 1
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Pan",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64,
+      "default": 64
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

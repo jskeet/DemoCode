@@ -1,5 +1,117 @@
 {
   "description": "Phaser",
+  "order": [
+    "Mode",
+    "Manual",
+    "Rate",
+    "Depth",
+    "Polarity",
+    "Resonance",
+    "CrossFeedback",
+    "Mix",
+    "HighGain",
+    "LowGain",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Mode",
+      "type": "fixme_enum32",
+      "values": [
+        "4-Stage",
+        "8-Stage",
+        "12-Stage"
+      ],
+      "default": 0
+    },
+    {
+      "description": "Manual",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 30
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Rate",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "default": 14,
+      "suffix": "Hz"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Depth",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 60
+    },
+    {
+      "description": "Polarity",
+      "type": "fixme_enum32",
+      "values": [
+        "Inverse",
+        "Synchro"
+      ],
+      "default": 1
+    },
+    {
+      "description": "Resonance",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 72
+    },
+    {
+      "description": "Cross feedback",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%",
+      "default": 49
+    },
+    {
+      "description": "Mix",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
   ]
 }

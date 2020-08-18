@@ -1,5 +1,156 @@
 {
   "description": "Rotary",
+  "order": [
+    "Speed",
+    "Brake",
+    "TweeterSlowSpeed",
+    "TweeterFastSpeed",
+    "TweeterTransUp",
+    "TweeterTransDown",
+    "TweeterLevel",
+    "WooferSlowSpeed",
+    "WooferFastSpeed",
+    "WooferTransUp",
+    "WooferTransDown",
+    "WooferLevel",
+    "Spread",
+    "HighGain",
+    "LowGain",
+    "Type",
+    "Level"
+  ],
   "fields": [
+    {
+      "description": "Speed",
+      "type": "fixme_enum32",
+      "values": [
+        "Slow",
+        "Fast"
+      ],
+      "default": 0
+    },
+    {
+      "description": "Brake",
+      "type": "fixme_boolean32"
+    },
+    {
+      "description": "Woofer slow speed",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "default": 12,
+      "suffix": "Hz"
+    },
+    {
+      "description": "Woofer fast speed",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "default": 120,
+      "suffix": "Hz"
+    },
+    {
+      "description": "Woofer trans up",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 127,
+      "default": 60
+    },
+    {
+      "description": "Woofer trans down",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 127,
+      "default": 80
+    },
+    {
+      "description": "Woofer level",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Tweeter slow speed",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "default": 6,
+      "suffix": "Hz"
+    },
+    {
+      "description": "Tweeter fast speed",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "default": 140,
+      "suffix": "Hz"
+    },
+    {
+      "description": "Tweeter trans up",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 127,
+      "default": 80
+    },
+    {
+      "description": "Tweeter trans down",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 127,
+      "default": 80
+    },
+    {
+      "description": "Tweeter level",
+      "type": "fixme_range32",
+      "min": 1,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Spread",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 10,
+      "default": 10
+    },
+    {
+      "description": "Low gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Level",
+      "type": "fixme_range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Type",
+      "type": "fixme_enum32",
+      "values": [
+        "Standard",
+        "Stack",
+        "Clean"
+      ]
+    }
   ]
 }
