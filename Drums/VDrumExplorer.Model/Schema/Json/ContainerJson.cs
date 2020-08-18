@@ -4,6 +4,7 @@
 
 #nullable disable warnings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Model.Schema.Fields;
@@ -99,12 +100,23 @@ namespace VDrumExplorer.Model.Schema.Json
             var resolved = new List<FieldBase>();
             foreach (var field in Fields)
             {
-                var lastField = resolved.LastOrDefault();
-                var offset = lastField?.Offset + lastField?.Size ?? ModuleOffset.Zero;
-                resolved.AddRange(field.ToFields(module, offset));
+                resolved.AddRange(field.ToFields(module, CurrentSize()));
+            }
+            var actualSize = CurrentSize().LogicalValue;
+            var expectedSize = ModuleOffset.FromDisplayValue(Size.Value).LogicalValue;
+            if (actualSize != expectedSize)
+            {
+                throw new InvalidOperationException(
+                    $"Incorrect size in container {NameInModuleDictionary}: expected {expectedSize}; was {actualSize}");
             }
             // Skip placeholder fields so they're never exposed.
             return resolved.Where(field => !(field is PlaceholderField)).ToReadOnlyList();
+
+            ModuleOffset CurrentSize()
+            {
+                var field = resolved.LastOrDefault();
+                return field?.Offset + field?.Size ?? ModuleOffset.Zero;
+            }
         }
 
         public IContainer ToContainer(ModuleSchema schema, ModuleJson module, string name, string description, ModuleAddress address, string? parentPath, SchemaVariables variables)
