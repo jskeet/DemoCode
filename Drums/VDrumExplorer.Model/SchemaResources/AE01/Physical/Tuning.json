@@ -1,0 +1,45 @@
+﻿{
+  "size": "0x6",
+  "fields": [
+    {
+      "description": "Tuning",
+      "type": "enum",
+      "values": [
+        "440Hz",
+        "442Hz"
+      ]
+    },
+    // Note: this is also in Setup
+    {
+      "description": "Transpose",
+      "type": "range8",
+      "min": 0,
+      "max": 11,
+      "valueOffset": -5,
+      "default": 5
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Reverb",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Octave shift",
+      "type": "range8",
+      "min": 62,
+      "max": 66,
+      "valueOffset": -64,
+      "default": 64
+    }
+  ]
+}

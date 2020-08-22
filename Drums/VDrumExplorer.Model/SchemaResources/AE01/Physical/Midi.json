@@ -1,0 +1,78 @@
+﻿{
+  "size": "0x24",
+  "fields": [
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "MIDI transmit channel",
+      "type": "range8",
+      "min": 0,
+      "max": 15,
+      "valueOffset": 1
+    },
+    {
+      "description": "Velocity",
+      "type": "range8",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder96"
+    },
+    {
+      "description": "Breath 1 Type",
+      "type": "range8",
+      "min": 0,
+      "max": 96
+      // TODO: Make these readable
+    },
+    {
+      "description": "Breath 1 minimum",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 1 maximum",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Breath 2 Type",
+      "type": "range8",
+      "min": 0,
+      "max": 96
+      // TODO: Make these readable
+    },
+    {
+      "description": "Breath 2 minimum",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Breath 2 maximum",
+      "type": "range8",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder120"
+    }
+  ]
+}
+
+// 00273301: MIDI transmit channel
+// 0027330F: Breath 1 CC
+// 00273310: Breath 1 min
+// 00273311: Breath 1 max
+// 00273312: Breath 2 CC
+// 00273313: Breath 2 min
+// 00273314: Breath 2 max

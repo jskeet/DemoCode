@@ -1,0 +1,107 @@
+﻿{
+  "size": "0x3a",
+  "fields": [
+    {
+      "description": "placeholder",
+      "type": "placeholder96"
+    },
+    {
+      "description": "Disable key (1)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Disable key (2)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Key delay",
+      "type": "range8",
+      "min": 0,
+      "max": 10
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Breath adjust",
+      "type": "enum",
+      "valuesByNumber": [
+        [ 20, "1" ],
+        [ 40, "2" ],
+        [ 60, "3" ],
+        [ 80, "4" ],
+        [ 100, "5" ],
+        [ 101, "Auto" ]
+      ],
+      "default": 101
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Breath curve",
+      "type": "enum",
+      "values": [
+        "L2",
+        "L1",
+        "M",
+        "H1",
+        "H2"
+      ],
+      "min": 1,
+      "default": 3
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder104"
+    },
+    {
+      "description": "Tone",
+      "type": "enum",
+      "values": [
+        "Saxophone",
+        "Flute",
+        "Clarinet",
+        "Trumpet",
+        "Violin",
+        "Saw Lead"
+      ]
+    },
+    // Note: this is also in Tuning
+    {
+      "description": "Transpose",
+      "type": "range8",
+      "min": 0,
+      "max": 11,
+      "valueOffset": -5,
+      "default": 5
+    },
+    {
+      "description": "Volume",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "default": 2,
+      "valueOffset": 1
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder64"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder112"
+    }
+  ]
+}
+

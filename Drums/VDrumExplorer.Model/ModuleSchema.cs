@@ -28,6 +28,7 @@ namespace VDrumExplorer.Model
         public static IReadOnlyDictionary<ModuleIdentifier, Lazy<ModuleSchema>> KnownSchemas { get; }
             = new Dictionary<ModuleIdentifier, Lazy<ModuleSchema>>
             {
+                { ModuleIdentifier.AE01, LazyFromAssemblyResources("SchemaResources.AE01", "AE01.json") },
                 { ModuleIdentifier.AE10, LazyFromAssemblyResources("SchemaResources.AE10", "AE10.json") },
                 { ModuleIdentifier.TD17, LazyFromAssemblyResources("SchemaResources.TD17", "TD17.json") },
                 { ModuleIdentifier.TD27, LazyFromAssemblyResources("SchemaResources.TD27", "TD27.json") },

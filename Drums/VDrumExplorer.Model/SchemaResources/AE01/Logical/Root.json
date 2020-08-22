@@ -1,0 +1,84 @@
+{
+  "name": "Root",
+  "format": "Root",
+  "path": ".",
+  "details": [
+    {
+      "description": "Setup",
+      "path": "Setup"
+    },
+    {
+      "description": "Fingering",
+      "path": "Fingering"
+    },
+    {
+      "description": "Tuning",
+      "path": "Tuning"
+    },
+    {
+      "description": "MIDI",
+      "path": "Midi"
+    },
+    {
+      "description": "System",
+      "path": "System"
+    }
+  ],
+  "children": [
+    {
+      "name": "Setup",
+      "format": "Setup",
+      "path": "Setup",
+      "details": [
+        {
+          "description": "Setup",
+          "path": "."
+        }
+      ]
+    },
+    {
+      "name": "Fingering",
+      "format": "Fingering",
+      "path": "Fingering",
+      "details": [
+        {
+          "description": "Fingering",
+          "path": "."
+        }
+      ]
+    },
+    {
+      "name": "Tuning",
+      "format": "Tuning",
+      "path": "Tuning",
+      "details": [
+        {
+          "description": "Tuning",
+          "path": "."
+        }
+      ]
+    },
+    {
+      "name": "Midi",
+      "format": "MIDI",
+      "path": "Midi",
+      "details": [
+        {
+          "description": "MIDI",
+          "path": "."
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "format": "System",
+      "path": "System",
+      "details": [
+        {
+          "description": "System",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}

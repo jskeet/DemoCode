@@ -28,6 +28,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ShowSchemaStatsCommand.Command);
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
             rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
+            rootCommand.AddCommand(DumpAerophoneMiniCommand.Command);
             rootCommand.AddCommand(DumpDataCommand.Command);
             rootCommand.AddCommand(DumpDeviceSegmentCommand.Command);
             rootCommand.AddCommand(DumpProtoCommand.Command);
