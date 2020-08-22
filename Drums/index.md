@@ -15,7 +15,7 @@ issue](https://github.com/jskeet/DemoCode/issues/new) to let me know
 how you get on with this.
 
 **Note: this user guide is accurate to 1.0.0-alpha05; it needs
-updating for 1.0.0-alpha06, with new screenshots etc.**
+updating for 1.0.0-alpha06+, with new screenshots etc.**
 
 # Requirements
 
@@ -25,7 +25,7 @@ updating for 1.0.0-alpha06, with new screenshots etc.**
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha06/VDrumExplorer-Setup-1.0.0-alpha06.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha07/VDrumExplorer-Setup-1.0.0-alpha07.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -376,6 +376,22 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha07 (2020-08-22)
+
+- Added non-crashing validation while loading data
+- Fix MFX default values
+- Populate schema for AE-10 Chorus, Reverb and MFX
+- Fixes to TD-50 schema (fixes #120)
+- **Highly** experimental support for the Aerophone Mini (AE-01)
+
+(The Aerophone Mini doesn't have a MIDI implementation document, so
+this is all based on observed values after modifying the
+configuration using the app. There's all kinds of oddness that I
+haven't tried to address yet. I've no idea what happens if you try
+to set things that should be read-only, like the version number.
+Custom fingering is only present for "fingering 1" because the UI
+for it is basically not there yet. But hey, it's a start...)
 
 ## Version 1.0.0-alpha06 (2020-08-11)
 
