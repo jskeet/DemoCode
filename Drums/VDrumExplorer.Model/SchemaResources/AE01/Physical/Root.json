@@ -1,0 +1,25 @@
+﻿{
+  "containers": [
+    {
+      "name": "System",
+      "offset": "0x00_27_32_00"
+    },
+    {
+      "name": "Setup",
+      "offset": "0x00_27_34_00"
+    },
+    {
+      "name": "Midi",
+      "description": "MIDI",
+      "offset": "0x00_27_33_00"
+    },
+    {
+      "name": "Fingering",
+      "offset": "0x00_35_00_00"
+    },
+    {
+      "name": "Tuning",
+      "offset": "0x00_42_00_00"
+      }
+  ]
+}

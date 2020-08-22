@@ -1,0 +1,105 @@
+﻿{
+  "size": "0x15",
+  "fields": [
+    // TODO:
+    // a) these should be read-only somehow
+    // b) the build should be a single field, displayed in hex.
+    {
+      "description": "Major version",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Minor version",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Build (1)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Build (2)",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },    
+    {
+      "description": "placeholder",
+      "type": "placeholder24"
+    },
+    {
+      "description": "Auto off",
+      "type": "enum",
+      "values": [
+        "Off",
+        "5 minutes",
+        "30 minutes"
+      ]
+    },
+    {
+      "description": "Speaker",
+      "type": "enum",
+      "values": [
+        "Auto",
+        "On"
+      ]
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Bluetooth ID",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "off": 0
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Aerophone/App",
+      "type": "enum",
+      "values": [
+        "Aerophone",
+        "App"
+      ]
+    },
+    {
+      "description": "Beep",
+      "type": "enum",
+      "values": [
+        "On",
+        "Off"
+      ]
+    }
+  ]
+}
+// 00273207: Auto off
+// 00273208: Speaker auto/on
+// 0027320A: Bluetooth
+// 00273210: Aerophone sound vs app sound?
+// 00273214: Beep off/on (reversed)

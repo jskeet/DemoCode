@@ -1,0 +1,91 @@
+﻿{
+  "size": "0x51",
+  "fields": [
+    {
+      "description": "Fingering mode",
+      "type": "enum",
+      "valuesByNumber": [
+        [ 1, "Recorder" ],
+        [ 3, "Trumpet" ]
+      ],
+      "default": 1
+    },
+
+    // Fingering 1
+    {
+      "description": "Fingering 1 switch",
+      "type": "boolean"
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Fingering 1 transpose up button",
+      "type": "enum",
+      "valuesByNumber": [
+        [ 0, "Off" ],
+        [ 2, "On" ]
+      ]
+    },
+    {
+      "description": "placeholder",
+      "type": "placeholder16"
+    },
+    {
+      // FIXME
+      "description": "Fingering 1 buttons X",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      // FIXME
+      "description": "Fingering 1 buttons Y",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      // FIXME
+      "description": "Fingering 1 pitch",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Placeholder for other fingerings, 9*8=72, 72 bytes = 576 bits",
+      "type": "placeholder576"
+    }
+  ]
+}
+
+// 00350000: Trumpet/recorder fingering
+// 00350001: Fingering edit 1 on/off
+// 00350003/4: Fingering edit 1 transposition buttons:
+//             Transpose up: 00 02
+//             Transpose down: 00 02
+// 00350003-7: Fingering edit 1 buttons:
+//             00 00 00 1f 60: All off
+//             00 00 00 00 25: Top button
+//             00 00 00 00 65: Top two
+//             00 00 00 01 65: Top three
+//             02 00 00 01 65: Top four
+//             02 00 00 21 65: Top five
+//             02 00 00 23 65: Top six
+//             02 00 00 27 65: Top seven
+//             02 00 00 2f 65: Top eight
+//             02 00 00 3f 65: All on
+// So:
+// - all off is weird
+// - byte 7, 0x20 = button 1
+// - byte 7, 0x40 = button 2
+// - byte 6, 0x01 = button 3
+// - byte 3, 0x02 = button 4 (transpose up)
+// - byte 6, 0x20 = button 5 (transpose down)
+// - byte 6, 0x02 = button 6
+// - byte 6, 0x04 = button 7
+// - byte 6, 0x08 = button 8
+// - byte 6, 0x10 = button 9
+// 00350008: Fingering edit 1 note
+// 00350009: Fingering edit 2 on/off
