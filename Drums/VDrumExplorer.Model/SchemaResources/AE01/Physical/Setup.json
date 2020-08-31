@@ -1,6 +1,7 @@
 ﻿{
   "size": "0x3a",
   "fields": [
+    // 0x00_27_34_00
     {
       "description": "placeholder",
       "type": "placeholder96"
@@ -27,6 +28,7 @@
       "description": "placeholder",
       "type": "placeholder8"
     },
+    // 0x00_27_34_10
     {
       "description": "Breath adjust",
       "type": "enum",
@@ -63,7 +65,12 @@
     },
     {
       "description": "placeholder",
-      "type": "placeholder104"
+      "type": "placeholder96"
+    },
+    // 0x00_27_34_20
+    {
+      "description": "placeholder",
+      "type": "placeholder8"
     },
     {
       "description": "Tone",
