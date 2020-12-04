@@ -1,0 +1,72 @@
+﻿<Window x:Class="CameraControl.Visca.Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:webEye="clr-namespace:WebEye.StreamControl.Wpf;assembly=WebEye.StreamControl.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Camera settings" Grid.Row="0" Grid.Column="0" Margin="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0">IP address</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,3,0,0">RTSP URL</TextBlock>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" x:Name="ipAddress">192.168.1.189</TextBox>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="5,3,0,0" x:Name="rtspUrl">rtsp://192.168.1.189:554/1</TextBox>
+                <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Margin="0,3,0,0" Click="Connect">Connect</Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Camera controls" Grid.Row="0" Grid.Column="1" Margin="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <UniformGrid Columns="3" Rows="4" Width="Auto" Grid.RowSpan="4">
+                    <Button PreviewMouseLeftButtonDown="ContinuousUpLeft" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f874;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousUp" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f871;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousUpRight" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f875;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousLeft" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f870;</Button>
+                    <Button Click="MoveToHome">O</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousRight" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f872;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousDownLeft" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f877;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousDown" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f873;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousDownRight" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f876;</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousZoomIn" PreviewMouseLeftButtonUp="StopContinuousZoom">+</Button>
+                    <Button PreviewMouseLeftButtonDown="ContinuousZoomOut" PreviewMouseLeftButtonUp="StopContinuousZoom">-</Button>
+                </UniformGrid>
+                <TextBlock Grid.Column="1" Grid.Row="0" Margin="8">Pan/tilt speed</TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="1" Margin="8">Zoom speed</TextBlock>
+                <Slider Grid.Column="2" Grid.Row="0" Width="50" VerticalAlignment="Center" Minimum="1" Maximum="24" Margin="3" Value="12" x:Name="panTiltSpeed"/>
+                <Slider Grid.Column="2" Grid.Row="1" Width="50" VerticalAlignment="Center" Minimum="1" Maximum="7" Margin="3" Value="4" x:Name="zoomSpeed"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Camera stream" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="3">
+            <webEye:StreamControl x:Name="cameraStream" PreserveStreamAspectRatio="True" />
+        </GroupBox>
+    </Grid>
+</Window>
