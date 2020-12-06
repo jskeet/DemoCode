@@ -43,26 +43,31 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <UniformGrid Columns="3" Rows="4" Width="Auto" Grid.RowSpan="4">
-                    <Button PreviewMouseLeftButtonDown="ContinuousUpLeft" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f874;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousUp" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f871;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousUpRight" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f875;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousLeft" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f870;</Button>
-                    <Button Click="MoveToHome">O</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousRight" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f872;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousDownLeft" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f877;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousDown" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f873;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousDownRight" PreviewMouseLeftButtonUp="StopContinuousPanTilt">&#x1f876;</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousZoomIn" PreviewMouseLeftButtonUp="StopContinuousZoom">+</Button>
-                    <Button PreviewMouseLeftButtonDown="ContinuousZoomOut" PreviewMouseLeftButtonUp="StopContinuousZoom">-</Button>
-                </UniformGrid>
-                <TextBlock Grid.Column="1" Grid.Row="0" Margin="8">Pan/tilt speed</TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="1" Margin="8">Zoom speed</TextBlock>
-                <Slider Grid.Column="2" Grid.Row="0" Width="50" VerticalAlignment="Center" Minimum="1" Maximum="24" Margin="3" Value="12" x:Name="panTiltSpeed"/>
-                <Slider Grid.Column="2" Grid.Row="1" Width="50" VerticalAlignment="Center" Minimum="1" Maximum="7" Margin="3" Value="4" x:Name="zoomSpeed"/>
+                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
+                        Width="100" Height="100"
+                        PreviewMouseLeftButtonDown="AdjustContinuousPanTilt"
+                        PreviewMouseLeftButtonUp="StopContinuousPanTilt"
+                        PreviewMouseMove="AdjustContinuousPanTilt"
+                        x:Name="panButton"
+                        Content="Pan/Tilt"/>
+                <Button Grid.Row="3" Grid.Column="0"
+                        PreviewMouseLeftButtonDown="AdjustContinuousZoom"
+                        PreviewMouseLeftButtonUp="StopContinuousZoom"
+                        PreviewMouseMove="AdjustContinuousZoom"
+                        x:Name="zoomButton"
+                        Content="-     Zoom     +"/>
+                <TextBlock Grid.Column="1" Grid.Row="0" Margin="8">Pan speed:</TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="1" Margin="8">Tilt speed:</TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="3" Margin="8">Zoom speed:</TextBlock>
+                <TextBlock Grid.Column="2" Grid.Row="0" Margin="8" Text="{Binding PanSpeed}" />
+                <TextBlock Grid.Column="2" Grid.Row="1" Margin="8" Text="{Binding TiltSpeed}" />
+                <TextBlock Grid.Column="2" Grid.Row="3" Margin="8" Text="{Binding ZoomSpeed}" />
+                <Button Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" Click="Reset">Reset</Button>
             </Grid>
         </GroupBox>
         <GroupBox Header="Camera stream" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="3">
