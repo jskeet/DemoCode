@@ -89,7 +89,7 @@ namespace CameraControl.Visca
         public async Task PowerOff(CancellationToken cancellationToken = default) =>
             await SendAsync(cancellationToken, 0x81, 0x01, 0x04, 0x00, 0x03, 0xff);
 
-        public void Dispose() => client.Dispose();
+        public void Dispose() => client?.Dispose();
 
         public async Task<PowerStatus> GetPowerStatus(CancellationToken cancellationToken = default)
         {
