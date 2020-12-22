@@ -44,8 +44,6 @@ namespace CameraControl.Visca.Demo
         private void StopContinuousPanTilt(object sender, MouseButtonEventArgs e) => SetPanTiltSpeed(0, 0);
         private void StopContinuousZoom(object sender, MouseButtonEventArgs e) => SetZoomSpeed(0);
 
-        private void MoveToHome(object sender, RoutedEventArgs e) => controller?.GoHome(default);
-
         private void AdjustContinuousPanTilt(object sender, MouseButtonEventArgs e) =>
             AdjustContinuousPanTilt(sender, (MouseEventArgs) e);
 
