@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace CameraControl.Visca
 {
-    // TODO: This should probably contain the stream, and we should just create a new buffer when necessary.
-
     /// <summary>
     /// A read buffer for VISCA packets. 
     /// </summary>
@@ -24,7 +22,7 @@ namespace CameraControl.Visca
             size = 0;
         }
 
-        internal async Task<byte[]> ReadAsync(Stream stream, CancellationToken cancellationToken)
+        internal async Task<ViscaPacket> ReadAsync(Stream stream, CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -34,11 +32,12 @@ namespace CameraControl.Visca
                 }
                 if (size == buffer.Length)
                 {
+                    // TODO: Should our buffer be smaller?
                     throw new ViscaProtocolException($"Read {size} bytes without a reaching the end of a VISCA packet");
                 }
                 using (var registration = cancellationToken.Register(() => stream.Close()))
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, size, buffer.Length - size);
+                    int bytesRead = await stream.ReadAsync(buffer, size, buffer.Length - size).ConfigureAwait(false);
                     if (bytesRead == 0)
                     {
                         throw new ViscaProtocolException("Reached end of VISCA stream");
@@ -60,17 +59,19 @@ namespace CameraControl.Visca
                 return null;
             }
 
-            byte[] Consume(int count)
+            ViscaPacket Consume(int count)
             {
-                byte[] ret = new byte[count];
-                Buffer.BlockCopy(buffer, 0, ret, 0, count);
+                // Exclude the trailing byte from the packet
+                var packet = ViscaPacket.FromBytes(buffer, 0, count - 1);
                 size -= count;
-                // Shift the content of the array if we need to
+                // Shift the content of the array if we need to.
+                // (Alternatively, we could construct the packet from middle of the byte array,
+                // and only shift when we got near the end of the buffer. It really shouldn't matter much though.)
                 if (size != 0)
                 {
                     Buffer.BlockCopy(buffer, count, buffer, 0, size);
                 }
-                return ret;
+                return packet;
             }
         }
     }

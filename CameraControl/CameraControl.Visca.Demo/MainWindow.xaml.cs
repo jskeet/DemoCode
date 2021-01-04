@@ -30,7 +30,7 @@ namespace CameraControl.Visca.Demo
 
         private void Connect(object sender, RoutedEventArgs e)
         {
-            controller = new ViscaController(ipAddress.Text, 5678);
+            controller = ViscaController.ForTcp(ipAddress.Text, 5678);
             var rtspStream = WebEye.Stream.FromUri(
                 uri: new Uri(rtspUrl.Text),
                 connectionTimeout: TimeSpan.FromSeconds(10),
