@@ -3,11 +3,14 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CameraControl.Visca
 {
     /// <summary>
-    /// Exception to indicate that the camera stream has violated the VISCA protocol.
+    /// Represents a transport-level failure in VISCA communications.
+    /// This is not thrown when a camera reports an error.
     /// </summary>
     public class ViscaProtocolException : Exception
     {
