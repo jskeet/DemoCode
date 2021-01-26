@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="OscMixerControl.Wpf.Views.ChannelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OscMixerControl.Wpf.Views"
+             mc:Ignorable="d" 
+             xmlns:vm="clr-namespace:OscMixerControl.Wpf.ViewModels"
+             d:DataContext="{d:DesignInstance vm:ChannelViewModel}">
+    <Grid Width="70">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <!-- Not quite sure why we need this, but making the previous column definition 1* changes row heights for some reason.-->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}" />
+        <Slider Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="3,0,3,0" Orientation="Vertical" Minimum="0" Maximum="1024" Height="100" Value="{Binding FaderLevel}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Output,Converter={StaticResource MeterTextConverter}}"/>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+            <ProgressBar Orientation="Vertical" Minimum="-25600" Maximum="0" Value="{Binding Output, Mode=OneWay}" HorizontalAlignment="Left" MinWidth="5" Height="80" />
+            <ProgressBar Margin="3,0,0,0" Orientation="Vertical" Minimum="-25600" Maximum="0"
+                         Value="{Binding Output2, Mode=OneWay}" HorizontalAlignment="Left" MinWidth="5" Height="80"
+                         Visibility="{Binding HasOutput2, Converter={StaticResource VisibilityConverter}}" />
+        </StackPanel>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FaderLevel, Converter={StaticResource VolumeConverter}}" />
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Visibility="{Binding HasMute}">
+            <CheckBox IsChecked="{Binding Muted}" />
+            <TextBlock Padding="3,0,0,0">Muted</TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>
