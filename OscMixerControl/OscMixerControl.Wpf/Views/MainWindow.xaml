@@ -1,0 +1,139 @@
+﻿<Window x:Class="OscMixerControl.Wpf.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OscMixerControl.Wpf"
+        xmlns:v="clr-namespace:OscMixerControl.Wpf.Views"
+        xmlns:vm="clr-namespace:OscMixerControl.Wpf.ViewModels"
+        mc:Ignorable="d"
+        Title="OSC Mixer" Height="450" Width="850"
+        d:DataContext="{d:DesignInstance vm:MainWindowViewModel}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="15" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="15" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Client" Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Vertical" Grid.IsSharedSizeScope="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="Col0" Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0">Mixer address</TextBlock>
+                    <TextBox Grid.Column="1" Grid.Row="0" Margin="5,3,0,0" Text="{Binding MixerAddress}" MinWidth="200" />
+                    <TextBlock Grid.Column="0" Grid.Row="1">Mixer port</TextBlock>
+                    <TextBox Grid.Column="1" Grid.Row="1" Margin="5,3,0,0" Text="{Binding MixerPort}" MinWidth="200" />
+                    <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,3,0,0" Click="Connect" Content="Connect" HorizontalAlignment="Left" />
+                    <TextBlock Grid.Column="0" Grid.Row="3" Margin="0,13,0,0">Command address</TextBlock>
+                    <TextBox Grid.Column="1" Grid.Row="3" Margin="5,13,0,0" Text="{Binding CommandViewModel.Address}" MinWidth="200" />
+                </Grid>
+                <ItemsControl ItemsSource="{Binding CommandViewModel.Parameters}" KeyboardNavigation.IsTabStop="False">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Col0" Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,3,0,0" Text="{Binding Title}"/>
+                                <TextBox Grid.Column="1" Grid.Row="0" Margin="5,3,0,0" Text="{Binding Text, ValidatesOnExceptions=true, UpdateSourceTrigger=PropertyChanged}" MinWidth="200" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="Col0" Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,3,0,0" Click="SendCommand" Content="Send Command" HorizontalAlignment="Left" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <GridSplitter Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Height="5" Margin="0,5,0,5" />
+        <GroupBox Header="Log" Grid.Row="2" Grid.Column="0" DataContext="{Binding LogViewModel}">
+            <local:BetterScrollViewer Grid.Row="1" AutoScrollAtBottom="True" Margin="3">
+                <ItemsControl ItemsSource="{Binding LogEntries}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Grid.IsSharedSizeScope="True" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Col0" Width="Auto" />
+                                    <ColumnDefinition SharedSizeGroup="Col1" Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Timestamp}" />
+                                <TextBlock Grid.Column="1" Text="{Binding LevelText}" Margin="8,0,0,0" Foreground="{Binding Level, Converter={StaticResource LevelConverter}}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Text}" Margin="8,0,0,0" ToolTip="{Binding ToolTip}" TextWrapping="Wrap"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </local:BetterScrollViewer>
+        </GroupBox>
+        <GridSplitter Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Width="5" Grid.RowSpan="3" Margin="5,0,5,0"/>
+        <GroupBox Header="Mixer" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" DataContext="{Binding MixerViewModel}">
+            <StackPanel Orientation="Vertical">
+                <!-- Occasionally useful for diagnostics, but spammy due to meters.
+                <StackPanel Margin="0,3,0,3" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding LogPackets}" />
+                    <TextBlock Margin="5,0,0,0">Log received packets</TextBlock>
+                </StackPanel>
+                -->
+                <GroupBox Header="Inputs">
+                <ItemsControl ItemsSource="{Binding InputChannels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <v:ChannelControl />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                </GroupBox>
+                <GroupBox Header="Outputs" Margin="0,10,0,0">
+                <ItemsControl ItemsSource="{Binding OutputChannels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <v:ChannelControl />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                </GroupBox>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>
