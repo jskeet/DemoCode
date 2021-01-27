@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Text;
-using System;
 using System.Threading.Tasks;
 
 namespace ZoneClock
