@@ -56,7 +56,6 @@ namespace OscMixerControl.Wpf.ViewModels
             }            
         }
 
-        public Task SubscribeToData() => Model.SubscribeToData();
         public Task RequestDataOnce() => Model.RequestDataOnce();
     }
 }

@@ -18,18 +18,30 @@ namespace OscMixerControl.Wpf.Models
     /// 
     /// This can be used for main channels and buses.
     /// </summary>
-    public class Channel : INotifyPropertyChanged
+    public class Channel : INotifyPropertyChanged, IDisposable
     {
         private readonly Mixer mixer;
         private readonly string nameAddress;
         private readonly string faderLevelAddress;
         private readonly string onAddress;
+        private readonly string outputMeterAddress;
         private readonly int meterIndex;
         private readonly int? meterIndex2;
         private readonly string defaultName;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Creates an instance to monitor a specific channel within a mixer.
+        /// </summary>
+        /// <param name="mixer">The mixer that </param>
+        /// <param name="nameAddress"></param>
+        /// <param name="defaultName"></param>
+        /// <param name="faderLevelAddress"></param>
+        /// <param name="outputMeterAddress"></param>
+        /// <param name="meterIndex"></param>
+        /// <param name="meterIndex2"></param>
+        /// <param name="onAddress"></param>
         public Channel(
             Mixer mixer, string nameAddress, string defaultName, string faderLevelAddress, 
             string outputMeterAddress, int meterIndex, int? meterIndex2, string onAddress)
@@ -39,6 +51,7 @@ namespace OscMixerControl.Wpf.Models
             this.defaultName = defaultName;
             Name = defaultName;
             this.faderLevelAddress = faderLevelAddress;
+            this.outputMeterAddress = outputMeterAddress;
             this.meterIndex = meterIndex;
             this.meterIndex2 = meterIndex2;
             this.onAddress = onAddress;
@@ -120,13 +133,13 @@ namespace OscMixerControl.Wpf.Models
         private void RaisePropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        public async Task SubscribeToData()
+        public async Task SubscribeToData(TimeFactor timeFactor)
         {
-            await mixer.SendSubscribeAsync(nameAddress, TimeFactor.Medium).ConfigureAwait(false);
-            await mixer.SendSubscribeAsync(faderLevelAddress, TimeFactor.Medium).ConfigureAwait(false);
+            await mixer.SendSubscribeAsync(nameAddress, timeFactor).ConfigureAwait(false);
+            await mixer.SendSubscribeAsync(faderLevelAddress, timeFactor).ConfigureAwait(false);
             if (HasOn)
             {
-                await mixer.SendSubscribeAsync(onAddress, TimeFactor.Medium).ConfigureAwait(false);
+                await mixer.SendSubscribeAsync(onAddress, timeFactor).ConfigureAwait(false);
             }
         }
 
@@ -137,6 +150,20 @@ namespace OscMixerControl.Wpf.Models
             if (HasOn)
             {
                 await mixer.SendAsync(new OscMessage(onAddress)).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Unregisters handler from the mixer, so no further updates will be received.
+        /// </summary>
+        public void Dispose()
+        {
+            mixer.RemoveHandler(nameAddress, HandleNameMessage);
+            mixer.RemoveHandler(faderLevelAddress, HandleFaderLevelMessage);
+            mixer.RemoveHandler(outputMeterAddress, HandleOutputLevelMessage);
+            if (onAddress is object)
+            {
+                mixer.RemoveHandler(onAddress, HandleOnMessage);
             }
         }
     }
