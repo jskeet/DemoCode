@@ -6,7 +6,6 @@ using OscCore;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace OscMixerControl.Wpf.Models
 {
@@ -14,19 +13,11 @@ namespace OscMixerControl.Wpf.Models
     {
         // TODO: Should the mixer keep current values for everything? It could do...
 
-        private readonly Dispatcher dispatcher;
-        private readonly Delegate dispatcherAction;
         private UdpOscClient client;
         private ConcurrentDictionary<string, EventHandler<OscMessage>> messageHandlers =
             new ConcurrentDictionary<string, EventHandler<OscMessage>>();
         
         public event EventHandler<OscPacket> PacketReceived;
-
-        public Mixer(Dispatcher dispatcher)
-        {
-            this.dispatcher = dispatcher;
-            dispatcherAction = (Action<OscPacket>) HandlePacketReceivedOnDispatcher;
-        }
 
         public void Connect(string address, int port)
         {
@@ -35,10 +26,7 @@ namespace OscMixerControl.Wpf.Models
             client.PacketReceived += HandlePacketReceived;
         }
 
-        private void HandlePacketReceived(object sender, OscPacket packet) =>
-            dispatcher.BeginInvoke(dispatcherAction, packet);
-
-        private void HandlePacketReceivedOnDispatcher(OscPacket packet)
+        private void HandlePacketReceived(object sender, OscPacket packet)
         {
             PacketReceived?.Invoke(this, packet);
             if (packet is OscMessage message)

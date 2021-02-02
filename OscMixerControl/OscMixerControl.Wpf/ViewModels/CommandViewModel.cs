@@ -28,7 +28,7 @@ namespace OscMixerControl.Wpf.ViewModels
 
         public CommandViewModel(ILogger logger)
         {
-            mixer = new Mixer(Dispatcher.CurrentDispatcher);
+            mixer = new Mixer();
             mixer.PacketReceived += (sender, packet) => logger.LogPacket(packet);
 
             Parameters = new ObservableCollection<CommandParameterViewModel>();
