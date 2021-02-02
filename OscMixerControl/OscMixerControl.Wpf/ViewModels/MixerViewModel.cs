@@ -31,7 +31,7 @@ namespace OscMixerControl.Wpf.ViewModels
         {
             this.logger = logger;
             renewTimer = new DispatcherTimer(TimeSpan.FromSeconds(5), DispatcherPriority.Normal, RefreshSubscriptionsAsync, Dispatcher.CurrentDispatcher);
-            Mixer = new Mixer(Dispatcher.CurrentDispatcher);
+            Mixer = new Mixer();
             Mixer.PacketReceived += (sender, packet) =>
             {
                 if (LogPackets)
