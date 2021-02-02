@@ -7,9 +7,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace OscMixerControl.Wpf.Models
+namespace OscMixerControl
 {
-    public class Mixer
+    public class Mixer : IDisposable
     {
         // TODO: Should the mixer keep current values for everything? It could do, but that's a lot of data.
 
@@ -54,10 +54,10 @@ namespace OscMixerControl.Wpf.Models
 
         public Task SendXRemoteAsync() => SendAsync(new OscMessage("/xremote"));
 
-        internal Task SendSubscribeAsync(string address, TimeFactor timeFactor) =>
+        public Task SendSubscribeAsync(string address, TimeFactor timeFactor) =>
             SendAsync(new OscMessage("/subscribe", address, (int) timeFactor));
 
-        internal Task SendBatchSubscribeAsync(string alias, string address, int parameter1, int parameter2, TimeFactor timeFactor) =>
+        public Task SendBatchSubscribeAsync(string alias, string address, int parameter1, int parameter2, TimeFactor timeFactor) =>
             SendAsync(new OscMessage("/batchsubscribe", alias, address, parameter1, parameter2, (int) timeFactor));
 
         internal void RegisterHandler(string address, EventHandler<OscMessage> messageHandler) =>
@@ -67,5 +67,7 @@ namespace OscMixerControl.Wpf.Models
             // Annoyingly, this doesn't actually remove it from the dictionary, even if we end up with a null
             // value. That's not the end of the world; it's just a bit irritating.
             messageHandlers.AddOrUpdate(address, messageHandler, (key, existing) => existing - messageHandler);
+
+        public void Dispose() => client?.Dispose();
     }
 }
