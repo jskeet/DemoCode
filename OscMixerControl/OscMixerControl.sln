@@ -9,11 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl.Console", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl.Wpf", "OscMixerControl.Wpf\OscMixerControl.Wpf.csproj", "{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{277DDADA-8C31-438F-B142-D93C28ED28D3}"
-	ProjectSection(SolutionItems) = preProject
-		Notes\addresses.md = Notes\addresses.md
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
