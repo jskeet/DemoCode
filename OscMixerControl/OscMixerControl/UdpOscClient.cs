@@ -43,9 +43,6 @@ namespace OscMixerControl
             }
         }
 
-        public void Dispose()
-        {
-            cts.Cancel();
-        }
+        public void Dispose() => cts.Cancel();
     }
 }

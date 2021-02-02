@@ -7,7 +7,7 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace OscMixerControl.Wpf.Models
+namespace OscMixerControl
 {
     /// <summary>
     /// Model for a channel, consisting of:
