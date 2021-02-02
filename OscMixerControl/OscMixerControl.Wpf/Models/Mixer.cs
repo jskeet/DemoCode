@@ -11,7 +11,7 @@ namespace OscMixerControl.Wpf.Models
 {
     public class Mixer
     {
-        // TODO: Should the mixer keep current values for everything? It could do...
+        // TODO: Should the mixer keep current values for everything? It could do, but that's a lot of data.
 
         private UdpOscClient client;
         private ConcurrentDictionary<string, EventHandler<OscMessage>> messageHandlers =
@@ -31,7 +31,7 @@ namespace OscMixerControl.Wpf.Models
             PacketReceived?.Invoke(this, packet);
             if (packet is OscMessage message)
             {
-                if (messageHandlers.TryGetValue(message.Address, out var handler))
+                if (messageHandlers.TryGetValue(message.Address, out var handler) && handler is object)
                 {
                     handler.Invoke(this, message);
                 }
@@ -60,9 +60,12 @@ namespace OscMixerControl.Wpf.Models
         internal Task SendBatchSubscribeAsync(string alias, string address, int parameter1, int parameter2, TimeFactor timeFactor) =>
             SendAsync(new OscMessage("/batchsubscribe", alias, address, parameter1, parameter2, (int) timeFactor));
 
-        internal void RegisterHandler(string muteAddress, EventHandler<OscMessage> messageHandler)
-        {
-            messageHandlers.AddOrUpdate(muteAddress, messageHandler, (key, existing) => existing + messageHandler);
-        }
+        internal void RegisterHandler(string address, EventHandler<OscMessage> messageHandler) =>
+            messageHandlers.AddOrUpdate(address, messageHandler, (key, existing) => existing + messageHandler);
+
+        internal void RemoveHandler(string address, EventHandler<OscMessage> messageHandler) =>
+            // Annoyingly, this doesn't actually remove it from the dictionary, even if we end up with a null
+            // value. That's not the end of the world; it's just a bit irritating.
+            messageHandlers.AddOrUpdate(address, messageHandler, (key, existing) => existing - messageHandler);
     }
 }
