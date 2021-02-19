@@ -34,14 +34,14 @@ namespace OscMixerControl
         /// <summary>
         /// Creates an instance to monitor a specific channel within a mixer.
         /// </summary>
-        /// <param name="mixer">The mixer that </param>
-        /// <param name="nameAddress"></param>
-        /// <param name="defaultName"></param>
-        /// <param name="faderLevelAddress"></param>
-        /// <param name="outputMeterAddress"></param>
-        /// <param name="meterIndex"></param>
-        /// <param name="meterIndex2"></param>
-        /// <param name="onAddress"></param>
+        /// <param name="mixer">The mixer that this channel is part of.</param>
+        /// <param name="nameAddress">The OSC address for the name of this channel.</param>
+        /// <param name="defaultName">The default name to use when the name hasn't been set on the mixer.</param>
+        /// <param name="faderLevelAddress">The OSC address for the fader level of this channel.</param>
+        /// <param name="outputMeterAddress">The OSC meter address for the output level of this channel.</param>
+        /// <param name="meterIndex">The indexer within the OSC meter for the output of this channel (the left part for stereo channels).</param>
+        /// <param name="meterIndex2">The indexer within the OSC meter for the right output of this channel, or null if this is a mono channel.</param>
+        /// <param name="onAddress">The OSC address for the on/off (muting) control of this channel, or null if the channel does not support muting.</param>
         public Channel(
             Mixer mixer, string nameAddress, string defaultName, string faderLevelAddress, 
             string outputMeterAddress, int meterIndex, int? meterIndex2, string onAddress)
@@ -49,6 +49,7 @@ namespace OscMixerControl
             this.mixer = mixer;
             this.nameAddress = nameAddress;
             this.defaultName = defaultName;
+            // TODO: Should we actually have a default name? Isn't this a view concern?
             Name = defaultName;
             this.faderLevelAddress = faderLevelAddress;
             this.outputMeterAddress = outputMeterAddress;
