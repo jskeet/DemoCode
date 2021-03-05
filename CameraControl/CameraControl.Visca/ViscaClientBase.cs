@@ -28,10 +28,10 @@ namespace CameraControl.Visca
         protected abstract Task<ViscaPacket> ReceivePacketAsync(CancellationToken cancellationToken);
 
         /// <summary>
-        /// 
+        /// Reconnects the client either initially, or after an error.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">A token to indicate that the method has been cancelled.</param>
+        /// <returns>A task representing the asynchronous operation</returns>
         protected abstract Task ReconnectAsync(CancellationToken cancellationToken);
 
         public abstract void Dispose();
@@ -70,11 +70,17 @@ namespace CameraControl.Visca
             }
             finally
             {
-                if (reconnect)
+                try
                 {
-                    await ReconnectAsync(cancellationToken).ConfigureAwait(false);
+                    if (reconnect)
+                    {
+                        await ReconnectAsync(cancellationToken).ConfigureAwait(false);
+                    }
                 }
-                semaphore.Release();
+                finally
+                {
+                    semaphore.Release();
+                }
             }
         }
     }
