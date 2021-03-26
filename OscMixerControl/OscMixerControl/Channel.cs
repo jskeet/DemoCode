@@ -87,6 +87,9 @@ namespace OscMixerControl
 
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Whether this channel is on (1) or off (0).
+        /// </summary>
         public int On { get; private set; }
 
         public bool HasOn => onAddress is object;

@@ -48,6 +48,8 @@ namespace OscMixerControl
         public Task SendDataRequestAsync(string address) =>
             SendAsync(new OscMessage(address));
 
+        public Task SendInfoAsync() => SendAsync(new OscMessage("/info"));
+
         public Task SendRenewAllAsync() => SendAsync(new OscMessage("/renew"));
 
         public Task SendRenewAsync(string subscription) => SendAsync(new OscMessage("/renew", subscription));
@@ -60,10 +62,10 @@ namespace OscMixerControl
         public Task SendBatchSubscribeAsync(string alias, string address, int parameter1, int parameter2, TimeFactor timeFactor) =>
             SendAsync(new OscMessage("/batchsubscribe", alias, address, parameter1, parameter2, (int) timeFactor));
 
-        internal void RegisterHandler(string address, EventHandler<OscMessage> messageHandler) =>
+        public void RegisterHandler(string address, EventHandler<OscMessage> messageHandler) =>
             messageHandlers.AddOrUpdate(address, messageHandler, (key, existing) => existing + messageHandler);
 
-        internal void RemoveHandler(string address, EventHandler<OscMessage> messageHandler) =>
+        public void RemoveHandler(string address, EventHandler<OscMessage> messageHandler) =>
             // Annoyingly, this doesn't actually remove it from the dictionary, even if we end up with a null
             // value. That's not the end of the world; it's just a bit irritating.
             messageHandlers.AddOrUpdate(address, messageHandler, (key, existing) => existing - messageHandler);
