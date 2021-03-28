@@ -1,27 +1,27 @@
-﻿using OscMixerControl;
+﻿// Copyright 2021 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using OscMixerControl;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XTouchMini.Model;
 
 namespace XTouchMini.MixerControl
 {
-    internal class MixerConnector
+    internal class MixerConnector : IDisposable
     {
         private readonly List<ControlledChannel> channels;
         private readonly Mixer mixer;
-        private readonly XTouchMiniMackieController controller;
         private readonly Timer renewTimer;
         private readonly Channel mainOutput;
 
         internal MixerConnector(XTouchMiniMackieController controller, Mixer mixer)
         {
             this.mixer = mixer;
-            this.controller = controller;
             controller.ButtonDown += HandleButtonDown;
             controller.KnobTurned += HandleKnobTurned;
             controller.FaderMoved += ChangeMainVolume;
@@ -83,5 +83,7 @@ namespace XTouchMini.MixerControl
             }
             renewTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(5));
         }
+
+        public void Dispose() => renewTimer.Dispose();
     }
 }

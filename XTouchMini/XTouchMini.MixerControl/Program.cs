@@ -26,9 +26,11 @@ namespace XTouchMini.MixerControl
                     mixer.RegisterHandler("/info", (sender, message) => Console.WriteLine($"Mixer info response: {string.Join("/", message)}"));
                     await mixer.SendInfoAsync();
 
-                    var connector = new MixerConnector(controller, mixer);
-                    await connector.StartAsync();
-                    await Task.Delay(Timeout.Infinite);
+                    using (var connector = new MixerConnector(controller, mixer))
+                    {
+                        await connector.StartAsync();
+                        await Task.Delay(Timeout.Infinite);
+                    }
                 }
             }
         }
