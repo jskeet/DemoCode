@@ -20,9 +20,10 @@ namespace OscMixerControl.Wpf.ViewModels
             { nameof(Channel.On), nameof(Muted) },
         };
 
+        private readonly string defaultName;
         public string Name
         {
-            get => Model.Name;
+            get => Model.Name ?? defaultName;
             set => Model.SetName(value);
         }
 
@@ -44,8 +45,9 @@ namespace OscMixerControl.Wpf.ViewModels
 
         public bool HasMute => Model.HasOn;
 
-        public ChannelViewModel(Channel channel) : base(channel)
+        public ChannelViewModel(Channel channel, string defaultName) : base(channel)
         {
+            this.defaultName = defaultName;
         }
 
         protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)

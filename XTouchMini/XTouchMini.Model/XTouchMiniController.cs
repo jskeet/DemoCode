@@ -16,8 +16,11 @@ namespace XTouchMini.Model
     /// </summary>
     public abstract class XTouchMiniController : IAsyncDisposable
     {
-        private readonly IMidiInput inputPort;
-        private readonly IMidiOutput outputPort;
+        private readonly string portName;
+        private IMidiInput inputPort;
+        private IMidiOutput outputPort;
+
+        public bool Connected => inputPort is object;
 
         public event EventHandler<KnobTurnedEventArgs> KnobTurned;
         public event EventHandler<KnobPressEventArgs> KnobDown;
@@ -26,18 +29,47 @@ namespace XTouchMini.Model
         public event EventHandler<ButtonEventArgs> ButtonUp;
         public event EventHandler<FaderEventArgs> FaderMoved;
 
-        protected XTouchMiniController(IMidiInput inputPort, IMidiOutput outputPort)
-        {
-            this.inputPort = inputPort;
-            this.outputPort = outputPort;
-            inputPort.MessageReceived += HandleInputMessage;
-        }
+        protected XTouchMiniController(string portName) =>
+            this.portName = portName;
 
         /// <summary>
         /// Sets the operation mode of the X-Touch Mini.
         /// </summary>
         public void SetOperationMode(OperationMode operationMode) =>
             SendMidiMessage(0xb0, 0x7f, (byte) operationMode);
+
+        /// <summary>
+        /// Checks whether or not there are ports with the given name. If there are, and the
+        /// controller is not currently connected, a new connection is made. If there aren't,
+        /// and the controller was previously connected, the existing ports are closed and
+        /// the the controller is deemed disconnected.
+        /// </summary>
+        /// <returns>true if the controller has reconnected (from not being connected)</returns>
+        public virtual async Task<bool> MaybeReconnect()
+        {
+            var manager = MidiAccessManager.Default;
+            var input = manager.Inputs.FirstOrDefault(p => p.Name == portName);
+            var output = manager.Outputs.FirstOrDefault(p => p.Name == portName);
+
+            bool wasConnected = this.inputPort is object && this.outputPort is object;
+            bool nowConnected = input is object && output is object;
+            if (wasConnected == nowConnected)
+            {
+                return false;
+            }
+            if (wasConnected)
+            {
+                await DisposeAsync().ConfigureAwait(false);
+                return false;
+            }
+
+            var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
+            var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
+            this.inputPort = inputPort;
+            this.outputPort = outputPort;
+            inputPort.MessageReceived += HandleInputMessage;
+            return true;
+        }
 
         private void HandleInputMessage(object sender, MidiReceivedEventArgs args)
         {
@@ -77,30 +109,30 @@ namespace XTouchMini.Model
 
         public async ValueTask DisposeAsync()
         {
-            await inputPort.CloseAsync().ConfigureAwait(false);
-            await outputPort.CloseAsync().ConfigureAwait(false);
+            await CloseAsync(inputPort).ConfigureAwait(false);
+            await CloseAsync(outputPort).ConfigureAwait(false);
+            inputPort = null;
+            outputPort = null;
+
+            async Task CloseAsync(IMidiPort port)
+            {
+                try
+                {
+                    await port.CloseAsync().ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Ignore - this happens more often than we'd like...
+                }
+            }
         }
 
-        protected static async Task<T> ConnectAsync<T>(string name, Func<IMidiInput, IMidiOutput, T> func)
+        protected static async Task<T> ConnectAsync<T>(T controller) where T : XTouchMiniController
         {
-            var manager = MidiAccessManager.Default;
-            var input = manager.Inputs.FirstOrDefault(p => p.Name == name);
-            var output = manager.Outputs.FirstOrDefault(p => p.Name == name);
-
-            if (input is null)
-            {
-                throw new ArgumentException($"No input named '{name}'");
-            }
-            if (output is null)
-            {
-                throw new ArgumentException($"No output named '{name}'");
-            }
-            var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
-            var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
-
-            return func(inputPort, outputPort);
+            await controller.MaybeReconnect();
+            return controller;
         }
 
-        public void SendMidiMessage(params byte[] data) => outputPort.Send(data, 0, data.Length, 0L);
+        public void SendMidiMessage(params byte[] data) => outputPort?.Send(data, 0, data.Length, 0L);
     }
 }

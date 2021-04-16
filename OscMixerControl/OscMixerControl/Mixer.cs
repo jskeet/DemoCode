@@ -48,6 +48,27 @@ namespace OscMixerControl
         public Task SendDataRequestAsync(string address) =>
             SendAsync(new OscMessage(address));
 
+        /// <summary>
+        /// Returns the results of a /info enquiry, or null if no response has been returned after <paramref name="timeout"/>.
+        /// </summary>
+        public Task<string> GetInfoAsync(TimeSpan timeout)
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            EventHandler<OscMessage> handler = (sender, message) => tcs.TrySetResult(string.Join(" / ", message));
+            tcs.Task.ContinueWith(task => RemoveHandler("/info", handler));
+            RegisterHandler("/info", handler);
+            SetNullAfterTimeout();
+            SendInfoAsync();
+            return tcs.Task;
+
+            // Slightly hacky way of just scheduling a timeout for the task.
+            async void SetNullAfterTimeout()
+            {
+                await Task.Delay(timeout).ConfigureAwait(false);
+                tcs.TrySetResult(null);
+            }
+        }
+
         public Task SendInfoAsync() => SendAsync(new OscMessage("/info"));
 
         public Task SendRenewAllAsync() => SendAsync(new OscMessage("/renew"));

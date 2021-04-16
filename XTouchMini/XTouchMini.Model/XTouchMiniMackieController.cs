@@ -40,10 +40,18 @@ namespace XTouchMini.Model
         private const byte LayerAMidiButton = 0x54;
         private const byte LayerBMidiButton = 0x55;
 
-        public XTouchMiniMackieController(IMidiInput inputPort, IMidiOutput outputPort)
-            : base(inputPort, outputPort)
+        public XTouchMiniMackieController(string portName) : base(portName)
         {
-            SetOperationMode(OperationMode.MackieControl);
+        }
+
+        public override async Task<bool> MaybeReconnect()
+        {
+            var result = await base.MaybeReconnect().ConfigureAwait(false);
+            if (result)
+            {
+                SetOperationMode(OperationMode.MackieControl);
+            }
+            return result;
         }
 
         protected override void HandleMidiMessage(byte[] data)
@@ -82,8 +90,8 @@ namespace XTouchMini.Model
             }
         }
 
-        public static Task<XTouchMiniMackieController> ConnectAsync(string name) =>
-            ConnectAsync(name, (input, output) => new XTouchMiniMackieController(input, output));
+        public static Task<XTouchMiniMackieController> ConnectAsync(string portName) =>
+            ConnectAsync(new XTouchMiniMackieController(portName));
 
         public void SetButtonLedState(int button, LedState state)
         {
