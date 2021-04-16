@@ -27,7 +27,6 @@ namespace OscMixerControl
         private readonly string outputMeterAddress;
         private readonly int meterIndex;
         private readonly int? meterIndex2;
-        private readonly string defaultName;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,14 +42,11 @@ namespace OscMixerControl
         /// <param name="meterIndex2">The indexer within the OSC meter for the right output of this channel, or null if this is a mono channel.</param>
         /// <param name="onAddress">The OSC address for the on/off (muting) control of this channel, or null if the channel does not support muting.</param>
         public Channel(
-            Mixer mixer, string nameAddress, string defaultName, string faderLevelAddress, 
+            Mixer mixer, string nameAddress, string faderLevelAddress,
             string outputMeterAddress, int meterIndex, int? meterIndex2, string onAddress)
         {
             this.mixer = mixer;
             this.nameAddress = nameAddress;
-            this.defaultName = defaultName;
-            // TODO: Should we actually have a default name? Isn't this a view concern?
-            Name = defaultName;
             this.faderLevelAddress = faderLevelAddress;
             this.outputMeterAddress = outputMeterAddress;
             this.meterIndex = meterIndex;
@@ -85,6 +81,10 @@ namespace OscMixerControl
 
         public bool HasOutput2 => meterIndex2.HasValue;
 
+        /// <summary>
+        /// The name of the channel, or null if it has not been received by the mixer
+        /// yet.
+        /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace OscMixerControl
         private void HandleNameMessage(object sender, OscMessage message)
         {
             string newName = (string)message[0];
-            Name = newName == "" ? defaultName : newName;
+            Name = newName;
             RaisePropertyChanged(nameof(Name));
         }
 

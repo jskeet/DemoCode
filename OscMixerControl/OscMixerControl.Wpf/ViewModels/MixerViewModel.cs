@@ -3,9 +3,9 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
-using OscMixerControl.Wpf.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -40,38 +40,15 @@ namespace OscMixerControl.Wpf.ViewModels
                 }
             };
 
-            var inputChannels = new List<ChannelViewModel>();
-            for (int i = 1; i <= 5; i++)
-            {
-                var prefix = $"/ch/{i:00}";
-                var channel = new Channel(Mixer,
-                    $"{prefix}/config/name",
-                    $"Input {i}",
-                    $"{prefix}/mix/fader",
-                    $"/meters/1",
-                    meterIndex: i - 1,
-                    meterIndex2: null,
-                    $"{prefix}/mix/on");
-                inputChannels.Add(new ChannelViewModel(channel));
-            }
-            InputChannels = inputChannels;
+            InputChannels = Enumerable.Range(1, 5)
+                .Select(index => new ChannelViewModel(XAir.CreateInputChannel(Mixer, index), $"Input {index}"))
+                .ToList();
 
             // Outputs
-            var outputChannels = new List<ChannelViewModel>();
-            for (int i = 1; i <= 7; i++)
-            {
-                var prefix = i == 7 ? "/lr" : $"/bus/{i}";
-                var channel = new Channel(Mixer,
-                    $"{prefix}/config/name",
-                    i == 7 ? "Main" : $"Bus {i}",
-                    $"{prefix}/mix/fader",
-                    $"/meters/5",
-                    meterIndex: i - 1,
-                    meterIndex2: i == 7 ? 7 : (int?) null,
-                    $"{prefix}/mix/on");
-                outputChannels.Add(new ChannelViewModel(channel));
-            }
-            OutputChannels = outputChannels;
+            OutputChannels = Enumerable.Range(1, 6)
+                .Select(index => new ChannelViewModel(XAir.CreateAuxOutputChannel(Mixer, index), $"Bus {index}"))
+                .Concat(new[] { new ChannelViewModel(XAir.CreateMainOutputChannel(Mixer), "Main") })
+                .ToList();
         }
 
         public async Task ConnectAsync(string address, int port)
@@ -86,11 +63,11 @@ namespace OscMixerControl.Wpf.ViewModels
             {
                 await channelVm.RequestDataOnce().ConfigureAwait(false);
             }
-            await Mixer.SendBatchSubscribeAsync("/meters/1", "/meters/1", 0, 0, TimeFactor.Medium);
-            await Mixer.SendBatchSubscribeAsync("/meters/5", "/meters/5", 0, 0, TimeFactor.Medium);
+            await Mixer.SendBatchSubscribeAsync(XAir.InputChannelLevelsMeter, XAir.InputChannelLevelsMeter, 0, 0, TimeFactor.Medium);
+            await Mixer.SendBatchSubscribeAsync(XAir.OutputChannelLevelsMeter, XAir.OutputChannelLevelsMeter, 0, 0, TimeFactor.Medium);
         }
 
-        async void RefreshSubscriptionsAsync(object sender, EventArgs e)
+        private async void RefreshSubscriptionsAsync(object sender, EventArgs e)
         {
             await Mixer.SendXRemoteAsync();
             await Mixer.SendRenewAllAsync();

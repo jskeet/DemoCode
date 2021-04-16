@@ -28,29 +28,9 @@ namespace XTouchMini.MixerControl
 
             // TODO: Mapping from knob to input channel customization
             channels = Enumerable.Range(1, 8)
-                .Select(index => new ControlledChannel(CreateInputChannel(index), controller, index))
+                .Select(index => new ControlledChannel(XAir.CreateInputChannel(mixer, index), controller, index))
                 .ToList();
-            mainOutput = new Channel(mixer,
-                "/lr/config/name",
-                "Main",
-                "/lr/mix/fader",
-                "/meters/5",
-                meterIndex: 6,
-                meterIndex2: 7,
-                "/lr/mix/on");
-
-            Channel CreateInputChannel(int index)
-            {
-                var prefix = $"/ch/{index:00}";
-                return new Channel(mixer,
-                    $"{prefix}/config/name",
-                    $"Input {index}",
-                    $"{prefix}/mix/fader",
-                    $"/meters/1",
-                    meterIndex: index - 1,
-                    meterIndex2: null,
-                    $"{prefix}/mix/on");
-            }
+            mainOutput = XAir.CreateMainOutputChannel(mixer);
             renewTimer = new Timer(RefreshSubscriptionsAsync);
         }
 

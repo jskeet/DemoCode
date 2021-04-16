@@ -12,18 +12,26 @@ namespace XTouchMini.Model
     /// </summary>
     public class XTouchMiniStandardController : XTouchMiniController
     {
-        private XTouchMiniStandardController(IMidiInput inputPort, IMidiOutput outputPort)
-            : base(inputPort, outputPort)
+        private XTouchMiniStandardController(string portName) : base(portName)
         {
-            SetOperationMode(OperationMode.Standard);
         }
 
         /// <summary>
         /// Connects to an X-Touch Mini and sets it to Standard mode.
         /// </summary>
         /// <param name="name">The MIDI name of the input/output ports.</param>
-        public static Task<XTouchMiniStandardController> ConnectAsync(string name) =>
-            ConnectAsync(name, (input, output) => new XTouchMiniStandardController(input, output));
+        public static Task<XTouchMiniStandardController> ConnectAsync(string portName) =>
+            ConnectAsync(new XTouchMiniStandardController(portName));
+
+        public override async Task<bool> MaybeReconnect()
+        {
+            var result = await base.MaybeReconnect().ConfigureAwait(false);
+            if (result)
+            {
+                SetOperationMode(OperationMode.Standard);
+            }
+            return result;
+        }
 
         protected override void HandleMidiMessage(byte[] data)
         {
