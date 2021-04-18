@@ -1,0 +1,16 @@
+Demo Code:
+https://github.com/jskeet/DemoCode/tree/main/Functions
+(Or https://github.com/jskeet/DemoCode and navigate to the Functions directory)
+
+Blog post:
+https://codeblog.jonskeet.uk/2020/10/23/a-tour-of-the-net-functions-framework/
+(Or https://codeblog.jonskeet.uk/ and search for "functions tour")
+
+Functions Framework code:
+https://github.com/GoogleCloudPlatform/functions-framework-dotnet
+
+Google Cloud Functions docs:
+https://cloud.google.com/functions/docs
+
+Google Cloud Functions console:
+https://console.cloud.google.com/functions

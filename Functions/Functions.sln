@@ -7,9 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld", "HelloWorld\He
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld.Tests", "HelloWorld.Tests\HelloWorld.Tests.csproj", "{100D42F1-F995-4638-BDC2-C4F43DC7AC45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneClock", "ZoneClock\ZoneClock.csproj", "{30D84611-5D73-4EE4-9B02-2BE3029EE808}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoneClock", "ZoneClock\ZoneClock.csproj", "{30D84611-5D73-4EE4-9B02-2BE3029EE808}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneClock.Tests", "ZoneClock.Tests\ZoneClock.Tests.csproj", "{6564BB19-F21E-4FAA-9999-220C01D32D9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoneClock.Tests", "ZoneClock.Tests\ZoneClock.Tests.csproj", "{6564BB19-F21E-4FAA-9999-220C01D32D9E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{6CD30131-BA30-4B07-8E94-498E4E32EA74}"
+	ProjectSection(SolutionItems) = preProject
+		links.txt = links.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
