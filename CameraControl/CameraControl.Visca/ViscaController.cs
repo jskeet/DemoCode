@@ -16,10 +16,8 @@ namespace CameraControl.Visca
         public const byte MaxPanTiltSpeed = 0x18;
         public const byte MaxZoomSpeed = 0x7;
 
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
-        
         private TimeSpan CommandTimeout { get; }
-        private IViscaClient client;
+        private readonly IViscaClient client;
 
         internal ViscaController(IViscaClient client, TimeSpan commandTimeout)
         {
@@ -105,6 +103,14 @@ namespace CameraControl.Visca
         public async Task SetPanTilt(short pan, short tilt, byte panSpeed, byte tiltSpeed, CancellationToken cancellationToken = default)
         {
             byte[] bytes = new byte[] { 0x81, 0x01, 0x06, 0x02, panSpeed, tiltSpeed, 0, 0, 0, 0, 0, 0, 0, 0, 0xff };
+            SetInt16(bytes, 6, pan);
+            SetInt16(bytes, 10, tilt);
+            await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
+        }
+
+        public async Task RelativePanTilt(short pan, short tilt, byte panSpeed, byte tiltSpeed, CancellationToken cancellationToken = default)
+        {
+            byte[] bytes = new byte[] { 0x81, 0x01, 0x06, 0x03, panSpeed, tiltSpeed, 0, 0, 0, 0, 0, 0, 0, 0, 0xff };
             SetInt16(bytes, 6, pan);
             SetInt16(bytes, 10, tilt);
             await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
