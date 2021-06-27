@@ -22,7 +22,7 @@ namespace XTouchMini.MixerControl
                 using (var mixer = new Mixer())
                 {
                     // IP address hard-coded as I think the chances of anyone else running this are slim...
-                    mixer.Connect("192.168.1.172", 10024);
+                    mixer.Connect("192.168.1.41", 10024);
                     mixer.RegisterHandler("/info", (sender, message) => Console.WriteLine($"Mixer info response: {string.Join("/", message)}"));
                     await mixer.SendInfoAsync();
 
