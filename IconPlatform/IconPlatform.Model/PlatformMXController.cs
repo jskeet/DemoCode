@@ -1,7 +1,7 @@
 ﻿using Commons.Music.Midi;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace IconPlatform.Model
@@ -12,20 +12,19 @@ namespace IconPlatform.Model
         public EventHandler<FaderEventArgs> FaderMoved;
         public EventHandler<KnobTurnedEventArgs> KnobTurned;
 
-        private readonly string portName;
+        public string PortName { get; }
         private IMidiInput inputPort;
         private IMidiOutput outputPort;
+        private byte modelId;
 
         public bool Connected => inputPort is object;
 
-        private PlatformMXController(string portName)
-        {
-            this.portName = portName;
-        }
+        private PlatformMXController(string portName, byte modelId) =>
+            (PortName, this.modelId) = (portName, modelId);
 
         public static async Task<PlatformMXController> ConnectAsync(string portName)
         {
-            var controller = new PlatformMXController(portName);
+            var controller = new PlatformMXController(portName, portName.StartsWith("Platform M") ? (byte) 0x14 : (byte) 0x15);
             await controller.MaybeReconnect();
             return controller;
         }
@@ -40,8 +39,8 @@ namespace IconPlatform.Model
         public virtual async Task<bool> MaybeReconnect()
         {
             var manager = MidiAccessManager.Default;
-            var input = manager.Inputs.FirstOrDefault(p => p.Name == portName);
-            var output = manager.Outputs.FirstOrDefault(p => p.Name == portName);
+            var input = manager.Inputs.FirstOrDefault(p => p.Name == PortName);
+            var output = manager.Outputs.FirstOrDefault(p => p.Name == PortName);
 
             bool wasConnected = this.inputPort is object && this.outputPort is object;
             bool nowConnected = input is object && output is object;
@@ -137,32 +136,7 @@ namespace IconPlatform.Model
             SendMidiMessage(data);
         }
 
-        /// <summary>
-        /// Must be overridden in derived classes to process MIDI messages.
-        /// </summary>
-        /// <param name="data">The MIDI message received. Never empty.</param>
-        private void HandleMidiMessage(byte[] data)
-        {
-        }
-        /*
-        protected void OnKnobTurned(int knob, Layer layer, int value) =>
-            KnobTurned?.Invoke(this, new KnobTurnedEventArgs(knob, layer, value));
 
-        protected void OnKnobPressRelease(int knob, Layer layer, bool down)
-        {
-            EventHandler<KnobPressEventArgs> handler = down ? KnobDown : KnobUp;
-            handler?.Invoke(this, new KnobPressEventArgs(knob, layer, down));
-        }
-
-        protected void OnButtonPressRelease(int button, Layer layer, bool down)
-        {
-            EventHandler<ButtonEventArgs> handler = down ? ButtonDown : ButtonUp;
-            handler?.Invoke(this, new ButtonEventArgs(button, layer, down));
-        }
-
-        protected void OnFaderMoved(Layer layer, int position) =>
-            FaderMoved?.Invoke(this, new FaderEventArgs(layer, position));
-        */
         public async ValueTask DisposeAsync()
         {
             await CloseAsync(inputPort).ConfigureAwait(false);
@@ -180,6 +154,75 @@ namespace IconPlatform.Model
                 {
                     // Ignore - this happens more often than we'd like...
                 }
+            }
+        }
+
+        public void ClearText()
+        {
+            SetText(0, new string(' ', 0x38));
+            SetText(0x38, new string(' ', 0x38));
+        }
+
+        /// <summary>
+        /// Sets the text on a Platform D2.
+        /// </summary>
+        /// <param name="position">The raw position, beginning at 0x00 for the bottom row and 0x38 for the top row.</param>
+        /// <param name="text">The text to set. Must be ASCII.</param>
+        public void SetText(int position, string text)
+        {
+            var textBytes = Encoding.ASCII.GetBytes(text);
+            var allBytes = new byte[textBytes.Length + 8];
+            allBytes[0] = 0xf0;
+            allBytes[1] = 0x00;
+            allBytes[2] = 0x00;
+            allBytes[3] = 0x66; // Mackie control
+            allBytes[4] = modelId;
+            allBytes[5] = 0x12; // Display command
+            allBytes[6] = (byte) position;
+            Buffer.BlockCopy(textBytes, 0, allBytes, 7, textBytes.Length);
+            allBytes[^1] = 0xf7;
+            SendMidiMessage(allBytes);
+        }
+
+        /// <summary>
+        /// Sets the text for a channel. The first channel has 5 characters available,
+        /// and the remainder have 6 each.
+        /// </summary>
+        /// <param name="channel">The one-based channel number.</param>
+        /// <param name="topRow">The top row of text</param>
+        /// <param name="bottomRow">The bottom row of text</param>
+        public void SetChannelText(int channel, string topRow, string bottomRow)
+        {
+            int width = GetChannelTextWidth(channel);
+            int position = GetChannelTextPosition(channel);
+            SetText(0x38 + position, topRow.PadRight(width).Substring(0, width));
+            SetText(position, bottomRow.PadRight(width).Substring(0, width));
+        }
+
+        /// <summary>
+        /// Returns the number of text characters available (per row) for the specified channel.
+        /// </summary>
+        /// <param name="channel">The one-based channel number.</param>
+        /// <returns>The width of the channel's text</returns>
+        public int GetChannelTextWidth(int channel) => channel <= 1 ? 5 : 6;
+
+        /// <summary>Returns the left-most position (0-based) of the text for the given channel.</summary>
+        /// <param name="channel">The one-based channel number.</param>
+        private int GetChannelTextPosition(int channel) =>
+            Enumerable.Range(1, channel - 1).Sum(channel => GetChannelTextWidth(channel) + 1);
+
+        /// <summary>
+        /// Sets the character in the gap between each channel.
+        /// </summary>
+        /// <param name="delimiter"></param>
+        public void WriteChannelDelimiters(char delimiter)
+        {
+            string text = delimiter.ToString();
+            for (int channel = 2; channel <= 8; channel++)
+            {
+                var position = GetChannelTextPosition(channel) - 1;
+                SetText(position, text);
+                SetText(position + 0x38, text);
             }
         }
 
