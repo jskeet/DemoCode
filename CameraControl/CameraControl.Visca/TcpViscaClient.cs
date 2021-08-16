@@ -27,8 +27,19 @@ namespace CameraControl.Visca
             buffer.Clear();
             client?.Dispose();
             client = new TcpClient { NoDelay = true };
-
-            // This is really ugly, but it's the only way we can cancel a connection attempt.
+#if NET5_0
+            try
+            {
+                await client.ConnectAsync(Host, Port, cancellationToken).ConfigureAwait(false);
+            }
+            catch
+            {
+                client = null;
+                throw;
+            }
+#else
+            // This is really ugly, but it's the only way we can cancel a connection attempt
+            // in netstandard2.0.
             using (cancellationToken.Register(() => client.Dispose()))
             {
                 try
@@ -45,6 +56,7 @@ namespace CameraControl.Visca
                     throw;
                 }
             }
+#endif
             stream = client.GetStream();
         }
 
