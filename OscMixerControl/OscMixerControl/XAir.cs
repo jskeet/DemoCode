@@ -18,8 +18,9 @@ namespace OscMixerControl
         /// </summary>
         /// <param name="mixer">The mixer this channel belongs to.</param>
         /// <param name="index">The index of the channel, in the range 1-18.</param>
+        /// <param name="stereo">True for stereo inputs (expecting the index to be the lower one); false for mono</param>
         /// <returns>The new channel.</returns>
-        public static Channel CreateInputChannel(Mixer mixer, int index)
+        public static Channel CreateInputChannel(Mixer mixer, int index, bool stereo = false)
         {
             var prefix = $"/ch/{index:00}";
             return new Channel(mixer,
@@ -27,7 +28,7 @@ namespace OscMixerControl
                 $"{prefix}/mix/fader",
                 InputChannelLevelsMeter,
                 meterIndex: index - 1,
-                meterIndex2: null,
+                meterIndex2: stereo ? index : default(int?),
                 $"{prefix}/mix/on");
         }
 
@@ -37,8 +38,9 @@ namespace OscMixerControl
         /// <param name="mixer">The mixer this channel belongs to.</param>
         /// <param name="busIndex">The index of the bus, in the range 1-6.</param>
         /// <param name="channelIndex">The index of the channel, in the range 1-18.</param>
+        /// <param name="stereo">True for stereo inputs (expecting the index to be the lower one); false for mono</param>
         /// <returns>The new channel.</returns>
-        public static Channel CreateBusInputChannel(Mixer mixer, int busIndex, int channelIndex)
+        public static Channel CreateBusInputChannel(Mixer mixer, int busIndex, int channelIndex, bool stereo = false)
         {
             var prefix = $"/ch/{channelIndex:00}";
             return new Channel(mixer,
@@ -48,7 +50,7 @@ namespace OscMixerControl
                 // This is the raw input, so doesn't depend on bus.
                 InputChannelLevelsMeter,
                 meterIndex: channelIndex - 1,
-                meterIndex2: null,
+                meterIndex2: stereo ? channelIndex : default(int?),
                 // This is the main mute; that's still
                 // generally what's wanted.
                 $"{prefix}/mix/on");
@@ -65,6 +67,24 @@ namespace OscMixerControl
             return new Channel(mixer,
                 $"{prefix}/config/name",
                 $"{prefix}/mix/fader",
+                InputChannelLevelsMeter,
+                meterIndex: 16, // Aux is effectively channels 17 and 18 for meters
+                meterIndex2: 17,
+                $"{prefix}/mix/on");
+        }
+
+        /// <summary>
+        /// Creates a stereo aux input channel the given mixer.
+        /// </summary>
+        /// <param name="mixer">The mixer this channel belongs to.</param>
+        /// <param name="busIndex">The index of the bus, in the range 1-6.</param>
+        /// <returns>The new channel.</returns>
+        public static Channel CreateBusAuxInputChannel(Mixer mixer, int busIndex)
+        {
+            var prefix = $"/rtn/aux";
+            return new Channel(mixer,
+                $"{prefix}/config/name",
+                $"{prefix}/mix/{busIndex:00}/level",
                 InputChannelLevelsMeter,
                 meterIndex: 16, // Aux is effectively channels 17 and 18 for meters
                 meterIndex2: 17,

@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl", "OscMixerControl\OscMixerControl.csproj", "{72A1AC7E-9E2A-421F-9185-EE8D3B515BC2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl.Console", "..\..\..\..\..\skeet\Test\Projects\DemoCode\OscMixerControl\OscMixerControl.Console\OscMixerControl.Console.csproj", "{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl.Wpf", "OscMixerControl.Wpf\OscMixerControl.Wpf.csproj", "{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}"
 EndProject
 Global
@@ -31,18 +29,6 @@ Global
 		{72A1AC7E-9E2A-421F-9185-EE8D3B515BC2}.Release|x64.Build.0 = Release|Any CPU
 		{72A1AC7E-9E2A-421F-9185-EE8D3B515BC2}.Release|x86.ActiveCfg = Release|Any CPU
 		{72A1AC7E-9E2A-421F-9185-EE8D3B515BC2}.Release|x86.Build.0 = Release|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Debug|x64.Build.0 = Debug|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Debug|x86.Build.0 = Debug|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Release|x64.ActiveCfg = Release|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Release|x64.Build.0 = Release|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Release|x86.ActiveCfg = Release|Any CPU
-		{D1FCBB03-2F09-4791-8DD5-18C4CFDA1E56}.Release|x86.Build.0 = Release|Any CPU
 		{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}.Debug|x64.ActiveCfg = Debug|Any CPU
