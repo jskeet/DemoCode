@@ -82,7 +82,7 @@ namespace CameraControl.Visca
             var builder = new StringBuilder();
             for (int i = 0; i < Length; i++)
             {
-                builder.AppendFormat("x:2", GetByte(i));
+                builder.AppendFormat("{0:x2}", GetByte(i));
                 builder.Append('-');
             }
             builder.Length--;
