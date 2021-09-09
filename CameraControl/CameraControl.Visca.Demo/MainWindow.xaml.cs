@@ -56,7 +56,8 @@ namespace CameraControl.Visca.Demo
             var position = e.GetPosition(panButton);
 
             int panSpeed = NormalizeSpeed(position.X, panButton.ActualWidth, ViscaController.MaxPanTiltSpeed);
-            int tiltSpeed = NormalizeSpeed(position.Y, panButton.ActualHeight, ViscaController.MaxPanTiltSpeed);
+            // Tilt has "up is positive" in camera coordinates, but "up is negative" in screen coordinates
+            int tiltSpeed = -NormalizeSpeed(position.Y, panButton.ActualHeight, ViscaController.MaxPanTiltSpeed);
             SetPanTiltSpeed(panSpeed, tiltSpeed);
         }
 

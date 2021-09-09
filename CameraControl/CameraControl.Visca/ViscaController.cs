@@ -10,7 +10,7 @@ namespace CameraControl.Visca
 {
     public sealed class ViscaController : IDisposable
     {
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(15);
+        internal static TimeSpan DefaultTimeout { get; } = TimeSpan.FromSeconds(15);
 
         public const byte MinSpeed = 0x01;
         public const byte MaxPanTiltSpeed = 0x18;
@@ -79,6 +79,7 @@ namespace CameraControl.Visca
             return (response.GetInt16(2), response.GetInt16(6));
         }
 
+        // TODO: What about 41, 42 etc? Would that be "direct with variable speed"?
         public async Task SetZoom(short zoom, CancellationToken cancellationToken = default)
         {
             byte[] bytes = new byte[] { 0x81, 0x01, 0x04, 0x47, 0, 0, 0, 0, 0xff };
@@ -86,10 +87,19 @@ namespace CameraControl.Visca
             await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Changes the current rate of pan/tilt.
+        /// </summary>
+        /// <param name="pan">true to pan right (positive); false to pan left (negative); null for no pan</param>
+        /// <param name="tilt">true to tilt up (positive); false to tilt down (negative); null for no tilt</param>
+        /// <param name="panSpeed">The speed at which to pan</param>
+        /// <param name="tiltSpeed">The speed at which to tilt</param>
+        /// <param name="cancellationToken">A cancellation token for the operation</param>
+        /// <returns>A task representing the asynchronous operation</returns>
         public async Task ContinuousPanTilt(bool? pan, bool? tilt, byte panSpeed, byte tiltSpeed, CancellationToken cancellationToken = default)
         {
             byte actualPan = (byte) (pan is null ? 3 : pan.Value ? 2 : 1);
-            byte actualTilt = (byte) (tilt is null ? 3 : tilt.Value ? 2 : 1);
+            byte actualTilt = (byte) (tilt is null ? 3 : tilt.Value ? 1 : 2);
             byte[] bytes = new byte[] { 0x81, 0x01, 0x06, 0x1, panSpeed, tiltSpeed, actualPan, actualTilt, 0xff };
             await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
         }
