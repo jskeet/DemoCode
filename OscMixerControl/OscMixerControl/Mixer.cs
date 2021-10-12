@@ -13,16 +13,22 @@ namespace OscMixerControl
     {
         // TODO: Should the mixer keep current values for everything? It could do, but that's a lot of data.
 
-        private UdpOscClient client;
+        private IOscClient client;
         private ConcurrentDictionary<string, EventHandler<OscMessage>> messageHandlers =
             new ConcurrentDictionary<string, EventHandler<OscMessage>>();
         
         public event EventHandler<OscPacket> PacketReceived;
 
-        public void Connect(string address, int port)
+        public void Connect(string address, int port) =>
+            Connect(() => new UdpOscClient(address, port));
+
+        public void ConnectToFake() =>
+            Connect(() => new FakeOscClient());
+
+        private void Connect(Func<IOscClient> clientProvider)
         {
             client?.Dispose();
-            client = new UdpOscClient(address, port);
+            client = clientProvider();
             client.PacketReceived += HandlePacketReceived;
         }
 

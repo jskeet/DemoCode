@@ -149,11 +149,11 @@ namespace OscMixerControl
 
         public async Task RequestDataOnce()
         {
-            await mixer.SendAsync(new OscMessage(nameAddress)).ConfigureAwait(false);
-            await mixer.SendAsync(new OscMessage(faderLevelAddress)).ConfigureAwait(false);
+            await mixer.SendDataRequestAsync(nameAddress).ConfigureAwait(false);
+            await mixer.SendDataRequestAsync(faderLevelAddress).ConfigureAwait(false);
             if (HasOn)
             {
-                await mixer.SendAsync(new OscMessage(onAddress)).ConfigureAwait(false);
+                await mixer.SendDataRequestAsync(onAddress).ConfigureAwait(false);
             }
         }
 

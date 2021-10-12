@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OscMixerControl
 {
-    public sealed class UdpOscClient : IDisposable
+    public sealed class UdpOscClient : IOscClient
     {
         private readonly UdpClient client;
         private readonly CancellationTokenSource cts;
