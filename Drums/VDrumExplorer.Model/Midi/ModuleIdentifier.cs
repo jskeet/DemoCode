@@ -17,6 +17,7 @@ namespace VDrumExplorer.Model.Midi
         public static ModuleIdentifier TD17 { get; } = new ModuleIdentifier("TD-17", 0x4b, 0x34b, 0);
         public static ModuleIdentifier TD27 { get; } = new ModuleIdentifier("TD-27", 0x63, 0x363, 0);
         public static ModuleIdentifier TD50 { get; } = new ModuleIdentifier("TD-50", 0x24, 0x324, 0);
+        public static ModuleIdentifier TD50X { get; } = new ModuleIdentifier("TD-50X", 0x07, 0x407, 0);
 
         /// <summary>
         /// The name of the module, e.g. "TD-17".
