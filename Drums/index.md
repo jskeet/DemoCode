@@ -21,7 +21,7 @@ updating for 1.0.0-alpha06+, with new screenshots etc.**
 
 - Windows 8.1 or Windows 10
 - .NET 4.7.2 or later
-- To be genuinely useful, a Roland TD-17, TD-27 or TD-50 V-Drums drum kit, turned on and connected via USB (see later for details)
+- To be genuinely useful, a Roland TD-17, TD-27, TD-50, or TD-50X V-Drums drum kit, turned on and connected via USB (see later for details)
 
 # Installation
 
@@ -106,7 +106,7 @@ supported, this range may vary.)
 
 Loading a single kit is reasonably quick - a few seconds - but
 loading the complete module data takes about three minutes for the
-TD-17, and longer for the TD-27 or TD-50. You'll see a progress dialog like
+TD-17, and longer for the TD-27, TD-50 or TD-50X. You'll see a progress dialog like
 this:
 
 ![Module loading dialog](loading-dialog.png)
@@ -308,7 +308,7 @@ the module, or strike the pads, you could end up with undesirable
 results.
 
 **Note:** Recording all the samples takes a long time, particularly
-on the TD-50 with over 400 instruments or the TD-27 with over 750!
+on the TD-50/TD-50X with over 400 instruments or the TD-27 with over 750!
 As well as the recording time itself, there's a little overhead
 while the instrument is changed etc. So on a TD-50, recording 2.5s
 of audio per instrument could take over 20 minutes. Please be
@@ -376,6 +376,18 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha08 (2021-10-30)
+
+Changes since 1.0.0-alpha07:
+
+- Added initial support for TD-50X (see below)
+- Added new trigger list for TD-17 firmware 1.0.2
+- Minor fixes to TD-27 and TD-50 schemas
+
+The TD-50X support may well be entirely broken; I can't test it
+personally. The schema launches in the schema explorer, but that's
+all I can say about it right now.
 
 ## Version 1.0.0-alpha07 (2020-08-22)
 
