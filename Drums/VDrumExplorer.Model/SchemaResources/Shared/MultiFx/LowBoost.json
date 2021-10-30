@@ -1,0 +1,61 @@
+{
+  "description": "Low boost",
+  "fields": [
+    {
+      "description": "Boost frequency",
+      "type": "enum32",
+      "values": [
+        "50Hz",
+        "56Hz",
+        "63Hz",
+        "71Hz",
+        "80Hz",
+        "90Hz",
+        "100Hz",
+        "112Hz",
+        "125Hz"
+      ]
+    },
+    {
+      "description": "Boost gain",
+      "type": "range32",
+      "min": 0,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "description": "Boost width",
+      "type": "enum32",
+      "values": [
+        "Wide",
+        "Mid",
+        "Narrow"
+      ]
+    },
+    {
+      "description": "Low gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

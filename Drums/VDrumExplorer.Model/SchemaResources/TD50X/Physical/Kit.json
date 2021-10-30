@@ -1,0 +1,112 @@
+﻿{
+  "containers": [
+    {
+      "name": "KitCommon",
+      "offset": "0x00_00",
+      "description": "Kit Common"
+    },
+    {
+      "name": "KitMidi",
+      "offset": "0x01_00",
+      "description": "Kit MIDI"
+    },
+    {
+      "name": "KitMasterComp",
+      "offset": "0x03_00",
+      "description": "Kit Master Compressor"
+    },
+    {
+      "name": "KitMasterEQ",
+      "offset": "0x04_00",
+      "description": "Kit Master EQ"
+    },
+    {
+      "name": "KitMfx",
+      "offset": "0x10_00",
+      "description": "Kit Multi FX {index}",
+      "repeat":
+      {
+        "items": "mfx",
+        "gap": "0x02_00"
+      }
+    },
+    {
+      "name": "KitUnitCommon",
+      "offset": "0x20_00",
+      "description": "Kit Unit Common ({item})",
+      "repeat":
+      {
+        "items": "triggers",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitUnitMain",
+      "offset": "0x40_00",
+      "description": "Kit Unit Main ({item})",
+      "container": "KitUnitLayer",
+      "repeat":
+      {
+        "items": "triggers",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitUnitSub",
+      "offset": "0x60_00",
+      "description": "Kit Unit Sub ({item})",
+      "container": "KitUnitLayer",
+      "repeat":
+      {
+        "items": "triggers",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitUnitVEditMain",
+      "offset": "0x01_00_00",
+      "description": "Kit Unit VEdit Main ({item})",
+      "container": "KitUnitVEdit",
+      "repeat": 
+      {
+        "items": "triggers",
+        "indexVariable": "trigger",
+        "gap": "0x01_00"
+      },
+      "extraVariables": { "layer": "Main" }
+    },
+    {
+      "name": "KitUnitVEditSub",
+      "offset": "0x01_20_00",
+      "description": "Kit Pad VEdit Sub ({item})",
+      "container": "KitUnitVEdit",
+      "repeat": 
+      {
+        "items": "triggers",
+        "indexVariable": "trigger",
+        "gap": "0x01_00"
+      },
+      "extraVariables": { "layer": "Sub" }
+    },
+    {
+      "name": "KitPad",
+      "offset": "0x01_40_00",
+      "description": "{item} Compressor",
+      "repeat": 
+      {
+        "items": "pads",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitRoom",
+      "offset": "0x01_60_00",
+      "description": "Kit MCR Room"
+    },
+    {
+      "name": "KitOverhead",
+      "offset": "0x01_70_00",
+      "description": "Kit MCR Overhead"
+    }
+  ]
+}

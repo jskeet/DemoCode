@@ -1,0 +1,229 @@
+﻿{
+  "size": "0x01_3c",
+  "fields": [
+    {
+      "name": "Midi[Kick Head]",
+      "description": "Kick note",
+      "type": "midi32",
+      "default": 36
+    },
+    {
+      "name": "Midi[Snare Head]",
+      "description": "Snare head note",
+      "type": "midi32",
+      "default": 38
+    },
+    {
+      "name": "Midi[Snare Rim]",
+      "description": "Snare rim note",
+      "type": "midi32",
+      "default": 40
+    },
+    {
+      "description": "Snare brush note",
+      "type": "midi32",
+      "default": 23
+    },
+    {
+      "description": "Snare xstick note",
+      "type": "midi32",
+      "default": 37
+    },
+    {
+      "name": "Midi[Tom 1 Head]",
+      "description": "Tom 1 head note",
+      "type": "midi32",
+      "default": 48
+    },
+    {
+      "name": "Midi[Tom 1 Rim]",
+      "description": "Tom 1 rim note",
+      "type": "midi32",
+      "default": 50
+    },
+    {
+      "name": "Midi[Tom 2 Head]",
+      "description": "Tom 2 head note",
+      "type": "midi32",
+      "default": 45
+    },
+    {
+      "name": "Midi[Tom 2 Rim]",
+      "description": "Tom 2 rim note",
+      "type": "midi32",
+      "default": 47
+    },
+    {
+      "name": "Midi[Tom 3 Head]",
+      "description": "Tom 3 head note",
+      "type": "midi32",
+      "default": 43
+    },
+    {
+      "name": "Midi[Tom 3 Rim]",
+      "description": "Tom 3 rim note",
+      "type": "midi32",
+      "default": 58
+    },
+    {
+      "name": "Midi[Tom 4 Head]",
+      "description": "Tom 4 head note",
+      "type": "midi32",
+      "default": 43
+    },
+    {
+      // TODO: Find out the actual default
+      "name": "Midi[Tom 4 Rim]",
+      "description": "Tom 4 rim note",
+      "type": "midi32",
+      "default": 58
+    },
+    {
+      // TODO: Find out the actual default
+      "name": "Midi[Hi-Hat Head]",
+      "description": "Hi-hat open bow note",
+      "type": "midi32",
+      "default": 46
+    },
+    {
+      "name": "Midi[Hi-Hat Rim]",
+      "description": "Hi-hat open edge note",
+      "type": "midi32",
+      "default": 26
+    },
+    {
+      "description": "Hi-hat close bow note",
+      "type": "midi32",
+      "default": 42
+    },
+    {
+      "description": "Hi-hat close edge note",
+      "type": "midi32",
+      "default": 22
+    },
+    {
+      "description": "Hi-hat pedal note",
+      "type": "midi32",
+      "default": 44
+    },
+    {
+      "name": "Midi[Crash 1 Head]",
+      "description": "Crash 1 bow note",
+      "type": "midi32",
+      "default": 49
+    },
+    {
+      "name": "Midi[Crash 1 Rim]",
+      "description": "Crash 1 edge note",
+      "type": "midi32",
+      "default": 55
+    },
+    {
+      "name": "Midi[Crash 2 Head]",
+      "description": "Crash 2 bow note",
+      "type": "midi32",
+      "default": 57
+    },
+    {
+      "name": "Midi[Crash 2 Rim]",
+      "description": "Crash 2 edge note",
+      "type": "midi32",
+      "default": 52
+    },
+    {
+      "name": "Midi[Ride Head]",
+      "description": "Ride bow note",
+      "type": "midi32",
+      "default": 51
+    },
+    {
+      "name": "Midi[Ride Rim]",
+      "description": "Ride edge note",
+      "type": "midi32",
+      "default": 59
+    },
+    {
+      "name": "Midi[Ride Bell]",
+      "description": "Ride bell note",
+      "type": "midi32",
+      "default": 53
+    },
+    {
+      "name": "Midi[Aux 1 Head]",
+      "description": "Aux 1 head note",
+      "type": "midi32",
+      "default": 27
+    },
+    {
+      "name": "Midi[Aux 1 Rim]",
+      "description": "Aux 1 rim note",
+      "type": "midi32",
+      "default": 28
+    },
+    {
+      "name": "Midi[Aux 2 Head]",
+      "description": "Aux 2 head note",
+      "type": "midi32",
+      "default": 29
+    },
+    {
+      "name": "Midi[Aux 2 Rim]",
+      "description": "Aux 2 rim note",
+      "type": "midi32",
+      "default": 30
+    },
+    {
+      "name": "Midi[Aux 3 Head]",
+      "description": "Aux 3 head note",
+      "type": "midi32",
+      "default": 31
+    },
+    {
+      "name": "Midi[Aux 3 Rim]",
+      "description": "Aux 3 rim note",
+      "type": "midi32",
+      "default": 32
+    },
+    {
+      "name": "Midi[Aux 4 Head]",
+      "description": "Aux 4 rim note",
+      "type": "midi32",
+      // TODO: Find out the actual default
+      "default": 32
+    },
+    {
+      "name": "Midi[Aux 4 Rim]",
+      "description": "Aux 4 rim note",
+      "type": "midi32",
+      // TODO: Find out the actual default
+      "default": 32
+    },
+    {
+      "description": "{item} gate time",
+      "type": "range8",
+      "min": 1,
+      "max": 80,
+      "divisor": 10,
+      "repeat":
+      {
+        "items": "triggers"
+      }
+    },
+    // The spec is incorrect here. It claims the maximum displayed value is 15, but it's actually 16.
+    // (Then Global comes after 16.)
+    {
+      "description": "{item} MIDI channel",
+      "type": "range8",
+      "min": 0,
+      "max": 16,
+      "valueOffset": 1,
+      "off": 16,
+      "offLabel": "Global",
+      "default": 16,
+      "repeat":
+      {
+        "items": "triggers"
+      }
+    }
+  ]
+}

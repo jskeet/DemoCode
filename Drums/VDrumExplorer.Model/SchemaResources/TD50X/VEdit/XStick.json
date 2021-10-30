@@ -1,0 +1,66 @@
+﻿{
+  "fields": [
+    {
+      "description": "Tuning",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Muffling",
+      "type": "enum16",
+      "values": [
+        "Off",
+        "Tape 1",
+        "Tape 2",
+        "Tape 3",
+        "Tape 4",
+        "Tape 5",
+        "Tape 6",
+        "Tape 7",
+        "Donut 1",
+        "Donut 2"
+      ]
+    },
+    {
+      "description": "Strainer adjust",
+      "type": "enum16",
+      "values": [
+        "Loose 1",
+        "Loose 2",
+        "Loose 3",
+        "Medium 1",
+        "Medium 2",
+        "Medium 3",
+        "Tight 1",
+        "Tight 2",
+        "Tight 3"
+      ]
+    },
+    {
+      "description": "Reserved 1",
+      "type": "placeholder16"
+    },
+    {
+      "description": "Reserved 2",
+      "type": "placeholder16"
+    },
+    {
+      "description": "Wire type",
+      "type": "enum16",
+      "values": [
+        "Type 1",
+        "Type 2",
+        "Type 3"
+      ]
+    },
+    {
+      "description": "Wire level",
+      "type": "range16",
+      "min": 1,
+      "max": 12,
+      "valueOffset": -6,
+      "default": 6
+    }
+  ]
+}

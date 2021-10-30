@@ -1,0 +1,190 @@
+﻿{
+  "size": "0x39",
+  "fields": [
+    {
+      "name": "TriggerMasterAssign",
+      "description": "Master Assign ({item})",
+      "repeat": {
+        "items": "pads"
+      },
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "name": "TriggerDirectAssign",
+      "description": "Direct Assign ({item})",
+      "repeat": {
+        "items": "pads"
+      },
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Direct 3",
+        "Direct 4",
+        "Direct 3+4 (L+R)",
+        "Direct 5",
+        "Direct 6",
+        "Direct 5+6 (L+R)",
+        "Direct 7",
+        "Direct 8",
+        "Direct 7+8 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    {
+      "name": "ExtraMasterAssign",
+      "description": "Master Assign ({item})",
+      "repeat": {
+        "items": "assignableInputs"
+      },
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "name": "ExtraDirectAssign",
+      "description": "Direct Assign ({item})",
+      "repeat": {
+        "items": "assignableInputs"
+      },
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    {
+      "description": "Master Output Mode",
+      "type": "enum",
+      "values": [
+        "Master",
+        "Direct"
+      ]
+    },
+    {
+      "description": "PadEq/Comp to Direct",
+      "type": "boolean"
+    },
+    {
+      "description": "PadComp to Phones",
+      "type": "boolean"
+    },
+    {
+      "description": "Fader to Direct",
+      "type": "boolean"
+    },
+    {
+      "description": "Direct Out Attack",
+      "type": "enum",
+      "values": [
+        "-12dB",
+        "-6dB",
+        "0dB"
+      ]
+    },
+    {
+      "description": "LoCut Frequency",
+      "type": "enum",
+      "values": [
+        "20Hz",
+        "25Hz",
+        "31.5Hz",
+        "40Hz",
+        "50Hz",
+        "63Hz",
+        "80Hz",
+        "100Hz",
+        "125Hz",
+        "160Hz",
+        "200Hz"
+      ]
+    },
+    {
+      "description": "Master Output LoCut",
+      "type": "boolean"
+    },
+    {
+      "description": "Phones Output LoCut",
+      "type": "boolean"
+    },
+    {
+      "description": "Direct Output LoCut",
+      "type": "boolean"
+    },
+    {
+      "description": "Master Overhead Output",
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "description": "Master Room Output",
+      "type": "enum",
+      "values": [
+        "Phones only",
+        "Phones + Master(L+R)"
+      ]
+    },
+    {
+      "description": "Direct Overhead Output",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Direct 3",
+        "Direct 4",
+        "Direct 3+4 (L+R)",
+        "Direct 5",
+        "Direct 6",
+        "Direct 5+6 (L+R)",
+        "Direct 7",
+        "Direct 8",
+        "Direct 7+8 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    },
+    {
+      "description": "Direct Room Output",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Direct 1",
+        "Direct 2",
+        "Direct 1+2 (L+R)",
+        "Direct 3",
+        "Direct 4",
+        "Direct 3+4 (L+R)",
+        "Direct 5",
+        "Direct 6",
+        "Direct 5+6 (L+R)",
+        "Direct 7",
+        "Direct 8",
+        "Direct 7+8 (L+R)",
+        "Master Direct L",
+        "Master Direct R",
+        "Master Direct L+R"
+      ]
+    }
+  ]
+}

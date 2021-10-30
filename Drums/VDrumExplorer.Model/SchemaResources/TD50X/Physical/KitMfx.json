@@ -1,0 +1,108 @@
+﻿{
+  "size": "0x01_06",
+  "fields": [
+    {
+      "description": "Type",
+      "type": "enum",
+      // Note: any edits to these values should be reflected in map in the overlay below
+      "values": [
+        "Delay",
+        "Tape echo",
+        "Reverse delay",
+        "3Tap pan delay",
+        "Overdrive -> Delay",
+        "Distortion -> Delay",
+        "Chorus",
+        "Space-D",
+        "Overdrive -> Chorus",
+        "Distortion -> Chorus",
+        "Phaser A",
+        "Phaser B",
+        "Step Phaser",
+        "Flanger",
+        "Reverb",
+        "Long reverb",
+        "Super filter",
+        "Filter + drive",
+        "Auto wah",
+        "Overdrive / Distortion -> Twah",
+        "LoFi compress",
+        "Distortion",
+        "Overdrive",
+        "Saturator",
+        "T-scream",
+        "Bit crusher",
+        "Isolator",
+        "Ring modulator",
+        "Pitch shifter",
+        "Auto pan",
+        "Time control delay",
+        "Pan delay",
+        "SDD-320",
+        "SBF-325",
+        "Speaker sim",
+        "Guitar amp sim",
+        "Low boost",
+        "Enhanced"
+      ]
+    },
+    {
+      "description": "Switch",
+      "type": "boolean"
+    },
+    {
+      "description": "Level (general MFX)",
+      "type": "volume32"
+    },
+    {
+      "name": "Parameters",
+      "description": "MFX parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "Type",
+        "fieldCount": 32,
+        "fieldSize": 4,
+        "fieldLists": {
+          "Delay": "$resource:../Shared/MultiFx/Delay.json",
+          "Tape echo": "$resource:../Shared/MultiFx/TapeEcho.json",
+          "Reverse delay": "$resource:../Shared/MultiFx/ReverseDelay.json",
+          "3Tap pan delay": "$resource:../Shared/MultiFx/3TapPan.json",
+          "Overdrive -> Delay": "$resource:../Shared/MultiFx/OverdriveToDelay.json",
+          "Distortion -> Delay": "$resource:../Shared/MultiFx/DistortionToDelay.json",
+          "Chorus": "$resource:../Shared/MultiFx/Chorus.json",
+          "Space-D": "$resource:../Shared/MultiFx/SpaceD.json",
+          "Overdrive -> Chorus": "$resource:../Shared/MultiFx/OverdriveToChorus.json",
+          "Distortion -> Chorus": "$resource:../Shared/MultiFx/DistortionToChorus.json",
+          "Phaser A": "$resource:../Shared/MultiFx/PhaserA.json",
+          "Phaser B": "$resource:../Shared/MultiFx/PhaserB.json",
+          "Step Phaser": "$resource:../Shared/MultiFx/StepPhaser.json",
+          "Flanger": "$resource:../Shared/MultiFx/Flanger.json",
+          "Reverb": "$resource:../Shared/MultiFx/Reverb.json",
+          "Long reverb": "$resource:../Shared/MultiFx/LongReverb.json",
+          "Super filter": "$resource:../Shared/MultiFx/SuperFilter.json",
+          "Filter + drive": "$resource:../Shared/MultiFx/FilterAndDrive.json",
+          "Auto wah": "$resource:../Shared/MultiFx/AutoWah.json",
+          "Overdrive / Distortion -> Twah": "$resource:../Shared/MultiFx/OverdriveDistortionToTwah.json",
+          "LoFi compress": "$resource:../Shared/MultiFx/LoFiCompress.json",
+          "Distortion": "$resource:../Shared/MultiFx/Distortion.json",
+          "Overdrive": "$resource:../Shared/MultiFx/Overdrive.json",
+          "Saturator": "$resource:../Shared/MultiFx/Saturator.json",
+          "T-scream": "$resource:../Shared/MultiFx/TScream.json",
+          "Bit crusher": "$resource:../Shared/MultiFx/BitCrusher.json",
+          "Isolator": "$resource:../Shared/MultiFx/Isolator.json",
+          "Ring modulator": "$resource:../Shared/MultiFx/RingModulator.json",
+          "Pitch shifter": "$resource:../Shared/MultiFx/PitchShifter.json",
+          "Auto pan": "$resource:../Shared/MultiFx/AutoPan.json",
+          "Time control delay": "$resource:../Shared/MultiFx/TimeControlDelay.json",
+          "Pan delay": "$resource:../Shared/MultiFx/PanDelay.json",
+          "SDD-320": "$resource:../Shared/MultiFx/SDD-320.json",
+          "SBF-325": "$resource:../Shared/MultiFx/SBF-325.json",
+          "Speaker sim": "$resource:../Shared/MultiFx/SpeakerSim.json",
+          "Guitar amp sim": "$resource:../Shared/MultiFx/GuitarAmpSim.json",
+          "Low boost": "$resource:../Shared/MultiFx/LowBoost.json",
+          "Enhancer": "$resource:../Shared/MultiFx/Enhancer.json"
+        }
+      }
+    }
+  ]
+}

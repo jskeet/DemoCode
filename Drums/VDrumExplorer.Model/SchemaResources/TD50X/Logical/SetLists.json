@@ -1,0 +1,32 @@
+{
+  "name": "SetLists",
+  "format": "Set Lists",
+  "path": ".",
+  "details": [
+    {
+      "description": "Set Lists",
+      "repeat": "setLists",
+      "formatPaths": [
+        "SetList[{index}]/Name"
+      ],
+      "format": "Set List {index}: {0}"
+    }
+  ],
+  "children": [
+    {
+      "name": "SetList",
+      "repeat": "setLists",
+      "path": "SetList[{index}]",
+      "formatPaths": [
+        "Name"
+      ],
+      "format": "Set List {index}: {0}",
+      "details": [
+        {
+          "description": "Details",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}

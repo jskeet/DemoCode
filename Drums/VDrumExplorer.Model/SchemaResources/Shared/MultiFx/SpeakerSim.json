@@ -1,0 +1,55 @@
+{
+  "description": "Speaker sim",
+  "fields": [
+    {
+      "description": "Speaker type",
+      "type": "enum32",
+      "values": [
+        "Small 1",
+        "Small 2",
+        "Middle",
+        "JC-120",
+        "Built-in 1",
+        "Built-in 2",
+        "Built-in 3",
+        "Built-in 4",
+        "Built-in 5",
+        "BG stack 1",
+        "BG stack 2",
+        "MS stack 1",
+        "MS stack 2",
+        "Metal stack",
+        "2-stack",
+        "3-stack"
+      ]
+    },
+    {
+      "description": "Mic setting",
+      "type": "range32",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "description": "Mic level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Direct level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+﻿{
+  "size": "0x36",
+  "fields": [
+    {
+      "name": "KitName",
+      "description": "Kit name",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "name": "KitSubName",
+      "description": "Kit Sub name",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "description": "Kit volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Pedal HH volume",
+      "type": "volume32"
+    },
+    {
+      "description": "XStick on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "XStick Inst",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
+    },
+    {
+      "description": "XStick volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Brush on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Color",
+      "type": "range8",
+      "min": 0,
+      "max": 9,
+      "valueOffset": 1
+    },
+    {
+      "description": "Favorite",
+      "type": "boolean"
+    },
+    {
+      // TODO: This has a description of "off, on" in the
+      // manual, which is clearly not right for a range of 0-15.
+      // Check with an owner...
+      "description": "Overhead template",
+      "type": "range8",
+      "min": 0,
+      "max": 15
+    },
+    {
+      "description": "Kit tempo",
+      "type": "boolean"
+    },
+    {
+      // TODO: Is this an enum really?
+      "description": "Kit font",
+      "type": "range8",
+      "min": 0,
+      "max": 5
+    },
+    {
+      "description": "Tempo",
+      "type": "range32",
+      "min": 20,
+      "max": 260
+    },
+    {
+      "description": "Hi-Hat Open/Close Balance",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    }
+  ]
+}

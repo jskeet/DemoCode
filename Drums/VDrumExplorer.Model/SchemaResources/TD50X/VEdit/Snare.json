@@ -1,0 +1,93 @@
+﻿{
+  "fields": [
+    {
+      "description": "Tuning",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Muffling",
+      "type": "enum16",
+      "values": [
+        "Off",
+        "Tape 1",
+        "Tape 2",
+        "Tape 3",
+        "Tape 4",
+        "Tape 5",
+        "Tape 6",
+        "Tape 7",
+        "Donut 1",
+        "Donut 2"
+      ]
+    },
+    {
+      "description": "Strainer adjust",
+      "type": "enum16",
+      "values": [
+        "Loose 1",
+        "Loose 2",
+        "Loose 3",
+        "Medium 1",
+        "Medium 2",
+        "Medium 3",
+        "Tight 1",
+        "Tight 2",
+        "Tight 3"
+      ]
+    },
+    {
+      "description": "Shell depth",
+      "type": "range16",
+      "min": 0,
+      "max": 58,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "description": "Head type",
+      "type": "enum16",
+      "values": [
+        "Clear",
+        "Coated",
+        "Pinstripe"
+      ]
+    },
+    {
+      "description": "Wire type",
+      "type": "enum16",
+      "values": [
+        "Type 1",
+        "Type 2",
+        "Type 3"
+      ]
+    },
+    {
+      "description": "Wire level",
+      "type": "range16",
+      // Documentation claims -6 to +6, but over a range of 1-12.
+      // We'll assume it's actually -5 to +6, as that matches
+      // the TD-27's -4 to +5.
+      // TODO: Ask someone to validate this.
+      "min": 1,
+      "max": 12,
+      "valueOffset": -6,
+      "default": 6
+    },
+    {
+      "description": "Mic distance",
+      "type": "range16",
+      "min": 0,
+      "max": 10,
+      "valueOffset": -5,
+      "default": 5
+    },
+    {
+      "description": "Overtone",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+﻿{
+  "size": "0x1b",
+  "fields": [
+    {
+      "description": "Instrument",
+      "type": "instrument",
+      "bankOffset": "0x08"
+    },
+    {
+      "description": "Volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Instrument bank",
+      "type": "placeholder8"
+    },
+    {
+      "description": "Transient on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Transient time",
+      "type": "range8",
+      "min": 1,
+      "max": 10
+    },
+    {
+      "description": "Transient attack",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Transient release",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Transient gain",
+      "type": "range16",
+      "min": -120,
+      "max": 60,
+      "divisor": 10,
+      "suffix": "dB"
+    },
+    {
+      "description": "Dynamic enhancer",
+      "type": "enum",
+      "values": [
+        "Off",
+        "Normal",
+        "Wide"
+      ]
+    },
+    {
+      "description": "Pad Decay",
+      "type": "range8",
+      "min": 1,
+      "max": 100
+    },
+    {
+      "description": "Pad Pitch",
+      "type": "range32",
+      "min": -4800,
+      "max": 4800
+    },
+    {
+      "description": "Pad Pitch sweep",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "User sample transient type",
+      "type": "enum",
+      "values": [
+        "Type 1",
+        "Type 2",
+        "Type 3",
+        "Type 4"
+      ]
+    },
+    {
+      "description": "Transient attack type",
+      "type": "enum",
+      "values": [
+        "Normal",
+        "Wide 1",
+        "Wide 2"
+      ]
+    },
+  ]
+}

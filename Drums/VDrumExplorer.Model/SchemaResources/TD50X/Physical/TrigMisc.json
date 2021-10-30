@@ -1,0 +1,113 @@
+{
+  "size": "0x49",
+  "fields": [
+    {
+      "name": "Name",
+      "description": "Trigger bank name",
+      "type": "string16",
+      "length": 16
+    },
+    {
+      "description": "Hi-hat VH-12 offset",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Hi-hat VH-13 offset",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Hi-hat VH-12 foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "description": "Hi-hat VH-13 foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "description": "Hi-hat FD foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "description": "Hi-hat VH-12 noise cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "description": "Hi-hat VH-13 noise cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "description": "Hi-hat CC max",
+      "type": "enum",
+      "values": [
+        "90",
+        "127"
+      ]
+    },
+    {
+      "description": "Analog XStick threshold",
+      "type": "range8",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "XTalk cancel rate {index} ({item})",
+      "type": "range8",
+      "min": 0,
+      "max": 80,
+      "repeat": {
+        "items": "pads"
+      }
+    },
+    {
+      "description": "Hi-hat VH-14D offset",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Hi-hat VH-14D foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "description": "Hi-hat VH-14D noise cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "description": "Hi-hat VH-14D pressure sensitivity",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
+    },
+    {
+      "description": "Global sensitivity",
+      "type": "enum",
+      "values": [
+        "Low",
+        "Normal",
+        "High"
+      ]
+    }
+  ]
+}
