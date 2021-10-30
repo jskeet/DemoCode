@@ -32,7 +32,8 @@ namespace VDrumExplorer.Model
                 { ModuleIdentifier.AE10, LazyFromAssemblyResources("SchemaResources.AE10", "AE10.json") },
                 { ModuleIdentifier.TD17, LazyFromAssemblyResources("SchemaResources.TD17", "TD17.json") },
                 { ModuleIdentifier.TD27, LazyFromAssemblyResources("SchemaResources.TD27", "TD27.json") },
-                { ModuleIdentifier.TD50, LazyFromAssemblyResources("SchemaResources.TD50", "TD50.json") }
+                { ModuleIdentifier.TD50, LazyFromAssemblyResources("SchemaResources.TD50", "TD50.json") },
+                { ModuleIdentifier.TD50X, LazyFromAssemblyResources("SchemaResources.TD50X", "TD50X.json") }
             }.AsReadOnly();
 
         /// <summary>
