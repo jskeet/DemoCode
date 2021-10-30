@@ -86,7 +86,7 @@ namespace VDrumExplorer.Model.Midi
                 case 1:
                     return clients[0];
                 default:
-                    logger.LogWarning($"Multiple known modules detected: {string.Join(", ", clients.Select(c => c.Identifier.Name))}. Aborting.");
+                    logger.LogWarning("Multiple known modules detected: '{modules}'. Aborting.", string.Join(", ", clients.Select(c => c.Identifier.Name)));
                     foreach (var client in clients)
                     {
                         client.Dispose();
@@ -100,12 +100,12 @@ namespace VDrumExplorer.Model.Midi
             var inputDevices = ListInputDevices();
             foreach (var device in inputDevices)
             {
-                logger.LogInformation($"Input device: '{device.Name}'");
+                logger.LogInformation("Input device: '{name}'", device.Name);
             }
             var outputDevices = ListOutputDevices();
             foreach (var device in outputDevices)
             {
-                logger.LogInformation($"Output device: '{device.Name}'");
+                logger.LogInformation("Output device: '{name}'", device.Name);
             }
             var commonNames = inputDevices.Select(input => input.Name)
                 .Intersect(outputDevices.Select(output => output.Name))
@@ -120,32 +120,43 @@ namespace VDrumExplorer.Model.Midi
 
             foreach (var name in commonNames)
             {
-                logger.LogInformation($"Detecting devices for MIDI ports with name '{name}'");
-                var matchedInputs = inputDevices.Where(input => input.Name == name).ToList();
-                var matchedOutputs = outputDevices.Where(output => output.Name == name).ToList();
-                if (matchedInputs.Count != 1 || matchedOutputs.Count != 1)
+                logger.LogInformation("Detecting devices for MIDI ports with name '{name}'", name);
+                RolandMidiClient? client = null;
+                try
                 {
-                    logger.LogWarning($"  Error: Name {name} matches multiple input or output MIDI ports. Skipping.");
-                    continue;
-                }
-                var identities = await ListDeviceIdentities(matchedInputs[0], matchedOutputs[0], TimeSpan.FromSeconds(1));
-                if (identities.Count != 1)
-                {
-                    logger.LogWarning($"  {(identities.Count == 0 ? "No" : "Multiple")} devices detected for MIDI port '{name}'. Skipping.");
-                    continue;
-                }
+                    var matchedInputs = inputDevices.Where(input => input.Name == name).ToList();
+                    var matchedOutputs = outputDevices.Where(output => output.Name == name).ToList();
+                    if (matchedInputs.Count != 1 || matchedOutputs.Count != 1)
+                    {
+                        logger.LogWarning("  Error: Name '{name}' matches multiple input or output MIDI ports. Skipping.", name);
+                        continue;
+                    }
+                    var identities = await ListDeviceIdentities(matchedInputs[0], matchedOutputs[0], TimeSpan.FromSeconds(1));
+                    if (identities.Count != 1)
+                    {
+                        logger.LogWarning($"  {(identities.Count == 0 ? "No" : "Multiple")} devices detected for MIDI port '{{name}}'. Skipping.", name);
+                        continue;
+                    }
 
-                var identity = identities[0];
-                logger.LogInformation($"  Detected single Roland device identity: {identity}");
-                var matchingKeys = knownIdentifiers.Where(sk => sk.FamilyCode == identity.FamilyCode && sk.FamilyNumberCode == identity.FamilyNumberCode).ToList();
-                if (matchingKeys.Count != 1)
-                {
-                    logger.LogWarning($"  {(matchingKeys.Count == 0 ? "No" : "Multiple")} known V-Drums schemas detected for MIDI device. Skipping.");
-                    continue;
+                    var identity = identities[0];
+                    logger.LogInformation("  Detected single Roland device identity: {identity}", identity);
+                    var matchingKeys = knownIdentifiers.Where(sk => sk.FamilyCode == identity.FamilyCode && sk.FamilyNumberCode == identity.FamilyNumberCode).ToList();
+                    if (matchingKeys.Count != 1)
+                    {
+                        logger.LogWarning($"  {(matchingKeys.Count == 0 ? "No" : "Multiple")} known V-Drums schemas detected for MIDI device. Skipping.");
+                        continue;
+                    }
+                    logger.LogInformation("  Identity matches known schema '{schema}'.", matchingKeys[0].Name);
+                    client = await CreateRolandMidiClientAsync(matchedInputs[0], matchedOutputs[0], identity, matchingKeys[0]);
                 }
-                logger.LogInformation($"  Identity matches known schema {matchingKeys[0].Name}.");
-                var client = await CreateRolandMidiClientAsync(matchedInputs[0], matchedOutputs[0], identity, matchingKeys[0]);
-                yield return client;
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "  Error accessing devices for MIDI ports with name '{name}'", name);
+                }
+                if (client is object)
+                {
+                    yield return client;
+                }
             }
         }
     }
