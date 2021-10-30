@@ -1,0 +1,632 @@
+﻿{
+  "size": "0x56",
+  "fields": [
+    {
+      "description": "On/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Type",
+      "type": "enum",
+      "values": [
+        "Room",
+        "Reverb",
+        "TD-50 Room",
+        "Warm Hall",
+        "SRV-2000",
+        "SRV-2000 (NLR)"
+      ]
+    },
+    {
+      "description": "Level",
+      "type": "volume32"
+    },
+    {
+      "description": "Room parameters",
+      "type": "overlay",
+      "overlay": {
+        "fieldCount": 20,
+        "fieldSize": 4,
+        "switchPath": "Type",
+        "fieldLists": {
+          "Room": {
+            "description": "Room",
+            "fields": [
+              {
+                "description": "Room Type",
+                "type": "enum32",
+                "values": [
+                  "Small Studio 1",
+                  "Small Studio 2",
+                  "Small Studio 3",
+                  "Small Studio 4",
+                  "Large Studio 1",
+                  "Large Studio 2",
+                  "Large Studio 3",
+                  "Large Studio 4",
+                  "Live House 1",
+                  "Live House 2",
+                  "Live House 3",
+                  "Live House 4",
+                  "Stage 1",
+                  "Stage 2",
+                  "Stage 3",
+                  "Stage 4",
+                  "Middle Hall 1",
+                  "Middle Hall 2",
+                  "Middle Hall 3",
+                  "Middle Hall 4"
+                ]
+              },
+              {
+                "description": "Distance",
+                "type": "range32",
+                "min": 0,
+                "max": 6,
+                "default": 4
+              },
+              {
+                "description": "Time",
+                "type": "range32",
+                "min": -64,
+                "max": 0
+              }
+            ]
+          },
+          "Reverb": {
+            "description": "Reverb",
+            "fields": [
+              {
+                "description": "Type",
+                "type": "enum32",
+                "values": [
+                  "Room 1",
+                  "Room 2",
+                  "Hall 1",
+                  "Hall 2",
+                  "Plate"
+                ],
+                "default": 2
+              },
+              {
+                "description": "Pre delay",
+                "type": "range32",
+                "min": 0,
+                "max": 100,
+                "suffix": "ms",
+                "default": 26
+              },
+              {
+                "description": "Time",
+                "type": "range32",
+                "min": 1,
+                "max": 100,
+                "divisor": 10,
+                "suffix": "sec",
+                "default": 26
+              },
+              {
+                "description": "Density",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 127
+              },
+              {
+                "description": "Diffusion",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 127
+              },
+              {
+                "description": "LF damp",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 50
+              },
+              {
+                "description": "HF damp",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 50
+              },
+              {
+                "description": "Spread",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 127
+              },
+              {
+                "description": "Tone",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 64
+              }
+            ]
+          },
+          "TD-50 Room": {
+            "description": "TD-50 Room",
+            "fields": [
+              {
+                "description": "Room Type",
+                "type": "enum32",
+                "values": [
+                  "Beach",
+                  "Living room",
+                  "Bathroom",
+                  "Studio",
+                  "Garage",
+                  "Locker room",
+                  "Theater",
+                  "Cave",
+                  "Gymnasium",
+                  "Dome stadium",
+                  "Booth A",
+                  "Booth B",
+                  "Studio A",
+                  "Studio B",
+                  "Basement",
+                  "Jazz club",
+                  "Rock club",
+                  "Ballroom",
+                  "Gate",
+                  "Concert hall",
+                  "Sports arena",
+                  "Expo hall",
+                  "Bottle",
+                  "City",
+                  "Spiral"
+                ]
+              },
+              {
+                "description": "Room size",
+                "type": "enum32",
+                "values": [
+                  "Tiny",
+                  "Small",
+                  "Medium",
+                  "Large",
+                  "Huge"
+                ]
+              },
+              {
+                "description": "Room shape",
+                "type": "range32",
+                "min": 0,
+                "max": 100
+              },
+              {
+                "description": "Wall type",
+                "type": "enum32",
+                "values": [
+                  "Curtain",
+                  "Cloth",
+                  "Wood",
+                  "Plaster",
+                  "Concrete",
+                  "Glass"
+                ]
+              },
+              {
+                "description": "Mic position",
+                "type": "enum32",
+                "values": [
+                  "Next door",
+                  "Low floor",
+                  "Low",
+                  "Mid low",
+                  "Mid",
+                  "Mid high",
+                  "High",
+                  "Ceiling A",
+                  "Ceiling B"
+                ]
+              }
+            ]
+          },
+          "Warm Hall": {
+            "description": "Warm Hall",
+            "fields": [
+              {
+                "description": "Pre delay",
+                "type": "range32",
+                "min": 0,
+                "max": 125,
+                "values": "$resource:../Shared/CustomNumeric/PreDelay.json",
+                "default": 20
+              },
+              {
+                "description": "Time",
+                "type": "range32",
+                "min": 3,
+                "max": 300,
+                "divisor": 10,
+                "suffix": "sec",
+                "default": 26
+              },
+              {
+                "description": "Pre Low Pass Filter",
+                "type": "enum32",
+                "min": 1,
+                "values": [
+                  "16Hz",
+                  "20Hz",
+                  "25Hz",
+                  "32Hz",
+                  "40Hz",
+                  "50Hz",
+                  "63Hz",
+                  "80Hz",
+                  "100Hz",
+                  "125Hz",
+                  "160Hz",
+                  "200Hz",
+                  "250Hz",
+                  "315Hz",
+                  "400Hz",
+                  "500Hz",
+                  "630Hz",
+                  "800Hz",
+                  "1000Hz",
+                  "1250Hz",
+                  "1600Hz",
+                  "2000Hz",
+                  "2500Hz",
+                  "3150Hz",
+                  "4000Hz",
+                  "5000Hz",
+                  "6300Hz",
+                  "8000Hz",
+                  "10000Hz",
+                  "12500Hz",
+                  "15000Hz",
+                  "Bypass"
+                ],
+                "default": 32
+              },
+              {
+                "description": "Pre High Pass Filter",
+                "type": "enum32",
+                "values": [
+                  "Bypass",
+                  "16Hz",
+                  "20Hz",
+                  "25Hz",
+                  "32Hz",
+                  "40Hz",
+                  "50Hz",
+                  "63Hz",
+                  "80Hz",
+                  "100Hz",
+                  "125Hz",
+                  "160Hz",
+                  "200Hz",
+                  "250Hz",
+                  "315Hz",
+                  "400Hz",
+                  "500Hz",
+                  "630Hz",
+                  "800Hz",
+                  "1000Hz",
+                  "1250Hz",
+                  "1600Hz",
+                  "2000Hz",
+                  "2500Hz",
+                  "3150Hz",
+                  "4000Hz",
+                  "5000Hz",
+                  "6300Hz",
+                  "8000Hz",
+                  "10000Hz",
+                  "12500Hz",
+                  "15000Hz"
+                ]
+              },
+              {
+                "description": "PreLoop Low Pass Filter",
+                "type": "enum32",
+                "min": 1,
+                "values": [
+                  "16Hz",
+                  "20Hz",
+                  "25Hz",
+                  "32Hz",
+                  "40Hz",
+                  "50Hz",
+                  "63Hz",
+                  "80Hz",
+                  "100Hz",
+                  "125Hz",
+                  "160Hz",
+                  "200Hz",
+                  "250Hz",
+                  "315Hz",
+                  "400Hz",
+                  "500Hz",
+                  "630Hz",
+                  "800Hz",
+                  "1000Hz",
+                  "1250Hz",
+                  "1600Hz",
+                  "2000Hz",
+                  "2500Hz",
+                  "3150Hz",
+                  "4000Hz",
+                  "5000Hz",
+                  "6300Hz",
+                  "8000Hz",
+                  "10000Hz",
+                  "12500Hz",
+                  "15000Hz",
+                  "Bypass"
+                ],
+                "default": 32
+              },
+              {
+                "description": "Diffusion",
+                "type": "range32",
+                "min": 0,
+                "max": 127,
+                "default": 127
+              },
+              {
+                "description": "HF damp",
+                "type": "enum32",
+                "values": [
+                  "1000Hz",
+                  "1250Hz",
+                  "1600Hz",
+                  "2000Hz",
+                  "2500Hz",
+                  "3150Hz",
+                  "4000Hz",
+                  "5000Hz",
+                  "6300Hz",
+                  "8000Hz"
+                ]
+              },
+              {
+                "description": "HF damp ratio",
+                "type": "range32",
+                "min": 1,
+                "max": 10,
+                "divisor": 10
+              }
+            ]
+          },
+          "SRV-2000": {
+            "description": "SRV-2000",
+            "fields": [
+              {
+                "description": "Selection",
+                "type": "enum32",
+                "values": [
+                  "R0.3",
+                  "R1.0",
+                  "R7.0",
+                  "R15",
+                  "R22",
+                  "R26",
+                  "R32",
+                  "R37",
+                  "H15",
+                  "H22",
+                  "H26",
+                  "H32",
+                  "H37",
+                  "P-B",
+                  "P-A"
+                ]
+              },
+              {
+                "description": "Pre delay",
+                "type": "range32",
+                "min": 0,
+                "max": 160,
+                "suffix": "ms",
+                "default": 26
+              },
+              {
+                "description": "Time",
+                "type": "range32",
+                "min": 1,
+                "max": 990,
+                "divisor": 10,
+                "suffix": "sec",
+                "default": 26
+              },
+              {
+                "description": "HF damp",
+                "type": "range32",
+                "min": 5,
+                "max": 100,
+                "divisor": 100
+              },
+              {
+                "description": "Density",
+                "type": "range32",
+                "min": 0,
+                "max": 9
+              },
+              {
+                "description": "Attack Gain",
+                "type": "range32",
+                "min": 0,
+                "max": 9
+              },
+              {
+                "description": "Attack Time",
+                "type": "range32",
+                "min": 0,
+                "max": 9
+              },
+              {
+                "description": "ER Density",
+                "type": "range32",
+                "min": 0,
+                "max": 9
+              },
+              {
+                "description": "ER Level",
+                "type": "range32",
+                "min": 0,
+                "max": 99
+              },
+              {
+                "description": "EQ low frequency",
+                "type": "range32",
+                "min": 4,
+                "max": 100,
+                "suffix": "kHz",
+                "divisor": 100
+              },
+              {
+                "description": "EQ low gain",
+                "type": "range32",
+                "min": -24,
+                "max": 12,
+                "suffix": "dB"
+              },
+              {
+                "description": "EQ mid frequency",
+                "type": "range32",
+                "min": 25,
+                "max": 999,
+                "suffix": "kHz",
+                "divisor": 100
+              },
+              {
+                "description": "EQ mid gain",
+                "type": "range32",
+                "min": -24,
+                "max": 12,
+                "suffix": "dB"
+              },
+              {
+                "description": "EQ mid Q",
+                "type": "range32",
+                "min": 2,
+                "max": 90,
+                "divisor": 10
+              },
+              {
+                "description": "EQ high frequency",
+                "type": "range32",
+                "min": 80,
+                "max": 999,
+                "suffix": "kHz",
+                "divisor": 100
+              },
+              {
+                "description": "EQ high gain",
+                "type": "range32",
+                "min": -24,
+                "max": 12,
+                "suffix": "dB"
+              },
+              {
+                "description": "EQ high Q",
+                "type": "range32",
+                "min": 2,
+                "max": 90,
+                "divisor": 10
+              }
+            ]
+          },
+          "SRV-2000 (NLR)": {
+            "description": "SRV-2000 (NLR)",
+            "fields": [
+              {
+                "description": "Pre delay",
+                "type": "range32",
+                "min": 0,
+                "max": 120,
+                "suffix": "ms",
+                "default": 26
+              },
+              {
+                "description": "Reverb time",
+                "type": "range32",
+                "min": -9,
+                "max": 990,
+                "divisor": 10,
+                "suffix": "sec"
+              },
+              {
+                "description": "Gate time",
+                "type": "range32",
+                "min": 10,
+                "max": 450,
+                "suffix": "ms"
+              },
+              {
+                "description": "EQ low frequency",
+                "type": "range32",
+                "min": 4,
+                "max": 100,
+                "suffix": "kHz",
+                "divisor": 100
+              },
+              {
+                "description": "EQ low gain",
+                "type": "range32",
+                "min": -24,
+                "max": 12,
+                "suffix": "dB"
+              },
+              {
+                "description": "EQ mid frequency",
+                "type": "range32",
+                "min": 25,
+                "max": 999,
+                "suffix": "kHz",
+                "divisor": 100
+              },
+              {
+                "description": "EQ mid gain",
+                "type": "range32",
+                "min": -24,
+                "max": 12,
+                "suffix": "dB"
+              },
+              {
+                "description": "EQ mid Q",
+                "type": "range32",
+                "min": 2,
+                "max": 90,
+                "divisor": 10
+              },
+              {
+                "description": "EQ high frequency",
+                "type": "range32",
+                "min": 80,
+                "max": 999,
+                "suffix": "kHz",
+                "divisor": 100
+              },
+              {
+                "description": "EQ high gain",
+                "type": "range32",
+                "min": -24,
+                "max": 12,
+                "suffix": "dB"
+              },
+              {
+                "description": "EQ mid Q",
+                "type": "range32",
+                "min": 2,
+                "max": 90,
+                "divisor": 10
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

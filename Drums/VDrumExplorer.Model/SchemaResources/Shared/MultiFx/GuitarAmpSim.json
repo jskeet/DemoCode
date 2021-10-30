@@ -1,0 +1,140 @@
+{
+  "description": "Guitar amp sim",
+  "fields": [
+    {
+      "description": "Amp on/off",
+      "type": "boolean32"
+    },
+    {
+      "description": "Amp type",
+      "type": "enum32",
+      "values": [
+        "JC-120",
+        "Clean twin",
+        "Match drive",
+        "BG lead",
+        "MS1959I",
+        "MS1959II",
+        "MS1959I+II",
+        "Soldano lead",
+        "Metal 5150",
+        "Metal lead",
+        "OD-1",
+        "OD-2 turbo",
+        "Distortion",
+        "Fuzz"
+      ]
+    },
+    {
+      "description": "Amp volume",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp master",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp gain",
+      "type": "enum32",
+      "values": [
+        "Low",
+        "Middle",
+        "High"
+      ]
+    },
+    {
+      "description": "Amp bass",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp middle",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp treble",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp presence",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Amp bright on/off",
+      "type": "boolean32"
+    },
+    {
+      "description": "Speaker on/off",
+      "type": "boolean32"
+    },
+    {
+      "description": "Speaker type",
+      "type": "enum32",
+      "values": [
+        "Small 1",
+        "Small 2",
+        "Middle",
+        "JC-120",
+        "Built-in 1",
+        "Built-in 2",
+        "Built-in 3",
+        "Built-in 4",
+        "Built-in 5",
+        "BG stack 1",
+        "BG stack 2",
+        "MS stack 1",
+        "MS stack 2",
+        "Metal stack",
+        "2-stack",
+        "3-stack"
+      ]
+    },
+    {
+      "description": "Mic setting",
+      "type": "range32",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "description": "Mic level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Direct level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64,
+      "default": 64
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "description": "SBF-325",
+  "fields": [
+    {
+      "description": "Mode",
+      "type": "enum32",
+      "values": [
+        "FL1",
+        "FL2",
+        "FL3",
+        "CHO"
+      ]
+    },
+    {
+      "description": "Rate",
+      "type": "tempo",
+      // TODO: The range should be 0.02Hz - 5.00Hz. Probably needs a custom numeric range,
+      // which may not yet be supported for type tempo...
+      "min": 0,
+      "max": 111,
+      "divisor": 20,
+      "suffix": "Hz",
+      "default": 80,
+      "noteDefault": 9
+    },
+    {
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Manual",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "CH-R mod phase",
+      "type": "enum32",
+      "values": [
+        "NORM",
+        "INV"
+      ]
+    },
+    {
+      "description": "CH-L phase",
+      "type": "enum32",
+      "values": [
+        "NORM",
+        "INV"
+      ]
+    },
+    {
+      "description": "CH-R phase",
+      "type": "enum32",
+      "values": [
+        "NORM",
+        "INV"
+      ]
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

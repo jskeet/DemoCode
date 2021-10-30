@@ -1,0 +1,36 @@
+﻿{
+  "size": "0x07",
+  "fields": [
+    {
+      "description": "Sound",
+      "type": "enum",
+      "values": [
+        "Metronome",
+        "Click",
+        "Voice",
+        "Beep 1",
+        "Beep 2",
+        "Tek click",
+        "Sticks",
+        "Claves",
+        "Wood block",
+        "Cowbell",
+        "Agogo",
+        "Triangle",
+        "Tambourine",
+        "Maracas",
+        "Cabasa"
+      ]
+    },
+    {
+      "description": "Pan",
+      "type": "range16",
+      "min": -30,
+      "max": 30
+    },
+    {
+      "description": "Level",
+      "type": "volume32"
+    }
+  ]
+}
