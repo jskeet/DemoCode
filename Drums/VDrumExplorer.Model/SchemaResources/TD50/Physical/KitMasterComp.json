@@ -49,8 +49,7 @@
       "description": "Lo threshold",
       "type": "range16",
       "min": -48,
-      "max": 48,
-      "divisor": 2,
+      "max": 0,
       "suffix": "dB",
       "default": -12
     },
@@ -58,8 +57,7 @@
       "description": "Hi threshold",
       "type": "range16",
       "min": -48,
-      "max": 48,
-      "divisor": 2,
+      "max": 0,
       "suffix": "dB",
       "default": -12
     },
