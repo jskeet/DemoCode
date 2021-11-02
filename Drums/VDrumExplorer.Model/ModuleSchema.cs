@@ -79,10 +79,12 @@ namespace VDrumExplorer.Model
             Identifier = json.Identifier!.ToModuleIdentifier();
             Kits = json.Counts!["kits"];
             UserSamples = json.Counts!["userSamples"];
-            InstrumentGroups = json.InstrumentGroups
-                .Select((igj, index) => igj.ToInstrumentGroup(index))
-                .Concat(new[] { InstrumentGroup.ForUserSamples(json.InstrumentGroups!.Count, UserSamples) })
-                .ToReadOnlyList();
+            var instrumentGroups = json.InstrumentGroups.Select((igj, index) => igj.ToInstrumentGroup(index));
+            if (UserSamples != 0)
+            {
+                instrumentGroups = instrumentGroups.Concat(new[] { InstrumentGroup.ForUserSamples(json.InstrumentGroups!.Count, UserSamples) });
+            }
+            InstrumentGroups = instrumentGroups.ToReadOnlyList();
 
             PresetInstruments = InstrumentGroups
                 .TakeWhile(ig => ig.Preset)
@@ -98,7 +100,7 @@ namespace VDrumExplorer.Model
                 }
             }
 
-            UserSampleInstruments = InstrumentGroups.Last().Instruments;
+            UserSampleInstruments = UserSamples == 0 ? new List<Instrument>().AsReadOnly() : InstrumentGroups.Last().Instruments;
 
             PhysicalRoot = json.BuildPhysicalRoot(this);
             LogicalRoot = json.BuildLogicalRoot(PhysicalRoot);

@@ -153,7 +153,7 @@ namespace VDrumExplorer.Model.Schema.Json
                 "enum16" => BuildEnumField(NumericCodec.Range16),
                 "enum24" => BuildEnumField(NumericCodec.Full24),
                 "enum32" => BuildEnumField(NumericCodec.Range32),
-                "instrument" => new InstrumentField(null, BuildCommon(4), ModuleOffset.FromDisplayValue(ValidateNotNull(BankOffset, nameof(BankOffset)).Value)),
+                "instrument" => new InstrumentField(null, BuildCommon(4), BankOffset is null ? (ModuleOffset?) null : ModuleOffset.FromDisplayValue(BankOffset.Value)),
                 "midi32" => new NumericField(null, BuildCommon(4), 0, 128, Default ?? 0, NumericCodec.Range32, null, null, null, null, (128, "Off")),
                 "overlay" => BuildOverlay(),
                 "range8" => BuildNumericField(NumericCodec.Range8),

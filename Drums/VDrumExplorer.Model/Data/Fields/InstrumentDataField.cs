@@ -33,7 +33,9 @@ namespace VDrumExplorer.Model.Data.Fields
         internal override IEnumerable<DataValidationError> Load(DataSegment segment)
         {
             var indexValue = segment.ReadInt32(Offset, NumericCodec.Range32);
-            var bankValue = (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset, NumericCodec.Range8);
+            var bankValue = SchemaField.BankOffset is null
+                ? InstrumentBank.Preset
+                : (InstrumentBank) segment.ReadInt32(SchemaField.BankOffset.Value, NumericCodec.Range8);
 
             if (bankValue == InstrumentBank.Preset && indexValue >= 0 && indexValue < Schema.PresetInstruments.Count)
             {
@@ -54,7 +56,10 @@ namespace VDrumExplorer.Model.Data.Fields
         internal override void Save(DataSegment segment)
         {
             segment.WriteInt32(Offset, NumericCodec.Range32, index);
-            segment.WriteInt32(SchemaField.BankOffset, NumericCodec.Range8, (int) bank);
+            if (SchemaField.BankOffset is ModuleOffset offset)
+            {
+                segment.WriteInt32(offset, NumericCodec.Range8, (int) bank);
+            }
         }
 
         public Instrument Instrument

@@ -14,10 +14,11 @@ namespace VDrumExplorer.Model.Schema.Fields
         /// <summary>
         /// The offset within the same container for the single-byte instrument bank field,
         /// with a value of 0 for preset instruments and 1 for user samples.
+        /// This is null for modules that don't support user samples
         /// </summary>
-        internal ModuleOffset BankOffset { get; }
+        internal ModuleOffset? BankOffset { get; }
 
-        internal InstrumentField(FieldContainer? parent, FieldParameters common, ModuleOffset bankOffset) : base(parent, common) =>
+        internal InstrumentField(FieldContainer? parent, FieldParameters common, ModuleOffset? bankOffset) : base(parent, common) =>
             BankOffset = bankOffset;
 
         internal override FieldBase WithParent(FieldContainer parent) => new InstrumentField(parent, Parameters, BankOffset);
