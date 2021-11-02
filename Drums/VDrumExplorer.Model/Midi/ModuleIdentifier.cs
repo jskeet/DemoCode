@@ -14,6 +14,7 @@ namespace VDrumExplorer.Model.Midi
     {
         public static ModuleIdentifier AE01 { get; } = new ModuleIdentifier("AE-01", 0x5a, 0x35a, 0);
         public static ModuleIdentifier AE10 { get; } = new ModuleIdentifier("AE-10", 0x2f, 0x32f, 0);
+        public static ModuleIdentifier TD07 { get; } = new ModuleIdentifier("TD-07", 0x75, 0x375, 0);
         public static ModuleIdentifier TD17 { get; } = new ModuleIdentifier("TD-17", 0x4b, 0x34b, 0);
         public static ModuleIdentifier TD27 { get; } = new ModuleIdentifier("TD-27", 0x63, 0x363, 0);
         public static ModuleIdentifier TD50 { get; } = new ModuleIdentifier("TD-50", 0x24, 0x324, 0);
