@@ -21,11 +21,11 @@ updating for 1.0.0-alpha06+, with new screenshots etc.**
 
 - Windows 8.1 or Windows 10
 - .NET 4.7.2 or later
-- To be genuinely useful, a Roland TD-17, TD-27, TD-50, or TD-50X V-Drums drum kit, turned on and connected via USB (see later for details)
+- To be genuinely useful, a Roland TD-07, TD-17, TD-27, TD-50, or TD-50X V-Drums drum kit, turned on and connected via USB (see later for details)
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha08/VDrumExplorer-Setup-1.0.0-alpha08.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha09/VDrumExplorer-Setup-1.0.0-alpha09.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -376,6 +376,13 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha09 (2021-11-02)
+
+Changes since 1.0.0-alpha08:
+
+- Initial support for TD-07 (definitely "mostly works"; there may be some schema issues)
+- Fix for TD-50X schema that would prevent instrument recording
 
 ## Version 1.0.0-alpha08 (2021-10-30)
 
