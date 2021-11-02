@@ -1,0 +1,35 @@
+{
+  "size": "0xd",
+  "fields": [
+    {
+      "description": "Hi-Hat foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "description": "XStick sensitivity",
+      "type": "range8",
+      "min": 0,
+      "max": 10,
+      "off": 0
+    },
+    {
+      "description": "Expansion (CR2 usage)",
+      "type": "enum",
+      "values": [
+        "Additional pad",
+        "Ride bell (CY-13R)"
+      ]
+    },
+    {
+      "description": "XTalk Cancel Rate ({item})",
+      "type": "range8",
+      "min": 0,
+      "max": 80,
+      "repeat": {
+        "items": "pads"
+      }
+    }
+  ]
+}

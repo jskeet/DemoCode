@@ -1,0 +1,37 @@
+﻿{
+  "fields": [
+    {
+      "description": "Tuning",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Muffling",
+      "type": "range16",
+      "min": 0,
+      "max": 9,
+      "off": 0
+    },
+    {
+      "description": "Head",
+      "type": "enum16",
+      "values": [
+        "Clear",
+        "Coated",
+        "Pinstripe"
+      ]
+    },
+    {
+      "description": "Beater",
+      "type": "enum16",
+      "values": [
+        "Felt 1",
+        "Felt 2",
+        "Wood",
+        "Plastic 1",
+        "Plastic 2"
+      ]
+    }
+  ]
+}

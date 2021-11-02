@@ -1,0 +1,27 @@
+﻿{
+  "size": "0x21",
+  "fields": [    
+    {
+      "name": "Placeholder field",
+      "type": "placeholder8"
+    },
+    {
+      "name": "Parameters",
+      "description": "V-Edit Parameters",
+      "type": "overlay",
+      "overlay": {
+        "switchPath": "/Kit[{kit}]/KitUnitLayer[{trigger}]/Instrument",
+        "fieldSize": 2,
+        "fieldCount": 16,
+        "fieldLists": {
+          "Off": "$resource:VEdit/Off.json",
+          "Other": "$resource:VEdit/Other.json",
+          "Kick": "$resource:VEdit/Kick.json",
+          "SnareTom": "$resource:VEdit/SnareTom.json",
+          "HiHat": "$resource:VEdit/HiHat.json",
+          "RideCrashSplashChina": "$resource:VEdit/RideCrashSplashChina.json"
+        }
+      }
+    }
+  ]
+}

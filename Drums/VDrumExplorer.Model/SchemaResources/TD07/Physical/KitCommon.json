@@ -1,0 +1,46 @@
+﻿{
+  "size": "0x1b",
+  "fields": [
+    {
+      "description": "Kit name",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "description": "Kit volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Pedal HH volume",
+      "type": "volume32"
+    },
+    {
+      "description": "XStick volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Overhead type",
+      "type": "enum",
+      "values": [
+        "Standard 1",
+        "Standard 2",
+        "Wide",
+        "Clear",
+        "Warm",
+        "Dry",
+        "Mild",
+        "Bright",
+        "Other 1",
+        "Other 2",
+        "Other 3",
+        "Other 4"
+      ]
+    },
+    {
+      "description": "HH Open/Close balance",
+      "type": "range16",
+      "min": -5,
+      "max": 5
+    }
+  ]
+}

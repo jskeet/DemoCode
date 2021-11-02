@@ -1,0 +1,254 @@
+[
+  {
+    "description": "Off",
+    "veditCategory": "Off",
+    "instruments": {
+      "0": "Off"
+    }
+  },
+  {
+    "description": "Kick",
+    "veditCategory": "Kick",
+    "instruments": {
+      "1": "Hard 1 K",
+      "2": "Hard 2 K",
+      "3": "Solid K",
+      "4": "Deep K",
+      "5": "Solid 20\" K",
+      "6": "Open 18\" K",
+      "7": "Beech K",
+      "8": "Soft K",
+      "9": "Maple K",
+      "10": "Birch K",
+    },
+  },
+  {
+    "description": "Kick Proc",
+    "veditCategory": "Other",
+    "instruments": {
+      "11": "Resonance K",
+      "12": "Tronic K",
+      "13": "House K",
+      "14": "DnB K",
+      "15": "Mellbourn K",
+      "16": "HardStyle K"
+    }
+  },
+  {
+    "description": "Kick Elec",
+    "veditCategory": "Other",
+    "instruments": {
+      "17": "808 K",
+      "18": "909 K",
+      "19": "Atk Bass K"
+    }
+  },
+  {
+    "description": "Snare",
+    "veditCategory": "SnareTom",
+    "instruments": {
+      "20": "Mahogany S",
+      "21": "Mahogany SR",
+      "22": "Aluminum S",
+      "23": "Aluminum SR",
+      "24": "Maple S",
+      "25": "Maple SR",
+      "26": "Steel S",
+      "27": "Steel SR",
+      "28": "Brass S",
+      "29": "Brass SR",
+      "30": "Piccolo S",
+      "31": "Piccolo SR",
+      "32": "House S"
+    }
+  },
+  {
+    "description": "Snare Proc",
+    "veditCategory": "Other",
+    "instruments": {
+      "33": "Hop S",
+      "34": "DnB S",
+      "35": "Dance S",
+      "36": "Amb Snap S",
+      "37": "Buzz S",
+      "38": "808 S",
+      "39": "808 Rim",
+      "40": "909 S",
+      "41": "909 Rim",
+      "42": "Synth S",
+      "43": "Analog S"
+    }
+  },
+  {
+    "description": "Tom",
+    "veditCategory": "SnareTom",
+    "instruments": {
+      "44": "Beech 10\"",
+      "45": "Beech 12\"",
+      "46": "Beech 13\"",
+      "47": "Beech 16\"",
+      "48": "Maple 10\"",
+      "49": "Maple 12\"",
+      "50": "Maple 13\"",
+      "51": "Maple 16\"",
+      "52": "Birch 12\"",
+      "53": "Birch 14\"",
+      "54": "Birch 16\"",
+      "55": "Birch 18\"",
+      "56": "Shallow 10\"",
+      "57": "Shallow 12\"",
+      "58": "Shallow 13\"",
+      "59": "Shallow 16\""
+    }
+  },
+  {
+    "description": "Tom Proc",
+    "veditCategory": "Other",
+    "instruments": {
+      "60": "808 T1",
+      "61": "808 T2",
+      "62": "808 T3",
+      "63": "808 T4",
+      "64": "909 T1",
+      "65": "909 T2",
+      "66": "909 T3",
+      "67": "909 T4"
+    }
+  },
+  {
+    "description": "Tom Elec",
+    "veditCategory": "Other",
+    "instruments": {
+      "68": "Elec T1",
+      "69": "Elec T2",
+      "70": "Elec T3"
+    }
+  },
+  {
+    "description": "Hi-Hat",
+    "veditCategory": "HiHat",
+    "instruments": {
+      "71": "Session HH",
+      "72": "Session HHE",
+      "73": "Bright HH",
+      "74": "Bright HHE",
+      "75": "Heavy HH",
+      "76": "Heavy HHE",
+      "77": "Tamb HH",
+      "78": "Tamb HHE",
+      "79": "Proc HH",
+      "80": "808 HH",
+      "81": "909 HH"
+    }
+  },
+  {
+    "description": "Ride",
+    "veditCategory": "RideCrashSplashChina",
+    "instruments": {
+      "82": "Dark Rd",
+      "83": "Dark RdE",
+      "84": "Dark RdB",
+      "85": "Bright Rd",
+      "86": "Bright RdE",
+      "87": "Bright RdB",
+      "88": "Light Rd",
+      "89": "Light RdE",
+      "90": "Light RdB",
+      "91": "Dry Rd",
+      "92": "Dry RdE",
+      "93": "Dry RdB"
+    }
+  },
+  {
+    "description": "Crash",
+    "veditCategory": "RideCrashSplashChina",
+    "instruments": {
+      "94": "Dark Cr",
+      "95": "Dark CrE",
+      "96": "Bright Cr",
+      "97": "Bright CrE",
+      "98": "Heavy Cr",
+      "99": "Heavy CrE",
+      "100": "Thin Cr",
+      "101": "Thin CrE"
+    }
+  },
+  {
+    "description": "China",
+    "veditCategory": "RideCrashSplashChina",
+    "instruments": {
+      "102": "China",
+      "103": "China E"
+    }
+  },
+  {
+    "description": "Splash",
+    "veditCategory": "RideCrashSplashChina",
+    "instruments": {
+      "104": "Splash",
+      "105": "Splash E"
+    }
+  },
+  {
+    "description": "Cymbal Proc",
+    "veditCategory": "Other",
+    "instruments": {
+      "106": "Phasing Cr",
+      "107": "Reflct Bell",
+      "108": "Rev Cr",
+      "109": "Rev Trash",
+      "110": "808 Cymbal"
+    }
+  },
+  {
+    "description": "Block/Cowbell",
+    "veditCategory": "Other",
+    "instruments": {
+      "111": "Sleigh Bell",
+      "112": "Tree Chime",
+      "113": "Cowbell 1",
+      "114": "Cowbell 2",
+      "115": "Wd Block H",
+      "116": "Wd Block L"
+    }
+  },
+  {
+    "description": "Percussion",
+    "veditCategory": "Other",
+    "instruments": {
+      "117": "Bongo H Op",
+      "118": "Bongo H Slp",
+      "119": "Bongo L Op",
+      "120": "Conga Open",
+      "121": "Conga Slap",
+      "122": "Timbale H",
+      "123": "Timbale L",
+      "124": "Cajon Open",
+      "125": "Cajon Bass",
+      "126": "Tamb 1",
+      "127": "Tamb 2",
+      "128": "Triangle",
+      "129": "Triangle Mt",
+      "130": "Claves",
+      "131": "Shaker"
+    }
+  },
+  {
+    "description": "Perc Elec",
+    "veditCategory": "Other",
+    "instruments": {
+      "132": "808 Cowbl 1",
+      "133": "808 Cowbl 2",
+      "134": "808 Maracas",
+      "135": "808 Clap",
+      "136": "909 Clap",
+      "137": "808 Claves",
+      "138": "727 Cong H1",
+      "139": "727 Cong H2",
+      "140": "727 Conga L",
+      "141": "CR78 Guir 1",
+      "142": "CR78 Guir 2",
+      "143": "727 Quijada"
+    }
+  }
+]

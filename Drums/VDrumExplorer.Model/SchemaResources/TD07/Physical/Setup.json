@@ -1,0 +1,13 @@
+﻿{
+  "containers": [
+    {
+      "name": "Metronome",
+      "offset": "0x00_00"
+    },
+    {
+      "name": "Misc",
+      "offset": "0x01_00",
+      "container": "SetupMisc"
+    }
+  ]
+}

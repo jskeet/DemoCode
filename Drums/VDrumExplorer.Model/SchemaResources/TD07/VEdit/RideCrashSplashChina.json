@@ -1,0 +1,19 @@
+﻿{
+  "fields": [
+    {
+      "description": "Size",
+      "type": "range16",
+      "min": 0,
+      "max": 78,
+      "valueOffset": 2,
+      "divisor": 2
+    },
+    {
+      "description": "Muffling",
+      "type": "range16",
+      "min": 0,
+      "max": 19,
+      "off": 0
+    }
+  ]
+}

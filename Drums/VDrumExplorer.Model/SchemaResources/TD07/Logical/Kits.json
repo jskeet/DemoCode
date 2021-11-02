@@ -1,0 +1,83 @@
+{
+  "name": "Kits",
+  "format": "Kits",
+  "path": ".",
+  "details": [
+    {
+      "description": "Kits",
+      "repeat": "kits",
+      "formatPaths": [
+        "Kit[{index}]/KitCommon/KitName"
+      ],
+      "format": "Kit {index}: {0}"
+    }
+  ],
+  "children": [
+    {
+      "name": "Kit",
+      "repeat": "kits",
+      "path": "Kit[{index}]",
+      "formatPaths": [
+        "KitCommon/KitName"
+      ],
+      "format": "Kit {index}: {0}",
+      "kitOnlyFormat": "{0}",
+      "details": [
+        {
+          "description": "Kit common",
+          "path": "KitCommon"
+        },
+        {
+          "description": "Instruments",
+          "repeat": "triggers",
+          "formatPaths": [
+            "KitUnitLayer[{index}]/Instrument"
+          ],
+          "format": "{item}: {0}"
+        },
+        {
+          "description": "Kit Midi",
+          "path": "KitMidi"
+        },
+        {
+          "description": "Kit MultiFx",
+          "path": "KitMfx"
+        },
+        {
+          "description": "Kit MCR Room",
+          "path": "KitRoom"
+        },
+        {
+          "description": "Kit MCR Overhead",
+          "path": "KitOverhead"
+        }
+      ],
+      "children": [
+        {
+          "name": "Trigger",
+          "repeat": "triggers",
+          "formatPaths": [
+            "KitUnitLayer[{index}]/Instrument"
+          ],
+          "path": ".",
+          "format": "{item}: {0}",
+          "midiNotePath": "KitMidi/Midi[{item}]",
+          "details": [
+            {
+              "description": "Common",
+              "path": "KitUnitCommon[{index}]"
+            },
+            {
+              "description": "Main instrument",
+              "path": "KitUnitLayer[{index}]"
+            },
+            {
+              "description": "VEdit",
+              "path": "KitUnitVEdit[{index}]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

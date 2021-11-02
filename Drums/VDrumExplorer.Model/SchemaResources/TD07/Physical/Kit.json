@@ -1,0 +1,60 @@
+﻿{
+  "containers": [
+    {
+      "name": "KitCommon",
+      "offset": "0x00_00",
+      "description": "Kit Common"
+    },
+    {
+      "name": "KitMidi",
+      "offset": "0x01_00",
+      "description": "Kit MIDI"
+    },
+    {
+      "name": "KitMfx",
+      "offset": "0x10_00",
+      "description": "Kit Multi FX"
+    },
+    {
+      "name": "KitUnitCommon",
+      "offset": "0x20_00",
+      "description": "Kit Unit Common ({item})",
+      "repeat":
+      {
+        "items": "triggers",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitUnitLayer",
+      "offset": "0x40_00",
+      "description": "Kit Unit Layer ({item})",
+      "repeat":
+      {
+        "items": "triggers",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitUnitVEdit",
+      "offset": "0x00_60_00",
+      "description": "Kit Unit VEdit ({item})",
+      "repeat":
+      {
+        "items": "triggers",
+        "indexVariable": "trigger",
+        "gap": "0x01_00"
+      }
+    },
+    {
+      "name": "KitRoom",
+      "offset": "0x01_10_00",
+      "description": "Kit MCR Room"
+    },
+    {
+      "name": "KitOverhead",
+      "offset": "0x01_20_00",
+      "description": "Kit MCR Overhead"
+    }
+  ]
+}

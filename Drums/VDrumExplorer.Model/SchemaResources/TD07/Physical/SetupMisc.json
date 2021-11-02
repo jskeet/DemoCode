@@ -1,0 +1,19 @@
+﻿{
+  "size": "0x04",
+  "fields": [
+    {
+      "description": "USB Input Gain",
+      "type": "range16",
+      "min": -36,
+      "max": 12,
+      "suffix": "dB"
+    },
+    {
+      "description": "USB Output Gain",
+      "type": "range16",
+      "min": -24,
+      "max": 24,
+      "suffix": "dB"
+    }
+  ]
+}

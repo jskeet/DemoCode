@@ -1,0 +1,41 @@
+﻿{
+  "size": "0x07",
+  "fields": [
+    {
+      "description": "Overhead on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Microphone type",
+      "type": "enum",
+      "values": [
+        "Type 1",
+        "Type 2",
+        "Type 3",
+        "Type 4",
+        "Type 5",
+        "Type 6",
+        "Type 7",
+        "Type 8",
+        "Type 9",
+        "Type 10"
+      ]
+    },
+    {
+      "description": "Mic width",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": -601,
+      "max": 120,
+      "divisor": 10,
+      "off": -601,
+      "offLabel": "-INF"
+    }
+  ]
+}

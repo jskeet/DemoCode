@@ -1,0 +1,15 @@
+{
+  "name": "Setup",
+  "format": "Setup",
+  "path": "Setup",
+  "details": [
+    {
+      "description": "Metronome",
+      "path": "Metronome"
+    },
+    {
+      "description": "Misc",
+      "path": "Misc"
+    }
+  ]
+}

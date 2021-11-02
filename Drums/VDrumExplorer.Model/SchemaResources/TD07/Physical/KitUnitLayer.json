@@ -1,0 +1,44 @@
+﻿{
+  "size": "0x10",
+  "fields": [
+    {
+      "description": "Instrument",
+      "type": "instrument"
+      // FIXME: There's no bank here... need to handle that in the code.
+    },
+    {
+      "description": "Volume",
+      "type": "volume32"
+    },
+    {
+      "description": "Transient on/off",
+      "type": "boolean"
+    },
+    {
+      "description": "Transient time",
+      "type": "range8",
+      "min": 1,
+      "max": 10
+    },
+    {
+      "description": "Transient attack",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Transient release",
+      "type": "range16",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "description": "Transient gain",
+      "type": "range16",
+      "min": -120,
+      "max": 60,
+      "divisor": 10,
+      "suffix": "dB"
+    }
+  ]
+}
