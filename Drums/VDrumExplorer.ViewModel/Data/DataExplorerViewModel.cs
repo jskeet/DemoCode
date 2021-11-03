@@ -24,6 +24,7 @@ namespace VDrumExplorer.ViewModel.Data
         protected IViewServices ViewServices { get; }
         public DeviceViewModel DeviceViewModel { get; }
         private readonly ModuleData data;
+        private readonly bool IsMatchingDeviceConnected;
 
         public DelegateCommand EditCommand { get; }
         public DelegateCommand CommitCommand { get; }
@@ -99,14 +100,16 @@ namespace VDrumExplorer.ViewModel.Data
             this.DeviceViewModel = deviceViewModel;
             this.ViewServices = viewServices;
             this.data = data;
+            // TODO: t update this (and the results) if the device is plugged in later.
+            IsMatchingDeviceConnected = deviceViewModel?.ConnectedDevice?.Schema.Identifier == data.Schema.Identifier;
             readOnly = true;
             EditCommand = new DelegateCommand(EnterEditMode, readOnly);
             CommitCommand = new DelegateCommand(CommitEdit, !readOnly);
             CancelEditCommand = new DelegateCommand(CancelEdit, !readOnly);
-            PlayNoteCommand = new DelegateCommand(PlayNote, deviceViewModel.DeviceConnected);
+            PlayNoteCommand = new DelegateCommand(PlayNote, IsMatchingDeviceConnected);
             SaveFileCommand = new DelegateCommand(SaveFile, true);
             SaveFileAsCommand = new DelegateCommand(SaveFileAs, true);
-            CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, true);
+            CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, IsMatchingDeviceConnected);
             Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
             SelectedNode = Root[0];
         }
@@ -176,7 +179,7 @@ namespace VDrumExplorer.ViewModel.Data
             {
                 if (SetProperty(ref selectedNode, value))
                 {
-                    PlayNoteCommand.Enabled = SelectedNode?.MidiNotePath is object;
+                    PlayNoteCommand.Enabled = IsMatchingDeviceConnected && SelectedNode?.MidiNotePath is object;
                     SelectedNodeDetails = selectedNode?.CreateDetails();
                 }
             }
