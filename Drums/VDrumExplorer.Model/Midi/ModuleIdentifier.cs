@@ -40,8 +40,16 @@ namespace VDrumExplorer.Model.Midi
         /// </summary>
         public int FamilyNumberCode { get; }
 
+        /// <summary>
+        /// The length of the model ID in data set/request packets (DT1/RQ1).
+        /// This is usually 4, but is 5 for the TD-50X (for no obvious reason).
+        /// (This does not contribute to equality checks.)
+        /// </summary>
+        public int ModelIdLength { get; }
+
         public ModuleIdentifier(string name, int modelId, int familyCode, int familyNumberCode) =>
-            (Name, ModelId, FamilyCode, FamilyNumberCode) = (name, modelId, familyCode, familyNumberCode);
+            (Name, ModelId, FamilyCode, FamilyNumberCode, ModelIdLength) =
+            (name, modelId, familyCode, familyNumberCode, DetermineModelIdLength(name));
 
         public override bool Equals(object obj) => Equals(obj as ModuleIdentifier);
 
@@ -52,5 +60,8 @@ namespace VDrumExplorer.Model.Midi
         public override int GetHashCode() => (Name, ModelId, FamilyCode, FamilyNumberCode).GetHashCode();
 
         public override string ToString() => $"Name: {Name}; ModelId: {ModelId}; FamilyCode: {FamilyCode}; FamilyNumberCode: {FamilyNumberCode}";
+
+        // TODO: Make this less hacky.
+        private static int DetermineModelIdLength(string name) => name == "TD-50X" ? 5 : 4;
     }
 }

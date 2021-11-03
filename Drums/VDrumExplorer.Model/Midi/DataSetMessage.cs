@@ -25,16 +25,18 @@ namespace VDrumExplorer.Model.Midi
         internal DataSetMessage(byte rawDeviceId, int modelId, int address, byte[] data) =>
             (RawDeviceId, ModelId, Address, this.data) = (rawDeviceId, modelId, address, data);
 
-        internal static bool TryParse(MidiMessage message, [NotNullWhen(true)] out DataSetMessage? result)
+        internal static bool TryParse(MidiMessage message,
+            int expectedModelIdLength,
+            [NotNullWhen(true)] out DataSetMessage? result)
         {
             var messageData = message.Data;
             int length = messageData.Length;
 
             // Expected values
-            if (messageData.Length < 14 ||
+            if (messageData.Length < expectedModelIdLength + 10 ||
                 messageData[0] != 0xf0 ||
                 messageData[1] != 0x41 ||
-                messageData[7] != 0x12 ||
+                messageData[expectedModelIdLength + 3] != 0x12 ||
                 messageData[length - 1] != 0xf7)
             {
                 result = null;
@@ -42,10 +44,22 @@ namespace VDrumExplorer.Model.Midi
             }
 
             byte rawDeviceId = messageData[2];
-            int modelId = (messageData[3] << 24) | (messageData[4] << 16) | (messageData[5] << 8) | messageData[6];
-            int address = (messageData[8] << 24) | (messageData[9] << 16) | (messageData[10] << 8) | messageData[11];
-            byte[] data = new byte[messageData.Length - 14];
-            Array.Copy(messageData, 12, data, 0, data.Length);
+
+            int modelIdOffset = expectedModelIdLength - 1;
+
+            int modelId =
+                (messageData[modelIdOffset] << 24) |
+                (messageData[modelIdOffset + 1] << 16) |
+                (messageData[modelIdOffset + 2] << 8) |
+                messageData[modelIdOffset + 3];
+
+            int address =
+                (messageData[modelIdOffset + 5] << 24) |
+                (messageData[modelIdOffset + 6] << 16) |
+                (messageData[modelIdOffset + 7] << 8) |
+                messageData[modelIdOffset + 8];
+            byte[] data = new byte[messageData.Length - 10 - expectedModelIdLength];
+            Array.Copy(messageData, modelIdOffset + 9, data, 0, data.Length);
             result = new DataSetMessage(rawDeviceId, modelId, address, data);
             return true;
         }

@@ -57,7 +57,7 @@ namespace VDrumExplorer.Model.Midi
         private void HandleMessage(object sender, MidiMessage message)
         {
             // If it's a Data Set message aimed at this device, handle it...
-            if (DataSetMessage.TryParse(message, out var result) &&
+            if (DataSetMessage.TryParse(message, Identifier.ModelIdLength, out var result) &&
                 result.RawDeviceId == rawDeviceId && result.ModelId == Identifier.ModelId)
             {
                 HandleDataSetMessage(result);
@@ -184,8 +184,8 @@ namespace VDrumExplorer.Model.Midi
         public void SendData(int address, byte[] bytes)
         {
             var messageData = CreateMessage(DataSetCommand, bytes.Length + 4);
-            WriteBigEndianInt32(messageData, 8, address);
-            Buffer.BlockCopy(bytes, 0, messageData, 12, bytes.Length);
+            WriteBigEndianInt32(messageData, Identifier.ModelIdLength + 4, address);
+            Buffer.BlockCopy(bytes, 0, messageData, Identifier.ModelIdLength + 8, bytes.Length);
             ApplyChecksum(messageData);
             output.Send(new MidiMessage(messageData));
         }
@@ -193,8 +193,8 @@ namespace VDrumExplorer.Model.Midi
         private MidiMessage CreateDataRequestMessage(int address, int size)
         {
             var data = CreateMessage(DataRequestCommand, 8);
-            WriteBigEndianInt32(data, 8, address);
-            WriteBigEndianInt28(data, 12, size);
+            WriteBigEndianInt32(data, Identifier.ModelIdLength + 4, address);
+            WriteBigEndianInt28(data, Identifier.ModelIdLength + 8, size);
             ApplyChecksum(data);
             return new MidiMessage(data);
         }
@@ -226,8 +226,9 @@ namespace VDrumExplorer.Model.Midi
             ret[0] = 0xf0; // System Exclusive
             ret[1] = (byte) ManufacturerId.Roland;
             ret[2] = rawDeviceId;
-            WriteBigEndianInt32(ret, 3, Identifier.ModelId);
-            ret[7] = command;
+            // Assume the first byte of the model ID will be 0.
+            WriteBigEndianInt32(ret, Identifier.ModelIdLength - 1, Identifier.ModelId);
+            ret[Identifier.ModelIdLength + 3] = command;
 
             ret[ret.Length - 1] = 0xf7; // End of System Exclusive
             return ret;
