@@ -22,20 +22,22 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ListKitsCommand.Command);
             rootCommand.AddCommand(ImportKitCommand.Command);
             rootCommand.AddCommand(ShowKitCommand.Command);
-            rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
-            rootCommand.AddCommand(CheckMfxDefaultsCommand.Command);
             rootCommand.AddCommand(ShowMidiEventsCommand.Command);
             rootCommand.AddCommand(ShowSchemaStatsCommand.Command);
             rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
             rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
             rootCommand.AddCommand(DumpAerophoneMiniCommand.Command);
             rootCommand.AddCommand(DumpDataCommand.Command);
-            rootCommand.AddCommand(DumpDeviceSegmentCommand.Command);
             rootCommand.AddCommand(DumpProtoCommand.Command);
             rootCommand.AddCommand(DumpAllDataCommand.Command);
             rootCommand.AddCommand(ProxyMidiCommand.Command);
             rootCommand.AddCommand(ListAerophoneStudioSets.Command);
             rootCommand.AddCommand(CopyAerophoneStudioSets.Command);
+#if NETCOREAPP3_1
+            rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
+            rootCommand.AddCommand(CheckMfxDefaultsCommand.Command);
+            rootCommand.AddCommand(DumpDeviceSegmentCommand.Command);
+#endif
             return rootCommand.InvokeAsync(args);
         }
     }

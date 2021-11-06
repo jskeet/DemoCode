@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+#if NETCOREAPP3_1
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -85,3 +86,4 @@ namespace VDrumExplorer.Console
         }
     }
 }
+#endif
