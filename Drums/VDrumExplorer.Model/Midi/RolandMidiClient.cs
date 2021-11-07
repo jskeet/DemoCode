@@ -222,7 +222,7 @@ namespace VDrumExplorer.Model.Midi
         /// <param name="dataLength">The length of data to be populated later.</param>
         private byte[] CreateMessage(byte command, int dataLength)
         {
-            byte[] ret = new byte[dataLength + 10];
+            byte[] ret = new byte[dataLength + Identifier.ModelIdLength + 6];
             ret[0] = 0xf0; // System Exclusive
             ret[1] = (byte) ManufacturerId.Roland;
             ret[2] = rawDeviceId;
@@ -246,7 +246,8 @@ namespace VDrumExplorer.Model.Midi
         private void ApplyChecksum(byte[] message)
         {
             byte sum = 0;
-            for (int i = 8; i < message.Length - 2; i++)
+            int dataStart = 4 + Identifier.ModelIdLength;
+            for (int i = dataStart; i < message.Length - 2; i++)
             {
                 sum += message[i];
             }
