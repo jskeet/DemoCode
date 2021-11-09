@@ -9,7 +9,7 @@
       "description": "V-Edit Parameters",
       "type": "overlay",
       "overlay": {
-        "switchPath": "/Kit[{kit}]/KitPad{layer}[{trigger}]/Instrument",
+        "switchPath": "/Kit[{kit}]/KitUnit{layer}[{trigger}]/Instrument",
         "fieldSize": 2,
         "fieldCount": 16,
         "fieldLists": {

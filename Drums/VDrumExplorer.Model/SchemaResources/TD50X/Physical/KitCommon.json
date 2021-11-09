@@ -26,11 +26,12 @@
       "type": "boolean"
     },
     {
+      // TODO: Work out what the TD-50X actually shows.
+      // Documentation says "1-5" despite being a 128-value range...
       "description": "XStick Inst",
       "type": "range8",
       "min": 0,
-      "max": 4,
-      "valueOffset": 1
+      "max": 127
     },
     {
       "description": "XStick volume",
