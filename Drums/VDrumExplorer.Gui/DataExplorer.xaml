@@ -28,6 +28,13 @@
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding CancelEditCommand}">Cancel changes</Button>
         </StackPanel>
 
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding CopyNodeCommand}">Copy node</Button>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding PasteNodeCommand}">Paste node</Button>
+            <TextBlock Margin="{StaticResource ValueMargin}">Copied node path:</TextBlock>
+            <TextBlock Margin="{StaticResource ValueMargin}" Text="{Binding CopiedSnapshot.Path}" />
+        </StackPanel>
+
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Visibility="{Binding DeviceViewModel.DeviceConnected, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource PanelMargin}">
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding CopyDataToDeviceCommand}" CommandParameter="{Binding SelectedNode}" Content="{Binding CopyDataTitle}" VerticalAlignment="Center"/>
             <TextBlock Margin="{StaticResource ValueMargin}" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" VerticalAlignment="Center">Kit to copy to:</TextBlock>
@@ -54,7 +61,7 @@
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <TextBlock Text="{Binding Title}">
                             <TextBlock.ContextMenu>
-                                <ContextMenu Visibility="{Binding KitContextCommandsEnabled, Converter={StaticResource VisibilityConverter}}">
+                                <ContextMenu>
                                     <MenuItem Header="Open copy in Kit Explorer" Command="{Binding Root.OpenCopyInKitExplorerCommand}" CommandParameter="{Binding .}" />
                                     <MenuItem Header="Copy to another kit" Command="{Binding Root.CopyKitCommand}" CommandParameter="{Binding .}" />
                                     <MenuItem Header="Import from file" Command="{Binding Root.ImportKitFromFileCommand}" CommandParameter="{Binding .}" />

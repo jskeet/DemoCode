@@ -99,7 +99,7 @@ namespace VDrumExplorer.Model.Data
             return snapshot;
         }
 
-        internal ModuleDataSnapshot CreatePartialSnapshot(TreeNode root)
+        public ModuleDataSnapshot CreatePartialSnapshot(TreeNode root)
         {
             if (root.Container.Schema != Schema)
             {
@@ -127,10 +127,10 @@ namespace VDrumExplorer.Model.Data
 
         /// <summary>
         /// Loads data from a snapshot which could contain just part of the data contained
-        /// in this object. This is internal as it's inherently somewhat dangerous - it should only be called
-        /// for well-defined snapshots, e.g. "a whole kit".
+        /// in this object. This is somewhat dangerous - it should only be called with a snapshot
+        /// which contains coherent data for the target, e.g. a whole kit, or a whole trigger etc.
         /// </summary>
-        internal void LoadPartialSnapshot(ModuleDataSnapshot snapshot, ILogger logger)
+        public void LoadPartialSnapshot(ModuleDataSnapshot snapshot, ILogger logger)
         {
             // TODO: This is more awkward than it should be, because we keep a map based on field containers rather than
             // addresses. We could change the map... then we might not need the FieldContainer.AddressComparer, either.

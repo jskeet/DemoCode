@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDrumExplorer.Model.Schema.Logical;
 
 namespace VDrumExplorer.Model.Data
@@ -38,7 +39,7 @@ namespace VDrumExplorer.Model.Data
         /// such that the data is <paramref name="from"/> is moved to <paramref name="to"/>
         /// (and all other data is offset by the same amount).
         /// </summary>
-        internal ModuleDataSnapshot Relocated(ModuleAddress from, ModuleAddress to)
+        public ModuleDataSnapshot Relocated(ModuleAddress from, ModuleAddress to)
         {
             var offset = to.LogicalValue - from.LogicalValue;
             var snapshot = new ModuleDataSnapshot();
@@ -53,7 +54,11 @@ namespace VDrumExplorer.Model.Data
         /// Convenience method to call <see cref="Relocated(ModuleAddress, ModuleAddress)"/>
         /// with addresses taken from logical tree nodes.
         /// </summary>
-        internal ModuleDataSnapshot Relocated(TreeNode from, TreeNode to) =>
-            Relocated(from.Container.Address, to.Container.Address);
+        public ModuleDataSnapshot Relocated(TreeNode from, TreeNode to)
+        {
+            var fromAddress = from.DescendantFieldContainers().Min(fc => fc.Address);
+            var toAddress = to.DescendantFieldContainers().Min(fc => fc.Address);
+            return Relocated(fromAddress, toAddress);
+        }
     }
 }

@@ -87,7 +87,7 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void ExportKit(DataTreeNodeViewModel kitNode)
         {
-            var kit = Module.ExportKit(kitNode.KitNumber!.Value);;
+            var kit = Module.ExportKit(kitNode.KitNumber!.Value);
             var file = ViewServices.ShowSaveFileDialog(FileFilters.KitFiles);
             if (file is null)
             {

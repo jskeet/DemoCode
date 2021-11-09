@@ -30,6 +30,8 @@ namespace VDrumExplorer.ViewModel.Data
         public DelegateCommand CommitCommand { get; }
         public DelegateCommand CancelEditCommand { get; }
         public DelegateCommand PlayNoteCommand { get; }
+        public DelegateCommand CopyNodeCommand { get; }
+        public DelegateCommand PasteNodeCommand { get; }
         // There are app commands of course, but it's not clear how we bind them.
         public DelegateCommand SaveFileCommand { get; }
         public DelegateCommand SaveFileAsCommand { get; }
@@ -92,6 +94,21 @@ namespace VDrumExplorer.ViewModel.Data
             set => SetProperty(ref attack, value);
         }
 
+        private NodeSnapshot? copiedSnapshot;
+        public NodeSnapshot? CopiedSnapshot
+        {
+            get => copiedSnapshot;
+            set
+            {
+                if (SetProperty(ref copiedSnapshot, value))
+                {
+                    PasteNodeCommand.Enabled = IsPasteNodeCommandValid;
+                }
+            }
+        }
+
+        private bool IsPasteNodeCommandValid => copiedSnapshot?.IsValidForTarget(SelectedNode?.Model.SchemaNode) ?? false;
+
         private ModuleDataSnapshot? snapshot;
 
         public DataExplorerViewModel(IViewServices viewServices, ILogger logger, DeviceViewModel deviceViewModel, ModuleData data) : base(data)
@@ -110,6 +127,8 @@ namespace VDrumExplorer.ViewModel.Data
             SaveFileCommand = new DelegateCommand(SaveFile, true);
             SaveFileAsCommand = new DelegateCommand(SaveFileAs, true);
             CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, IsMatchingDeviceConnected);
+            CopyNodeCommand = new DelegateCommand(CopyNode, true);
+            PasteNodeCommand = new DelegateCommand(PasteNode, true);
             Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
             SelectedNode = Root[0];
         }
@@ -181,6 +200,8 @@ namespace VDrumExplorer.ViewModel.Data
                 {
                     PlayNoteCommand.Enabled = IsMatchingDeviceConnected && SelectedNode?.MidiNotePath is object;
                     SelectedNodeDetails = selectedNode?.CreateDetails();
+                    CopyNodeCommand.Enabled = selectedNode is object;
+                    PasteNodeCommand.Enabled = IsPasteNodeCommandValid;
                 }
             }
         }
@@ -222,5 +243,27 @@ namespace VDrumExplorer.ViewModel.Data
         }
 
         protected abstract void CopyDataToDevice();
+
+        public void CopyNode()
+        {
+            var sourceNode = SelectedNode?.Model.SchemaNode;
+            if (sourceNode is null)
+            {
+                return;
+            }
+            var snapshot = Model.CreatePartialSnapshot(sourceNode);
+            CopiedSnapshot = new NodeSnapshot(sourceNode, snapshot);
+        }
+
+        public void PasteNode()
+        {
+            var targetNode = SelectedNode?.Model.SchemaNode;
+            if (CopiedSnapshot?.IsValidForTarget(targetNode) != true)
+            {
+                return;
+            }
+            var relocated = CopiedSnapshot.Data.Relocated(CopiedSnapshot.SourceNode, targetNode!);
+            Model.LoadPartialSnapshot(relocated, Logger);
+        }
     }
 }
