@@ -5,8 +5,8 @@
     <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>Enable</Nullable>
-    <Version>1.0.0-alpha10</Version>
-    <AssemblyVersion>1.0.0.10</AssemblyVersion>
+    <Version>1.0.0-alpha11</Version>
+    <AssemblyVersion>1.0.0.11</AssemblyVersion>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
