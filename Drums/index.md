@@ -25,7 +25,7 @@ updating for 1.0.0-alpha06+, with new screenshots etc.**
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha09/VDrumExplorer-Setup-1.0.0-alpha09.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha11/VDrumExplorer-Setup-1.0.0-alpha11.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -376,6 +376,20 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha11 (2021-11-12)
+
+- Fixes to TD-50X communications (it actually works now...)
+- Fixes to TD-50X schema
+- Initial support for "copy node" and "paste node", allowing
+  instruments (or MFX settings, or trigger banks etc) to be
+  copy/pasted within one explorer window. The UI for this may change
+  over time, but it does appear to work.
+
+## Version 1.0.0-alpha10 (2021-11-03)
+
+- Attempted fix for TD-50X communication
+- Disable Copy Data / Play Note buttons when not connected to the right module
 
 ## Version 1.0.0-alpha09 (2021-11-02)
 
