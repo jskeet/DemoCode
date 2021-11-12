@@ -25,6 +25,8 @@
     {
       "description": "Strainer adjust",
       "type": "enum16",
+      // Note: this minimum contradicts the documentation, but appears to be correct.
+      "min": 1,
       "values": [
         "Loose 1",
         "Loose 2",
@@ -57,7 +59,10 @@
     {
       "description": "Wire level",
       "type": "range16",
-      "min": 1,
+      // Documentation claims -6 to +6, but over a range of 1-12.
+      // For now we'll assume it's actually -6 to +6, given that
+      // we've seen a raw value of 0 in reality.
+      "min": 0,
       "max": 12,
       "valueOffset": -6,
       "default": 6

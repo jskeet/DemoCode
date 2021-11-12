@@ -562,7 +562,7 @@
   },
   {
     "description": "Hi-Hat Fixed Elec",
-    "veditCategory": "HiHat",
+    "veditCategory": "Other",
     "instruments": {
       "465": "TR-808 HH Close",
       "466": "TR-808 HH Open",

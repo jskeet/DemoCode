@@ -52,6 +52,12 @@
                   "Stage 2",
                   "Stage 3",
                   "Stage 4",
+                  // Note: small hall values aren't in the MIDI implementation document,
+                  // but are in the data list. The range is actually 0-23.
+                  "Small Hall 1",
+                  "Small Hall 2",
+                  "Small Hall 3",
+                  "Small Hall 4",
                   "Middle Hall 1",
                   "Middle Hall 2",
                   "Middle Hall 3",

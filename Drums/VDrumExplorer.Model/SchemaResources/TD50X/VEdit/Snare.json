@@ -25,6 +25,8 @@
     {
       "description": "Strainer adjust",
       "type": "enum16",
+      // Note: this minimum contradicts the documentation, but appears to be correct.
+      "min": 1,
       "values": [
         "Loose 1",
         "Loose 2",
@@ -67,10 +69,9 @@
       "description": "Wire level",
       "type": "range16",
       // Documentation claims -6 to +6, but over a range of 1-12.
-      // We'll assume it's actually -5 to +6, as that matches
-      // the TD-27's -4 to +5.
-      // TODO: Ask someone to validate this.
-      "min": 1,
+      // For now we'll assume it's actually -6 to +6, given that
+      // we've seen a raw value of 0 in reality.
+      "min": 0,
       "max": 12,
       "valueOffset": -6,
       "default": 6
