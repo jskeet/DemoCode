@@ -1,0 +1,44 @@
+{
+  "id": "latta-alvor-86-small-par",
+  "displayName": "Latta Alvor 86 LED Small Par",
+  "channels": 6,
+  "groups": [
+    {
+      "description": "Main DMX",
+      "elements": [
+        {
+          "description": "Total dimming",
+          "type": "range"
+        },
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        },
+        {
+          "description": "Strobe",
+          "type": "range"
+        },
+        {
+          "description": "Mode",
+          "type": "enum",
+          "lowerValues": {
+            "Manual": 0,
+            "Jump change": 51,
+            "Gradual change": 101,
+            "Pulse change": 151,
+            "Auto": 201,
+            "Sound": 251
+          }
+        }
+      ]
+    }
+  ]
+}

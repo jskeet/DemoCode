@@ -1,0 +1,213 @@
+﻿{
+  "id": "equinox-fusion-orbit-37",
+  "displayName": "Equinox Fusion Orbit, 37 channel mode",
+  "channels": 37,
+  "groups": [
+    {
+      "description": "Pan/tilt",
+      "elements": [
+        {
+          "description": "Pan (0-540°)",
+          "type": "range"
+        },
+        {
+          "description": "Pan (fine)",
+          "type": "range"
+        },
+        {
+          "description": "Tilt (0-210°)",
+          "type": "range"
+        },
+        {
+          "description": "Tilt (fine)",
+          "type": "range"
+        },
+        {
+          "description": "Pan/tilt speed",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Main beam",
+      "elements": [
+        {
+          "description": "Total dimming",
+          "type": "range"
+        },
+        {
+          "description": "Strobe",
+          "type": "range"
+        },
+        {
+          "description": "Colour macro",
+          "type": "range"
+        },
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        },
+        {
+          "description": "White",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Ring (general)",
+      "elements": [
+        {
+          "description": "Total dimming",
+          "type": "range"
+        },
+        {
+          "description": "Strobe",
+          "type": "range"
+        },
+        {
+          "description": "Colour macro",
+          "type": "range"
+        },
+        {
+          "description": "Macro program",
+          "type": "range"
+        },
+        {
+          "description": "Macro speed",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Ring segment 1",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Ring segment 2",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Ring segment 3",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        }
+      ]
+    },
+        {
+      "description": "Ring segment 4",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Ring segment 5",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Ring segment 6",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "General",
+      "elements": [
+        {
+          "description": "Mode",
+          "type": "enum",
+          "lowerValues": {
+            "Manual": 0,
+            "Show 1": 16,
+            "Show 2": 65,
+            "Show 3": 115,
+            "Show 4": 165,
+            "Show 5": 215
+          }
+        },
+        {
+          "description": "Sound sensitivity",
+          "type": "range"
+        }
+      ]
+    }
+  ]
+}
