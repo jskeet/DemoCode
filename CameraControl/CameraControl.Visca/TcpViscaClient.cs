@@ -27,7 +27,7 @@ namespace CameraControl.Visca
             buffer.Clear();
             client?.Dispose();
             client = new TcpClient { NoDelay = true };
-#if NET5_0
+#if NET5_0_OR_GREATER
             try
             {
                 await client.ConnectAsync(Host, Port, cancellationToken).ConfigureAwait(false);
