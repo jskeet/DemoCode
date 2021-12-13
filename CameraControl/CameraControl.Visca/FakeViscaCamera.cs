@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -66,14 +67,14 @@ namespace CameraControl.Visca
         private volatile sbyte panVelocity;
         private volatile sbyte tiltVelocity;
 
-        private FakeViscaCamera(TimeSpan? commandTimeout)
+        private FakeViscaCamera(TimeSpan? commandTimeout, ILogger? logger)
         {
-            Controller = new ViscaController(this, commandTimeout ?? ViscaController.DefaultTimeout);
+            Controller = new ViscaController(this, commandTimeout ?? ViscaController.DefaultTimeout, logger);
         }
 
-        public static FakeViscaCamera Start(TimeSpan? commandTimeout)
+        public static FakeViscaCamera Start(TimeSpan? commandTimeout, ILogger? logger = null)
         {
-            var ret = new FakeViscaCamera(commandTimeout);
+            var ret = new FakeViscaCamera(commandTimeout, logger);
             new Thread(ret.Loop) { IsBackground = true }.Start();
             return ret;
         }

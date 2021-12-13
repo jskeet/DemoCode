@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,18 +18,20 @@ namespace CameraControl.Visca
         public const byte MaxZoomSpeed = 0x7;
 
         private TimeSpan CommandTimeout { get; }
+        private readonly ILogger? logger;
         private readonly IViscaClient client;
 
-        internal ViscaController(IViscaClient client, TimeSpan commandTimeout)
+        internal ViscaController(IViscaClient client, TimeSpan commandTimeout, ILogger? logger)
         {
             this.client = client;
             this.CommandTimeout = commandTimeout;
+            this.logger = logger;
         }
 
-        public static ViscaController ForTcp(string host, int port, TimeSpan? commandTimeout = null)
+        public static ViscaController ForTcp(string host, int port, TimeSpan? commandTimeout = null, ILogger? logger = null)
         {
-            var client = new TcpViscaClient(host, port);
-            return new ViscaController(client, commandTimeout ?? DefaultTimeout);
+            var client = new TcpViscaClient(host, port, logger);
+            return new ViscaController(client, commandTimeout ?? DefaultTimeout, logger);
         }
 
         public async Task PowerOn(CancellationToken cancellationToken = default)

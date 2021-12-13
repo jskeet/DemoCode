@@ -18,7 +18,7 @@ namespace CameraControl.Visca
 
         public override void Dispose() => client?.Dispose();
 
-        public TcpViscaClient(string host, int port) =>
+        public TcpViscaClient(string host, int port, ILogger? logger) : base(logger) =>
             (Host, Port) = (host, port);
 
 

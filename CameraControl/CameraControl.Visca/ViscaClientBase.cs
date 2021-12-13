@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,6 +10,8 @@ namespace CameraControl.Visca
     internal abstract class ViscaClientBase : IViscaClient
     {
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+
+        protected ILogger? Logger { get; }
 
         /// <summary>
         /// Sends a single packet to the VISCA endpoint.
@@ -35,6 +37,11 @@ namespace CameraControl.Visca
         protected abstract Task ReconnectAsync(CancellationToken cancellationToken);
 
         public abstract void Dispose();
+
+        protected ViscaClientBase(ILogger? logger)
+        {
+            Logger = logger;
+        }
 
         async Task<ViscaPacket> IViscaClient.SendAsync(ViscaPacket request, CancellationToken cancellationToken)
         {
