@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace CameraControl.Visca
     internal abstract class ViscaClientBase : IViscaClient
     {
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        private readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         protected ILogger? Logger { get; }
 
@@ -49,14 +51,20 @@ namespace CameraControl.Visca
             await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
+                long ticksBeforeSend = stopwatch.ElapsedTicks;
                 await SendPacketAsync(request, cancellationToken).ConfigureAwait(false);
+                long ticksAfterSend = stopwatch.ElapsedTicks;
+                Logger?.LogTrace("Sending VISCA packet took {millis}ms", (ticksAfterSend - ticksBeforeSend) * 1000 / Stopwatch.Frequency);
                 while (true)
                 {
+                    long ticksBefore = stopwatch.ElapsedTicks;
                     ViscaPacket response = await ReceivePacketAsync(cancellationToken).ConfigureAwait(false);
                     if (response.Length < 2)
                     {
                         throw new ViscaProtocolException($"Received packet of length {response.Length} from VISCA endpoint");
                     }
+                    long ticksAfter = stopwatch.ElapsedTicks;
+                    Logger?.LogTrace("Receiving VISCA packet took {millis}ms", (ticksAfter - ticksBefore) * 1000 / Stopwatch.Frequency);
                     switch (response.GetByte(1) >> 4)
                     {
                         // Command received

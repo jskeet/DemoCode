@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace CameraControl.Visca
 
         protected override async Task ReconnectAsync(CancellationToken cancellationToken)
         {
+            Logger?.LogDebug("Reconnecting to {host}:{port}", Host, Port);
             buffer.Clear();
             client?.Dispose();
             client = new TcpClient { NoDelay = true };
