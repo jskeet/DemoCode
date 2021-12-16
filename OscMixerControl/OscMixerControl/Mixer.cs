@@ -14,6 +14,7 @@ namespace OscMixerControl
         // TODO: Should the mixer keep current values for everything? It could do, but that's a lot of data.
 
         private IOscClient client;
+        private Func<IOscClient> clientProvider;
         private ConcurrentDictionary<string, EventHandler<OscMessage>> messageHandlers =
             new ConcurrentDictionary<string, EventHandler<OscMessage>>();
         
@@ -27,6 +28,16 @@ namespace OscMixerControl
 
         private void Connect(Func<IOscClient> clientProvider)
         {
+            this.clientProvider = clientProvider;
+            Reconnect();
+        }
+
+        public void Reconnect()
+        {
+            if (clientProvider is null)
+            {
+                throw new InvalidOperationException("Cannot reconnect without having previously connected");
+            }
             client?.Dispose();
             client = clientProvider();
             client.PacketReceived += HandlePacketReceived;
