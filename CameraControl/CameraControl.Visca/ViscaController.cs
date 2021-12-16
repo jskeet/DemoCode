@@ -41,23 +41,24 @@ namespace CameraControl.Visca
         {
             await SendAsync(cancellationToken, new byte[] { 0x81, 0x01, 0x04, 0x00, 0x02, 0xff }).ConfigureAwait(false);
             await Task.Delay(1000).ConfigureAwait(false);
-            // TODO: Make this actually work...
+            // Give each power check 1 second to complete, then wait for 2 seconds before trying again. Do this 30 times.
+            // If the user-provided cancellation token is cancelled, we respect that.
             int attemptsLeft = 30;
+            logger?.LogDebug("Waiting for power status to be reported");
             while (true)
             {
                 try
                 {
-                    await GetPowerStatus().ConfigureAwait(false);
+                    var shortCancellationToken = new CancellationTokenSource(1000).Token;
+                    var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, shortCancellationToken).Token;
+                    var status = await GetPowerStatus(linkedToken).ConfigureAwait(false);
+                    logger?.LogDebug("Power status successfully reported: {status}", status);
                     return;
                 }
-                catch (Exception)
+                catch (Exception) when (!cancellationToken.IsCancellationRequested && attemptsLeft > 0)
                 {
-                    await Task.Delay(1000).ConfigureAwait(false);
+                    await Task.Delay(2000).ConfigureAwait(false);
                     attemptsLeft--;
-                    if (attemptsLeft == 0)
-                    {
-                        throw;
-                    }
                 }
             }
         }
