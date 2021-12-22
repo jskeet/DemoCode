@@ -146,9 +146,9 @@ namespace CameraControl.Visca
 
         private async Task<ViscaPacket> SendAsync(CancellationToken cancellationToken, byte[] packet, [CallerMemberName] string? command = null)
         {
-            logger?.LogDebug("Sending VISCA command '{command}'", command);
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, new CancellationTokenSource(CommandTimeout).Token).Token;
             var request = ViscaPacket.FromBytes(packet, 0, packet.Length);
+            logger?.LogDebug("Sending VISCA command '{command}': {request}", command, request);
             long ticksBefore = stopwatch.ElapsedTicks;
             var response = await client.SendAsync(request, effectiveToken).ConfigureAwait(false);
             long ticksAfter = stopwatch.ElapsedTicks;

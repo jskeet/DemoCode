@@ -51,20 +51,15 @@ namespace CameraControl.Visca
             await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                long ticksBeforeSend = stopwatch.ElapsedTicks;
                 await SendPacketAsync(request, cancellationToken).ConfigureAwait(false);
-                long ticksAfterSend = stopwatch.ElapsedTicks;
-                Logger?.LogTrace("Sending VISCA packet took {millis}ms", (ticksAfterSend - ticksBeforeSend) * 1000 / Stopwatch.Frequency);
                 while (true)
                 {
-                    long ticksBefore = stopwatch.ElapsedTicks;
                     ViscaPacket response = await ReceivePacketAsync(cancellationToken).ConfigureAwait(false);
+                    Logger?.LogTrace("Received VISCA packet: {packet}", response);
                     if (response.Length < 2)
                     {
                         throw new ViscaProtocolException($"Received packet of length {response.Length} from VISCA endpoint");
                     }
-                    long ticksAfter = stopwatch.ElapsedTicks;
-                    Logger?.LogTrace("Receiving VISCA packet took {millis}ms", (ticksAfter - ticksBefore) * 1000 / Stopwatch.Frequency);
                     switch (response.GetByte(1) >> 4)
                     {
                         // Command received
