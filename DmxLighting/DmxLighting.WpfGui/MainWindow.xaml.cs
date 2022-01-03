@@ -19,13 +19,13 @@ namespace DmxLighting.WpfGui
 
         private void LoadSchema(object sender, RoutedEventArgs e)
         {
-            //var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.LattaAlvor.86SmallPar.json");
-            var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.Equinox.FusionOrbit37.json");
+            var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.LattaAlvor.86SmallPar.json");
+            //var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.Equinox.FusionOrbit37.json");
             var universe = new DmxUniverse(universeNumber: 0, size: 43);
             var acnSender = new StreamingAcnSender("192.168.1.46");
             acnSender.SendUniverse(universe);
             acnSender.WatchUniverse(universe);
-            var data = schema.ToFixtureData(universe, fixtureFirstChannel: 1);
+            var data = schema.ToFixtureData(universe, fixtureFirstChannel: 38);
             DataContext = data;
         }
     }

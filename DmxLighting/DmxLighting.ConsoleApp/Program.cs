@@ -11,6 +11,60 @@ namespace DmxLighting.ConsoleApp
     {
         static void Main(string[] args)
         {
+            var universe = new DmxUniverse(0, 300);
+            var sender = new StreamingAcnSender("192.168.1.46");
+            sender.SendUniverse(universe);
+
+            Thread.Sleep(2000);
+
+            byte[] off = { 0, 0, 0 };
+            byte[][] colours =
+            {
+                new byte[] { 255, 0, 0 },
+                new byte[] { 0, 255, 0 },
+                new byte[] { 0, 0, 255 },
+                new byte[] { 255, 255, 0 },
+                new byte[] { 0, 255, 255 },
+                new byte[] { 255, 255, 255 },
+            };
+
+            foreach (byte[] colour in colours)
+            {
+                for (int i = 0; i < 71; i++)
+                {
+                    universe.SetChannelValues(i * 3 + 1, colour);
+                    sender.SendUniverse(universe);
+                    Thread.Sleep(40);
+                    universe.SetChannelValues(i * 3 + 1, off);
+                }
+                for (int i = 70; i > 0; i--)
+                {
+                    universe.SetChannelValues(i * 3 + 1, colour);
+                    sender.SendUniverse(universe);
+                    Thread.Sleep(40);
+                    universe.SetChannelValues(i * 3 + 1, off);
+                }
+            }
+            sender.SendUniverse(universe);
+
+            //sender.WatchUniverse(universe);
+            universe[1] = 0;
+            /*
+            for (int i = 1; i <= 213; i++)
+            {
+                universe[i] = 127;
+                //sender.SendUniverse(universe);
+                Thread.Sleep(20);
+                universe[i] = 255;
+                Thread.Sleep(20);
+                //sender.SendUniverse(universe);
+                //universe[i] = 0;
+                //Thread.Sleep(100);
+            }*/
+        }
+
+        static void FusionAlvor()
+        {
             // 1-37 = Fusion Orbit
             // 38-43 = Latta Alvor
             var universe = new DmxUniverse(0, 43);
