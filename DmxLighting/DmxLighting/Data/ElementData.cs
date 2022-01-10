@@ -18,5 +18,11 @@ namespace DmxLighting.Data
             Channel = channel;
             Description = description;
         }
+
+        public byte RawValue
+        {
+            get => Universe[Channel];
+            set => SetProperty(RawValue, value, x => Universe[Channel] = x);
+        }
     }
 }

@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using DmxLighting.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,30 +16,47 @@ namespace DmxLighting.Schema
 
         private readonly IReadOnlyDictionary<string, byte> lowerValuesByName;
 
+        private readonly ValueRange[] rangesByValue;
+
         public EnumElement(int relativeChannel, string description, IDictionary<string, int> lowerValues) : base(relativeChannel, description)
         {
             lowerValuesByName = new ReadOnlyDictionary<string, byte>(lowerValues.ToDictionary(pair => pair.Key, pair => (byte) pair.Value));
-            Names = lowerValuesByName.OrderBy(pair => pair.Value).Select(pair => pair.Key).ToList().AsReadOnly();
+
+            var lowerValuesInOrder = lowerValuesByName.OrderBy(pair => pair.Value).ToList();
+            if (lowerValuesInOrder[0].Value != 0)
+            {
+                throw new ArgumentException($"Invalid value for element {description}: no value for 0");
+            }
+            rangesByValue = new ValueRange[256];
+            for (int i = 0; i < lowerValuesInOrder.Count; i++)
+            {
+                var upperBound = (byte) (i == lowerValuesInOrder.Count - 1 ? 255 : lowerValuesInOrder[i + 1].Value - 1);
+                var range = new ValueRange(lowerValuesInOrder[i].Value, upperBound, lowerValuesInOrder[i].Key);
+                for (int j = range.LowerBoundInclusive; j <= range.UpperBoundInclusive; j++)
+                {
+                    rangesByValue[j] = range;
+                }
+            }
+
+            Names = lowerValuesInOrder.Select(pair => pair.Key).ToList().AsReadOnly();
         }
+
+        public ValueRange GetRange(byte value) => rangesByValue[value];
 
         public byte GetLowerValue(string name) => lowerValuesByName[name];
 
-        public string GetName(byte value)
-        {
-            string previousName = null;
-            // TODO: Make this more efficient if we need to.
-            foreach (var name in Names)
-            {
-                if (value < GetLowerValue(name))
-                {
-                    return previousName;
-                }
-                previousName = name;
-            }
-            return previousName;
-        }
-
         internal override ElementData ToElementData(DmxUniverse universe, int fixtureFirstChannel) =>
             new EnumElementData(universe, fixtureFirstChannel + RelativeChannel, this);
+
+        public class ValueRange
+        {
+            public byte LowerBoundInclusive { get; }
+            public byte UpperBoundInclusive { get; }
+            public string Name { get; }
+
+            public ValueRange(byte lowerBoundInclusive, byte upperBoundInclusive, string name) =>
+                (LowerBoundInclusive, UpperBoundInclusive, Name) =
+                (lowerBoundInclusive, upperBoundInclusive, name);
+        }
     }
 }

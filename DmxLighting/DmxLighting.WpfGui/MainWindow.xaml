@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DmxLighting.WpfGui"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" >
-    <ScrollViewer>
+        Title="DMX Lighting Controller" Height="450" Width="800"
+        Loaded="LoadSchema">
+    <ScrollViewer Margin="5">
         <StackPanel Orientation="Vertical">
-            <Button Content="Load schema" HorizontalAlignment="Left" Click="LoadSchema"/>
             <local:FixtureControl />
         </StackPanel>
     </ScrollViewer>

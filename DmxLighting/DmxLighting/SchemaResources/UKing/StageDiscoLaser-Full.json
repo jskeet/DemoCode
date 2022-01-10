@@ -1,0 +1,251 @@
+{
+  "id": "uking-stage-disco-laser-full",
+  "displayName": "U`King Stage Disco Laser (full control)",
+  "channels": 34,
+  "groups": [
+    {
+      "description": "Group A",
+      "elements": [
+        {
+          "description": "On/Off",
+          "type": "enum",
+          "lowerValues": {
+            "Off": 0,
+            "Auto": 1,
+            "Sound": 100,
+            "Saving": 200,
+            "Pattern A Off": 255
+          }
+        },
+        {
+          "description": "Out of bounds / size",
+          "type": "enum",
+          "lowerValues": {
+            "Crossing": 0,
+            "Re-entry": 50,
+            "Blanking": 100,
+            "Zoom out + blanking": 150,
+            "Saving": 200
+          }
+        },
+        {
+          "description": "Group",
+          "type": "enum",
+          "lowerValues": {
+            "Animations": 0,
+            "Beam patterns": 244
+          }
+        },
+        {
+          "description": "Pattern",
+          "type": "range"
+        },
+        {
+          "description": "Zoom",
+          "type": "enum",
+          "lowerValues": {
+            "Static": 0,
+            "Dynamic (out)": 128,
+            "Dynamic (in)": 160,
+            "Dynamic (in+out)": 192,
+            "Dynamic (rotation)": 224
+          }
+        },
+        {
+          "description": "Rotation",
+          "type": "enum",
+          "lowerValues": {
+            "Static": 0,
+            "Dynamic (2 circles)": 128,
+            "Dynamic (1 circle)": 160,
+            "Dynamic (clockwise)": 192,
+            "Dynamic (counter-clockwise)": 224
+          }
+        },
+        {
+          "description": "X Moving",
+          "type": "enum",
+          "lowerValues": {
+            "Static": 0,
+            "Dynamic (waves up)": 128,
+            "Dynamic (waves down)": 160,
+            "Dynamic (left)": 192,
+            "Dynamic (right)": 224
+          }
+        },
+        {
+          "description": "Y Moving",
+          "type": "enum",
+          "lowerValues": {
+            "Static": 0,
+            "Dynamic (waves right)": 128,
+            "Dynamic (waves left)": 160,
+            "Dynamic (down)": 192,
+            "Dynamic (up)": 224
+          }
+        },
+        {
+          "description": "X Zoom",
+          "type": "enum",
+          "lowerValues": {
+            "Static": 0,
+            "Dynamic (distortion up)": 128,
+            "Dynamic (distortion down)": 160,
+            "Dynamic (in/out)": 192,
+            "Dynamic (rotation)": 224
+          }
+        },
+        {
+          "description": "Y Zoom",
+          "type": "enum",
+          "lowerValues": {
+            "Static": 0,
+            "Dynamic (distortion right)": 128,
+            "Dynamic (distortion left)": 160,
+            "Dynamic (in/out)": 192,
+            "Dynamic (rotation)": 224
+          }
+        },
+        {
+          "description": "Fixed color",
+          "type": "enum",
+          "lowerValues": {
+            "Original": 0,
+            "Change with n dot": 1
+          }
+        },
+        {
+          "description": "Pattern color change",
+          "type": "enum",
+          "lowerValues": {
+            "Original": 0,
+            "Red": 8,
+            "Yellow": 16,
+            "Green": 24,
+            "Cyan": 32,
+            "Blue": 40,
+            "Pink": 48,
+            "White": 56,
+            "Whole pattern RGB": 64,
+            "Whole pattern YCP": 96,
+            "Whole pattern RGBYCPW": 128,
+            "7 Color RGBYCPW": 160,
+            "Sine chasing": 192,
+            "Cosine chasing": 224
+          }
+        },
+        {
+          "description": "Dots",
+          "type": "enum",
+          "lowerValues": {
+            "Original": 0,
+            "Pattern no dots; sweep line blanking": 64,
+            "Pattern no dots; sweep line no blanking": 128,
+            "Saving": 160
+          }
+        },
+        {
+          "description": "Drawing / pattern (1)",
+          "type": "enum",
+          "lowerValues": {
+            "Pattern moving drawing all on": 0,
+            "Walking drawing line": 128
+          }
+        },
+        {
+          "description": "Drawing / pattern (2)",
+          "type": "enum",
+          "lowerValues": {
+            "Sine manual": 0,
+            "Cosine manual": 64,
+            "Drawing A effects": 128,
+            "Drawing B effects": 160,
+            "Drawing C effects": 192,
+            "Drawing D effects": 244
+          }
+        },
+        {
+          "description": "Twisting",
+          "type": "range"
+        },
+        {
+          "description": "Grating selection",
+          "type": "range"
+        }
+      ]
+    },
+    {
+      "description": "Group B",
+      "elements": [
+        {
+          "description": "On/Off",
+          "type": "range"
+        },
+        {
+          "description": "Out of bounds / size",
+          "type": "range"
+        },
+        {
+          "description": "Group",
+          "type": "range"
+        },
+        {
+          "description": "Pattern",
+          "type": "range"
+        },
+        {
+          "description": "Zoom",
+          "type": "range"
+        },
+        {
+          "description": "Rotation",
+          "type": "range"
+        },
+        {
+          "description": "X Moving",
+          "type": "range"
+        },
+        {
+          "description": "Y Moving",
+          "type": "range"
+        },
+        {
+          "description": "X Zoom",
+          "type": "range"
+        },
+        {
+          "description": "Y Zoom",
+          "type": "range"
+        },
+        {
+          "description": "Fixed color",
+          "type": "range"
+        },
+        {
+          "description": "Pattern color change",
+          "type": "range"
+        },
+        {
+          "description": "Dots",
+          "type": "range"
+        },
+        {
+          "description": "Drawing / pattern (1)",
+          "type": "range"
+        },
+        {
+          "description": "Drawing / pattern (2)",
+          "type": "range"
+        },
+        {
+          "description": "Twisting",
+          "type": "range"
+        },
+        {
+          "description": "Grating selection",
+          "type": "range"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "uking-stage-disco-laser-simple",
+  "displayName": "U`King Stage Disco Laser (simple)",
+  "channels": 6,
+  "groups": [
+    {
+      "description": "Simple control",
+      "elements": [
+        {
+          "description": "On/Off",
+          "type": "enum",
+          "lowerValues": {
+            "Off": 0,
+            "On": 1
+          }
+        },
+        {
+          "description": "Mode",
+          "type": "enum",
+          "lowerValues": {
+            "Preset effects (auto)": 0,
+            "Preset serial (auto)": 32,
+            "Preset mixed (auto)": 64,
+            "Saving the effects 1 (???)": 96,
+            "Preset effects (sound)": 128,
+            "Preset serial (sound)": 160,
+            "Preset mixed (sound)": 192,
+            "Saving the effects 2 (???)": 224
+          }
+        },
+        {
+          "description": "Pattern",
+          "type": "range"
+        },
+        {
+          "description": "Theme",
+          "type": "range"
+        },
+        {
+          "description": "Color",
+          "type": "enum",
+          "lowerValues": {
+            "Full color": 0,
+            "Red": 32,
+            "Yellow": 64,
+            "Green": 96,
+            "Cyan": 128,
+            "Blue": 160,
+            "Pink": 192,
+            "White": 224
+          }
+        },
+        {
+          "description": "Speed",
+          "type": "range"
+        }
+      ]
+    }
+  ]
+}

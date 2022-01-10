@@ -7,13 +7,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="SchemaResources/**/*.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="SchemaResources\Equinox\FusionOrbit37.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

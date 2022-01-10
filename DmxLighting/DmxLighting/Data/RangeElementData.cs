@@ -17,8 +17,8 @@ namespace DmxLighting.Data
 
         public byte Value
         {
-            get => Universe[Channel];
-            set => Universe[Channel] = value;
+            get => RawValue;
+            set => RawValue = value;
         }
     }
 }

@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using DmxLighting.Schema;
+using DmxLighting.Utility;
 using System.Collections.Generic;
 
 namespace DmxLighting.Data
@@ -18,11 +19,20 @@ namespace DmxLighting.Data
             this.element = element;
         }
 
-        // TODO: Property changes?
+        [RelatedProperties(nameof(Value), nameof(LowerBoundInclusive), nameof(UpperBoundInclusive))]
         public string Name
         {
-            get => element.GetName(Universe[Channel]);
-            set => Universe[Channel] = element.GetLowerValue(value);
+            get => element.GetRange(RawValue).Name;
+            set => SetProperty(Name, value, x => RawValue = element.GetLowerValue(x));
+        }
+
+        public byte LowerBoundInclusive => element.GetRange(RawValue).LowerBoundInclusive;
+        public byte UpperBoundInclusive => element.GetRange(RawValue).UpperBoundInclusive;
+
+        public byte Value
+        {
+            get => RawValue;
+            set => RawValue = value;
         }
     }
 }
