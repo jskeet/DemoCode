@@ -66,7 +66,8 @@ namespace OscMixerControl
             SendAsync(new OscMessage(address));
 
         /// <summary>
-        /// Returns the results of a /info enquiry, or null if no response has been returned after <paramref name="timeout"/>.
+        /// Returns the results of a /info enquiry, or null if no response has been returned after <paramref name="timeout"/>
+        /// (or if the request cannot be sent).
         /// </summary>
         public Task<string> GetInfoAsync(TimeSpan timeout)
         {
@@ -75,7 +76,13 @@ namespace OscMixerControl
             tcs.Task.ContinueWith(task => RemoveHandler("/info", handler));
             RegisterHandler("/info", handler);
             SetNullAfterTimeout();
-            SendInfoAsync();
+            var sendTask = SendInfoAsync();
+            // Make sure we observe any exceptions sending the packet, but treat it as if it were a timeout.
+            sendTask.ContinueWith(t =>
+            {
+                tcs.TrySetResult(null);
+                _ = t.Exception;
+            }, TaskContinuationOptions.OnlyOnFaulted);
             return tcs.Task;
 
             // Slightly hacky way of just scheduling a timeout for the task.
