@@ -26,36 +26,51 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <!-- Description -->
-                                            <ColumnDefinition SharedSizeGroup="Col0" />
-                                            <!-- Value -->
-                                            <ColumnDefinition Width="auto" />
-                                            <!-- Slider or subdivision -->
-                                            <ColumnDefinition SharedSizeGroup="Col3" />
-                                            <!-- Slider (when there's a subdivision)-->
-                                            <ColumnDefinition Width="auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding Description}" Margin="0,5,0,0" VerticalAlignment="Center" />
-                                        <TextBlock Grid.Column="1" Margin="15,5,0,0" Text="{Binding RawValue}" />
-                                        <ContentControl Grid.Column="1" Content="{Binding .}" Margin="5,5,0,0">
-                                            <ContentControl.Resources>
-                                                <DataTemplate DataType="{x:Type data:EnumElementData}">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <ComboBox ItemsSource="{Binding AllNames}" SelectedValue="{Binding Name}" />
-                                                        <Slider Margin="5,0,0,0" Width="256"
+                                    <ContentControl Content="{Binding .}" Margin="5,5,0,0">
+                                        <ContentControl.Resources>
+                                            <DataTemplate DataType="{x:Type data:EnumElementData}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <!-- Description -->
+                                                        <ColumnDefinition SharedSizeGroup="Col0" />
+                                                        <!-- Value -->
+                                                        <ColumnDefinition SharedSizeGroup="Col1" />
+                                                        <!-- Slider or subdivision -->
+                                                        <ColumnDefinition SharedSizeGroup="Col2" />
+                                                        <!-- Slider (when there's a subdivision)-->
+                                                        <ColumnDefinition Width="auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Description}" Margin="0,5,0,0" VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="1" Margin="15,5,0,0" Text="{Binding RawValue}" />
+                                                    <ComboBox Grid.Column="2" ItemsSource="{Binding AllNames}"
+                                                              Margin="15,5,0,0"
+                                                              HorizontalAlignment="Left"
+                                                              SelectedValue="{Binding Name}" />
+                                                    <Slider Grid.Column="3" Margin="15,5,0,0" Width="256"
                                                                 Value="{Binding Value}"
                                                                 Minimum="{Binding LowerBoundInclusive}"
                                                                 Maximum="{Binding UpperBoundInclusive}" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                                <DataTemplate DataType="{x:Type data:RangeElementData}">
-                                                    <Slider Value="{Binding Value}" Minimum="0" Maximum="255" Width="256" />
-                                                </DataTemplate>
-                                            </ContentControl.Resources>
-                                        </ContentControl>
-                                    </Grid>
+                                                </Grid>
+                                            </DataTemplate>
+                                            <DataTemplate DataType="{x:Type data:RangeElementData}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <!-- Description -->
+                                                        <ColumnDefinition SharedSizeGroup="Col0" />
+                                                        <!-- Value -->
+                                                        <ColumnDefinition SharedSizeGroup="Col1" />
+                                                        <!-- Slider or subdivision -->
+                                                        <ColumnDefinition Width="auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Description}" Margin="0,5,0,0" VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="1" Margin="15,5,0,0" Text="{Binding RawValue}" Width="40"/>
+                                                    <Slider Grid.Column="2" Value="{Binding Value}"
+                                                            Margin="15,5,0,0"
+                                                            Minimum="0" Maximum="255" Width="512" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ContentControl.Resources>
+                                    </ContentControl>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

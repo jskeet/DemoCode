@@ -33,7 +33,7 @@
           "type": "enum",
           "lowerValues": {
             "Animations": 0,
-            "Beam patterns": 244
+            "Beam patterns": 240
           }
         },
         {
