@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+	<ItemGroup>
+      <ProjectReference Include="..\..\..\Tools\Church\NDILibDotNet2\NDILibDotNet2.csproj" />
+      <None Include="../../../Tools/Church/NdiRuntime/**" CopyToOutputDirectory="Always" Visible="False" />
+      <PackageReference Include="StreamDeckSharp" Version="3.2.0" />
+	</ItemGroup>
+</Project>
