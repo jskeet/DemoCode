@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
