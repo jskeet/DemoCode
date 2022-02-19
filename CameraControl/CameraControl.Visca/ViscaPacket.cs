@@ -91,7 +91,7 @@ namespace CameraControl.Visca
 
         public override string ToString()
         {
-            if (text is string)
+            if (text is not null)
             {
                 return text;
             }

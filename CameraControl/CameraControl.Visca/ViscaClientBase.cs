@@ -14,8 +14,7 @@ namespace CameraControl.Visca
     /// </summary>
     internal abstract class ViscaClientBase : IViscaClient
     {
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
-        private readonly Stopwatch stopwatch = Stopwatch.StartNew();
+        private readonly SemaphoreSlim semaphore = new(1);
 
         protected ILogger? Logger { get; }
 
