@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿// Copyright 2020 Jon Skeet. All rights reserved.
+// Use of this source code is governed by the Apache License 2.0,
+// as found in the LICENSE.txt file.
+
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -9,6 +12,7 @@ namespace CameraControl.Visca
 {
     internal sealed class TcpViscaClient : ViscaClientBase
     {
+        private readonly TcpSendLock sendLock;
         private readonly byte[] writeBuffer = new byte[16];
         private readonly ReadBuffer buffer = new ReadBuffer();
         private TcpClient? client;
@@ -20,8 +24,8 @@ namespace CameraControl.Visca
 
         public override void Dispose() => client?.Dispose();
 
-        public TcpViscaClient(string host, int port, ILogger? logger) : base(logger) =>
-            (Host, Port) = (host, port);
+        public TcpViscaClient(string host, int port, ILogger? logger, TcpSendLock? sendLock) : base(logger) =>
+            (Host, Port, this.sendLock) = (host, port, sendLock ?? new TcpSendLock(null));
 
 
         protected override async Task ReconnectAsync(CancellationToken cancellationToken)
@@ -81,8 +85,17 @@ namespace CameraControl.Visca
             {
                 writeBuffer[i] = packet.GetByte(i);
             }
-            // stream is never null if either client wasn't null, or after reconnection.
-            await stream!.WriteAsync(writeBuffer, 0, packet.Length, cancellationToken).ConfigureAwait(false);
+            await sendLock.AcquireAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                // stream is never null if either client wasn't null, or after reconnection.
+                await stream!.WriteAsync(writeBuffer, 0, packet.Length, cancellationToken).ConfigureAwait(false);
+                await sendLock.PostSendDelayAsync(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                sendLock.Release();
+            }
         }
 
         protected override Task<ViscaPacket> ReceivePacketAsync(CancellationToken cancellationToken)
