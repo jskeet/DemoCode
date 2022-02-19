@@ -31,9 +31,9 @@ namespace CameraControl.Visca
             this.logger = logger;
         }
 
-        public static ViscaController ForTcp(string host, int port, TimeSpan? commandTimeout = null, ILogger? logger = null)
+        public static ViscaController ForTcp(string host, int port, TimeSpan? commandTimeout = null, ILogger? logger = null, TcpSendLock? sendLock = null)
         {
-            var client = new TcpViscaClient(host, port, logger);
+            var client = new TcpViscaClient(host, port, logger, sendLock);
             return new ViscaController(client, commandTimeout ?? DefaultTimeout, logger);
         }
 
