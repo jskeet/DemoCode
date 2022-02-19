@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -14,7 +15,7 @@ namespace CameraControl.Visca
     {
         private readonly TcpSendLock sendLock;
         private readonly byte[] writeBuffer = new byte[16];
-        private readonly ReadBuffer buffer = new ReadBuffer();
+        private readonly ReadBuffer buffer = new();
         private TcpClient? client;
         private Stream? stream;
         private bool firstTime = true;
@@ -89,7 +90,11 @@ namespace CameraControl.Visca
             try
             {
                 // stream is never null if either client wasn't null, or after reconnection.
+#if NET5_0_OR_GREATER
+                await stream!.WriteAsync(writeBuffer.AsMemory(0, packet.Length), cancellationToken).ConfigureAwait(false);
+#else
                 await stream!.WriteAsync(writeBuffer, 0, packet.Length, cancellationToken).ConfigureAwait(false);
+#endif
                 await sendLock.PostSendDelayAsync(cancellationToken).ConfigureAwait(false);
             }
             finally

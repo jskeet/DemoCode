@@ -46,7 +46,7 @@ namespace CameraControl.Visca
         public async Task PowerOn(CancellationToken cancellationToken = default)
         {
             await SendAsync(PowerOnPacket, cancellationToken).ConfigureAwait(false);
-            await Task.Delay(1000).ConfigureAwait(false);
+            await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             // Give each power check 1 second to complete, then wait for 2 seconds before trying again. Do this 30 times.
             // If the user-provided cancellation token is cancelled, we respect that.
             int attemptsLeft = 30;
@@ -63,7 +63,7 @@ namespace CameraControl.Visca
                 }
                 catch (Exception) when (!cancellationToken.IsCancellationRequested && attemptsLeft > 0)
                 {
-                    await Task.Delay(2000).ConfigureAwait(false);
+                    await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
                     attemptsLeft--;
                 }
             }
@@ -139,7 +139,7 @@ namespace CameraControl.Visca
             await SendAsync(bytes, cancellationToken).ConfigureAwait(false);
         }
 
-        private void SetInt16(byte[] buffer, int start, short value)
+        private static void SetInt16(byte[] buffer, int start, short value)
         {
             buffer[start] = (byte) ((value >> 12) & 0xf);
             buffer[start + 1] = (byte) ((value >> 8) & 0xf);
