@@ -13,6 +13,12 @@ namespace CameraControl.Visca
 {
     public sealed class ViscaController : IDisposable
     {
+        private static readonly ViscaPacket PowerOnPacket = ViscaPacket.FromBytesWithPreformatting(0x81, 0x01, 0x04, 0x00, 0x02, 0xff);
+        private static readonly ViscaPacket PowerOffPacket = ViscaPacket.FromBytesWithPreformatting(0x81, 0x01, 0x04, 0x00, 0x03, 0xff);
+        private static readonly ViscaPacket GetPowerStatusPacket = ViscaPacket.FromBytesWithPreformatting(0x81, 0x09, 0x04, 0x00, 0xff);
+        private static readonly ViscaPacket GetZoomPacket = ViscaPacket.FromBytesWithPreformatting(0x81, 0x09, 0x04, 0x47, 0xff);
+        private static readonly ViscaPacket GetPanTiltPacket = ViscaPacket.FromBytesWithPreformatting(0x81, 0x09, 0x06, 0x12, 0xff);
+
         internal static TimeSpan DefaultTimeout { get; } = TimeSpan.FromSeconds(15);
 
         public const byte MinSpeed = 0x01;
@@ -39,7 +45,7 @@ namespace CameraControl.Visca
 
         public async Task PowerOn(CancellationToken cancellationToken = default)
         {
-            await SendAsync(cancellationToken, new byte[] { 0x81, 0x01, 0x04, 0x00, 0x02, 0xff }).ConfigureAwait(false);
+            await SendAsync(PowerOnPacket, cancellationToken).ConfigureAwait(false);
             await Task.Delay(1000).ConfigureAwait(false);
             // Give each power check 1 second to complete, then wait for 2 seconds before trying again. Do this 30 times.
             // If the user-provided cancellation token is cancelled, we respect that.
@@ -64,25 +70,25 @@ namespace CameraControl.Visca
         }
 
         public async Task PowerOff(CancellationToken cancellationToken = default) =>
-            await SendAsync(cancellationToken, new byte[] { 0x81, 0x01, 0x04, 0x00, 0x03, 0xff }).ConfigureAwait(false);
+            await SendAsync(PowerOffPacket, cancellationToken).ConfigureAwait(false);
 
         public void Dispose() => client.Dispose();
 
         public async Task<PowerStatus> GetPowerStatus(CancellationToken cancellationToken = default)
         {
-            var response = await SendAsync(cancellationToken, new byte[] { 0x81, 0x09, 0x04, 0x00, 0xff }).ConfigureAwait(false);
+            var response = await SendAsync(GetPowerStatusPacket, cancellationToken).ConfigureAwait(false);
             return (PowerStatus) response.GetByte(2);
         }
 
         public async Task<short> GetZoom(CancellationToken cancellationToken = default)
         {
-            var response = await SendAsync(cancellationToken, new byte[] { 0x81, 0x09, 0x04, 0x47, 0xff }).ConfigureAwait(false);
+            var response = await SendAsync(GetZoomPacket, cancellationToken).ConfigureAwait(false);
             return response.GetInt16(2);
         }
 
         public async Task<(short pan, short tilt)> GetPanTilt(CancellationToken cancellationToken = default)
         {
-            var response = await SendAsync(cancellationToken, new byte[] { 0x81, 0x09, 0x06, 0x12, 0xff }).ConfigureAwait(false);
+            var response = await SendAsync(GetPanTiltPacket, cancellationToken).ConfigureAwait(false);
             return (response.GetInt16(2), response.GetInt16(6));
         }
 
@@ -91,7 +97,7 @@ namespace CameraControl.Visca
         {
             byte[] bytes = new byte[] { 0x81, 0x01, 0x04, 0x47, 0, 0, 0, 0, 0xff };
             SetInt16(bytes, 4, zoom);
-            await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
+            await SendAsync(bytes, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -108,13 +114,13 @@ namespace CameraControl.Visca
             byte actualPan = (byte) (pan is null ? 3 : pan.Value ? 2 : 1);
             byte actualTilt = (byte) (tilt is null ? 3 : tilt.Value ? 1 : 2);
             byte[] bytes = new byte[] { 0x81, 0x01, 0x06, 0x1, panSpeed, tiltSpeed, actualPan, actualTilt, 0xff };
-            await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
+            await SendAsync(bytes, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task ContinuousZoom(bool? zoomIn, byte zoomSpeed, CancellationToken cancellationToken = default)
         {
             byte parameter = (byte) (zoomIn is null ? 0 : zoomIn.Value ? 0x20 | zoomSpeed : 0x30 | zoomSpeed);
-            await SendAsync(cancellationToken, new byte[] { 0x81, 0x01, 0x04, 0x07, parameter, 0xff }).ConfigureAwait(false);
+            await SendAsync(new byte[] { 0x81, 0x01, 0x04, 0x07, parameter, 0xff }, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task SetPanTilt(short pan, short tilt, byte panSpeed, byte tiltSpeed, CancellationToken cancellationToken = default)
@@ -122,7 +128,7 @@ namespace CameraControl.Visca
             byte[] bytes = new byte[] { 0x81, 0x01, 0x06, 0x02, panSpeed, tiltSpeed, 0, 0, 0, 0, 0, 0, 0, 0, 0xff };
             SetInt16(bytes, 6, pan);
             SetInt16(bytes, 10, tilt);
-            await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
+            await SendAsync(bytes, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task RelativePanTilt(short pan, short tilt, byte panSpeed, byte tiltSpeed, CancellationToken cancellationToken = default)
@@ -130,7 +136,7 @@ namespace CameraControl.Visca
             byte[] bytes = new byte[] { 0x81, 0x01, 0x06, 0x03, panSpeed, tiltSpeed, 0, 0, 0, 0, 0, 0, 0, 0, 0xff };
             SetInt16(bytes, 6, pan);
             SetInt16(bytes, 10, tilt);
-            await SendAsync(cancellationToken, bytes).ConfigureAwait(false);
+            await SendAsync(bytes, cancellationToken).ConfigureAwait(false);
         }
 
         private void SetInt16(byte[] buffer, int start, short value)
@@ -142,15 +148,20 @@ namespace CameraControl.Visca
         }
 
         public async Task GoHome(CancellationToken cancellationToken = default) =>
-            await SendAsync(cancellationToken, new byte[] { 0x81, 0x01, 0x06, 0x04, 0xff }).ConfigureAwait(false);
+            await SendAsync(new byte[] { 0x81, 0x01, 0x06, 0x04, 0xff }, cancellationToken).ConfigureAwait(false);
 
-        private async Task<ViscaPacket> SendAsync(CancellationToken cancellationToken, byte[] packet, [CallerMemberName] string? command = null)
+        private Task<ViscaPacket> SendAsync(byte[] packet, CancellationToken cancellationToken, [CallerMemberName] string? command = null)
+        {
+            var request = ViscaPacket.FromBytes(packet, 0, packet.Length);
+            return SendAsync(request, cancellationToken, command);
+        }
+
+        private async Task<ViscaPacket> SendAsync(ViscaPacket packet, CancellationToken cancellationToken, [CallerMemberName] string? command = null)
         {
             var effectiveToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, new CancellationTokenSource(CommandTimeout).Token).Token;
-            var request = ViscaPacket.FromBytes(packet, 0, packet.Length);
-            logger?.LogDebug("Sending VISCA command '{command}': {request}", command, request);
+            logger?.LogDebug("Sending VISCA command '{command}': {request}", command, packet);
             long ticksBefore = stopwatch.ElapsedTicks;
-            var response = await client.SendAsync(request, effectiveToken).ConfigureAwait(false);
+            var response = await client.SendAsync(packet, effectiveToken).ConfigureAwait(false);
             long ticksAfter = stopwatch.ElapsedTicks;
             logger?.LogDebug("VISCA command '{command}' completed in {millis}ms", command, (ticksAfter - ticksBefore) * 1000 / Stopwatch.Frequency);
             return response;

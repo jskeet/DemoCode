@@ -9,21 +9,32 @@ namespace CameraControl.Visca
     /// <summary>
     /// Packet within the VISCA protocol.
     /// </summary>
-    internal struct ViscaPacket
+    internal readonly struct ViscaPacket
     {
         // VISCA packets can contain up to 16 bytes. It's simplest to represent those as two long values.
         private readonly long head;
         private readonly long tail;
-        
+
+        /// <summary>
+        /// The text representation, cached for efficiency for commonly-used packets.
+        /// </summary>
+        private readonly string? text;
+
         /// <summary>
         /// The number of bytes in the packet, excluding the trailing 0xFF.
         /// </summary>
         public int Length { get; }
 
-        private ViscaPacket(long head, long tail, int length) =>
-            (this.head, this.tail, this.Length) = (head, tail, length);
+        private ViscaPacket(long head, long tail, int length, string? text) =>
+            (this.head, this.tail, this.Length, this.text) = (head, tail, length, text);
 
-        internal static ViscaPacket FromBytes(byte[] bytes, int start, int length)
+        internal static ViscaPacket FromBytes(byte[] bytes, int start, int length) =>
+            FromBytes(bytes, start, length, false);
+
+        internal static ViscaPacket FromBytesWithPreformatting(params byte[] bytes) =>
+            FromBytes(bytes, 0, bytes.Length, true);
+
+        private static ViscaPacket FromBytes(byte[] bytes, int start, int length, bool preformatText)
         {
             Preconditions.CheckNotNull(bytes);
             // Start must be within the array
@@ -51,7 +62,8 @@ namespace CameraControl.Visca
                 GetByteOrZero(14, 8) |
                 GetByteOrZero(15, 0);
 
-            return new ViscaPacket(head, tail, length);
+            var unformatted = new ViscaPacket(head, tail, length, null);
+            return preformatText ? new ViscaPacket(head, tail, length, unformatted.ToString()) : unformatted;
 
             long GetByteOrZero(int index, int shift) =>
                 index >= length ? 0L : ((long) bytes[start + index]) << shift;
@@ -69,7 +81,7 @@ namespace CameraControl.Visca
         internal short GetInt16(int index)
         {
             Preconditions.CheckRange(index, 0, Length - 4);
-            return (short)(
+            return (short) (
                 (GetByte(index) << 12) |
                 (GetByte(index + 1) << 8) |
                 (GetByte(index + 2) << 4) |
@@ -79,6 +91,10 @@ namespace CameraControl.Visca
 
         public override string ToString()
         {
+            if (text is string)
+            {
+                return text;
+            }
             var builder = new StringBuilder();
             for (int i = 0; i < Length; i++)
             {
