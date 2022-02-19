@@ -13,6 +13,7 @@ namespace CameraControl.Visca
         private readonly ReadBuffer buffer = new ReadBuffer();
         private TcpClient? client;
         private Stream? stream;
+        private bool firstTime = true;
 
         public string Host { get; }
         public int Port { get; }
@@ -25,7 +26,15 @@ namespace CameraControl.Visca
 
         protected override async Task ReconnectAsync(CancellationToken cancellationToken)
         {
-            Logger?.LogDebug("Reconnecting to {host}:{port}", Host, Port);
+            if (firstTime)
+            {
+                Logger?.LogDebug("Connecting to {host}:{port}", Host, Port);
+                firstTime = false;
+            }
+            else
+            {
+                Logger?.LogDebug("Reconnecting to {host}:{port}", Host, Port);
+            }
             buffer.Clear();
             client?.Dispose();
             client = new TcpClient { NoDelay = true };
