@@ -43,31 +43,41 @@ namespace CameraControl.Visca
             return new ViscaController(client, commandTimeout ?? DefaultTimeout, logger);
         }
 
-        public async Task PowerOn(CancellationToken cancellationToken = default)
+        public async Task PowerCycle(CancellationToken cancellationToken = default)
         {
-            await SendAsync(PowerOnPacket, cancellationToken).ConfigureAwait(false);
-            await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
-            // Give each power check 1 second to complete, then wait for 2 seconds before trying again. Do this 30 times.
-            // If the user-provided cancellation token is cancelled, we respect that.
-            int attemptsLeft = 30;
-            logger?.LogDebug("Waiting for power status to be reported");
-            while (true)
+            await PowerOff(cancellationToken).ConfigureAwait(false);
+            // On Minrray cameras, connections fail immediately after PowerOff, so we retry here for a bit.
+            await RetryWithConstantBackoff(async token => { await PowerOn(token).ConfigureAwait(false); return 0; },
+                attempts: 10, perOperationTimeout: TimeSpan.FromSeconds(1), delay: TimeSpan.FromSeconds(1));
+            
+            // Keep trying to get the power status until we can actually do so. This can take a few attempts.
+            // Note that we don't actually try to validate that the power status is "on".
+            var status = await RetryWithConstantBackoff(GetPowerStatus, attempts: 20, perOperationTimeout: TimeSpan.FromSeconds(1), delay: TimeSpan.FromSeconds(2));
+            logger?.LogDebug("Power cycle complete; power status: {status}", status);
+
+            async Task<T> RetryWithConstantBackoff<T>(Func<CancellationToken, Task<T>> operation, int attempts, TimeSpan perOperationTimeout, TimeSpan delay)
             {
-                try
+                int attemptsLeft = attempts;
+                while (true)
                 {
-                    var shortCancellationToken = new CancellationTokenSource(1000).Token;
-                    var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, shortCancellationToken).Token;
-                    var status = await GetPowerStatus(linkedToken).ConfigureAwait(false);
-                    logger?.LogDebug("Power status successfully reported: {status}", status);
-                    return;
-                }
-                catch (Exception) when (!cancellationToken.IsCancellationRequested && attemptsLeft > 0)
-                {
-                    await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
-                    attemptsLeft--;
+                    try
+                    {
+                        var shortCancellationToken = new CancellationTokenSource(perOperationTimeout).Token;
+                        var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, shortCancellationToken).Token;
+                        var result = await operation(linkedToken).ConfigureAwait(false);
+                        return result;
+                    }
+                    catch (Exception) when (!cancellationToken.IsCancellationRequested && attemptsLeft > 0)
+                    {
+                        await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+                        attemptsLeft--;
+                    }
                 }
             }
         }
+
+        public async Task PowerOn(CancellationToken cancellationToken = default) =>
+            await SendAsync(PowerOnPacket, cancellationToken).ConfigureAwait(false);
 
         public async Task PowerOff(CancellationToken cancellationToken = default) =>
             await SendAsync(PowerOffPacket, cancellationToken).ConfigureAwait(false);
