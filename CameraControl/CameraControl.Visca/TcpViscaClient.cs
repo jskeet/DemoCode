@@ -28,6 +28,13 @@ namespace CameraControl.Visca
         public TcpViscaClient(string host, int port, ILogger? logger, TcpSendLock? sendLock) : base(logger) =>
             (Host, Port, this.sendLock) = (host, port, sendLock ?? new TcpSendLock(null));
 
+        protected override void Disconnect()
+        {
+            buffer.Clear();
+            client?.Dispose();
+            // This is the trigger for reconnection next time.
+            client = null;
+        }
 
         protected override async Task ReconnectAsync(CancellationToken cancellationToken)
         {

@@ -3,7 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,6 +40,11 @@ namespace CameraControl.Visca
         /// <returns>A task representing the asynchronous operation</returns>
         protected abstract Task ReconnectAsync(CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Disconnects in a way that will force a reconnect on the next request.
+        /// </summary>
+        protected abstract void Disconnect();
+
         public abstract void Dispose();
 
         protected ViscaClientBase(ILogger? logger)
@@ -50,7 +54,7 @@ namespace CameraControl.Visca
 
         async Task<ViscaPacket> IViscaClient.SendAsync(ViscaPacket request, CancellationToken cancellationToken)
         {
-            bool reconnect = true;
+            bool disconnect = true;
             await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
@@ -70,7 +74,7 @@ namespace CameraControl.Visca
                             continue;
                         // Success
                         case 5:
-                            reconnect = false;
+                            disconnect = false;
                             return response;
                         // Error reported by device
                         case 6:
@@ -85,9 +89,11 @@ namespace CameraControl.Visca
             {
                 try
                 {
-                    if (reconnect)
+                    if (disconnect)
                     {
-                        await ReconnectAsync(cancellationToken).ConfigureAwait(false);
+                        // We can't reconnect here, as that could take time and the cancellation token
+                        // may already have been cancelled.
+                        Disconnect();
                     }
                 }
                 finally
