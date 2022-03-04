@@ -35,9 +35,11 @@ namespace CameraControl.Visca
                     // TODO: Should our buffer be smaller?
                     throw new ViscaProtocolException($"Read {size} bytes without a reaching the end of a VISCA packet");
                 }
+                // The cancellation token in ReadAsync isn't always used, apparently - so we also close the stream
+                // if we're cancelled. (We reconnect on any exception anyway, so it shouldn't be a problem to close it.)
                 using (var registration = cancellationToken.Register(() => stream.Close()))
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, size, buffer.Length - size).ConfigureAwait(false);
+                    int bytesRead = await stream.ReadAsync(buffer, size, buffer.Length - size, cancellationToken).ConfigureAwait(false);
                     if (bytesRead == 0)
                     {
                         throw new ViscaProtocolException("Reached end of VISCA stream");
