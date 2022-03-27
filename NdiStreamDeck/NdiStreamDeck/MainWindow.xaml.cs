@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using NewTek.NDI;
+using OpenMacroBoard.SDK;
 using StreamDeckSharp;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace NdiStreamDeck
         private Finder finder;
         private IReadOnlyList<NdiStreamDeckView> views = new List<NdiStreamDeckView>();
         private IReadOnlyList<CameraStatusProvider> statusProviders = new List<CameraStatusProvider>();
-        private IReadOnlyList<IStreamDeckBoard> streamDecks;
+        private IReadOnlyList<IMacroBoard> streamDecks;
         private DispatcherTimer timer;
 
         public MainWindow()
@@ -44,9 +45,9 @@ namespace NdiStreamDeck
             streamDecks = devices.Select(device => StreamDeck.OpenDevice(device.DevicePath)).ToList();            
             streamDeckInfo.Text = string.Join("\r\n", devices.Zip(streamDecks, (device, deck) =>
                 $"{device.DeviceName}: Firmware {deck.GetFirmwareVersion()}\r\n" +
-                $"  Keys: {deck.Keys.KeyCountX}x{deck.Keys.KeyCountY}\r\n" +
-                $"  Key size: {deck.Keys.KeyWidth}x{deck.Keys.KeyHeight}px\r\n" +
-                $"  Key gap: {deck.Keys.GetKeyDistanceXWorkaround()}x{deck.Keys.GetKeyDistanceYWorkaround()}px"));
+                $"  Keys: {deck.Keys.CountX}x{deck.Keys.CountY}\r\n" +
+                $"  Key size: {deck.Keys.KeySize}px\r\n" +
+                $"  Key gap: {deck.Keys.GapSize}px"));
 
             // Start the NDI "finder" which discovers available sources
             finder = new Finder();

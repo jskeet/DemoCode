@@ -16,29 +16,24 @@ namespace NdiStreamDeck
     /// </summary>
     internal sealed class NdiStreamDeckView : IDisposable
     {
-        private readonly IStreamDeckBoard deck;
+        private readonly IMacroBoard deck;
         private readonly IList<VideoFrameReceiver> sources;
         private int activeSourceIndex;
 
         // Just for convenience...
         private readonly int rows;
         private readonly int columns;
-        private readonly int keyWidth;
-        private readonly int keyHeight;
-        private readonly int keyGapWidth;
-        private readonly int keyGapHeight;
+        private readonly int keySize;
+        private readonly int gapSize;
 
         // Note: not using IReadOnlyList as that doesn't have IndexOf :(
-        internal NdiStreamDeckView(IStreamDeckBoard deck, IList<VideoFrameReceiver> sources)
+        internal NdiStreamDeckView(IMacroBoard deck, IList<VideoFrameReceiver> sources)
         {
             this.deck = deck;
-            rows = deck.Keys.KeyCountY;
-            columns = deck.Keys.KeyCountX;
-            keyWidth = deck.Keys.KeyWidth;
-            keyHeight = deck.Keys.KeyHeight;
-
-            keyGapWidth = deck.Keys.GetKeyDistanceXWorkaround();
-            keyGapHeight = deck.Keys.GetKeyDistanceYWorkaround();
+            rows = deck.Keys.CountY;
+            columns = deck.Keys.CountX;
+            keySize = deck.Keys.KeySize;
+            gapSize = deck.Keys.GapSize;
 
             this.sources = sources.Take(rows).ToList();
             deck.KeyStateChanged += HandleStreamDeckKey;
@@ -86,8 +81,8 @@ namespace NdiStreamDeck
         /// </summary>
         private unsafe void DrawThumbnail(int row, VideoFrame frame)
         {
-            var height = keyHeight;
-            var width = keyWidth;
+            var height = keySize;
+            var width = keySize;
             var data = new byte[width * height * 3];
 
             int scale = Math.Min(frame.Height / height, frame.Width / width);
@@ -111,7 +106,7 @@ namespace NdiStreamDeck
                     sourceIndex += (scale - 1) * 4;
                 }
             }
-            var bitmap = new KeyBitmap(width, height, data);
+            var bitmap = KeyBitmap.FromBgr24Array(width, height, data);
             deck.SetKeyBitmap(row * columns, bitmap);
         }
 
@@ -127,8 +122,8 @@ namespace NdiStreamDeck
             int keyOffsetX = 1;
             int keyOffsetY = 0;
 
-            int keyPixelsWidth = keyWidth * keyColumns + keyGapWidth * (keyColumns - 1);
-            int keyPixelsHeight = keyHeight * keyRows + keyGapHeight * (keyRows - 1);
+            int keyPixelsWidth = keySize * keyColumns + gapSize * (keyColumns - 1);
+            int keyPixelsHeight = keySize * keyRows + gapSize * (keyRows - 1);
             int scale = Math.Min(frame.Height / keyPixelsHeight, frame.Width / keyPixelsWidth);
 
             // Our simplistic scaling means we don't show absolutely everything,
@@ -140,16 +135,16 @@ namespace NdiStreamDeck
 
             for (int row = 0; row < keyRows; row++)
             {
-                int startY = row * (keyHeight + keyGapHeight) * scale + inputOffsetY;
+                int startY = row * (keySize + gapSize) * scale + inputOffsetY;
                 for (int col = 0; col < keyColumns; col++)
                 {
-                    int startX = col * (keyWidth + keyGapWidth) * scale + inputOffsetX;
-                    var data = new byte[keyWidth * keyHeight * 3];
+                    int startX = col * (keySize + gapSize) * scale + inputOffsetX;
+                    var data = new byte[keySize * keySize * 3];
                     int destIndex = 0;
-                    for (int y = 0; y < keyHeight; y++)
+                    for (int y = 0; y < keySize; y++)
                     {
                         int sourceIndex = (y * scale + startY) * frame.Stride + startX * 4;
-                        for (int x = 0; x < keyWidth; x++)
+                        for (int x = 0; x < keySize; x++)
                         {
                             data[destIndex++] = buffer[sourceIndex++];
                             data[destIndex++] = buffer[sourceIndex++];
@@ -158,15 +153,15 @@ namespace NdiStreamDeck
                             sourceIndex += (scale - 1) * 4;
                         }
                     }
-                    var bitmap = new KeyBitmap(keyWidth, keyHeight, data);
-                    deck.SetKeyBitmap((row + keyOffsetY) * deck.Keys.KeyCountX + col + keyOffsetX, bitmap);
+                    var bitmap = KeyBitmap.FromBgr24Array(keySize, keySize, data);
+                    deck.SetKeyBitmap((row + keyOffsetY) * columns + col + keyOffsetX, bitmap);
                 }
             }
         }
 
         public void Dispose()
         {
-            deck.ClearKeysWithWorkaround();
+            deck.ClearKeys();
             deck.KeyStateChanged -= HandleStreamDeckKey;
             foreach (var source in sources)
             {
