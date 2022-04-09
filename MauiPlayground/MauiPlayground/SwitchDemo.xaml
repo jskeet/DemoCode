@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiPlayground.SwitchDemo">
+    <StackLayout>
+        <Label Text="Switch binding demo" />
+        <HorizontalStackLayout>
+            <Switch x:Name="switchControl"
+                    IsToggled="{Binding Toggled, Mode=TwoWay}"
+                    Toggled="Toggled" />
+            <CheckBox IsChecked="{Binding Toggled, Mode=TwoWay}" />
+            <Label Text="{Binding Toggled}" />
+        </HorizontalStackLayout>
+
+        <Button Text="Toggle" Clicked="Toggle" />
+        <Label x:Name="manualLabel1" Text="Value set in button click handler" />
+        <Label x:Name="manualLabel2" Text="Value set in toggled handler" />
+    </StackLayout>
+</ContentPage>
