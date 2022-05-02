@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32414.248
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl", "OscMixerControl\OscMixerControl.csproj", "{72A1AC7E-9E2A-421F-9185-EE8D3B515BC2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl.Wpf", "OscMixerControl.Wpf\OscMixerControl.Wpf.csproj", "{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscMixerControl.Console", "OscMixerControl.Console\OscMixerControl.Console.csproj", "{05A36546-74D7-4A5F-8486-E3CF8F259F5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,18 @@ Global
 		{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}.Release|x64.Build.0 = Release|Any CPU
 		{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{B06409AE-B348-4BF9-AFC9-D13DB05FF1C2}.Release|x86.Build.0 = Release|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Debug|x64.Build.0 = Debug|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Debug|x86.Build.0 = Debug|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Release|x64.ActiveCfg = Release|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Release|x64.Build.0 = Release|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Release|x86.ActiveCfg = Release|Any CPU
+		{05A36546-74D7-4A5F-8486-E3CF8F259F5B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

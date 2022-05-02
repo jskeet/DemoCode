@@ -22,25 +22,6 @@ namespace OscMixerControl.Console
             await client.SendAsync(message);
             System.Console.WriteLine("Sent packet " + message);
 
-            message = new OscMessage("/ch/04/mix/fader", 0.5f);
-            await client.SendAsync(message);
-            System.Console.WriteLine("Sent packet");
-
-            /*
-            message = new OscMessage("/xremote");
-            await client.SendAsync(message);
-            System.Console.WriteLine("Sent packet");
-            */
-            /*
-            message = new OscMessage("/subscribe", "/ch/01/mix/fader", 10);
-            await client.SendAsync(message);
-            System.Console.WriteLine("Sent packet");
-            */
-
-            message = new OscMessage("/showdump");
-            await client.SendAsync(message);
-            System.Console.WriteLine("Sent packet");
-
             await Task.Delay(15000);
         }
     }

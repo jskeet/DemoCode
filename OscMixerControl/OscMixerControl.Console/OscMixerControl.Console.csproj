@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\jon\Test\Projects\DemoCode\OscMixerControl\OscMixerControl\OscMixerControl.csproj" />
+    <ProjectReference Include="..\OscMixerControl\OscMixerControl.csproj" />
   </ItemGroup>
 
 </Project>
