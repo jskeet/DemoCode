@@ -4,6 +4,7 @@
 
 using OscCore;
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,12 @@ namespace OscMixerControl
         {
             var data = packet.ToByteArray();
             return client.SendAsync(data, data.Length);
+        }
+
+        public Task SendAsync(OscPacket packet, IPEndPoint endPoint)
+        {
+            var data = packet.ToByteArray();
+            return client.SendAsync(data, data.Length, endPoint);
         }
 
         private async void StartReceiving()
