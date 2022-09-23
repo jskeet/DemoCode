@@ -62,7 +62,7 @@ namespace VDrumExplorer.Console
                     case 0b1001_0000: // Note on
                     case 0b1010_0000: // Polyphonic key pressure (aftertouch)
                     case 0b1101_0000: // Channel pressure (aftertouch)
-                    case 0b1110_0000: // Pitch bench change
+                    case 0b1110_0000: // Pitch bend change
                         if ((message.Status & 0xf) == inputChannel)
                         {
                             message.Data[0] = (byte) (type | outputChannel);
