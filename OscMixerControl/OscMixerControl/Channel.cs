@@ -137,16 +137,6 @@ namespace OscMixerControl
         private void RaisePropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        public async Task SubscribeToData(TimeFactor timeFactor)
-        {
-            await mixer.SendSubscribeAsync(nameAddress, timeFactor).ConfigureAwait(false);
-            await mixer.SendSubscribeAsync(faderLevelAddress, timeFactor).ConfigureAwait(false);
-            if (HasOn)
-            {
-                await mixer.SendSubscribeAsync(onAddress, timeFactor).ConfigureAwait(false);
-            }
-        }
-
         public async Task RequestDataOnce()
         {
             await mixer.SendDataRequestAsync(nameAddress).ConfigureAwait(false);

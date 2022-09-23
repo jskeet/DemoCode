@@ -4,7 +4,9 @@
 
 using OscCore;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OscMixerControl
@@ -15,6 +17,10 @@ namespace OscMixerControl
 
         private IOscClient client;
         private Func<IOscClient> clientProvider;
+
+        private ConcurrentDictionary<string, int> sentAddressCounts = new ConcurrentDictionary<string, int>();
+        private ConcurrentDictionary<string, int> receivedAddressCounts = new ConcurrentDictionary<string, int>();
+
         private ConcurrentDictionary<string, EventHandler<OscMessage>> messageHandlers =
             new ConcurrentDictionary<string, EventHandler<OscMessage>>();
         
@@ -25,6 +31,9 @@ namespace OscMixerControl
 
         public void ConnectToFake() =>
             Connect(() => new FakeOscClient());
+
+        public void ConnectToUiMixer(string address, int port) =>
+            Connect(() => new UiOscClient(address, port));
 
         private void Connect(Func<IOscClient> clientProvider)
         {
@@ -48,6 +57,7 @@ namespace OscMixerControl
             PacketReceived?.Invoke(this, packet);
             if (packet is OscMessage message)
             {
+                receivedAddressCounts.AddOrUpdate(message.Address, 1, (key, value) => value + 1);
                 if (messageHandlers.TryGetValue(message.Address, out var handler) && handler is object)
                 {
                     handler.Invoke(this, message);
@@ -55,8 +65,25 @@ namespace OscMixerControl
             }
         }
 
-        public Task SendAsync(OscPacket packet) =>
-            client?.SendAsync(packet) ?? Task.CompletedTask;
+        /// <summary>
+        /// Returns a snapshot of the addresses to which this mixer has sent OSC messages, with a count of packets per message.
+        /// The order of the returned sequence is not specified.
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, int>> GetSentAddressCounts() => sentAddressCounts.ToArray();
+        /// <summary>
+        /// Returns a snapshot of the addresses of OSC messages which this mixer has received, with a count of packets per message.
+        /// The order of the returned sequence is not specified.
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, int>> GetReceivedAddressCounts() => receivedAddressCounts.ToArray();
+
+        public Task SendAsync(OscPacket packet)
+        {
+            if (packet is OscMessage message)
+            {
+                sentAddressCounts.AddOrUpdate(message.Address, 1, (key, value) => value + 1);
+            }
+            return client?.SendAsync(packet) ?? Task.CompletedTask;
+        }
 
         /// <summary>
         /// Convenience method to send a simple request that just consists of the OSC
@@ -95,14 +122,7 @@ namespace OscMixerControl
 
         public Task SendInfoAsync() => SendAsync(new OscMessage("/info"));
 
-        public Task SendRenewAllAsync() => SendAsync(new OscMessage("/renew"));
-
-        public Task SendRenewAsync(string subscription) => SendAsync(new OscMessage("/renew", subscription));
-
         public Task SendXRemoteAsync() => SendAsync(new OscMessage("/xremote"));
-
-        public Task SendSubscribeAsync(string address, TimeFactor timeFactor) =>
-            SendAsync(new OscMessage("/subscribe", address, (int) timeFactor));
 
         public Task SendBatchSubscribeAsync(string alias, string address, int parameter1, int parameter2, TimeFactor timeFactor) =>
             SendAsync(new OscMessage("/batchsubscribe", alias, address, parameter1, parameter2, (int) timeFactor));
