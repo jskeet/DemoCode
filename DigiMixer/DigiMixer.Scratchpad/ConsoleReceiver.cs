@@ -11,15 +11,19 @@ internal class ConsoleReceiver : IMixerReceiver
     public void ReceiveFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level) =>
         Log($"Fader level {inputId.Value}/{outputId.Value} has level {level.Value}");
 
-    public void ReceiveMeterLevel(OutputChannelId outputId, MeterLevel level)
+    public void ReceiveFaderLevel(OutputChannelId outputId, FaderLevel level) =>
+        Log($"Fader level {outputId.Value} has level {level.Value}");
+
+    public void ReceiveMeterLevel(OutputChannelId channel, MeterLevel level)
     {
-        throw new NotImplementedException();
     }
 
-    public void ReceiveMeterLevel(InputChannelId outputId, MeterLevel level)
+    public void ReceiveMeterLevel(InputChannelId channel, MeterLevel level)
     {
-        throw new NotImplementedException();
     }
+
+    public void ReceiveMixerInfo(MixerInfo info) =>
+        Log($"Info: Name: {info.Name}; Model: {info.Model}; Version: {info.Version}");
 
     public void ReceiveMuteStatus(InputChannelId channelId, bool muted) =>
         Log($"Input channel {channelId.Value} mute status is now {muted}");

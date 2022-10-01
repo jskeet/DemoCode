@@ -19,48 +19,71 @@ public class OscMixerApi : IMixerApi
     // Note: not static as it could be different for different mixers, even just XR12 vs XR16 vs XR18 vs X32
     private readonly Dictionary<string, Action<IMixerReceiver, OscMessage>> receiverActionsByAddress;
 
-    private readonly IOscClient client;
+    private readonly Func<IOscClient> clientProvider;
+    private IOscClient client;
+    private Task receivingTask;
     private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
 
-    private OscMixerApi(IOscClient client)
+    private OscMixerApi(Func<IOscClient> clientProvider)
     {
-        this.client = client;
-        client.PacketReceived += ReceivePacket;
+        this.clientProvider = clientProvider;
+        client = new IOscClient.Fake();
+        receivingTask = Task.CompletedTask;
         receiverActionsByAddress = BuildReceiverMap();
     }
 
+    public Task ConnectAsync()
+    {
+        client.Dispose();
+        var newClient = clientProvider();
+        newClient.PacketReceived += ReceivePacket;
+        receivingTask = newClient.StartReceiving();
+        client = newClient;
+        return Task.CompletedTask;
+    }
+
     public static OscMixerApi ForUdp(string host, int port) =>
-        new OscMixerApi(new UdpOscClient(host, port));
+        new OscMixerApi(() => new UdpOscClient(host, port));
 
     public void RegisterReceiver(IMixerReceiver receiver) =>
         receivers.Add(receiver);
 
-    public Task RequestFaderLevel(InputChannelId inputId, OutputChannelId outputId) =>
-        client.SendAsync(new OscMessage(XAir.GetFaderAddress(inputId, outputId)));
-
-    public Task RequestMuteStatus(InputChannelId inputId) =>
-        client.SendAsync(new OscMessage(XAir.GetMuteAddress(inputId)));
-
-    public Task RequestMuteStatus(OutputChannelId outputId) =>
-        client.SendAsync(new OscMessage(XAir.GetMuteAddress(outputId)));
-
-    public Task RequestName(InputChannelId inputId) =>
-        client.SendAsync(new OscMessage(XAir.GetNameAddress(inputId)));
-
-    public Task RequestName(OutputChannelId outputId) =>
-        client.SendAsync(new OscMessage(XAir.GetNameAddress(outputId)));
-
-    public Task RequestChannelUpdates() =>
-        client.SendAsync(new OscMessage(XAir.XRemoteAddress));
-
-    public async Task RequestMeterUpdates()
+    public async Task RequestAllDataAsync(IReadOnlyList<InputChannelId> inputChannels, IReadOnlyList<OutputChannelId> outputChannels)
     {
+        await client.SendAsync(new OscMessage(XAir.InfoAddress));
+        foreach (var input in inputChannels)
+        {
+            await client.SendAsync(new OscMessage(XAir.GetMuteAddress(input)));
+            await client.SendAsync(new OscMessage(XAir.GetNameAddress(input)));
+        }
+        foreach (var output in outputChannels)
+        {
+            await client.SendAsync(new OscMessage(XAir.GetMuteAddress(output)));
+            await client.SendAsync(new OscMessage(XAir.GetNameAddress(output)));
+            await client.SendAsync(new OscMessage(XAir.GetFaderAddress(output)));
+        }
+
+        foreach (var input in inputChannels)
+        {
+            foreach (var output in outputChannels)
+            {
+                await client.SendAsync(new OscMessage(XAir.GetFaderAddress(input, output)));
+            }
+        }
+    }
+
+    public async Task SendKeepAlive()
+    {
+        await client.SendAsync(new OscMessage(XAir.XRemoteAddress));
         await client.SendAsync(new OscMessage("/batchsubscribe", XAir.InputChannelLevelsMeter, XAir.InputChannelLevelsMeter, 0, 0, 0 /* fast */));
         await client.SendAsync(new OscMessage("/batchsubscribe", XAir.OutputChannelLevelsMeter, XAir.OutputChannelLevelsMeter, 0, 0, 0 /* fast */));
     }
 
     public Task SetFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level) =>
         client.SendAsync(new OscMessage(XAir.GetFaderAddress(inputId, outputId), FromFaderLevel(level)));
+
+    public Task SetFaderLevel(OutputChannelId outputId, FaderLevel level) =>
+        client.SendAsync(new OscMessage(XAir.GetFaderAddress(outputId), FromFaderLevel(level)));
 
     public Task SetMuted(InputChannelId inputId, bool muted) =>
         client.SendAsync(new OscMessage(XAir.GetMuteAddress(inputId), muted ? 1 : 0));
@@ -97,6 +120,14 @@ public class OscMixerApi : IMixerApi
     {
         var ret = new Dictionary<string, Action<IMixerReceiver, OscMessage>>();
 
+        ret[XAir.InfoAddress] = (receiver, message) =>
+        {
+            string version = (string) message[0] + " / " + (string) message[3];
+            string model = (string) message[2];
+            string name = (string) message[1];
+            receiver.ReceiveMixerInfo(new MixerInfo(model, name, version));
+        };
+
         // TODO: Don't assume X-Air...
         var inputs = Enumerable.Range(1, 16).Select(id => new InputChannelId(id)).Append(XAir.AuxInput);
         var outputs = Enumerable.Range(1, 6).Select(id => new OutputChannelId(id)).Append(XAir.MainOutput);
@@ -111,6 +142,7 @@ public class OscMixerApi : IMixerApi
         {
             ret[XAir.GetNameAddress(output)] = (receiver, message) => receiver.ReceiveChannelName(output, (string) message[0]);
             ret[XAir.GetMuteAddress(output)] = (receiver, message) => receiver.ReceiveMuteStatus(output, (int) message[0] == 0);
+            ret[XAir.GetFaderAddress(output)] = (receiver, message) => receiver.ReceiveFaderLevel(output, ToFaderLevel((float) message[0]));
         }
 
         foreach (var input in inputs)
@@ -150,4 +182,6 @@ public class OscMixerApi : IMixerApi
         }
         return ret;
     }
+
+    public void Dispose() => client.Dispose();
 }
