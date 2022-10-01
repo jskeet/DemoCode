@@ -3,8 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using OscCore;
-using System;
-using System.Threading.Tasks;
 
 namespace OscMixerControl;
 
@@ -12,4 +10,16 @@ internal interface IOscClient : IDisposable
 {
     Task SendAsync(OscPacket packet);
     event EventHandler<OscPacket> PacketReceived;
+    public Task StartReceiving();
+
+    public class Fake : IOscClient
+    {
+        public event EventHandler<OscPacket>? PacketReceived;
+
+        public void Dispose() { }
+
+        public Task SendAsync(OscPacket packet) => Task.CompletedTask;
+
+        public Task StartReceiving() => Task.CompletedTask;
+    }
 }

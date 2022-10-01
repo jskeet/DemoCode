@@ -19,7 +19,6 @@ internal sealed class UdpOscClient : IOscClient
         client = new UdpClient();
         client.Connect(host, port);
         cts = new CancellationTokenSource();
-        StartReceiving();
     }
 
     public Task SendAsync(OscPacket packet)
@@ -28,7 +27,7 @@ internal sealed class UdpOscClient : IOscClient
         return client.SendAsync(data, data.Length);
     }
 
-    private async void StartReceiving()
+    public async Task StartReceiving()
     {
         while (!cts.IsCancellationRequested)
         {

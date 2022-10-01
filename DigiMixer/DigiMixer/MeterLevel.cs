@@ -6,6 +6,9 @@
 /// </summary>
 public struct MeterLevel
 {
+    public static MeterLevel MinValue { get; } = new MeterLevel(double.NegativeInfinity);
+    public static MeterLevel MaxValue { get; } = new MeterLevel(0d);
+
     public double Value { get; }
 
     // TODO: ToString, linearize to a given integer scale.

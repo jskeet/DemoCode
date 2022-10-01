@@ -14,6 +14,7 @@ namespace OscMixerControl;
 public static class XAir
 {
     internal const string XRemoteAddress = "/xremote";
+    internal const string InfoAddress = "/info";
     internal const string InputChannelLevelsMeter = "/meters/1";
     internal const string OutputChannelLevelsMeter = "/meters/5";
 
@@ -46,6 +47,8 @@ public static class XAir
         string prefix = GetInputPrefix(inputId);
         return prefix + (outputId == MainOutput ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
     }
+
+    internal static string GetFaderAddress(OutputChannelId outputId) => GetOutputPrefix(outputId) + "/mix/fader";
 
     internal static string GetMuteAddress(InputChannelId inputId) => GetInputPrefix(inputId) + "/mix/on";
 
