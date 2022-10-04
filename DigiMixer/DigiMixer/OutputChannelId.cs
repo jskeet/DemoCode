@@ -22,4 +22,5 @@ public struct OutputChannelId : IEquatable<OutputChannelId>
     public override bool Equals([NotNullWhen(true)] object? obj) => obj is OutputChannelId other && Equals(this, other);
     public static bool operator ==(OutputChannelId left, OutputChannelId right) => left.Equals(right);
     public static bool operator !=(OutputChannelId left, OutputChannelId right) => !left.Equals(right);
+    public override string ToString() => $"Ch{Value}";
 }

@@ -14,7 +14,11 @@ internal interface IOscClient : IDisposable
 
     public class Fake : IOscClient
     {
-        public event EventHandler<OscPacket>? PacketReceived;
+        public event EventHandler<OscPacket>? PacketReceived
+        {
+            add { }
+            remove { }
+        }
 
         public void Dispose() { }
 

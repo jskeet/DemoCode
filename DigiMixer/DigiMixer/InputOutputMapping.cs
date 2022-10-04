@@ -6,7 +6,7 @@ namespace DigiMixer;
 /// <summary>
 /// A mapping for an input to an output, with a fader level.
 /// </summary>
-public class InputOutputMapping : INotifyPropertyChanged
+public class InputOutputMapping : IFader, INotifyPropertyChanged
 {
     private readonly Mixer mixer;
 
@@ -26,9 +26,9 @@ public class InputOutputMapping : INotifyPropertyChanged
     public FaderLevel FaderLevel
     {
         get => faderLevel;
-        set => this.SetProperty(PropertyChanged, ref faderLevel, value);
+        internal set => this.SetProperty(PropertyChanged, ref faderLevel, value);
     }
 
-    public Task SetFaderLevel(FaderLevel faderLevel) =>
-        mixer.Api.SetFaderLevel(InputChannelId, OutputChannelId, faderLevel);
+    public Task SetFaderLevel(FaderLevel level) =>
+        mixer.Api.SetFaderLevel(InputChannelId, OutputChannelId, level);
 }

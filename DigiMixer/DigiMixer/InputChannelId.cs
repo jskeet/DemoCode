@@ -19,7 +19,8 @@ public struct InputChannelId
 
     public bool Equals(InputChannelId other) => Value == other.Value;
     public override int GetHashCode() => Value;
-    public override bool Equals([NotNullWhen(true)] object? obj) => obj is InputChannelId other && Equals(this, other);
+    public override bool Equals([NotNullWhen(true)] object? obj) => obj is InputChannelId other && this == other;
     public static bool operator ==(InputChannelId left, InputChannelId right) => left.Equals(right);
     public static bool operator !=(InputChannelId left, InputChannelId right) => !left.Equals(right);
+    public override string ToString() => $"Ch{Value}";
 }

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="OutputChannelViewModel1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigiMixer.Osc\DigiMixer.Osc.csproj" />
+    <ProjectReference Include="..\DigiMixer.UiHttp\DigiMixer.UiHttp.csproj" />
+    <ProjectReference Include="..\DigiMixer\DigiMixer.csproj" />
+  </ItemGroup>
+
+</Project>

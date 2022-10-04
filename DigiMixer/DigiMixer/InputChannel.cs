@@ -14,7 +14,7 @@ public class InputChannel : ChannelBase, INotifyPropertyChanged
     public InputChannelId? StereoChannelId { get; }
 
     internal InputChannel(Mixer mixer, InputChannelId channelId, InputChannelId? stereoChannelId, IEnumerable<OutputChannelId> outputIds)
-        : base(mixer)
+        : base(mixer, stereoChannelId.HasValue, channelId.ToString())
     {
         ChannelId = channelId;
         StereoChannelId = stereoChannelId;
@@ -26,8 +26,5 @@ public class InputChannel : ChannelBase, INotifyPropertyChanged
     /// </summary>
     public IReadOnlyList<InputOutputMapping> OutputMappings { get; }
 
-    public Task SetMuted(bool muted) => Mixer.Api.SetMuted(ChannelId, muted);
-
-    public Task SetFaderLevel(OutputChannelId outputId, FaderLevel faderLevel) =>
-        Mixer.Api.SetFaderLevel(ChannelId, outputId, faderLevel);
+    public override Task SetMuted(bool muted) => Mixer.Api.SetMuted(ChannelId, muted);
 }

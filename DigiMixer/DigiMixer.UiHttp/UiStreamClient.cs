@@ -9,7 +9,7 @@ internal sealed class UiStreamClient : IDisposable
     private readonly CancellationTokenSource cts;
     private byte[] writeBuffer;
 
-    public event EventHandler<UiMessage> MessageReceived;
+    public event EventHandler<UiMessage>? MessageReceived;
 
     internal UiStreamClient(Stream stream)
     {
@@ -21,7 +21,6 @@ internal sealed class UiStreamClient : IDisposable
 
     internal async Task Send(UiMessage message)
     {
-        //Console.WriteLine($"Sending {message}");
         int messageSize = message.WriteTo(writeBuffer);
         await stream.WriteAsync(writeBuffer, 0, messageSize);
     }
@@ -45,7 +44,7 @@ internal sealed class UiStreamClient : IDisposable
                     {
                         var message = UiMessage.Parse(buffer, messageStart, i - messageStart);
                         messageStart = i + 1;
-                        messageHandler.Invoke(message);
+                        MessageReceived?.Invoke(this, message);
                     }
                 }
 

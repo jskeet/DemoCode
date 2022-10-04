@@ -1,18 +1,17 @@
 ﻿using DigiMixer;
-using DigiMixer.Osc;
 using DigiMixer.Scratchpad;
 using DigiMixer.UiHttp;
-using OscMixerControl;
 
 //var mixer = OscMixerApi.ForUdp("192.168.1.41", 10024);
-var mixer = UiHttpMixerApi.Start("192.168.1.57", 80);
-await Task.Delay(500);
-//mixer.RegisterReceiver(new ConsoleReceiver());
+var mixer = new UiHttpMixerApi("192.168.1.57", 80);
+mixer.RegisterReceiver(new ConsoleReceiver());
+await mixer.Connect();
+await mixer.RequestAllData(null!, null!);
 for (int i = 0; i < 100; i++)
 {
-    await mixer.RequestMixerInfo();
-    await mixer.SendAlive();
-    await Task.Delay(800);
+    await mixer.SendKeepAlive();
+    await mixer.SetMuted(new InputChannelId(1), (i & 1) == 1);
+    await Task.Delay(3000);
 }
 
 /*

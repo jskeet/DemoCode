@@ -32,7 +32,7 @@ public class OscMixerApi : IMixerApi
         receiverActionsByAddress = BuildReceiverMap();
     }
 
-    public Task ConnectAsync()
+    public Task Connect()
     {
         client.Dispose();
         var newClient = clientProvider();
@@ -48,7 +48,7 @@ public class OscMixerApi : IMixerApi
     public void RegisterReceiver(IMixerReceiver receiver) =>
         receivers.Add(receiver);
 
-    public async Task RequestAllDataAsync(IReadOnlyList<InputChannelId> inputChannels, IReadOnlyList<OutputChannelId> outputChannels)
+    public async Task RequestAllData(IReadOnlyList<InputChannelId> inputChannels, IReadOnlyList<OutputChannelId> outputChannels)
     {
         await client.SendAsync(new OscMessage(XAir.InfoAddress));
         foreach (var input in inputChannels)
@@ -62,6 +62,8 @@ public class OscMixerApi : IMixerApi
             await client.SendAsync(new OscMessage(XAir.GetNameAddress(output)));
             await client.SendAsync(new OscMessage(XAir.GetFaderAddress(output)));
         }
+        // TODO: Apply some rigour to this...
+        await Task.Delay(50);
 
         foreach (var input in inputChannels)
         {
@@ -69,6 +71,7 @@ public class OscMixerApi : IMixerApi
             {
                 await client.SendAsync(new OscMessage(XAir.GetFaderAddress(input, output)));
             }
+            await Task.Delay(50);
         }
     }
 
@@ -86,10 +89,10 @@ public class OscMixerApi : IMixerApi
         client.SendAsync(new OscMessage(XAir.GetFaderAddress(outputId), FromFaderLevel(level)));
 
     public Task SetMuted(InputChannelId inputId, bool muted) =>
-        client.SendAsync(new OscMessage(XAir.GetMuteAddress(inputId), muted ? 1 : 0));
+        client.SendAsync(new OscMessage(XAir.GetMuteAddress(inputId), muted ? 0 : 1));
 
     public Task SetMuted(OutputChannelId outputId, bool muted) =>
-        client.SendAsync(new OscMessage(XAir.GetMuteAddress(outputId), muted ? 1 : 0));
+        client.SendAsync(new OscMessage(XAir.GetMuteAddress(outputId), muted ? 0 : 1));
 
     private void ReceivePacket(object? sender, OscPacket e)
     {
