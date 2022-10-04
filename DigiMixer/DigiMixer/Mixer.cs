@@ -16,13 +16,16 @@ public sealed class Mixer : INotifyPropertyChanged
     public IReadOnlyList<OutputChannel> OutputChannels { get; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    internal IMixerApi Api { get; }
+    public IMixerApi Api { get; }
+
+    private readonly Task keepAliveTask;
 
     // TODO: Reconnection
 
-    internal Mixer(IMixerApi api, IReadOnlyList<(InputChannelId, InputChannelId?)> inputIds, IReadOnlyList<(OutputChannelId, OutputChannelId?)> outputIds)
+    public Mixer(IMixerApi api, IReadOnlyList<(InputChannelId, InputChannelId?)> inputIds, IReadOnlyList<(OutputChannelId, OutputChannelId?)> outputIds)
     {
         Api = api;
+        api.RegisterReceiver(new MixerReceiver(this));
         var primaryOutputIds = outputIds.Select(pair => pair.Item1).ToList();
         InputChannels = inputIds.Select(pair => new InputChannel(this, pair.Item1, pair.Item2, primaryOutputIds)).ToList().AsReadOnly();
         OutputChannels = outputIds.Select(pair => new OutputChannel(this, pair.Item1, pair.Item2)).ToList().AsReadOnly();
@@ -32,6 +35,25 @@ public sealed class Mixer : INotifyPropertyChanged
         stereoInputChannels = InputChannels.Where(c => c.StereoChannelId is not null).ToDictionary(c => c.StereoChannelId!.Value);
         stereoOutputChannels = OutputChannels.Where(c => c.StereoChannelId is not null).ToDictionary(c => c.StereoChannelId!.Value);
         mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannelId, om.OutputChannelId));
+        // TODO: Wait until we connect?
+        keepAliveTask = StartKeepAliveTask();
+    }
+
+    private async Task StartKeepAliveTask()
+    {
+        while (true)
+        {
+            await Api.SendKeepAlive();
+            await Task.Delay(3000);
+        }
+    }
+
+    public async Task Start()
+    {
+        await Api.Connect();
+        await Api.RequestAllData(
+            InputChannels.Select(c => c.ChannelId).ToList(),
+            OutputChannels.Select(c => c.ChannelId).ToList());
     }
 
     private MixerInfo? mixerInfo;
@@ -48,13 +70,13 @@ public sealed class Mixer : INotifyPropertyChanged
         primaryInputChannels.TryGetValue(channelId, out channel);
 
     private bool TryGetPrimaryOutputChannel(OutputChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
-        stereoOutputChannels.TryGetValue(channelId, out channel);
+        primaryOutputChannels.TryGetValue(channelId, out channel);
 
     private bool TryGetStereoInputChannel(InputChannelId channelId, [NotNullWhen(true)] out InputChannel? channel) =>
         stereoInputChannels.TryGetValue(channelId, out channel);
 
     private bool TryGetStereoOutputChannel(OutputChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
-        primaryOutputChannels.TryGetValue(channelId, out channel);
+        stereoOutputChannels.TryGetValue(channelId, out channel);
 
     private bool TryGetInputOutputMapping(InputChannelId inputId, OutputChannelId outputId, [NotNullWhen(true)] out InputOutputMapping? mapping) =>
         mappings.TryGetValue((inputId, outputId), out mapping);

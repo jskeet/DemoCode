@@ -8,14 +8,21 @@ public abstract class ChannelBase : INotifyPropertyChanged
 
     protected PropertyChangedEventHandler? PropertyChangedHandler => PropertyChanged;
 
-    protected Mixer Mixer { get; }
+    public Mixer Mixer { get; }
 
-    protected ChannelBase(Mixer mixer)
+    protected ChannelBase(Mixer mixer, bool hasStereoMeterLevel, string fallbackName)
     {
         Mixer = mixer;
         meterLevel = MeterLevel.MinValue;
         stereoMeterLevel = MeterLevel.MinValue;
+        HasStereoMeterLevel = hasStereoMeterLevel;
+        FallbackName = fallbackName;
     }
+
+    /// <summary>
+    /// The name to display if nothing else is known.
+    /// </summary>
+    public string FallbackName { get; }
 
     private MeterLevel meterLevel;
     public MeterLevel MeterLevel
@@ -23,6 +30,8 @@ public abstract class ChannelBase : INotifyPropertyChanged
         get => meterLevel;
         internal set => this.SetProperty(PropertyChanged, ref meterLevel, value);
     }
+
+    public bool HasStereoMeterLevel { get; }
 
     private MeterLevel stereoMeterLevel;
     public MeterLevel StereoMeterLevel
@@ -35,13 +44,15 @@ public abstract class ChannelBase : INotifyPropertyChanged
     public string? Name
     {
         get => name;
-        set => this.SetProperty(PropertyChanged, ref name, value);
+        internal set => this.SetProperty(PropertyChanged, ref name, value);
     }
 
     private bool muted;
     public bool Muted
     {
         get => muted;
-        set => this.SetProperty(PropertyChanged, ref muted, value);
+        internal set => this.SetProperty(PropertyChanged, ref muted, value);
     }
+
+    public abstract Task SetMuted(bool muted);
 }

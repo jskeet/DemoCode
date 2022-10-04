@@ -1,0 +1,59 @@
+﻿<Window x:Class="DigiMixer.Wpf.MixerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigiMixer.Wpf"
+        mc:Ignorable="d"
+        Title="Mixer" d:DataContext="{d:DesignInstance Type=local:MixerViewModel}" SizeToContent="WidthAndHeight">
+    <StackPanel Orientation="Vertical" Margin="5">
+
+        <GroupBox Header="Info">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label>Name</Label>
+                    <TextBlock Margin="10,0,0,0" Text="{Binding MixerInfo.Name}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Model</Label>
+                    <TextBlock Margin="10,0,0,0" Text="{Binding MixerInfo.Model}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Version</Label>
+                    <TextBlock Margin="10,0,0,0" Text="{Binding MixerInfo.Version}" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Inputs" Grid.IsSharedSizeScope="True">
+            <ItemsControl ItemsSource="{Binding InputChannels}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:InputChannelControl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </GroupBox>
+
+        <GroupBox Header="Outputs" Margin="0,10,0,0">
+            <ItemsControl ItemsSource="{Binding OutputChannels}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:OutputChannelControl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </GroupBox>
+
+    </StackPanel>
+</Window>
