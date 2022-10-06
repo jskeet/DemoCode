@@ -26,7 +26,7 @@ internal sealed class UiStreamClient : IDisposable
     }
 
     public async Task StartReading()
-    {        
+    {
         byte[] buffer = new byte[8192];
         int bufferPosition = 0;
 
@@ -42,9 +42,13 @@ internal sealed class UiStreamClient : IDisposable
                 {
                     if (buffer[i] == '\n')
                     {
-                        var message = UiMessage.Parse(buffer, messageStart, i - messageStart);
+                        // Only parse the message if we have a message handler.
+                        if (MessageReceived is EventHandler<UiMessage> handler)
+                        {
+                            var message = UiMessage.Parse(buffer, messageStart, i - messageStart);
+                            handler.Invoke(this, message);
+                        }
                         messageStart = i + 1;
-                        MessageReceived?.Invoke(this, message);
                     }
                 }
 

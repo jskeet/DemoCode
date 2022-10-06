@@ -17,8 +17,10 @@ public class UiHttpMixerApi : IMixerApi
     private readonly string host;
     private readonly int port;
 
-    private UiStreamClient? client;
-    private Task? readingTask;
+    private UiStreamClient? sendingClient;
+    private Task? sendingClientReadTask;
+    private UiStreamClient? receivingClient;
+    private Task? receivingClientReadTask;
     private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
 
     // We get these separately, so when we've seen both, we respond with "mixer info received".
@@ -37,19 +39,29 @@ public class UiHttpMixerApi : IMixerApi
 
     public async Task Connect()
     {
-        client?.Dispose();
+        sendingClient?.Dispose();
+        receivingClient?.Dispose();
 
+        // Create two clients: one to send all changes to, and the other to
+        // receive all information from. That way we have our own changes reflected back to us,
+        // just like with other protocols.
+        sendingClient = await CreateStreamClient();
+        receivingClient = await CreateStreamClient();
+        receivingClient.MessageReceived += ReceiveMessage;
+        sendingClientReadTask = sendingClient.StartReading();
+        receivingClientReadTask = receivingClient.StartReading();
+    }
+
+    private async Task<UiStreamClient> CreateStreamClient()
+    {
         var tcpClient = new TcpClient() { NoDelay = true };
         await tcpClient.ConnectAsync(host, port);
         var stream = tcpClient.GetStream();
         byte[] preambleBytes = Encoding.ASCII.GetBytes(HttpPreamble);
         stream.Write(preambleBytes, 0, preambleBytes.Length);
         await ReadHttpResponseHeaders();
-        client = new UiStreamClient(stream);
-        client.MessageReceived += ReceiveMessage;
-        readingTask = client.StartReading();
-        return;
-
+        return new UiStreamClient(stream);
+        
         async Task ReadHttpResponseHeaders()
         {
             Console.WriteLine("Reading HTTP response header");
@@ -88,26 +100,32 @@ public class UiHttpMixerApi : IMixerApi
     {
         model = null;
         firmware = null;
-        if (client is not null)
+        // Note: this call *does* need to send a message to receivingClient
+        if (receivingClient is not null)
         {
-            await client.Send(UiMessage.InfoMessage);
+            await receivingClient.Send(UiMessage.InfoMessage);
         }
     }
 
-    public Task SendKeepAlive() =>
-        client?.Send(UiMessage.AliveMessage) ?? Task.CompletedTask;
+    public async Task SendKeepAlive()
+    {
+        // Note: this call *does* need to send a message to receivingClient
+        await (sendingClient?.Send(UiMessage.AliveMessage) ?? Task.CompletedTask);
+        await (receivingClient?.Send(UiMessage.AliveMessage) ?? Task.CompletedTask);
+    }
 
     public Task SetFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level) =>
-        client?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
+        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
     public Task SetFaderLevel(OutputChannelId outputId, FaderLevel level) =>
-        client?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
+        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
     public Task SetMuted(InputChannelId inputId, bool muted) =>
-        client?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
+        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
 
+    // TODO: What about stereo? Seems to only mute the left part.
     public Task SetMuted(OutputChannelId outputId, bool muted) =>
-        client?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(outputId), muted)) ?? Task.CompletedTask;
+        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(outputId), muted)) ?? Task.CompletedTask;
 
     private void ReceiveMessage(object? sender, UiMessage message)
     {
@@ -193,5 +211,5 @@ public class UiHttpMixerApi : IMixerApi
 
     private static FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderLevel.MaxValue));
 
-    public void Dispose() => client?.Dispose();
+    public void Dispose() => sendingClient?.Dispose();
 }
