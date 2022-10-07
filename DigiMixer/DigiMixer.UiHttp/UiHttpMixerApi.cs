@@ -4,6 +4,8 @@ using System.Text;
 
 namespace DigiMixer.UiHttp;
 
+using static UiMeters;
+
 // TODO: make this thread-safe? Currently kinda hopes everything is on the dispatcher thread...
 // TODO: Can we actually mute on a per output basis? Eek...
 //       (Yes, we can - but turning on "aux send mute inheritance" makes it simpler.)
@@ -142,6 +144,11 @@ public class UiHttpMixerApi : IMixerApi
         {
             return;
         }
+        if (message.MessageType == UiMessage.MeterType && message.Value is string base64)
+        {
+            ProcessMeters(base64);
+            return;
+        }
         if (message.Address is not string address)
         {
             return;
@@ -153,6 +160,76 @@ public class UiHttpMixerApi : IMixerApi
         foreach (var receiver in receivers)
         {
             action(receiver, message);
+        }
+    }
+
+    private void ProcessMeters(string base64)
+    {
+        // TODO: Implement a more efficient version that converts into an existing buffer
+        var rawData = Convert.FromBase64String(base64);
+
+        int inputs = rawData[Header.Inputs];
+        int media = rawData[Header.Media];
+        int subgroups = rawData[Header.Subgroups];
+        int fx = rawData[Header.Fx];
+        int aux = rawData[Header.Aux];
+        int mains = rawData[Header.Mains];
+        int linesIn = rawData[Header.LinesIn];
+
+        // Just check that it looks okay...
+        if (rawData.Length != Header.Length + 
+            (inputs + media + linesIn) * InputsMediaLinesIn.Length +
+            (subgroups + fx) * SubgroupsFx.Length +
+            (aux + mains) * AuxMains.Length)
+        {
+            // TODO: Some kind of warning?
+            // (Maybe the receiver should have a warning method...)
+            return;
+        }
+
+        int inputsStart = Header.Length;
+        for (int i = 0;  i < inputs; i++)
+        {
+            var rawLevel = rawData[inputsStart + i * InputsMediaLinesIn.Length + InputsMediaLinesIn.Pre];
+            var meterLevel = ToMeterLevel(rawLevel);
+            foreach (var receiver in receivers)
+            {
+                receiver.ReceiveMeterLevel(new InputChannelId(i + 1), meterLevel);
+            }
+        }
+
+        int auxStart = Header.Length + (inputs + media) * InputsMediaLinesIn.Length + (subgroups + fx) * SubgroupsFx.Length;
+        for (int i = 0; i < aux; i++)
+        {
+            var rawLevel = rawData[auxStart + i * AuxMains.Length + AuxMains.PostFader];
+            var meterLevel = ToMeterLevel(rawLevel);
+            foreach (var receiver in receivers)
+            {
+                receiver.ReceiveMeterLevel(new OutputChannelId(i + 1), meterLevel);
+            }
+        }
+
+        // TODO: Validate that we have 2 main outputs?
+        int mainStart = auxStart + aux * AuxMains.Length;
+        for (int i = 0; i < 2; i++)
+        {
+            var rawLevel = rawData[mainStart + i * AuxMains.Length + AuxMains.PostFader];
+            var meterLevel = ToMeterLevel(rawLevel);
+            foreach (var receiver in receivers)
+            {
+                receiver.ReceiveMeterLevel(new OutputChannelId(UiAddresses.MainOutput.Value + i), meterLevel);
+            }
+        }
+
+        MeterLevel ToMeterLevel(byte rawValue)
+        {
+            // 240 is actually the highest value we see, but let's make sure that's actually the case...
+            int normalized = Math.Min((int) rawValue, 240);
+
+            // -240 to 0.
+            int signed = rawValue - 240;
+            // This is massively wrong, but it's a start.
+            return new MeterLevel(signed / 3.0);
         }
     }
 
