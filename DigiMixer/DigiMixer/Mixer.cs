@@ -106,7 +106,6 @@ public sealed class Mixer : INotifyPropertyChanged
             }
         }
 
-
         public void ReceiveFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level)
         {
             if (mixer.TryGetInputOutputMapping(inputId, outputId, out var mapping))
