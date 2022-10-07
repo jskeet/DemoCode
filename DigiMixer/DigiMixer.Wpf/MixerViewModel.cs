@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Threading;
 
 namespace DigiMixer.Wpf;
 
-public class MixerViewModel : ViewModelBase<Mixer>
+public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
 {
     public IReadOnlyList<InputChannelViewModel> InputChannels { get; }
     public IReadOnlyList<OutputChannelViewModel> OutputChannels { get; }
+    private DispatcherTimer meterPeakUpdater;
 
     public MixerViewModel(Mixer model) : base(model)
     {
@@ -20,6 +23,24 @@ public class MixerViewModel : ViewModelBase<Mixer>
             .Select(channel => new OutputChannelViewModel(channel))
             .ToList()
             .AsReadOnly();
+        meterPeakUpdater = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(100),
+            IsEnabled = true
+        };
+        meterPeakUpdater.Tick += UpdateMeterPeaks;
+    }
+
+    private void UpdateMeterPeaks(object sender, EventArgs e)
+    {
+        foreach (var vm in InputChannels)
+        {
+            vm.UpdatePeakOutputs();
+        }
+        foreach (var vm in OutputChannels)
+        {
+            vm.UpdatePeakOutputs();
+        }
     }
 
     public MixerInfo MixerInfo => Model.MixerInfo ?? new MixerInfo("", "", "");
@@ -31,4 +52,9 @@ public class MixerViewModel : ViewModelBase<Mixer>
             RaisePropertyChanged(nameof(MixerInfo));
         }
     }
+
+    public void Dispose()
+    {
+        meterPeakUpdater.Stop();
+    }    
 }

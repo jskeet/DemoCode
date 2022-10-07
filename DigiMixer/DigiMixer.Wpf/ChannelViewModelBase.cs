@@ -43,6 +43,12 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
 
     public bool HasOutput2 => Model.HasStereoMeterLevel;
 
+    internal void UpdatePeakOutputs()
+    {
+        PeakOutput = peakBuffer.UpdatePeak(Output);
+        PeakOutput2 = peakBuffer2.UpdatePeak(Output2);
+    }
+
     private readonly PeakBuffer peakBuffer;
     private readonly PeakBuffer peakBuffer2;
 
@@ -65,11 +71,9 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
                 break;
             case nameof(ChannelBase.MeterLevel):
                 RaisePropertyChanged(nameof(Output));
-                PeakOutput = peakBuffer.UpdatePeak(Model.MeterLevel.Value);
                 break;
             case nameof(ChannelBase.StereoMeterLevel):
                 RaisePropertyChanged(nameof(Output2));
-                PeakOutput2 = peakBuffer2.UpdatePeak(Model.StereoMeterLevel.Value);
                 break;
         }
     }
