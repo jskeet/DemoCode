@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using System;
 using System.Windows.Media;
 
 namespace DigiMixer.Wpf;
