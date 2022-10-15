@@ -98,7 +98,7 @@ namespace OscMixerControl
         /// <param name="mixer">The mixer the output channel belongs to.</param>
         /// <param name="index">The index of the bus, in the range 1-6.</param>
         /// <returns>The output channel.</returns>
-        public static Channel CreateAuxOutputChannel(Mixer mixer, int index)
+        public static Channel CreateAuxOutputChannel(Mixer mixer, int index, bool stereo = false)
         {
             var prefix = $"/bus/{index}";
             return new Channel(mixer,
@@ -106,7 +106,7 @@ namespace OscMixerControl
                 $"{prefix}/mix/fader",
                 OutputChannelLevelsMeter,
                 meterIndex: index - 1,
-                meterIndex2: null,
+                meterIndex2: stereo ? index : default(int?),
                 $"{prefix}/mix/on");
         }
 
