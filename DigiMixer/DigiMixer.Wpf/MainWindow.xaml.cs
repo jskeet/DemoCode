@@ -1,19 +1,7 @@
 ﻿using DigiMixer.Osc;
 using DigiMixer.UiHttp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DigiMixer.Wpf;
 /// <summary>
@@ -28,7 +16,7 @@ public partial class MainWindow : Window
 
     private async void LaunchUi24R(object sender, RoutedEventArgs e)
     {
-        var api = new UiHttpMixerApi("192.168.1.57", 80);
+        var api = new UiHttpMixerApi(logger: null, "192.168.1.57", 80);
         var inputs = new[]
         {
             (new InputChannelId(1), default(InputChannelId?)),
@@ -46,7 +34,7 @@ public partial class MainWindow : Window
 
     private async void LaunchXR18(object sender, RoutedEventArgs e)
     {
-        var api = OscMixerApi.ForUdp("192.168.1.41", 10024);
+        var api = OscMixerApi.ForUdp(logger: null, "192.168.1.41", 10024);
         var inputs = new[]
         {
             (new InputChannelId(1), default(InputChannelId?)),

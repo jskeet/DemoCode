@@ -1,18 +1,21 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace DigiMixer.UiHttp;
 internal sealed class UiStreamClient : IDisposable
 {
     private const int MaxBufferSize = 256 * 1024; // This really should be enough.
 
+    private readonly ILogger logger;
     private readonly Stream stream;
     private readonly CancellationTokenSource cts;
     private byte[] writeBuffer;
 
     public event EventHandler<UiMessage>? MessageReceived;
 
-    internal UiStreamClient(Stream stream)
+    internal UiStreamClient(ILogger logger, Stream stream)
     {
+        this.logger = logger;
         this.stream = stream;
         cts = new CancellationTokenSource();
         // TODO: Check what the actual maximum buffer size is that we need.
@@ -21,6 +24,10 @@ internal sealed class UiStreamClient : IDisposable
 
     internal async Task Send(UiMessage message)
     {
+        if (logger.IsEnabled(LogLevel.Trace))
+        {
+            logger.LogTrace("Sending message: {message}", message);
+        }
         int messageSize = message.WriteTo(writeBuffer);
         await stream.WriteAsync(writeBuffer, 0, messageSize);
     }
@@ -46,6 +53,11 @@ internal sealed class UiStreamClient : IDisposable
                         if (MessageReceived is EventHandler<UiMessage> handler)
                         {
                             var message = UiMessage.Parse(buffer, messageStart, i - messageStart);
+                            if (logger.IsEnabled(LogLevel.Trace))
+                            {
+                                logger.LogTrace("Processing message: {message}", message);
+                            }
+
                             handler.Invoke(this, message);
                         }
                         messageStart = i + 1;

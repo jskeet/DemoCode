@@ -72,7 +72,7 @@ internal class UiMessage
     }
 
     internal static UiMessage AliveMessage { get; } = new UiMessage(AliveType, null, null);
-    internal static UiMessage InfoMessage { get; } = new UiMessage("INFO", "i.0.name", null);
+    internal static UiMessage InitMessage { get; } = new UiMessage("INIT", null, null);
 
     internal static UiMessage CreateSetMessage(string address, bool value) =>
         new UiMessage(SetMessageType, address, value ? "1" : "0");
