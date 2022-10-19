@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Text;
 
@@ -16,6 +18,7 @@ public class UiHttpMixerApi : IMixerApi
     // Note: not static as it could be different for different mixers, even just Ui8 vs Ui12 vs Ui24
     private readonly Dictionary<string, Action<IMixerReceiver, UiMessage>> receiverActionsByAddress;
 
+    private readonly ILogger logger;
     private readonly string host;
     private readonly int port;
 
@@ -29,8 +32,9 @@ public class UiHttpMixerApi : IMixerApi
     private string? model;
     private string? firmware;
 
-    public UiHttpMixerApi(string host, int port)
+    public UiHttpMixerApi(ILogger? logger, string host, int port)
     {
+        this.logger = logger ?? NullLogger.Instance;
         this.host = host;
         this.port = port;
         receiverActionsByAddress = BuildReceiverMap();
@@ -62,7 +66,7 @@ public class UiHttpMixerApi : IMixerApi
         byte[] preambleBytes = Encoding.ASCII.GetBytes(HttpPreamble);
         stream.Write(preambleBytes, 0, preambleBytes.Length);
         await ReadHttpResponseHeaders();
-        return new UiStreamClient(stream);
+        return new UiStreamClient(logger, stream);
         
         async Task ReadHttpResponseHeaders()
         {
@@ -105,7 +109,7 @@ public class UiHttpMixerApi : IMixerApi
         // Note: this call *does* need to send a message to receivingClient
         if (receivingClient is not null)
         {
-            await receivingClient.Send(UiMessage.InfoMessage);
+            await receivingClient.Send(UiMessage.InitMessage);
         }
     }
 

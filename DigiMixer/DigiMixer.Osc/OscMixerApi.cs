@@ -2,6 +2,8 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using OscCore;
 using OscMixerControl;
 using System.Collections.Concurrent;
@@ -19,14 +21,16 @@ public class OscMixerApi : IMixerApi
     // Note: not static as it could be different for different mixers, even just XR12 vs XR16 vs XR18 vs X32
     private readonly Dictionary<string, Action<IMixerReceiver, OscMessage>> receiverActionsByAddress;
 
+    private readonly ILogger logger;
     private readonly Func<IOscClient> clientProvider;
     private IOscClient client;
     private Task receivingTask;
     private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
 
-    private OscMixerApi(Func<IOscClient> clientProvider)
+    private OscMixerApi(ILogger logger, Func<IOscClient> clientProvider)
     {
         this.clientProvider = clientProvider;
+        this.logger = logger;
         client = new IOscClient.Fake();
         receivingTask = Task.CompletedTask;
         receiverActionsByAddress = BuildReceiverMap();
@@ -42,8 +46,12 @@ public class OscMixerApi : IMixerApi
         return Task.CompletedTask;
     }
 
-    public static OscMixerApi ForUdp(string host, int port) =>
-        new OscMixerApi(() => new UdpOscClient(host, port));
+    public static OscMixerApi ForUdp(ILogger? logger, string host, int port)
+    {
+        logger = logger ?? NullLogger.Instance;
+
+        return new OscMixerApi(logger, () => new UdpOscClient(logger, host, port));
+    }
 
     public void RegisterReceiver(IMixerReceiver receiver) =>
         receivers.Add(receiver);
