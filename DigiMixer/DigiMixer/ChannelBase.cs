@@ -47,6 +47,13 @@ public abstract class ChannelBase : INotifyPropertyChanged
         internal set => this.SetProperty(PropertyChanged, ref name, value);
     }
 
+    private string? stereoName;
+    public string? StereoName
+    {
+        get => stereoName;
+        internal set => this.SetProperty(PropertyChanged, ref stereoName, value);
+    }
+
     private bool muted;
     public bool Muted
     {

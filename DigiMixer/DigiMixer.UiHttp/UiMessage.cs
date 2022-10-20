@@ -5,11 +5,12 @@ namespace DigiMixer.UiHttp;
 
 internal class UiMessage
 {
-    internal const string SetMessageType = "SETD";
+    internal const string SetDoubleMessageType = "SETD";
+    internal const string SetStringMessageType = "SETS";
     internal const string MeterType = "VU2";
     internal const string FrequencyMeterType = "RTA";
     internal const string AliveType = "ALIVE";
-    internal const string InfoType = "INFO";
+    internal const string InitType = "INIT";
 
     public string? Address { get; }
 
@@ -72,13 +73,13 @@ internal class UiMessage
     }
 
     internal static UiMessage AliveMessage { get; } = new UiMessage(AliveType, null, null);
-    internal static UiMessage InitMessage { get; } = new UiMessage("INIT", null, null);
+    internal static UiMessage InitMessage { get; } = new UiMessage(InitType, null, null);
 
     internal static UiMessage CreateSetMessage(string address, bool value) =>
-        new UiMessage(SetMessageType, address, value ? "1" : "0");
+        new UiMessage(SetDoubleMessageType, address, value ? "1" : "0");
 
     internal static UiMessage CreateSetMessage(string address, double value) =>
-        new UiMessage(SetMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture));
+        new UiMessage(SetDoubleMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture));
 
     internal int WriteTo(byte[] buffer)
     {

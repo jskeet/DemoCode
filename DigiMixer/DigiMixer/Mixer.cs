@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection.Emit;
 
 namespace DigiMixer;
 
@@ -37,6 +39,35 @@ public sealed class Mixer : INotifyPropertyChanged
         mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannelId, om.OutputChannelId));
         // TODO: Wait until we connect?
         keepAliveTask = StartKeepAliveTask();
+    }
+
+    private Mixer(IMixerApi api, MixerChannelConfiguration config)
+    {
+        Api = api;
+        api.RegisterReceiver(new MixerReceiver(this));
+        var primaryOutputIds = config.OutputChannels.Select(pair => pair.Item1).ToList();
+        InputChannels = config.InputChannels.Select(pair => new InputChannel(this, pair.Item1, pair.Item2, primaryOutputIds)).ToList().AsReadOnly();
+        OutputChannels = config.OutputChannels.Select(pair => new OutputChannel(this, pair.Item1, pair.Item2)).ToList().AsReadOnly();
+
+        primaryInputChannels = InputChannels.ToDictionary(c => c.ChannelId);
+        primaryOutputChannels = OutputChannels.ToDictionary(c => c.ChannelId);
+        stereoInputChannels = InputChannels.Where(c => c.StereoChannelId is not null).ToDictionary(c => c.StereoChannelId!.Value);
+        stereoOutputChannels = OutputChannels.Where(c => c.StereoChannelId is not null).ToDictionary(c => c.StereoChannelId!.Value);
+        mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannelId, om.OutputChannelId));
+        keepAliveTask = StartKeepAliveTask();
+    }
+
+    private Task RequestAllData() => Api.RequestAllData(
+        InputChannels.Select(c => c.ChannelId).Concat(InputChannels.Select(c => c.StereoChannelId).OfType<InputChannelId>()).ToList(),
+        OutputChannels.Select(c => c.ChannelId).Concat(OutputChannels.Select(c => c.StereoChannelId).OfType<OutputChannelId>()).ToList());
+
+    public static async Task<Mixer> Detect(IMixerApi api)
+    {
+        await api.Connect();
+        var config = await api.DetectConfiguration();
+        var mixer = new Mixer(api, config);
+        await mixer.RequestAllData();
+        return mixer;
     }
 
     private async Task StartKeepAliveTask()
@@ -96,6 +127,10 @@ public sealed class Mixer : INotifyPropertyChanged
             {
                 channel.Name = name;
             }
+            else if (mixer.TryGetStereoInputChannel(channelId, out channel))
+            {
+                channel.StereoName = name;
+            }
         }
 
         public void ReceiveChannelName(OutputChannelId channelId, string name)
@@ -103,6 +138,10 @@ public sealed class Mixer : INotifyPropertyChanged
             if (mixer.TryGetPrimaryOutputChannel(channelId, out var channel))
             {
                 channel.Name = name;
+            }
+            else if (mixer.TryGetStereoOutputChannel(channelId, out channel))
+            {
+                channel.StereoName = name;
             }
         }
 

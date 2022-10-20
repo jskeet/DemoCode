@@ -23,4 +23,7 @@ public struct InputChannelId
     public static bool operator ==(InputChannelId left, InputChannelId right) => left.Equals(right);
     public static bool operator !=(InputChannelId left, InputChannelId right) => !left.Equals(right);
     public override string ToString() => $"Ch{Value}";
+
+    public static (InputChannelId, InputChannelId?) Pair(int left, int? right) =>
+        (new InputChannelId(left), right is int x ? new InputChannelId(x) : null);
 }

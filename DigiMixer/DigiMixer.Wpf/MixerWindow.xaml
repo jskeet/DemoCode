@@ -9,20 +9,23 @@
     <StackPanel Orientation="Vertical" Margin="5">
 
         <GroupBox Header="Info">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <Label>Name</Label>
-                    <TextBlock Margin="10,0,0,0" Text="{Binding MixerInfo.Name}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label>Model</Label>
-                    <TextBlock Margin="10,0,0,0" Text="{Binding MixerInfo.Model}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label>Version</Label>
-                    <TextBlock Margin="10,0,0,0" Text="{Binding MixerInfo.Version}" />
-                </StackPanel>
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0">Name</Label>
+                <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{Binding MixerInfo.Name}" />
+                <Label Grid.Row="1" Grid.Column="0">Model</Label>
+                <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{Binding MixerInfo.Model}" />
+                <Label Grid.Row="2" Grid.Column="0">Version</Label>
+                <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{Binding MixerInfo.Version}" />
+            </Grid>
         </GroupBox>
 
         <GroupBox Header="Inputs" Grid.IsSharedSizeScope="True">

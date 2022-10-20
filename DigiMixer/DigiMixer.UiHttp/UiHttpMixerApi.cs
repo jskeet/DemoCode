@@ -22,10 +22,10 @@ public class UiHttpMixerApi : IMixerApi
     private readonly string host;
     private readonly int port;
 
-    private UiStreamClient? sendingClient;
-    private Task? sendingClientReadTask;
-    private UiStreamClient? receivingClient;
-    private Task? receivingClientReadTask;
+    private IUiClient sendingClient;
+    private Task sendingClientReadTask;
+    private IUiClient receivingClient;
+    private Task receivingClientReadTask;
     private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
 
     // We get these separately, so when we've seen both, we respond with "mixer info received".
@@ -38,6 +38,10 @@ public class UiHttpMixerApi : IMixerApi
         this.host = host;
         this.port = port;
         receiverActionsByAddress = BuildReceiverMap();
+        sendingClient = IUiClient.Fake.Instance;
+        receivingClient = IUiClient.Fake.Instance;
+        sendingClientReadTask = Task.CompletedTask;
+        receivingClientReadTask = Task.CompletedTask;
     }
 
     public void RegisterReceiver(IMixerReceiver receiver) =>
@@ -58,7 +62,82 @@ public class UiHttpMixerApi : IMixerApi
         receivingClientReadTask = receivingClient.StartReading();
     }
 
-    private async Task<UiStreamClient> CreateStreamClient()
+    public async Task<MixerChannelConfiguration> DetectConfiguration()
+    {
+        var inputChannels = new ConcurrentDictionary<int, bool>();
+        var auxOutputChannels = new ConcurrentDictionary<int, bool>();
+
+        EventHandler<UiMessage> handler = HandleMessage;
+        try
+        {
+            sendingClient.MessageReceived += handler;
+            await sendingClient.Send(UiMessage.InitMessage);
+            // Normally we get all the information in 100ms, but let's allow a bit longer.
+            // Unfortunately the lines are unordered, so we can't really spot the end.
+            await Task.Delay(TimeSpan.FromMilliseconds(500));
+        }
+        finally
+        {
+            sendingClient.MessageReceived -= handler;
+        }
+
+        var allInputChannelIds = inputChannels.OrderBy(pair => pair.Key);
+        var auxOutputChannelids = auxOutputChannels.OrderBy(pair => pair.Key);
+
+        var inputChannelPairs = CreateChannels(inputChannels.OrderBy(pair => pair.Key), InputChannelId.Pair);
+        var outputChannelPairs = CreateChannels(auxOutputChannels.OrderBy(pair => pair.Key), OutputChannelId.Pair)
+            .Append((UiAddresses.MainOutput, UiAddresses.MainOutputRightMeter));
+
+        return new MixerChannelConfiguration(inputChannelPairs, outputChannelPairs);
+
+        IEnumerable <T> CreateChannels<T>(IEnumerable<KeyValuePair<int, bool>> pairs, Func<int, int?, T> factory)
+        {
+            bool skipNext = false;
+            foreach (var pair in pairs)
+            {
+                if (skipNext)
+                {
+                    skipNext = false;
+                    continue;
+                }
+                if (pair.Value)
+                {
+                    yield return factory(pair.Key, pair.Key + 1);
+                    // This assumes that the next value will be the "right" part of the stereo pair.
+                    // That seems reasonable.
+                    skipNext = true;
+                }
+                else
+                {
+                    yield return factory(pair.Key, null);
+                }
+            }
+        }
+
+        void HandleMessage(object? sender, UiMessage message)
+        {
+            if (message.MessageType != UiMessage.SetDoubleMessageType ||
+                message.Address is not string address ||
+                !address.EndsWith(UiAddresses.StereoIndex, StringComparison.Ordinal))
+            {
+                return;
+            }
+            var maybeInputId = UiAddresses.TryGetInputChannelId(address);
+            if (maybeInputId is InputChannelId inputId)
+            {
+                inputChannels[inputId.Value] = message.Value == "0";
+                return;
+            }
+            var maybeAuxOutputId = UiAddresses.TryGetAuxOutputChannelId(address);
+            if (maybeAuxOutputId is OutputChannelId auxOutputId)
+            {
+                auxOutputChannels[auxOutputId.Value] = message.Value == "0";
+            }
+            logger.LogWarning("Unexpected stereo index address: {address}", address);
+        }
+    }
+
+    private async Task<IUiClient> CreateStreamClient()
     {
         var tcpClient = new TcpClient() { NoDelay = true };
         await tcpClient.ConnectAsync(host, port);
@@ -241,8 +320,7 @@ public class UiHttpMixerApi : IMixerApi
     {
         var ret = new Dictionary<string, Action<IMixerReceiver, UiMessage>>();
 
-        // TODO: Check this! USB?
-        var inputs = Enumerable.Range(1, 22).Select(id => new InputChannelId(id));
+        var inputs = Enumerable.Range(1, 22).Select(id => new InputChannelId(id)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
         var outputs = Enumerable.Range(1, 8).Select(id => new OutputChannelId(id)).Append(UiAddresses.MainOutput);
 
         // We don't know what order we'll get firmware and model in.
