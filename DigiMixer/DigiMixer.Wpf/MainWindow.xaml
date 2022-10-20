@@ -9,5 +9,6 @@
     <StackPanel Margin="10">
         <Button Margin="3" HorizontalAlignment="Left" Click="LaunchUi24R">Launch Ui24R</Button>
         <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR18">Launch XR18</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR16">Launch XR16</Button>
     </StackPanel>
 </Window>

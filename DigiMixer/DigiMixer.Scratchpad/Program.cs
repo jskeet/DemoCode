@@ -1,4 +1,5 @@
 ﻿using DigiMixer;
+using DigiMixer.Osc;
 using DigiMixer.Scratchpad;
 using DigiMixer.UiHttp;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,9 @@ using Microsoft.Extensions.Logging;
 var factory = LoggerFactory.Create(builder => builder.AddConsole().AddSystemdConsole(options => { options.UseUtcTimestamp = true; options.TimestampFormat = "yyyy-MM-dd'T'HH:mm:ss.FFFFFF'Z'"; }).SetMinimumLevel(LogLevel.Trace));
 var logger = factory.CreateLogger("Scratchpad");
 
-//var mixer = OscMixerApi.ForUdp("192.168.1.41", 10024);
+//var mixer = OscMixerApi.ForUdp(logger, "192.168.1.41", 10024);
+//await mixer.Connect();
+//var config = await mixer.DetectConfiguration();
 Console.WriteLine("Connecting...");
 var mixer = new UiHttpMixerApi(logger, "192.168.1.57", 80);
 //mixer.RegisterReceiver(new ConsoleReceiver());

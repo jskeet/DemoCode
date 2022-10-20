@@ -7,6 +7,14 @@ using System;
 
 namespace OscMixerControl;
 
+/*
+ * X-Air discovery:
+ * /node config/chlink - gets stereo links and number of input channels
+ * /node config/buslink - gets stereo links and number of output channels
+ * Names with /ch/xx/config/name, /rtn/aux/config/name, /bus/xx/config/name, /lr/config/name
+ * Does XR-16 have /rtn/aux?
+ */
+
 /// <summary>
 /// Factors methods and constants for working with XAir mixers
 /// (e.g. XR12, XR16, XR18).
@@ -17,6 +25,8 @@ public static class XAir
     internal const string InfoAddress = "/info";
     internal const string InputChannelLevelsMeter = "/meters/1";
     internal const string OutputChannelLevelsMeter = "/meters/5";
+    internal const string InputChannelLinkAddress = "/config/chlink";
+    internal const string BusChannelLinkAddress = "/config/buslink";
 
     /// <summary>
     /// The output channel ID to use for the main output. This also receives the left-hand

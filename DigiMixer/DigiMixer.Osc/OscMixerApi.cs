@@ -31,7 +31,7 @@ public class OscMixerApi : IMixerApi
     {
         this.clientProvider = clientProvider;
         this.logger = logger;
-        client = new IOscClient.Fake();
+        client = IOscClient.Fake.Instance;
         receivingTask = Task.CompletedTask;
         receiverActionsByAddress = BuildReceiverMap();
     }
@@ -44,6 +44,52 @@ public class OscMixerApi : IMixerApi
         receivingTask = newClient.StartReceiving();
         client = newClient;
         return Task.CompletedTask;
+    }
+
+    public async Task<MixerChannelConfiguration> DetectConfiguration()
+    {
+        var token = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+        var result = await InfoReceiver.RequestAndWait(client, token,
+            XAir.InfoAddress,
+            XAir.InputChannelLinkAddress,
+            XAir.BusChannelLinkAddress);
+        var inputLinks = result[XAir.InputChannelLinkAddress].Select(x => x is 1).ToList();
+        var outputLinks = result[XAir.BusChannelLinkAddress].Select(x => x is 1).ToList();
+        var model = (string) result[XAir.InfoAddress][2];
+
+        (int inputCount, int outputCount) = model switch
+        {
+            "XR12" => (12, 2),
+            "XR16" => (16, 4),
+            "XR18" => (16, 6),
+            _ => (inputLinks.Count * 2, outputLinks.Count * 2)
+        };
+        var inputs = CreateChannels(inputCount, inputLinks, InputChannelId.Pair);
+        if (model == "XR18")
+        {
+            inputs = inputs.Append((XAir.AuxInput, XAir.AuxInputRightMeter));
+        }
+
+        var outputs = CreateChannels(outputCount, outputLinks, OutputChannelId.Pair)
+            .Append((XAir.MainOutput, XAir.MainOutputRightMeter));
+        return new MixerChannelConfiguration(inputs, outputs);
+
+        IEnumerable<T> CreateChannels<T>(int max, List<bool> pairs, Func<int, int?, T> factory)
+        {
+            var count = Math.Min(max, pairs.Count * 2);
+            for (int i = 1; i <= count - 1; i += 2)
+            {
+                if (pairs[i / 2])
+                {
+                    yield return factory(i, i + 1);
+                }
+                else
+                {
+                    yield return factory(i, null);
+                    yield return factory(i + 1, null);
+                }
+            }
+        }
     }
 
     public static OscMixerApi ForUdp(ILogger? logger, string host, int port)

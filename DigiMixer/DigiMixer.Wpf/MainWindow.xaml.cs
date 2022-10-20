@@ -16,45 +16,28 @@ public partial class MainWindow : Window
 
     private async void LaunchUi24R(object sender, RoutedEventArgs e)
     {
-        var api = new UiHttpMixerApi(logger: null, "192.168.1.57", 80);
-        var inputs = new[]
-        {
-            (new InputChannelId(1), default(InputChannelId?)),
-            (new InputChannelId(9), new InputChannelId(10)),
-            (new InputChannelId(21), new InputChannelId(22)),
-        };
-        var outputs = new[]
-        {
-            (new OutputChannelId(1), new OutputChannelId(2)),
-            (UiAddresses.MainOutput, (OutputChannelId?) UiAddresses.MainOutputRightMeter)
-        };
-        var mixer = new Mixer(api, inputs, outputs);
-        await Launch(mixer);
+        var api = new UiHttpMixerApi(logger: null, "192.168.1.57", 80);        
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
     }
 
     private async void LaunchXR18(object sender, RoutedEventArgs e)
     {
         var api = OscMixerApi.ForUdp(logger: null, "192.168.1.41", 10024);
-        var inputs = new[]
-        {
-            (new InputChannelId(1), default(InputChannelId?)),
-            (new InputChannelId(2), default(InputChannelId?)),
-        };
-        var outputs = new[]
-        {
-            (new OutputChannelId(1), new OutputChannelId(2)),
-            (new OutputChannelId(3), new OutputChannelId(4)),
-            (UiAddresses.MainOutput, (OutputChannelId?) UiAddresses.MainOutputRightMeter)
-        };
-        var mixer = new Mixer(api, inputs, outputs);
-        await Launch(mixer);
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
     }
 
-    private async Task Launch(Mixer mixer)
+    private async void LaunchXR16(object sender, RoutedEventArgs e)
     {
-        var vm = new MixerViewModel(mixer);
-        await mixer.Start();
-        
+        var api = OscMixerApi.ForUdp(logger: null, "192.168.1.185", 10024);
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
+    }
+
+    private void Launch(Mixer mixer)
+    {
+        var vm = new MixerViewModel(mixer);        
         var window = new MixerWindow { DataContext = vm };
         window.Show();
     }

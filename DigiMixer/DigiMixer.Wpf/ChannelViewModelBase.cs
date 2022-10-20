@@ -19,9 +19,10 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
     public string Id { get; }
 
     private string displayName;
-    public string DisplayName => displayName ?? Name ?? Model.FallbackName;
+    public string DisplayName => displayName ?? (Name + StereoName) ?? Model.FallbackName;
 
     public string Name => Model.Name;
+    public string StereoName => Model.StereoName;
 
     public double Output => Model.MeterLevel.Value;
 
@@ -63,7 +64,9 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
         switch (e.PropertyName)
         {
             case nameof(ChannelBase.Name):
+            case nameof(ChannelBase.StereoName):
                 RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(StereoName));
                 RaisePropertyChanged(nameof(DisplayName));
                 break;
             case nameof(ChannelBase.Muted):

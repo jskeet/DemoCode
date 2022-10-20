@@ -13,7 +13,12 @@ public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
             Brushes.Lavender,
             Brushes.LightPink,
             Brushes.DarkSeaGreen,
-            Brushes.Khaki
+            Brushes.Khaki,
+            Brushes.DarkCyan,
+            Brushes.Aquamarine,
+            Brushes.Chartreuse,
+            Brushes.Crimson,
+            Brushes.DarkMagenta
         };
 
     public IReadOnlyList<FaderViewModel> Faders { get; set; }

@@ -14,6 +14,9 @@ internal interface IOscClient : IDisposable
 
     public class Fake : IOscClient
     {
+        internal static Fake Instance { get; } = new Fake();
+        private Fake() { }
+
         public event EventHandler<OscPacket>? PacketReceived
         {
             add { }

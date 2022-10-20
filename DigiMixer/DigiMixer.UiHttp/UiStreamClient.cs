@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace DigiMixer.UiHttp;
-internal sealed class UiStreamClient : IDisposable
+internal sealed class UiStreamClient : IUiClient
 {
     private const int MaxBufferSize = 256 * 1024; // This really should be enough.
 
@@ -22,7 +22,7 @@ internal sealed class UiStreamClient : IDisposable
         writeBuffer = new byte[256];
     }
 
-    internal async Task Send(UiMessage message)
+    public async Task Send(UiMessage message)
     {
         if (logger.IsEnabled(LogLevel.Trace))
         {

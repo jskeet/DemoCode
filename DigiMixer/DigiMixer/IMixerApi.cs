@@ -21,7 +21,14 @@ public interface IMixerApi : IDisposable
     Task Connect();
 
     /// <summary>
-    /// Requests all mixer data. Where channels are unknown, <paramref name="inputChannels"/> and
+    /// Detects the supported channel configuration of the mixer (including stereo links).
+    /// Any already-registered receivers may receive additional information as part of this detection.
+    /// </summary>
+    /// <returns>A task representing the detected channel configuration.</returns>
+    Task<MixerChannelConfiguration> DetectConfiguration();
+
+    /// <summary>
+    /// Requests all mixer data. Where channels are known, <paramref name="inputChannels"/> and
     /// <paramref name="outputChannels"/> can be used to specify which channels are of interest.
     /// </summary>
     /// <param name="inputChannels">The input channels to request data for.</param>
