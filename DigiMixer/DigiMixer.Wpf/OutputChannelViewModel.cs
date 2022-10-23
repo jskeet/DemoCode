@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace DigiMixer.Wpf;
 
@@ -7,8 +6,8 @@ public class OutputChannelViewModel : ChannelViewModelBase<OutputChannel>
 {
     public FaderViewModel Fader { get; }
 
-    public OutputChannelViewModel(OutputChannel model) : base(model, "id",  null)
+    public OutputChannelViewModel(MonoOrStereoPairChannel<OutputChannel> pair) : base(pair, "id",  null)
     {
-        Fader = new FaderViewModel(model, Brushes.Transparent);
+        Fader = new FaderViewModel(pair.MonoOrLeftChannel, Brushes.Transparent);
     }
 }

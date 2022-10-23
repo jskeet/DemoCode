@@ -8,22 +8,54 @@
 public sealed class MixerChannelConfiguration
 {
     /// <summary>
-    /// The input channels for the mixer. For mono inputs, <code>left</code> is non-null and
-    /// <code>right</code> is null; for stereo inputs both values are non-null.
+    /// The input channels for the mixer.
     /// </summary>
-    public IReadOnlyList<(InputChannelId left, InputChannelId? right)> InputChannels { get; }
+    public IReadOnlyList<ChannelId> InputChannels { get; }
 
     /// <summary>
-    /// The output channels for the mixer. For mono inputs, <code>left</code> is non-null and
-    /// <code>right</code> is null; for stereo inputs both values are non-null.
+    /// The output channels for the mixer.
     /// </summary>
-    public IReadOnlyList<(OutputChannelId left, OutputChannelId? right)> OutputChannels { get; }
+    public IReadOnlyList<ChannelId> OutputChannels { get; }
+
+    /// <summary>
+    /// The stereo pairings of input or output channels.
+    /// </summary>
+    public IReadOnlyList<StereoPair> StereoPairs { get; }
+
+    /// <summary>
+    /// The input channels, with stereo pairs represented as a single value.
+    /// </summary>
+    public IReadOnlyList<MonoOrStereoPairChannelId> PossiblyPairedInputs { get; }
+
+    /// <summary>
+    /// The output channels, with stereo pairs represented as a single value.
+    /// </summary>
+    public IReadOnlyList<MonoOrStereoPairChannelId> PossiblyPairedOutputs { get; }
 
     public MixerChannelConfiguration(
-        IEnumerable<(InputChannelId left, InputChannelId? right)> inputChannels,
-        IEnumerable<(OutputChannelId left, OutputChannelId? right)> outputChannels)
+        IEnumerable<ChannelId> inputChannels,
+        IEnumerable<ChannelId> outputChannels,
+        IEnumerable<StereoPair> stereoPairs)
     {
         InputChannels = inputChannels.ToList().AsReadOnly();
         OutputChannels = outputChannels.ToList().AsReadOnly();
-    }
+        StereoPairs = stereoPairs.ToList().AsReadOnly();
+
+        var leftStereos = StereoPairs.ToDictionary(pair => pair.Left);
+        var rightStereos = StereoPairs.Select(pair => pair.Right).ToHashSet();
+
+        PossiblyPairedInputs = inputChannels.Select(GetPair)
+            .OfType<MonoOrStereoPairChannelId>()
+            .ToList()
+            .AsReadOnly();
+        PossiblyPairedOutputs = outputChannels.Select(GetPair)
+            .OfType<MonoOrStereoPairChannelId>()
+            .ToList()
+            .AsReadOnly();
+
+        MonoOrStereoPairChannelId? GetPair(ChannelId channelId) =>
+            leftStereos.TryGetValue(channelId, out var pair) ? new MonoOrStereoPairChannelId(channelId, pair.Right, pair.Flags)
+            : rightStereos.Contains(channelId) ? null
+            : new MonoOrStereoPairChannelId(channelId, null, StereoFlags.None);
+    }        
 }

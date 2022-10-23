@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.ComponentModel;
 
 namespace DigiMixer;
 
@@ -10,14 +8,8 @@ namespace DigiMixer;
 /// </summary>
 public class InputChannel : ChannelBase, INotifyPropertyChanged
 {
-    public InputChannelId ChannelId { get; }
-    public InputChannelId? StereoChannelId { get; }
-
-    internal InputChannel(Mixer mixer, InputChannelId channelId, InputChannelId? stereoChannelId, IEnumerable<OutputChannelId> outputIds)
-        : base(mixer, stereoChannelId.HasValue, channelId.ToString())
+    internal InputChannel(Mixer mixer, ChannelId channelId, IEnumerable<ChannelId> outputIds) : base(mixer, channelId)
     {
-        ChannelId = channelId;
-        StereoChannelId = stereoChannelId;
         OutputMappings = outputIds.Select(oid => new InputOutputMapping(mixer, channelId, oid)).ToList().AsReadOnly();
     }
 

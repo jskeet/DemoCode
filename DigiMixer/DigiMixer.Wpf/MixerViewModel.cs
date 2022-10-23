@@ -15,12 +15,12 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
     public MixerViewModel(Mixer model) : base(model)
     {
         // FIXME: Need IDs and display names.
-        InputChannels = Model.InputChannels
-            .Select(channel => new InputChannelViewModel(channel))
+        InputChannels = Model.PossiblyPairedInputChannels
+            .Select(input => new InputChannelViewModel(input, Model.PossiblyPairedOutputChannels))
             .ToList()
             .AsReadOnly();
-        OutputChannels = Model.OutputChannels
-            .Select(channel => new OutputChannelViewModel(channel))
+        OutputChannels = Model.PossiblyPairedOutputChannels
+            .Select(output => new OutputChannelViewModel(output))
             .ToList()
             .AsReadOnly();
         meterPeakUpdater = new DispatcherTimer

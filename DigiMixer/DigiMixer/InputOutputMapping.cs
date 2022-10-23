@@ -1,5 +1,4 @@
-﻿using DigiMixer;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace DigiMixer;
 
@@ -10,10 +9,10 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
 {
     private readonly Mixer mixer;
 
-    public InputChannelId InputChannelId { get; }
-    public OutputChannelId OutputChannelId { get; }
+    public ChannelId InputChannelId { get; }
+    public ChannelId OutputChannelId { get; }
 
-    internal InputOutputMapping(Mixer mixer, InputChannelId inputId, OutputChannelId outputId)
+    internal InputOutputMapping(Mixer mixer, ChannelId inputId, ChannelId outputId)
     {
         this.mixer = mixer;
         InputChannelId = inputId;
@@ -31,4 +30,6 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
 
     public Task SetFaderLevel(FaderLevel level) =>
         mixer.Api.SetFaderLevel(InputChannelId, OutputChannelId, level);
+
+    public override string ToString() => $"{InputChannelId} => {OutputChannelId}";
 }

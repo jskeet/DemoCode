@@ -8,14 +8,8 @@ namespace DigiMixer;
 /// </summary>
 public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
 {
-    public OutputChannelId ChannelId { get; }
-    public OutputChannelId? StereoChannelId { get; }
-
-    public OutputChannel(Mixer mixer, OutputChannelId channelId, OutputChannelId? stereoChannelId)
-        : base(mixer, stereoChannelId.HasValue, channelId.ToString())
+    public OutputChannel(Mixer mixer, ChannelId channelId) : base(mixer, channelId)
     {
-        ChannelId = channelId;
-        StereoChannelId = stereoChannelId;
     }
 
     private FaderLevel faderLevel;
