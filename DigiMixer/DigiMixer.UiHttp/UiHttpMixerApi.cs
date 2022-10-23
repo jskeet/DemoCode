@@ -61,11 +61,10 @@ public class UiHttpMixerApi : IMixerApi
         sendingClientReadTask = sendingClient.StartReading();
         receivingClientReadTask = receivingClient.StartReading();
     }
-
+    
     public async Task<MixerChannelConfiguration> DetectConfiguration()
     {
-        var inputChannels = new ConcurrentDictionary<int, bool>();
-        var auxOutputChannels = new ConcurrentDictionary<int, bool>();
+        var channels = new ConcurrentDictionary<ChannelId, bool>();
 
         EventHandler<UiMessage> handler = HandleMessage;
         try
@@ -81,39 +80,18 @@ public class UiHttpMixerApi : IMixerApi
             sendingClient.MessageReceived -= handler;
         }
 
-        var allInputChannelIds = inputChannels.OrderBy(pair => pair.Key);
-        var auxOutputChannelids = auxOutputChannels.OrderBy(pair => pair.Key);
+        var orderedChannelIds = channels.Keys.OrderBy(ch => ch.Value);
+        var inputChannelIds = orderedChannelIds.Where(ch => ch.IsInput);
+        var outputChannelIds = orderedChannelIds.Where(ch => ch.IsOutput)
+            .Append(UiAddresses.MainOutputLeft).Append(UiAddresses.MainOutputRight);
 
-        var inputChannelPairs = CreateChannels(inputChannels.OrderBy(pair => pair.Key), InputChannelId.Pair);
-        var outputChannelPairs = CreateChannels(auxOutputChannels.OrderBy(pair => pair.Key), OutputChannelId.Pair)
-            .Append((UiAddresses.MainOutput, UiAddresses.MainOutputRightMeter));
+        var stereoPairs = channels.Where(pair => pair.Value)
+            .Select(pair => new StereoPair(pair.Key, new ChannelId(pair.Key.Value + 1, pair.Key.IsInput), StereoFlags.FullyIndependent))
+            // TODO: Check that we don't have independent faders/mutes
+            .Append(new StereoPair(UiAddresses.MainOutputLeft, UiAddresses.MainOutputRight, StereoFlags.None));
 
-        return new MixerChannelConfiguration(inputChannelPairs, outputChannelPairs);
-
-        IEnumerable <T> CreateChannels<T>(IEnumerable<KeyValuePair<int, bool>> pairs, Func<int, int?, T> factory)
-        {
-            bool skipNext = false;
-            foreach (var pair in pairs)
-            {
-                if (skipNext)
-                {
-                    skipNext = false;
-                    continue;
-                }
-                if (pair.Value)
-                {
-                    yield return factory(pair.Key, pair.Key + 1);
-                    // This assumes that the next value will be the "right" part of the stereo pair.
-                    // That seems reasonable.
-                    skipNext = true;
-                }
-                else
-                {
-                    yield return factory(pair.Key, null);
-                }
-            }
-        }
-
+        return new MixerChannelConfiguration(inputChannelIds, outputChannelIds , stereoPairs);
+        
         void HandleMessage(object? sender, UiMessage message)
         {
             if (message.MessageType != UiMessage.SetDoubleMessageType ||
@@ -122,16 +100,10 @@ public class UiHttpMixerApi : IMixerApi
             {
                 return;
             }
-            var maybeInputId = UiAddresses.TryGetInputChannelId(address);
-            if (maybeInputId is InputChannelId inputId)
+            var maybeChannelId = UiAddresses.TryGetChannelId(address);
+            if (maybeChannelId is ChannelId auxOutputId)
             {
-                inputChannels[inputId.Value] = message.Value == "0";
-                return;
-            }
-            var maybeAuxOutputId = UiAddresses.TryGetAuxOutputChannelId(address);
-            if (maybeAuxOutputId is OutputChannelId auxOutputId)
-            {
-                auxOutputChannels[auxOutputId.Value] = message.Value == "0";
+                channels[auxOutputId] = message.Value == "0";
             }
             logger.LogWarning("Unexpected stereo index address: {address}", address);
         }
@@ -181,7 +153,7 @@ public class UiHttpMixerApi : IMixerApi
         }
     }
 
-    public async Task RequestAllData(IReadOnlyList<InputChannelId> inputChannels, IReadOnlyList<OutputChannelId> outputChannels)
+    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
         model = null;
         firmware = null;
@@ -199,18 +171,14 @@ public class UiHttpMixerApi : IMixerApi
         await (receivingClient?.Send(UiMessage.AliveMessage) ?? Task.CompletedTask);
     }
 
-    public Task SetFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level) =>
+    public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
         sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
-    public Task SetFaderLevel(OutputChannelId outputId, FaderLevel level) =>
+    public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
         sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
-    public Task SetMuted(InputChannelId inputId, bool muted) =>
+    public Task SetMuted(ChannelId inputId, bool muted) =>
         sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
-
-    // TODO: What about stereo? Seems to only mute the left part.
-    public Task SetMuted(OutputChannelId outputId, bool muted) =>
-        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(outputId), muted)) ?? Task.CompletedTask;
 
     private void ReceiveMessage(object? sender, UiMessage message)
     {
@@ -277,7 +245,7 @@ public class UiHttpMixerApi : IMixerApi
             var meterLevel = ToMeterLevel(rawLevel);
             foreach (var receiver in receivers)
             {
-                receiver.ReceiveMeterLevel(new InputChannelId(i + 1), meterLevel);
+                receiver.ReceiveMeterLevel(new ChannelId(i + 1, input: true), meterLevel);
             }
         }
 
@@ -288,7 +256,7 @@ public class UiHttpMixerApi : IMixerApi
             var meterLevel = ToMeterLevel(rawLevel);
             foreach (var receiver in receivers)
             {
-                receiver.ReceiveMeterLevel(new OutputChannelId(i + 1), meterLevel);
+                receiver.ReceiveMeterLevel(new ChannelId(i + 1, input: false), meterLevel);
             }
         }
 
@@ -300,7 +268,7 @@ public class UiHttpMixerApi : IMixerApi
             var meterLevel = ToMeterLevel(rawLevel);
             foreach (var receiver in receivers)
             {
-                receiver.ReceiveMeterLevel(new OutputChannelId(UiAddresses.MainOutput.Value + i), meterLevel);
+                receiver.ReceiveMeterLevel(new ChannelId(UiAddresses.MainOutputLeft.Value + i, input: false), meterLevel);
             }
         }
 
@@ -320,8 +288,8 @@ public class UiHttpMixerApi : IMixerApi
     {
         var ret = new Dictionary<string, Action<IMixerReceiver, UiMessage>>();
 
-        var inputs = Enumerable.Range(1, 22).Select(id => new InputChannelId(id)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
-        var outputs = Enumerable.Range(1, 8).Select(id => new OutputChannelId(id)).Append(UiAddresses.MainOutput);
+        var inputs = Enumerable.Range(1, 22).Select(id => new ChannelId(id, input: true)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
+        var outputs = Enumerable.Range(1, 8).Select(id => new ChannelId(id, input: false)).Append(UiAddresses.MainOutputLeft);
 
         // We don't know what order we'll get firmware and model in.
         ret[UiAddresses.Model] = (receiver, message) =>
@@ -342,6 +310,7 @@ public class UiHttpMixerApi : IMixerApi
             }
         }
 
+        // TODO: Populate this on-demand? Would avoid assumptions about the number of inputs/outputs...
         foreach (var input in inputs)
         {
             ret[UiAddresses.GetNameAddress(input)] = (receiver, message) => receiver.ReceiveChannelName(input, message.Value!);

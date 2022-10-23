@@ -45,7 +45,7 @@ public class OscMixerApi : IMixerApi
         client = newClient;
         return Task.CompletedTask;
     }
-
+    
     public async Task<MixerChannelConfiguration> DetectConfiguration()
     {
         var token = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
@@ -64,29 +64,27 @@ public class OscMixerApi : IMixerApi
             "XR18" => (16, 6),
             _ => (inputLinks.Count * 2, outputLinks.Count * 2)
         };
-        var inputs = CreateChannels(inputCount, inputLinks, InputChannelId.Pair);
+        var inputs = Enumerable.Range(1, inputCount).Select(i => new ChannelId(i, input: true));
         if (model == "XR18")
         {
-            inputs = inputs.Append((XAir.AuxInput, XAir.AuxInputRightMeter));
+            inputs = inputs.Append(XAir.AuxInputLeft).Append(XAir.AuxInputRight);
         }
+        var outputs = Enumerable.Range(1, outputCount).Select(i => new ChannelId(i, input: false))
+            .Append(XAir.MainOutputLeft).Append(XAir.MainOutputRight);
 
-        var outputs = CreateChannels(outputCount, outputLinks, OutputChannelId.Pair)
-            .Append((XAir.MainOutput, XAir.MainOutputRightMeter));
-        return new MixerChannelConfiguration(inputs, outputs);
+        var stereoPairs = CreateStereoPairs(inputCount, inputLinks, input: true)
+            .Concat(CreateStereoPairs(outputCount, outputLinks, input: false))
+            .Append(new StereoPair(XAir.MainOutputLeft, XAir.MainOutputRight, StereoFlags.None));
+        return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
-        IEnumerable<T> CreateChannels<T>(int max, List<bool> pairs, Func<int, int?, T> factory)
+        IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, bool input)
         {
             var count = Math.Min(max, pairs.Count * 2);
             for (int i = 1; i <= count - 1; i += 2)
             {
                 if (pairs[i / 2])
                 {
-                    yield return factory(i, i + 1);
-                }
-                else
-                {
-                    yield return factory(i, null);
-                    yield return factory(i + 1, null);
+                    yield return new StereoPair(new ChannelId(i, input), new ChannelId(i + 1, input), StereoFlags.SplitNames);
                 }
             }
         }
@@ -102,26 +100,24 @@ public class OscMixerApi : IMixerApi
     public void RegisterReceiver(IMixerReceiver receiver) =>
         receivers.Add(receiver);
 
-    public async Task RequestAllData(IReadOnlyList<InputChannelId> inputChannels, IReadOnlyList<OutputChannelId> outputChannels)
+    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
         await client.SendAsync(new OscMessage(XAir.InfoAddress));
-        foreach (var input in inputChannels)
+        foreach (var channelId in channelIds)
         {
-            await client.SendAsync(new OscMessage(XAir.GetMuteAddress(input)));
-            await client.SendAsync(new OscMessage(XAir.GetNameAddress(input)));
-        }
-        foreach (var output in outputChannels)
-        {
-            await client.SendAsync(new OscMessage(XAir.GetMuteAddress(output)));
-            await client.SendAsync(new OscMessage(XAir.GetNameAddress(output)));
-            await client.SendAsync(new OscMessage(XAir.GetFaderAddress(output)));
+            await client.SendAsync(new OscMessage(XAir.GetMuteAddress(channelId)));
+            await client.SendAsync(new OscMessage(XAir.GetNameAddress(channelId)));
+            if (channelId.IsOutput)
+            {
+                await client.SendAsync(new OscMessage(XAir.GetFaderAddress(channelId)));
+            }
         }
         // TODO: Apply some rigour to this...
         await Task.Delay(50);
 
-        foreach (var input in inputChannels)
+        foreach (var input in channelIds.Where(c => c.IsInput))
         {
-            foreach (var output in outputChannels)
+            foreach (var output in channelIds.Where(c => c.IsOutput))
             {
                 await client.SendAsync(new OscMessage(XAir.GetFaderAddress(input, output)));
             }
@@ -136,17 +132,14 @@ public class OscMixerApi : IMixerApi
         await client.SendAsync(new OscMessage("/batchsubscribe", XAir.OutputChannelLevelsMeter, XAir.OutputChannelLevelsMeter, 0, 0, 0 /* fast */));
     }
 
-    public Task SetFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level) =>
+    public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
         client.SendAsync(new OscMessage(XAir.GetFaderAddress(inputId, outputId), FromFaderLevel(level)));
 
-    public Task SetFaderLevel(OutputChannelId outputId, FaderLevel level) =>
+    public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
         client.SendAsync(new OscMessage(XAir.GetFaderAddress(outputId), FromFaderLevel(level)));
 
-    public Task SetMuted(InputChannelId inputId, bool muted) =>
-        client.SendAsync(new OscMessage(XAir.GetMuteAddress(inputId), muted ? 0 : 1));
-
-    public Task SetMuted(OutputChannelId outputId, bool muted) =>
-        client.SendAsync(new OscMessage(XAir.GetMuteAddress(outputId), muted ? 0 : 1));
+    public Task SetMuted(ChannelId channelId, bool muted) =>
+        client.SendAsync(new OscMessage(XAir.GetMuteAddress(channelId), muted ? 0 : 1));
 
     private void ReceivePacket(object? sender, OscPacket e)
     {
@@ -186,8 +179,9 @@ public class OscMixerApi : IMixerApi
         };
 
         // TODO: Don't assume X-Air...
-        var inputs = Enumerable.Range(1, 16).Select(id => new InputChannelId(id)).Append(XAir.AuxInput);
-        var outputs = Enumerable.Range(1, 6).Select(id => new OutputChannelId(id)).Append(XAir.MainOutput);
+        // TODO: Populate this on-demand? Would avoid assumptions about the number of inputs/outputs...
+        var inputs = Enumerable.Range(1, 16).Select(id => new ChannelId(id, input: true)).Append(XAir.AuxInputLeft);
+        var outputs = Enumerable.Range(1, 6).Select(id => new ChannelId(id, input: false)).Append(XAir.MainOutputLeft);
 
         foreach (var input in inputs)
         {
@@ -215,7 +209,7 @@ public class OscMixerApi : IMixerApi
             var blob = (byte[]) message[0];
             for (int i = 1; i <= 18; i++)
             {
-                InputChannelId inputId = new InputChannelId(i);
+                ChannelId inputId = new ChannelId(i, input: true);
                 receiver.ReceiveMeterLevel(inputId, ToMeterLevel(blob, i - 1));
             }
         };
@@ -225,11 +219,11 @@ public class OscMixerApi : IMixerApi
             var blob = (byte[]) message[0];
             for (int i = 1; i <= 6; i++)
             {
-                OutputChannelId outputId = new OutputChannelId(i);
+                ChannelId outputId = new ChannelId(i, input: false);
                 receiver.ReceiveMeterLevel(outputId, ToMeterLevel(blob, i - 1));
             }
-            receiver.ReceiveMeterLevel(XAir.MainOutput, ToMeterLevel(blob, 6));
-            receiver.ReceiveMeterLevel(XAir.MainOutputRightMeter, ToMeterLevel(blob, 7));
+            receiver.ReceiveMeterLevel(XAir.MainOutputLeft, ToMeterLevel(blob, 6));
+            receiver.ReceiveMeterLevel(XAir.MainOutputRight, ToMeterLevel(blob, 7));
         };
 
         static MeterLevel ToMeterLevel(byte[] blob, int index)

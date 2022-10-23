@@ -29,48 +29,43 @@ public static class XAir
     internal const string BusChannelLinkAddress = "/config/buslink";
 
     /// <summary>
-    /// The output channel ID to use for the main output. This also receives the left-hand
-    /// meter reading from the stereo main output.
+    /// The output channel ID for the left side of the main output.
     /// </summary>
-    public static OutputChannelId MainOutput { get; } = new OutputChannelId(100);
+    public static ChannelId MainOutputLeft { get; } = new ChannelId(100, false);
 
     /// <summary>
-    /// The output channel ID which receives the right-hand meter reading from the stereo
-    /// main output.
+    /// The output channel ID for the right side of the main output.
     /// </summary>
-    public static OutputChannelId MainOutputRightMeter { get; } = new OutputChannelId(101);
+    public static ChannelId MainOutputRight { get; } = new ChannelId(101, false);
 
     /// <summary>
-    /// The input channel ID for the "aux" input. This also receives the left-hand meter reading
-    /// from the aux input.
+    /// The input channel ID for the left "aux" input.
     /// </summary>
-    public static InputChannelId AuxInput { get; } = new InputChannelId(17);
+    public static ChannelId AuxInputLeft { get; } = new ChannelId(17, input: true);
 
     /// <summary>
-    /// The output channel ID which receives the right-hand meter reading from the stereo
-    /// main output.
+    /// The input channel ID for the right "aux" input.
     /// </summary>
-    public static InputChannelId AuxInputRightMeter { get; } = new InputChannelId(18);
+    public static ChannelId AuxInputRight { get; } = new ChannelId(18, input: true);
 
-    internal static string GetFaderAddress(InputChannelId inputId, OutputChannelId outputId)
+    internal static string GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {
         string prefix = GetInputPrefix(inputId);
-        return prefix + (outputId == MainOutput ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
+        return prefix + (outputId == MainOutputLeft ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
     }
 
-    internal static string GetFaderAddress(OutputChannelId outputId) => GetOutputPrefix(outputId) + "/mix/fader";
+    internal static string GetFaderAddress(ChannelId outputId) => GetOutputPrefix(outputId) + "/mix/fader";
 
-    internal static string GetMuteAddress(InputChannelId inputId) => GetInputPrefix(inputId) + "/mix/on";
+    internal static string GetMuteAddress(ChannelId channelId) => GetPrefix(channelId) + "/mix/on";
 
-    internal static string GetMuteAddress(OutputChannelId outputId) => GetOutputPrefix(outputId) + "/mix/on";
+    internal static string GetNameAddress(ChannelId inputId) => GetPrefix(inputId) + "/config/name";
 
-    internal static string GetNameAddress(InputChannelId inputId) => GetInputPrefix(inputId) + "/config/name";
+    private static string GetInputPrefix(ChannelId inputId) =>
+        inputId == AuxInputLeft ? "/rtn/aux" : $"/ch/{inputId.Value:00}";
 
-    internal static string GetNameAddress(OutputChannelId outputId) => GetOutputPrefix(outputId) + "/config/name";
+    private static string GetOutputPrefix(ChannelId outputId) =>
+        outputId == MainOutputLeft ? "/lr" : $"/bus/{outputId.Value}";
 
-    private static string GetInputPrefix(InputChannelId inputId) =>
-        inputId == AuxInput ? "/rtn/aux" : $"/ch/{inputId.Value:00}";
-
-    private static string GetOutputPrefix(OutputChannelId outputId) =>
-        outputId == MainOutput ? "/lr" : $"/bus/{outputId.Value}";
+    private static string GetPrefix(ChannelId channelId) =>
+        channelId.IsInput ? GetInputPrefix(channelId) : GetOutputPrefix(channelId);
 }

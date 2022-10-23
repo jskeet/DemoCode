@@ -1,6 +1,6 @@
 ﻿namespace DigiMixer;
 
-// TODO: Look at what's available for QU
+// TODO: Look at what's available for Qu-SB
 public sealed class MixerInfo
 {
     public string? Model { get; }

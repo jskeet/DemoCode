@@ -1,30 +1,34 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection.Emit;
+using System.Reflection;
 
 namespace DigiMixer;
 
 public sealed class Mixer : INotifyPropertyChanged
 {
-    // TODO: Use arrays instead, with suitable guarantees in InputChannelId? Maybe change the underlying type to byte?
-    private readonly Dictionary<InputChannelId, InputChannel> primaryInputChannels;
-    private readonly Dictionary<OutputChannelId, OutputChannel> primaryOutputChannels;
-    private readonly Dictionary<InputChannelId, InputChannel> stereoInputChannels;
-    private readonly Dictionary<OutputChannelId, OutputChannel> stereoOutputChannels;
-    private readonly Dictionary<(InputChannelId, OutputChannelId), InputOutputMapping> mappings;
+    private readonly Dictionary<ChannelId, InputChannel> inputChannelMap;
+    private readonly Dictionary<ChannelId, OutputChannel> outputChannelMap;
+    private readonly Dictionary<ChannelId, ChannelBase> allChannelMap;
+    private readonly Dictionary<(ChannelId, ChannelId), InputOutputMapping> mappings;
 
     public IReadOnlyList<InputChannel> InputChannels { get; }
     public IReadOnlyList<OutputChannel> OutputChannels { get; }
+    public IReadOnlyList<MonoOrStereoPairChannel<InputChannel>> PossiblyPairedInputChannels { get; }
+    public IReadOnlyList<MonoOrStereoPairChannel<OutputChannel>> PossiblyPairedOutputChannels { get; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public InputChannel GetInputChannel(ChannelId channelId) => inputChannelMap[channelId];
+    public OutputChannel GetOutputChannel(ChannelId channelId) => outputChannelMap[channelId];
+
     public IMixerApi Api { get; }
+
+    public MixerChannelConfiguration ChannelConfiguration { get; }
 
     private readonly Task keepAliveTask;
 
     // TODO: Reconnection
-
-    public Mixer(IMixerApi api, IReadOnlyList<(InputChannelId, InputChannelId?)> inputIds, IReadOnlyList<(OutputChannelId, OutputChannelId?)> outputIds)
+    /*
+    public Mixer(IMixerApi api, IReadOnlyList<(ChannelId, ChannelId?)> inputIds, IReadOnlyList<(OutputChannelId, OutputChannelId?)> outputIds)
     {
         Api = api;
         api.RegisterReceiver(new MixerReceiver(this));
@@ -39,27 +43,33 @@ public sealed class Mixer : INotifyPropertyChanged
         mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannelId, om.OutputChannelId));
         // TODO: Wait until we connect?
         keepAliveTask = StartKeepAliveTask();
-    }
+    }*/
 
     private Mixer(IMixerApi api, MixerChannelConfiguration config)
     {
         Api = api;
+        ChannelConfiguration = config;
         api.RegisterReceiver(new MixerReceiver(this));
-        var primaryOutputIds = config.OutputChannels.Select(pair => pair.Item1).ToList();
-        InputChannels = config.InputChannels.Select(pair => new InputChannel(this, pair.Item1, pair.Item2, primaryOutputIds)).ToList().AsReadOnly();
-        OutputChannels = config.OutputChannels.Select(pair => new OutputChannel(this, pair.Item1, pair.Item2)).ToList().AsReadOnly();
-
-        primaryInputChannels = InputChannels.ToDictionary(c => c.ChannelId);
-        primaryOutputChannels = OutputChannels.ToDictionary(c => c.ChannelId);
-        stereoInputChannels = InputChannels.Where(c => c.StereoChannelId is not null).ToDictionary(c => c.StereoChannelId!.Value);
-        stereoOutputChannels = OutputChannels.Where(c => c.StereoChannelId is not null).ToDictionary(c => c.StereoChannelId!.Value);
+        InputChannels = config.InputChannels.Select(inputChannelId => new InputChannel(this, inputChannelId, config.OutputChannels)).ToList().AsReadOnly();
+        OutputChannels = config.OutputChannels.Select(outputChannelId => new OutputChannel(this, outputChannelId)).ToList().AsReadOnly();
+        inputChannelMap = InputChannels.ToDictionary(ch => ch.ChannelId);
+        outputChannelMap = OutputChannels.ToDictionary(ch => ch.ChannelId);
+        allChannelMap = InputChannels.Concat<ChannelBase>(OutputChannels).ToDictionary(ch => ch.ChannelId);
         mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannelId, om.OutputChannelId));
         keepAliveTask = StartKeepAliveTask();
+
+        PossiblyPairedInputChannels = ChannelConfiguration.PossiblyPairedInputs
+            .Select(input => MonoOrStereoPairChannel<InputChannel>.Map(input, inputChannelMap))
+            .ToList()
+            .AsReadOnly();
+        PossiblyPairedOutputChannels = ChannelConfiguration.PossiblyPairedOutputs
+            .Select(input => MonoOrStereoPairChannel<OutputChannel>.Map(input, outputChannelMap))
+            .ToList()
+            .AsReadOnly();
     }
 
-    private Task RequestAllData() => Api.RequestAllData(
-        InputChannels.Select(c => c.ChannelId).Concat(InputChannels.Select(c => c.StereoChannelId).OfType<InputChannelId>()).ToList(),
-        OutputChannels.Select(c => c.ChannelId).Concat(OutputChannels.Select(c => c.StereoChannelId).OfType<OutputChannelId>()).ToList());
+    private Task RequestAllData() =>
+        Api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
 
     public static async Task<Mixer> Detect(IMixerApi api)
     {
@@ -82,9 +92,7 @@ public sealed class Mixer : INotifyPropertyChanged
     public async Task Start()
     {
         await Api.Connect();
-        await Api.RequestAllData(
-            InputChannels.Select(c => c.ChannelId).ToList(),
-            OutputChannels.Select(c => c.ChannelId).ToList());
+        await RequestAllData();
     }
 
     private MixerInfo? mixerInfo;
@@ -97,20 +105,14 @@ public sealed class Mixer : INotifyPropertyChanged
     // TODO: threading of receiving? (For meters in particular, best to invoke just once...)
     // For OSC, we get this for free due to awaiting...
 
-    private bool TryGetPrimaryInputChannel(InputChannelId channelId, [NotNullWhen(true)] out InputChannel? channel) =>
-        primaryInputChannels.TryGetValue(channelId, out channel);
+    private bool TryGetOutputChannel(ChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
+        outputChannelMap.TryGetValue(channelId, out channel);
 
-    private bool TryGetPrimaryOutputChannel(OutputChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
-        primaryOutputChannels.TryGetValue(channelId, out channel);
-
-    private bool TryGetStereoInputChannel(InputChannelId channelId, [NotNullWhen(true)] out InputChannel? channel) =>
-        stereoInputChannels.TryGetValue(channelId, out channel);
-
-    private bool TryGetStereoOutputChannel(OutputChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
-        stereoOutputChannels.TryGetValue(channelId, out channel);
-
-    private bool TryGetInputOutputMapping(InputChannelId inputId, OutputChannelId outputId, [NotNullWhen(true)] out InputOutputMapping? mapping) =>
+    private bool TryGetInputOutputMapping(ChannelId inputId, ChannelId outputId, [NotNullWhen(true)] out InputOutputMapping? mapping) =>
         mappings.TryGetValue((inputId, outputId), out mapping);
+
+    private bool TryGetChannelBase(ChannelId channelId, [NotNullWhen(true)] out ChannelBase? channel) =>
+        allChannelMap.TryGetValue(channelId, out channel);
 
     private class MixerReceiver : IMixerReceiver
     {
@@ -121,31 +123,15 @@ public sealed class Mixer : INotifyPropertyChanged
             this.mixer = mixer;
         }
 
-        public void ReceiveChannelName(InputChannelId channelId, string name)
+        public void ReceiveChannelName(ChannelId channelId, string name)
         {
-            if (mixer.TryGetPrimaryInputChannel(channelId, out var channel))
+            if (mixer.TryGetChannelBase(channelId, out var channel))
             {
                 channel.Name = name;
             }
-            else if (mixer.TryGetStereoInputChannel(channelId, out channel))
-            {
-                channel.StereoName = name;
-            }
         }
 
-        public void ReceiveChannelName(OutputChannelId channelId, string name)
-        {
-            if (mixer.TryGetPrimaryOutputChannel(channelId, out var channel))
-            {
-                channel.Name = name;
-            }
-            else if (mixer.TryGetStereoOutputChannel(channelId, out channel))
-            {
-                channel.StereoName = name;
-            }
-        }
-
-        public void ReceiveFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level)
+        public void ReceiveFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
         {
             if (mixer.TryGetInputOutputMapping(inputId, outputId, out var mapping))
             {
@@ -153,51 +139,27 @@ public sealed class Mixer : INotifyPropertyChanged
             }
         }
 
-        public void ReceiveFaderLevel(OutputChannelId outputId, FaderLevel level)
+        public void ReceiveFaderLevel(ChannelId outputId, FaderLevel level)
         {
-            if (mixer.TryGetPrimaryOutputChannel(outputId, out var channel))
+            if (mixer.TryGetOutputChannel(outputId, out var channel))
             {
                 channel.FaderLevel = level;
             }
         }
 
-        public void ReceiveMeterLevel(InputChannelId channelId, MeterLevel level)
+        public void ReceiveMeterLevel(ChannelId channelId, MeterLevel level)
         {
-            if (mixer.TryGetPrimaryInputChannel(channelId, out var channel))
+            if (mixer.TryGetChannelBase(channelId, out var channel))
             {
                 channel.MeterLevel = level;
-            }
-            else if (mixer.TryGetStereoInputChannel(channelId, out channel))
-            {
-                channel.StereoMeterLevel = level;
-            }
-        }
-
-        public void ReceiveMeterLevel(OutputChannelId channelId, MeterLevel level)
-        {
-            if (mixer.TryGetPrimaryOutputChannel(channelId, out var channel))
-            {
-                channel.MeterLevel = level;
-            }
-            else if (mixer.TryGetStereoOutputChannel(channelId, out channel))
-            {
-                channel.StereoMeterLevel = level;
             }
         }
 
         public void ReceiveMixerInfo(MixerInfo info) => mixer.MixerInfo = info;
 
-        public void ReceiveMuteStatus(InputChannelId channelId, bool muted)
+        public void ReceiveMuteStatus(ChannelId channelId, bool muted)
         {
-            if (mixer.TryGetPrimaryInputChannel(channelId, out var channel))
-            {
-                channel.Muted = muted;
-            }
-        }
-
-        public void ReceiveMuteStatus(OutputChannelId channelId, bool muted)
-        {
-            if (mixer.TryGetPrimaryOutputChannel(channelId, out var channel))
+            if (mixer.TryGetChannelBase(channelId, out var channel))
             {
                 channel.Muted = muted;
             }

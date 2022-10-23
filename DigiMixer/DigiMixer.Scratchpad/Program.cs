@@ -17,7 +17,7 @@ var mixer = new UiHttpMixerApi(logger, "192.168.1.57", 80);
 await mixer.Connect();
 await Task.Delay(3000);
 logger.LogInformation("About to request all info");
-await mixer.RequestAllData(null!, null!);
+await mixer.RequestAllData(null!);
 await Task.Delay(3000);
 /*
 for (int i = 0; i < 100; i++)

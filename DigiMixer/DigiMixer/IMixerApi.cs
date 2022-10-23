@@ -28,37 +28,30 @@ public interface IMixerApi : IDisposable
     Task<MixerChannelConfiguration> DetectConfiguration();
 
     /// <summary>
-    /// Requests all mixer data. Where channels are known, <paramref name="inputChannels"/> and
-    /// <paramref name="outputChannels"/> can be used to specify which channels are of interest.
+    /// Requests all mixer data. Where channels are known, <paramref name="channelIds"/>
+    /// can be used to specify which channels are of interest.
     /// </summary>
-    /// <param name="inputChannels">The input channels to request data for.</param>
-    /// <param name="outputChannels">The output channels to request data for.</param>
-    Task RequestAllData(IReadOnlyList<InputChannelId> inputChannels, IReadOnlyList<OutputChannelId> outputChannels);
+    /// <param name="channelIds">The channels to request data for.</param>
+    Task RequestAllData(IReadOnlyList<ChannelId> channelIds);
 
     /// <summary>
     /// Sets the fader level for the given input/output channel combination.
     /// </summary>
     /// <param name="inputId">The input channel to change the fader level for.</param>
     /// <param name="outputId">The output channel to change the fader level for.</param>
-    Task SetFaderLevel(InputChannelId inputId, OutputChannelId outputId, FaderLevel level);
+    Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level);
 
     /// <summary>
     /// Sets the fader level for the given overall output channel.
     /// </summary>
     /// <param name="outputId">The output channel to change the fader level for.</param>
-    Task SetFaderLevel(OutputChannelId outputId, FaderLevel level);
+    Task SetFaderLevel(ChannelId outputId, FaderLevel level);
 
     /// <summary>
-    /// Mutes or unmutes the given input channel.
+    /// Mutes or unmutes the given channel.
     /// </summary>
-    /// <param name="inputId">The input channel to mute/unmute.</param>
-    Task SetMuted(InputChannelId inputId, bool muted);
-
-    /// <summary>
-    /// Mutes or unmutes the given output channel.
-    /// </summary>
-    /// <param name="outputId">The output channel to mute/unmute.</param>
-    Task SetMuted(OutputChannelId outputId, bool muted);
+    /// <param name="channelId">The channel to mute/unmute.</param>
+    Task SetMuted(ChannelId channelId, bool muted);
 
     /// <summary>
     /// Sends any keep-alive messages. This should be called roughly once every 3 seconds.
