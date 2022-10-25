@@ -58,7 +58,7 @@ public static class XAir
 
     internal static string GetMuteAddress(ChannelId channelId) => GetPrefix(channelId) + "/mix/on";
 
-    internal static string GetNameAddress(ChannelId inputId) => GetPrefix(inputId) + "/config/name";
+    internal static string GetNameAddress(ChannelId channelId) => GetPrefix(channelId) + "/config/name";
 
     private static string GetInputPrefix(ChannelId inputId) =>
         inputId == AuxInputLeft ? "/rtn/aux" : $"/ch/{inputId.Value:00}";

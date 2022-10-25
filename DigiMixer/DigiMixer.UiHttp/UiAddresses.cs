@@ -37,7 +37,7 @@ public static class UiAddresses
 
     internal static string GetMuteAddress(ChannelId channelId) => GetPrefix(channelId) + ".mute";
 
-    internal static string GetNameAddress(ChannelId inputId) => GetPrefix(inputId) + ".name";
+    internal static string GetNameAddress(ChannelId channelId) => GetPrefix(channelId) + ".name";
 
     private static string GetPrefix(ChannelId channelId) =>
         channelId.IsInput ? GetInputPrefix(channelId) : GetOutputPrefix(channelId);
