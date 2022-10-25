@@ -103,6 +103,7 @@ public class OscMixerApi : IMixerApi
     public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
         await client.SendAsync(new OscMessage(XAir.InfoAddress));
+        // TODO: Apply some rigour to the delays - potentially wait for responses using InfoReceiver?
         foreach (var channelId in channelIds)
         {
             await client.SendAsync(new OscMessage(XAir.GetMuteAddress(channelId)));
@@ -111,9 +112,8 @@ public class OscMixerApi : IMixerApi
             {
                 await client.SendAsync(new OscMessage(XAir.GetFaderAddress(channelId)));
             }
+            await Task.Delay(20);
         }
-        // TODO: Apply some rigour to this...
-        await Task.Delay(50);
 
         foreach (var input in channelIds.Where(c => c.IsInput))
         {
@@ -121,7 +121,7 @@ public class OscMixerApi : IMixerApi
             {
                 await client.SendAsync(new OscMessage(XAir.GetFaderAddress(input, output)));
             }
-            await Task.Delay(50);
+            await Task.Delay(20);
         }
     }
 
