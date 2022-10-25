@@ -27,13 +27,11 @@ public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
 
     public IReadOnlyList<FaderViewModel> Faders { get; set; }
 
-    public InputChannelViewModel(MonoOrStereoPairChannel<InputChannel> pair,
-        IReadOnlyList<MonoOrStereoPairChannel<OutputChannel>> outputChannels)
-        : base(pair, "id", null)
+    public InputChannelViewModel(InputChannel input) : base(input, "id", null)
     {
-        Faders = outputChannels
+        Faders = input.OutputMappings
             // TODO: handle stereo pairs properly. (This code is not only ghastly, but it's broken - we're ignoring the flags...)
-            .Select((output, index) => new FaderViewModel(pair.MonoOrLeftChannel.OutputMappings.Single(mapping => mapping.OutputChannelId == output.MonoOrLeftChannel.ChannelId), faderBackgrounds[index]))
+            .Select((mapping, index) => new FaderViewModel(mapping, faderBackgrounds[index]))
             .ToList()
             .AsReadOnly();
     }

@@ -7,15 +7,10 @@ namespace DigiMixer.Wpf;
 
 public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
 {
-    private readonly T stereoModel;
-    private readonly StereoFlags stereoFlags;
-
-    public ChannelViewModelBase(MonoOrStereoPairChannel<T> pair, string id, string displayName) : base(pair.MonoOrLeftChannel)
+    public ChannelViewModelBase(T model, string id, string displayName) : base(model)
     {
         Id = id;
         this.displayName = displayName;
-        this.stereoModel = pair.RightChannel;
-        this.stereoFlags = pair.Flags;
         // TODO: Make this configurable
         peakBuffer = new PeakBuffer(TimeSpan.FromSeconds(1).Ticks);
         stereoPeakBuffer = new PeakBuffer(TimeSpan.FromSeconds(1).Ticks);
@@ -24,13 +19,12 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
     public string Id { get; }
 
     private string displayName;
-    public string DisplayName => displayName ?? (Name + StereoName) ?? Model.FallbackName;
+    public string DisplayName => displayName ?? Name ?? Model.FallbackName;
 
+    public bool IsStereo => Model.IsStereo;
     public string Name => Model.Name;
-    public string StereoName => stereoModel?.Name;
-
     public double Output => Model.MeterLevel.Value;
-    public bool IsStereo => stereoModel is not null;
+    public double StereoOutput => Model.StereoMeterLevel.Value;
 
     private double peakOutput;
     public double PeakOutput
@@ -38,8 +32,6 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
         get => peakOutput;
         private set => SetProperty(ref peakOutput, value);
     }
-
-    public double StereoOutput => stereoModel?.MeterLevel.Value ?? 0d;
 
     private double stereoPeakOutput;
     public double StereoPeakOutput
@@ -68,33 +60,18 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
         switch (e.PropertyName)
         {
             case nameof(ChannelBase.Name):
-                RaisePropertyChanged(sender == Model ? nameof(Name) : nameof(StereoName));
+                RaisePropertyChanged(nameof(Name));
                 RaisePropertyChanged(nameof(DisplayName));
                 break;
             case nameof(ChannelBase.Muted):
                 RaisePropertyChanged(nameof(Muted));
                 break;
             case nameof(ChannelBase.MeterLevel):
-                RaisePropertyChanged(sender == Model ? nameof(Output) : nameof(StereoOutput));
+                RaisePropertyChanged(nameof(Output));
                 break;
-        }
-    }
-
-    protected override void OnPropertyChangedHasSubscribers()
-    {
-        base.OnPropertyChangedHasSubscribers();
-        if (stereoModel is INotifyPropertyChanged inpc)
-        {
-            inpc.PropertyChanged += OnPropertyModelChanged;
-        }
-    }
-
-    protected override void OnPropertyChangedHasNoSubscribers()
-    {
-        base.OnPropertyChangedHasNoSubscribers();
-        if (stereoModel is INotifyPropertyChanged inpc)
-        {
-            inpc.PropertyChanged -= OnPropertyModelChanged;
+            case nameof(ChannelBase.StereoMeterLevel):
+                RaisePropertyChanged(nameof(StereoOutput));
+                break;
         }
     }
 
