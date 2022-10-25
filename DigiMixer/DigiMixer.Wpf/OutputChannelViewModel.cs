@@ -8,6 +8,6 @@ public class OutputChannelViewModel : ChannelViewModelBase<OutputChannel>
 
     public OutputChannelViewModel(OutputChannel model) : base(model, "id",  null)
     {
-        Fader = new FaderViewModel(model, Brushes.Transparent);
+        Fader = new FaderViewModel(model, model, Brushes.Transparent);
     }
 }

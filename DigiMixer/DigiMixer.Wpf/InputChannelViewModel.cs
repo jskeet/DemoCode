@@ -27,11 +27,11 @@ public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
 
     public IReadOnlyList<FaderViewModel> Faders { get; set; }
 
-    public InputChannelViewModel(InputChannel input) : base(input, "id", null)
+    public InputChannelViewModel(InputChannel input, IReadOnlyDictionary<ChannelId, OutputChannel> channelIdToOutputChannel) : base(input, "id", null)
     {
         Faders = input.OutputMappings
-            // TODO: handle stereo pairs properly. (This code is not only ghastly, but it's broken - we're ignoring the flags...)
-            .Select((mapping, index) => new FaderViewModel(mapping, faderBackgrounds[index]))
+            // TODO: Avoid needing this dictionary. Ideally the Mixer should expose output mappings in which have the channels, not just channel IDs.
+            .Select((mapping, index) => new FaderViewModel(mapping, channelIdToOutputChannel[mapping.PrimaryOutputChannelId], faderBackgrounds[index]))
             .ToList()
             .AsReadOnly();
     }

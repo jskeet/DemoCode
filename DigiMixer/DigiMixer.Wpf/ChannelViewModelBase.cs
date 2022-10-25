@@ -21,7 +21,7 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
     private string displayName;
     public string DisplayName => displayName ?? Name ?? Model.FallbackName;
 
-    public bool Visible => !string.IsNullOrEmpty(Name);
+    public bool Visible => Name is not null;
 
     public bool IsStereo => Model.IsStereo;
     public string Name => Model.Name;

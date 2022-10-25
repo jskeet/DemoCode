@@ -14,9 +14,10 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
 
     public MixerViewModel(Mixer model) : base(model)
     {
+        var mappingToChannel = Model.OutputChannels.ToDictionary(oc => oc.LeftOrMonoChannelId);
         // FIXME: Need IDs and display names.
         InputChannels = Model.InputChannels
-            .Select(input => new InputChannelViewModel(input))
+            .Select(input => new InputChannelViewModel(input, mappingToChannel))
             .ToList()
             .AsReadOnly();
         OutputChannels = Model.OutputChannels
