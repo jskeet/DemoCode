@@ -147,6 +147,14 @@ public class OscMixerApi : IMixerApi
         {
             return;
         }
+        if (e is OscBundle bundle)
+        {
+            foreach (var bundleMessage in (IEnumerable<OscMessage>) bundle)
+            {
+                ReceivePacket(sender, bundleMessage);
+            }
+            return;
+        }
         if (e is not OscMessage message)
         {
             return;
