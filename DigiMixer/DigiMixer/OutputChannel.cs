@@ -8,7 +8,7 @@ namespace DigiMixer;
 /// </summary>
 public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
 {
-    public OutputChannel(Mixer mixer, ChannelId channelId) : base(mixer, channelId)
+    public OutputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair) : base(mixer, channelIdPair)
     {
     }
 
@@ -19,7 +19,13 @@ public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
         internal set => this.SetProperty(PropertyChangedHandler, ref faderLevel, value);
     }
 
-    public Task SetFaderLevel(FaderLevel level) => Mixer.Api.SetFaderLevel(ChannelId, level);
-
-    public override Task SetMuted(bool muted) => Mixer.Api.SetMuted(ChannelId, muted);
+    public async Task SetFaderLevel(FaderLevel level)
+    {
+        await Mixer.Api.SetFaderLevel(LeftOrMonoChannelId, level);
+        if ((StereoFlags & StereoFlags.SplitMutes) != 0 && RightChannelId is ChannelId right)
+        {
+            await Mixer.Api.SetFaderLevel(right, level);
+        }
+    }
 }
+

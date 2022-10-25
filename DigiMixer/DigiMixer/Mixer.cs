@@ -6,19 +6,19 @@ namespace DigiMixer;
 
 public sealed class Mixer : INotifyPropertyChanged
 {
-    private readonly Dictionary<ChannelId, InputChannel> inputChannelMap;
-    private readonly Dictionary<ChannelId, OutputChannel> outputChannelMap;
+    private readonly Dictionary<ChannelId, InputChannel> leftOrMonoInputChannelMap;
+    private readonly Dictionary<ChannelId, InputChannel> rightInputChannelMap;
+    private readonly Dictionary<ChannelId, OutputChannel> leftOrMonoOutputChannelMap;
+    private readonly Dictionary<ChannelId, OutputChannel> rightOutputChannelMap;
     private readonly Dictionary<ChannelId, ChannelBase> allChannelMap;
     private readonly Dictionary<(ChannelId, ChannelId), InputOutputMapping> mappings;
 
     public IReadOnlyList<InputChannel> InputChannels { get; }
     public IReadOnlyList<OutputChannel> OutputChannels { get; }
-    public IReadOnlyList<MonoOrStereoPairChannel<InputChannel>> PossiblyPairedInputChannels { get; }
-    public IReadOnlyList<MonoOrStereoPairChannel<OutputChannel>> PossiblyPairedOutputChannels { get; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public InputChannel GetInputChannel(ChannelId channelId) => inputChannelMap[channelId];
-    public OutputChannel GetOutputChannel(ChannelId channelId) => outputChannelMap[channelId];
+    public InputChannel GetInputChannel(ChannelId channelId) => leftOrMonoInputChannelMap[channelId];
+    public OutputChannel GetOutputChannel(ChannelId channelId) => leftOrMonoOutputChannelMap[channelId];
 
     public IMixerApi Api { get; }
 
@@ -50,22 +50,29 @@ public sealed class Mixer : INotifyPropertyChanged
         Api = api;
         ChannelConfiguration = config;
         api.RegisterReceiver(new MixerReceiver(this));
-        InputChannels = config.InputChannels.Select(inputChannelId => new InputChannel(this, inputChannelId, config.OutputChannels)).ToList().AsReadOnly();
-        OutputChannels = config.OutputChannels.Select(outputChannelId => new OutputChannel(this, outputChannelId)).ToList().AsReadOnly();
-        inputChannelMap = InputChannels.ToDictionary(ch => ch.ChannelId);
-        outputChannelMap = OutputChannels.ToDictionary(ch => ch.ChannelId);
-        allChannelMap = InputChannels.Concat<ChannelBase>(OutputChannels).ToDictionary(ch => ch.ChannelId);
-        mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannelId, om.OutputChannelId));
-        keepAliveTask = StartKeepAliveTask();
 
-        PossiblyPairedInputChannels = ChannelConfiguration.PossiblyPairedInputs
-            .Select(input => MonoOrStereoPairChannel<InputChannel>.Map(input, inputChannelMap))
+        InputChannels = ChannelConfiguration.PossiblyPairedInputs
+            .Select(input => new InputChannel(this, input, ChannelConfiguration.PossiblyPairedOutputs))
             .ToList()
             .AsReadOnly();
-        PossiblyPairedOutputChannels = ChannelConfiguration.PossiblyPairedOutputs
-            .Select(input => MonoOrStereoPairChannel<OutputChannel>.Map(input, outputChannelMap))
+        OutputChannels = ChannelConfiguration.PossiblyPairedOutputs
+            .Select(output => new OutputChannel(this, output))
             .ToList()
             .AsReadOnly();
+
+        leftOrMonoInputChannelMap = InputChannels.ToDictionary(ch => ch.LeftOrMonoChannelId);
+        leftOrMonoOutputChannelMap = OutputChannels.ToDictionary(ch => ch.LeftOrMonoChannelId);
+        rightInputChannelMap = InputChannels.Where(ch => ch.IsStereo).ToDictionary(ch => ch.RightChannelId!.Value);
+        rightOutputChannelMap = OutputChannels.Where(ch => ch.IsStereo).ToDictionary(ch => ch.RightChannelId!.Value);
+        allChannelMap = leftOrMonoInputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value))
+            .Concat(leftOrMonoOutputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value)))
+            .Concat(rightInputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value)))
+            .Concat(rightOutputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value)))
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
+        // We assume that even for split faders, we're happy to only *report* via a single input/output channel pair.
+        // (We will ignore any information about other combinations.)
+        mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.PrimaryInputChannelId, om.PrimaryOutputChannelId));
+        keepAliveTask = StartKeepAliveTask();
     }
 
     private Task RequestAllData() =>
@@ -106,7 +113,7 @@ public sealed class Mixer : INotifyPropertyChanged
     // For OSC, we get this for free due to awaiting...
 
     private bool TryGetOutputChannel(ChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
-        outputChannelMap.TryGetValue(channelId, out channel);
+        leftOrMonoOutputChannelMap.TryGetValue(channelId, out channel);
 
     private bool TryGetInputOutputMapping(ChannelId inputId, ChannelId outputId, [NotNullWhen(true)] out InputOutputMapping? mapping) =>
         mappings.TryGetValue((inputId, outputId), out mapping);
@@ -127,7 +134,14 @@ public sealed class Mixer : INotifyPropertyChanged
         {
             if (mixer.TryGetChannelBase(channelId, out var channel))
             {
-                channel.Name = name;
+                if (channelId == channel.LeftOrMonoChannelId)
+                {
+                    channel.LeftOrMonoName = name;
+                }
+                else
+                {
+                    channel.RightName = name;
+                }
             }
         }
 
@@ -151,7 +165,14 @@ public sealed class Mixer : INotifyPropertyChanged
         {
             if (mixer.TryGetChannelBase(channelId, out var channel))
             {
-                channel.MeterLevel = level;
+                if (channelId == channel.LeftOrMonoChannelId)
+                {
+                    channel.MeterLevel = level;
+                }
+                else
+                {
+                    channel.StereoMeterLevel = level;
+                }
             }
         }
 

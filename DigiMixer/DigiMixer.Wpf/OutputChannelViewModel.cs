@@ -6,8 +6,8 @@ public class OutputChannelViewModel : ChannelViewModelBase<OutputChannel>
 {
     public FaderViewModel Fader { get; }
 
-    public OutputChannelViewModel(MonoOrStereoPairChannel<OutputChannel> pair) : base(pair, "id",  null)
+    public OutputChannelViewModel(OutputChannel model) : base(model, "id",  null)
     {
-        Fader = new FaderViewModel(pair.MonoOrLeftChannel, Brushes.Transparent);
+        Fader = new FaderViewModel(model, Brushes.Transparent);
     }
 }

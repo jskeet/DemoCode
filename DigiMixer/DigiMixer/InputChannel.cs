@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 
 namespace DigiMixer;
 
@@ -8,15 +9,13 @@ namespace DigiMixer;
 /// </summary>
 public class InputChannel : ChannelBase, INotifyPropertyChanged
 {
-    internal InputChannel(Mixer mixer, ChannelId channelId, IEnumerable<ChannelId> outputIds) : base(mixer, channelId)
+    internal InputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair, IEnumerable<MonoOrStereoPairChannelId> outputIdPairs) : base(mixer, channelIdPair)
     {
-        OutputMappings = outputIds.Select(oid => new InputOutputMapping(mixer, channelId, oid)).ToList().AsReadOnly();
+        OutputMappings = outputIdPairs.Select(oidPair => new InputOutputMapping(mixer, channelIdPair, oidPair)).ToList().AsReadOnly();
     }
 
     /// <summary>
     /// The input/output mappings for this input channel, each of which has a separate fader level.
     /// </summary>
     public IReadOnlyList<InputOutputMapping> OutputMappings { get; }
-
-    public override Task SetMuted(bool muted) => Mixer.Api.SetMuted(ChannelId, muted);
 }

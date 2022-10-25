@@ -8,32 +8,19 @@ public record MonoOrStereoPairChannelId(
     ChannelId? RightChannelId,
     StereoFlags Flags)
 {
-}
+    /// <summary>
+    /// The channel ID for the right fader, or null if
+    /// either <see cref="Flags"/> doesn't include <see cref="StereoFlags.SplitFaders"/>,
+    /// or <see cref="RightChannelId"/> is null.
+    /// </summary>
+    public ChannelId? RightFaderId =>
+        (Flags & StereoFlags.SplitFaders) != 0 ? RightChannelId : null;
 
-
-public record MonoOrStereoPairChannel<T>(
-    T MonoOrLeftChannel,
-    T? RightChannel,
-    StereoFlags Flags)
-    where T : ChannelBase    
-{
-    internal static MonoOrStereoPairChannel<T> Map(MonoOrStereoPairChannelId ids, IReadOnlyDictionary<ChannelId, T> map)
-    {
-        var left = map[ids.MonoOrLeftChannelId];
-        var right = ids.RightChannelId is ChannelId rightId ? map[rightId] : null;
-        var flags = ids.Flags;
-        return new MonoOrStereoPairChannel<T>(left, right, flags);
-    }
-}
-
-public record MonoOrStereoPairInputOutputMapping(
-    MonoOrStereoPairChannel<InputChannel> Input,
-    MonoOrStereoPairChannel<OutputChannel> Output) : IFader
-{
-    public FaderLevel FaderLevel => throw new NotImplementedException();
-
-    public Task SetFaderLevel(FaderLevel level)
-    {
-        throw new NotImplementedException();
-    }
+    /// <summary>
+    /// The channel ID for the right fader, or null if
+    /// either <see cref="Flags"/> doesn't include <see cref="StereoFlags.SplitMutes"/>,
+    /// or <see cref="RightMuteId"/> is null.
+    /// </summary>
+    public ChannelId? RightMuteId =>
+        (Flags & StereoFlags.SplitMutes) != 0 ? RightChannelId : null;
 }
