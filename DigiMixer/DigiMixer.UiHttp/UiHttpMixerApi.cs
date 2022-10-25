@@ -278,7 +278,7 @@ public class UiHttpMixerApi : IMixerApi
             int normalized = Math.Min((int) rawValue, 240);
 
             // -240 to 0.
-            int signed = rawValue - 240;
+            int signed = normalized - 240;
             // This is massively wrong, but it's a start.
             return new MeterLevel(signed / 3.0);
         }
@@ -289,6 +289,7 @@ public class UiHttpMixerApi : IMixerApi
         var ret = new Dictionary<string, Action<IMixerReceiver, UiMessage>>();
 
         var inputs = Enumerable.Range(1, 22).Select(id => new ChannelId(id, input: true)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
+        // Note: no MainOutputRight here as it doesn't have a separate address, so we don't need a separate receiver map.
         var outputs = Enumerable.Range(1, 8).Select(id => new ChannelId(id, input: false)).Append(UiAddresses.MainOutputLeft);
 
         // We don't know what order we'll get firmware and model in.
