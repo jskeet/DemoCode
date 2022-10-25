@@ -12,8 +12,8 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
     private MonoOrStereoPairChannelId inputIdPair;
     private MonoOrStereoPairChannelId outputIdPair;
 
-    internal ChannelId PrimaryInputChannelId => inputIdPair.MonoOrLeftChannelId;
-    internal ChannelId PrimaryOutputChannelId => outputIdPair.MonoOrLeftChannelId;
+    public ChannelId PrimaryInputChannelId => inputIdPair.MonoOrLeftChannelId;
+    public ChannelId PrimaryOutputChannelId => outputIdPair.MonoOrLeftChannelId;
 
     internal InputOutputMapping(Mixer mixer, MonoOrStereoPairChannelId inputIdPair, MonoOrStereoPairChannelId outputIdPair)
     {

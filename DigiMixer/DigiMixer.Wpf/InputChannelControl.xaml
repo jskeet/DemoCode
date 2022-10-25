@@ -49,7 +49,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel LastChildFill="True" Background="{Binding Background}" Margin="2,0,2,0" Width="35">
+                        <DockPanel LastChildFill="True" Background="{Binding Background}" Margin="2,0,2,0" Width="35" Visibility="{Binding Visible, Converter={StaticResource VisibilityConverter}}">
                             <TextBlock DockPanel.Dock="Bottom" Text="{Binding FaderLevel, Converter={StaticResource VolumeConverter}}" HorizontalAlignment="Center" Padding="2,0,2,2" />
                             <Slider DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Center"
                                     Minimum="0" Maximum="{x:Static local:FaderViewModel.FaderLevelScaleDouble}" Value="{Binding FaderLevel}" ToolTip="{Binding FaderLevelPercentage}" />

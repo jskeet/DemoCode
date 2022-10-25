@@ -69,8 +69,25 @@ public abstract class ChannelBase : INotifyPropertyChanged
         }
     }
 
-    // TODO: do this better.
-    public string? Name => leftOrMonoName + rightName;
+    public string? Name
+    {
+        get
+        {
+            if (RightChannelId is null || (StereoFlags & StereoFlags.SplitNames) == 0)
+            {
+                return string.IsNullOrEmpty(LeftOrMonoName) ? null : LeftOrMonoName;
+            }
+            bool hasLeftName = !string.IsNullOrEmpty(LeftOrMonoName);
+            bool hasRightName = !string.IsNullOrEmpty(RightName);
+            return (hasLeftName, hasRightName) switch
+            {
+                (false, false) => null,
+                (true, false) => LeftOrMonoName,
+                (false, true) => RightName,
+                (true, true) => $"{LeftOrMonoName} / {RightName}"
+            };
+        }
+    }
 
     private bool muted;
     public bool Muted
