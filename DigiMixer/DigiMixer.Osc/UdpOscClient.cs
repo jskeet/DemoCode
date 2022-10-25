@@ -4,6 +4,7 @@
 
 using Microsoft.Extensions.Logging;
 using OscCore;
+using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace OscMixerControl;
@@ -26,9 +27,9 @@ internal sealed class UdpOscClient : IOscClient
 
     public Task SendAsync(OscPacket packet)
     {
-        if (logger.IsEnabled(LogLevel.Trace))
+        if (logger.IsEnabled(LogLevel.Trace) && packet is OscMessage message)
         {
-            logger.LogTrace("Sending OSC packet: {packet}", packet);
+            logger.LogTrace("Sending OSC message: {address} {message}", message.Address, message);
         }
         var data = packet.ToByteArray();
         return client.SendAsync(data, data.Length);
@@ -41,9 +42,9 @@ internal sealed class UdpOscClient : IOscClient
             var result = await client.ReceiveAsync();
             var buffer = result.Buffer;
             var packet = OscPacket.Read(buffer, 0, buffer.Length);
-            if (logger.IsEnabled(LogLevel.Trace))
+            if (logger.IsEnabled(LogLevel.Trace) && packet is OscMessage message)
             {
-                logger.LogTrace("Received OSC packet: {packet}", packet);
+                logger.LogTrace("Received OSC message: {address} {message}", message.Address, message);
             }
             // TODO: Maybe do this asynchronously...
             PacketReceived?.Invoke(this, packet);
