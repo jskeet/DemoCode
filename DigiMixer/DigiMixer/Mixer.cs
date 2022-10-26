@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace DigiMixer;
 
-public sealed class Mixer : INotifyPropertyChanged
+public sealed class Mixer : IDisposable, INotifyPropertyChanged
 {
     private readonly Dictionary<ChannelId, InputChannel> leftOrMonoInputChannelMap;
     private readonly Dictionary<ChannelId, InputChannel> rightInputChannelMap;
@@ -24,6 +23,7 @@ public sealed class Mixer : INotifyPropertyChanged
 
     public MixerChannelConfiguration ChannelConfiguration { get; }
 
+    private bool disposed;
     private readonly Task keepAliveTask;
 
     // TODO: Reconnection
@@ -89,7 +89,9 @@ public sealed class Mixer : INotifyPropertyChanged
 
     private async Task StartKeepAliveTask()
     {
-        while (true)
+        // TODO: What happens if we dispose during a keep-alive?
+        // Do we need a memory barrier to access disposed properly?
+        while (!disposed)
         {
             await Api.SendKeepAlive();
             await Task.Delay(3000);
@@ -185,5 +187,11 @@ public sealed class Mixer : INotifyPropertyChanged
                 channel.Muted = muted;
             }
         }
+    }
+
+    public void Dispose()
+    {
+        disposed = true;
+        Api.Dispose();
     }
 }

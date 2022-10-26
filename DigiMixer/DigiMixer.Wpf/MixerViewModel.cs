@@ -53,5 +53,6 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
     public void Dispose()
     {
         meterPeakUpdater.Stop();
+        Model.Dispose();
     }
 }
