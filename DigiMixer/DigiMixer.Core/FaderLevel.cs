@@ -1,4 +1,4 @@
-﻿namespace DigiMixer;
+﻿namespace DigiMixer.Core;
 
 /// <summary>
 /// The level of a fader, within the scale of the mixer. This is represented

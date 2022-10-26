@@ -1,4 +1,6 @@
-﻿namespace DigiMixer;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer;
 
 public interface IFader
 {

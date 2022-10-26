@@ -1,4 +1,4 @@
-﻿namespace DigiMixer;
+﻿namespace DigiMixer.Core;
 
 /// <summary>
 /// Describes how a <see cref="StereoPair"/> behaves in the mixer.

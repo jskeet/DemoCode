@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Linq;
+﻿using DigiMixer.Core;
+using System.ComponentModel;
 
 namespace DigiMixer;
 

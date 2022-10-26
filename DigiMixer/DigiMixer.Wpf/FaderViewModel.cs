@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DigiMixer.Core;
+using System.ComponentModel;
 using System.Windows.Media;
 
 namespace DigiMixer.Wpf;
@@ -6,7 +7,7 @@ namespace DigiMixer.Wpf;
 public class FaderViewModel : ViewModelBase<IFader>
 {
     // For binding purposes.
-    public static double FaderLevelScaleDouble { get; } = DigiMixer.FaderLevel.MaxValue;
+    public static double FaderLevelScaleDouble { get; } = Core.FaderLevel.MaxValue;
 
     private readonly OutputChannel outputChannel;
 
@@ -52,7 +53,7 @@ public class FaderViewModel : ViewModelBase<IFader>
     /// <summary>
     /// The level of the fader, as a percentage.
     /// </summary>
-    public string FaderLevelPercentage => $"{FaderLevel * 100 / DigiMixer.FaderLevel.MaxValue}%";
+    public string FaderLevelPercentage => $"{FaderLevel * 100 / Core.FaderLevel.MaxValue}%";
 
     protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)
     {

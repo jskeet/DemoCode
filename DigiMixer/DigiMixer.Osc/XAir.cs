@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using DigiMixer;
+using DigiMixer.Core;
 using System;
 
 namespace OscMixerControl;

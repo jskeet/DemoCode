@@ -1,4 +1,4 @@
-﻿namespace DigiMixer;
+﻿namespace DigiMixer.Core;
 
 /// <summary>
 /// The level of a meter, e.g. the current output of a channel,

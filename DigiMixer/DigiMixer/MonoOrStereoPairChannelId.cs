@@ -1,4 +1,6 @@
-﻿namespace DigiMixer;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer;
 
 // TODO: Find a better name than this!
 // TODO: How do we validate the inputs? Possible limitation of records.

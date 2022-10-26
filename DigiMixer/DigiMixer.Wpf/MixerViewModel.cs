@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DigiMixer.Core;
+using System.ComponentModel;
 using System.Windows.Threading;
 
 namespace DigiMixer.Wpf;
