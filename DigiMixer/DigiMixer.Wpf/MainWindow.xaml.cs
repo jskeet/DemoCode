@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Osc;
 using DigiMixer.UiHttp;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Windows;
 
