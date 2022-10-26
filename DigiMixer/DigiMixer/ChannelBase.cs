@@ -9,17 +9,17 @@ public abstract class ChannelBase : INotifyPropertyChanged
     protected PropertyChangedEventHandler? PropertyChangedHandler => PropertyChanged;
 
     public Mixer Mixer { get; }
-    private readonly MonoOrStereoPairChannelId channelIdPair;
-    public ChannelId LeftOrMonoChannelId => channelIdPair.MonoOrLeftChannelId;
-    public ChannelId? RightChannelId => channelIdPair.RightChannelId;
-    public StereoFlags StereoFlags => channelIdPair.Flags;
+    internal MonoOrStereoPairChannelId ChannelIdPair { get; }
+    public ChannelId LeftOrMonoChannelId => ChannelIdPair.MonoOrLeftChannelId;
+    public ChannelId? RightChannelId => ChannelIdPair.RightChannelId;
+    public StereoFlags StereoFlags => ChannelIdPair.Flags;
 
     public bool IsStereo => RightChannelId is not null;
 
     protected ChannelBase(Mixer mixer, MonoOrStereoPairChannelId channelIdPair)
     {
         Mixer = mixer;
-        this.channelIdPair = channelIdPair;
+        ChannelIdPair = channelIdPair;
         // TODO: Use the right channel as well?
         FallbackName = LeftOrMonoChannelId.ToString();
     }
@@ -101,7 +101,7 @@ public abstract class ChannelBase : INotifyPropertyChanged
     public async Task SetMuted(bool muted)
     {
         await Mixer.Api.SetMuted(LeftOrMonoChannelId, muted);
-        if (channelIdPair.RightMuteId is ChannelId right)
+        if (ChannelIdPair.RightMuteId is ChannelId right)
         {
             await Mixer.Api.SetMuted(right, muted);
         }

@@ -9,17 +9,14 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
 {
     private readonly Mixer mixer;
 
-    private MonoOrStereoPairChannelId inputIdPair;
-    private MonoOrStereoPairChannelId outputIdPair;
+    public InputChannel InputChannel { get; }
+    public OutputChannel OutputChannel { get; }
 
-    public ChannelId PrimaryInputChannelId => inputIdPair.MonoOrLeftChannelId;
-    public ChannelId PrimaryOutputChannelId => outputIdPair.MonoOrLeftChannelId;
-
-    internal InputOutputMapping(Mixer mixer, MonoOrStereoPairChannelId inputIdPair, MonoOrStereoPairChannelId outputIdPair)
+    internal InputOutputMapping(Mixer mixer, InputChannel inputChannel, OutputChannel outputChannel)
     {
         this.mixer = mixer;
-        this.inputIdPair = inputIdPair;
-        this.outputIdPair = outputIdPair;
+        InputChannel = inputChannel;
+        OutputChannel = outputChannel;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -33,16 +30,16 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
 
     public async Task SetFaderLevel(FaderLevel level)
     {
-        await mixer.Api.SetFaderLevel(PrimaryInputChannelId, PrimaryOutputChannelId, level);
-        var rightInputId = inputIdPair.RightFaderId;
+        await mixer.Api.SetFaderLevel(InputChannel.LeftOrMonoChannelId, OutputChannel.LeftOrMonoChannelId, level);
+        var rightInputId = InputChannel.ChannelIdPair.RightFaderId;
         if (rightInputId is not null)
         {
-            await mixer.Api.SetFaderLevel(rightInputId.Value, PrimaryOutputChannelId, level);
+            await mixer.Api.SetFaderLevel(rightInputId.Value, OutputChannel.LeftOrMonoChannelId, level);
         }
 
-        if (outputIdPair.RightFaderId is ChannelId rightOutputId)
+        if (OutputChannel.ChannelIdPair.RightFaderId is ChannelId rightOutputId)
         {
-            await mixer.Api.SetFaderLevel(PrimaryInputChannelId, rightOutputId, level);
+            await mixer.Api.SetFaderLevel(InputChannel.LeftOrMonoChannelId, rightOutputId, level);
             if (rightInputId is not null)
             {
                 await mixer.Api.SetFaderLevel(rightInputId.Value, rightOutputId, level);
@@ -50,5 +47,5 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
         }
     }
 
-    public override string ToString() => $"{PrimaryInputChannelId} => {PrimaryOutputChannelId}";
+    public override string ToString() => $"{InputChannel.Name ?? InputChannel.FallbackName} => {OutputChannel.Name ?? OutputChannel.FallbackName}";
 }

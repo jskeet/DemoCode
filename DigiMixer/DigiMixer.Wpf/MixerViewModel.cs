@@ -11,10 +11,9 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
 
     public MixerViewModel(Mixer model) : base(model)
     {
-        var mappingToChannel = Model.OutputChannels.ToDictionary(oc => oc.LeftOrMonoChannelId);
         // FIXME: Need IDs and display names.
         InputChannels = Model.InputChannels
-            .Select(input => new InputChannelViewModel(input, mappingToChannel))
+            .Select(input => new InputChannelViewModel(input))
             .ToList()
             .AsReadOnly();
         OutputChannels = Model.OutputChannels
@@ -54,5 +53,5 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
     public void Dispose()
     {
         meterPeakUpdater.Stop();
-    }    
+    }
 }

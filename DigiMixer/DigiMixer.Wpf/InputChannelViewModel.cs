@@ -27,11 +27,10 @@ public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
 
     public IReadOnlyList<FaderViewModel> Faders { get; set; }
 
-    public InputChannelViewModel(InputChannel input, IReadOnlyDictionary<ChannelId, OutputChannel> channelIdToOutputChannel) : base(input, "id", null)
+    public InputChannelViewModel(InputChannel input) : base(input, "id", null)
     {
         Faders = input.OutputMappings
-            // TODO: Avoid needing this dictionary. Ideally the Mixer should expose output mappings in which have the channels, not just channel IDs.
-            .Select((mapping, index) => new FaderViewModel(mapping, channelIdToOutputChannel[mapping.PrimaryOutputChannelId], faderBackgrounds[index]))
+            .Select((mapping, index) => new FaderViewModel(mapping, mapping.OutputChannel, faderBackgrounds[index]))
             .ToList()
             .AsReadOnly();
     }
