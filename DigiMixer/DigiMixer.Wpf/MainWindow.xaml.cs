@@ -1,7 +1,6 @@
 ﻿using DigiMixer.Osc;
 using DigiMixer.UiHttp;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace DigiMixer.Wpf;
@@ -17,21 +16,21 @@ public partial class MainWindow : Window
 
     private async void LaunchUi24R(object sender, RoutedEventArgs e)
     {
-        var api = new UiHttpMixerApi(logger: null, "192.168.1.57", 80);        
+        var api = new UiHttpMixerApi(CreateLogger("Ui24r"), "192.168.1.57", 80);        
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }
 
     private async void LaunchXR18(object sender, RoutedEventArgs e)
     {
-        var api = OscMixerApi.ForUdp(logger: null, "192.168.1.41", 10024);
+        var api = OscMixerApi.ForUdp(CreateLogger("XR18"), "192.168.1.41", 10024);
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }
 
     private async void LaunchXR16(object sender, RoutedEventArgs e)
     {
-        var api = OscMixerApi.ForUdp(logger: null, "192.168.1.185", 10024);
+        var api = OscMixerApi.ForUdp(CreateLogger("XR16"), "192.168.1.185", 10024);
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }
@@ -42,4 +41,6 @@ public partial class MainWindow : Window
         var window = new MixerWindow { DataContext = vm };
         window.Show();
     }
+
+    private static ILogger CreateLogger(string name) => App.Current.Log.CreateLogger(name);
 }
