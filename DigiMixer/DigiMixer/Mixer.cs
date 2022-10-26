@@ -51,12 +51,12 @@ public sealed class Mixer : INotifyPropertyChanged
         ChannelConfiguration = config;
         api.RegisterReceiver(new MixerReceiver(this));
 
-        InputChannels = ChannelConfiguration.PossiblyPairedInputs
-            .Select(input => new InputChannel(this, input, ChannelConfiguration.PossiblyPairedOutputs))
-            .ToList()
-            .AsReadOnly();
         OutputChannels = ChannelConfiguration.PossiblyPairedOutputs
             .Select(output => new OutputChannel(this, output))
+            .ToList()
+            .AsReadOnly();
+        InputChannels = ChannelConfiguration.PossiblyPairedInputs
+            .Select(input => new InputChannel(this, input, OutputChannels))
             .ToList()
             .AsReadOnly();
 
@@ -71,7 +71,7 @@ public sealed class Mixer : INotifyPropertyChanged
             .ToDictionary(pair => pair.Key, pair => pair.Value);
         // We assume that even for split faders, we're happy to only *report* via a single input/output channel pair.
         // (We will ignore any information about other combinations.)
-        mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.PrimaryInputChannelId, om.PrimaryOutputChannelId));
+        mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannel.LeftOrMonoChannelId, om.OutputChannel.LeftOrMonoChannelId));
         keepAliveTask = StartKeepAliveTask();
     }
 

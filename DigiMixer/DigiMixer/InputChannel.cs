@@ -9,9 +9,9 @@ namespace DigiMixer;
 /// </summary>
 public class InputChannel : ChannelBase, INotifyPropertyChanged
 {
-    internal InputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair, IEnumerable<MonoOrStereoPairChannelId> outputIdPairs) : base(mixer, channelIdPair)
+    internal InputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair, IEnumerable<OutputChannel> outputChannels) : base(mixer, channelIdPair)
     {
-        OutputMappings = outputIdPairs.Select(oidPair => new InputOutputMapping(mixer, channelIdPair, oidPair)).ToList().AsReadOnly();
+        OutputMappings = outputChannels.Select(output => new InputOutputMapping(mixer, this, output)).ToList().AsReadOnly();
     }
 
     /// <summary>
