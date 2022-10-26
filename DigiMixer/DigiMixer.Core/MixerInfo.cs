@@ -1,4 +1,4 @@
-﻿namespace DigiMixer;
+﻿namespace DigiMixer.Core;
 
 // TODO: Look at what's available for Qu-SB
 public sealed class MixerInfo

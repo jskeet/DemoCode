@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace DigiMixer;
+namespace DigiMixer.Core;
 
 /// <summary>
 /// Identifier for a channel, as well as whether it's an input or an output.

@@ -1,4 +1,4 @@
-﻿namespace DigiMixer;
+﻿namespace DigiMixer.Core;
 
 /// <summary>
 /// Interface to receive information from a receiver.

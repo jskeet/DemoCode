@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DigiMixer.Core;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DigiMixer;
@@ -51,11 +52,11 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
         ChannelConfiguration = config;
         api.RegisterReceiver(new MixerReceiver(this));
 
-        OutputChannels = ChannelConfiguration.PossiblyPairedOutputs
+        OutputChannels = ChannelConfiguration.GetPossiblyPairedOutputs()
             .Select(output => new OutputChannel(this, output))
             .ToList()
             .AsReadOnly();
-        InputChannels = ChannelConfiguration.PossiblyPairedInputs
+        InputChannels = ChannelConfiguration.GetPossiblyPairedInputs()
             .Select(input => new InputChannel(this, input, OutputChannels))
             .ToList()
             .AsReadOnly();

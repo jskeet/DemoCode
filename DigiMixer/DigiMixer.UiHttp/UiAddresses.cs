@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.UiHttp;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.UiHttp;
 
 public static class UiAddresses
 {
