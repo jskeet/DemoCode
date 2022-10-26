@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigiMixer.Wpf"
         mc:Ignorable="d"
-        Title="Mixer" d:DataContext="{d:DesignInstance Type=local:MixerViewModel}" SizeToContent="WidthAndHeight">
+        Title="Mixer" d:DataContext="{d:DesignInstance Type=local:MixerViewModel}" SizeToContent="WidthAndHeight" MaxWidth="1500">
     <StackPanel Orientation="Vertical" Margin="5">
 
         <GroupBox Header="Info">
