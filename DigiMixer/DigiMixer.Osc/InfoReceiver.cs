@@ -1,6 +1,7 @@
 ﻿using OscCore;
 using OscMixerControl;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace DigiMixer.Osc;
 
@@ -53,6 +54,31 @@ internal sealed class InfoReceiver
             foreach (var address in addresses)
             {
                 await client.SendAsync(new OscMessage(address)).ConfigureAwait(false);
+            }
+            return await receiver.source.Task.ConfigureAwait(false);
+        }
+        finally
+        {
+            client.PacketReceived -= receiver.Receive;
+        }
+    }
+
+    /// <summary>
+    /// Sends the given bundle to request a refresh for the given addresses, then waits for them all to be received,
+    /// returning them as a dictionary of messages when all have been received.
+    /// </summary>
+    internal static async Task<IDictionary<string, OscMessage>> RequestAndWait(IOscClient client, CancellationToken cancellationToken, OscBundle bundle, params string[] addresses)
+    {
+        var receiver = new InfoReceiver(addresses);
+        client.PacketReceived += receiver.Receive;
+
+        using var _ = cancellationToken.Register(() => receiver.source.TrySetCanceled());
+        try
+        {
+            // TODO: Why does sending a bundle not work? Isn't that what the Android client does?
+            foreach (var message in (IEnumerable<OscMessage>) bundle)
+            {
+                await client.SendAsync(message);
             }
             return await receiver.source.Task.ConfigureAwait(false);
         }

@@ -17,7 +17,7 @@ public partial class MainWindow : Window
 
     private async void LaunchUi24R(object sender, RoutedEventArgs e)
     {
-        var api = new UiHttpMixerApi(CreateLogger("Ui24r"), "192.168.1.57", 80);        
+        var api = new UiHttpMixerApi(CreateLogger("Ui24r"), "192.168.1.57");        
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }
@@ -32,6 +32,13 @@ public partial class MainWindow : Window
     private async void LaunchXR16(object sender, RoutedEventArgs e)
     {
         var api = XAir.CreateMixerApi(CreateLogger("XR16"), "192.168.1.185");
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
+    }
+
+    private async void LaunchM18(object sender, RoutedEventArgs e)
+    {
+        var api = Rcf.CreateMixerApi(CreateLogger("M18"), "192.168.1.58");
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }

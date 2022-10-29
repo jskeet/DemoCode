@@ -17,6 +17,9 @@ public struct ChannelId
     public ChannelId(int value, bool input) =>
         (Value, IsInput) = (value, input);
 
+    public static ChannelId Input(int value) => new ChannelId(value, true);
+    public static ChannelId Output(int value) => new ChannelId(value, false);
+
     public bool Equals(ChannelId other) => Value == other.Value && IsInput == other.IsInput;
     public override int GetHashCode() => Value ^ (IsInput ? 0x10000 : 0);
     public override bool Equals([NotNullWhen(true)] object? obj) => obj is ChannelId other && this == other;

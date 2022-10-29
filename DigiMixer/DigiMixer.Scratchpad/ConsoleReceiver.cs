@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.Scratchpad;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.Scratchpad;
 
 internal class ConsoleReceiver : IMixerReceiver
 {

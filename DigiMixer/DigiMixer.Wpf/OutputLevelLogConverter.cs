@@ -4,7 +4,7 @@ using System.Windows.Data;
 namespace DigiMixer.Wpf
 {
     /// <summary>
-    /// Converter from <see cref="OscMixerControl.Channel.Output"/> levels (non-positive, division by 256 to get to dB)
+    /// Converter from <see cref="Core.MeterLevel"/> levels (non-positive dB)
     /// to a value that spaces the following ranges equally 
     /// - -5dB to 0dB     => 500 to 600
     /// - -10dB to -5dB   => 400 to 500
