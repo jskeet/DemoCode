@@ -20,25 +20,28 @@ internal abstract class OscMixerApiBase : IMixerApi
     // Note: not static as it could be different for different mixers, even just XR12 vs XR16 vs XR18 vs X32
     private readonly Dictionary<string, Action<IMixerReceiver, OscMessage>> receiverActionsByAddress;
 
-    private readonly ILogger logger;
+    protected ILogger Logger { get; }
     private readonly Func<ILogger, IOscClient> clientProvider;
     protected IOscClient Client { get; private set; }
     private Task receivingTask;
     private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
 
+    protected abstract object MutedValue { get; }
+    protected abstract object UnmutedValue { get; }
+
     private protected OscMixerApiBase(ILogger logger, Func<ILogger, IOscClient> clientProvider)
     {
         this.clientProvider = clientProvider;
-        this.logger = logger ?? NullLogger.Instance;
+        Logger = logger ?? NullLogger.Instance;
         Client = IOscClient.Fake.Instance;
         receivingTask = Task.CompletedTask;
         receiverActionsByAddress = BuildReceiverMap();
     }
 
-    public Task Connect()
+    public virtual Task Connect()
     {
         Client.Dispose();
-        var newClient = clientProvider(logger);
+        var newClient = clientProvider(Logger);
         newClient.PacketReceived += ReceivePacket;
         receivingTask = newClient.StartReceiving();
         Client = newClient;
@@ -63,29 +66,7 @@ internal abstract class OscMixerApiBase : IMixerApi
     public void RegisterReceiver(IMixerReceiver receiver) =>
         receivers.Add(receiver);
 
-    public virtual async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
-    {
-        // TODO: Apply some rigour to the delays - potentially wait for responses using InfoReceiver?
-        foreach (var channelId in channelIds)
-        {
-            await Client.SendAsync(new OscMessage(GetMuteAddress(channelId)));
-            await Client.SendAsync(new OscMessage(GetNameAddress(channelId)));
-            if (channelId.IsOutput)
-            {
-                await Client.SendAsync(new OscMessage(GetFaderAddress(channelId)));
-            }
-            await Task.Delay(20);
-        }
-
-        foreach (var input in channelIds.Where(c => c.IsInput))
-        {
-            foreach (var output in channelIds.Where(c => c.IsOutput))
-            {
-                await Client.SendAsync(new OscMessage(GetFaderAddress(input, output)));
-            }
-            await Task.Delay(20);
-        }
-    }
+    public abstract Task RequestAllData(IReadOnlyList<ChannelId> channelIds);
 
     public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
         Client.SendAsync(new OscMessage(GetFaderAddress(inputId, outputId), FromFaderLevel(level)));
@@ -94,7 +75,7 @@ internal abstract class OscMixerApiBase : IMixerApi
         Client.SendAsync(new OscMessage(GetFaderAddress(outputId), FromFaderLevel(level)));
 
     public Task SetMuted(ChannelId channelId, bool muted) =>
-        Client.SendAsync(new OscMessage(GetMuteAddress(channelId), muted ? 0 : 1));
+        Client.SendAsync(new OscMessage(GetMuteAddress(channelId), muted ? MutedValue : UnmutedValue));
 
     private void ReceivePacket(object? sender, OscPacket e)
     {
@@ -140,13 +121,13 @@ internal abstract class OscMixerApiBase : IMixerApi
         foreach (var input in inputs)
         {
             ret[GetNameAddress(input)] = (receiver, message) => receiver.ReceiveChannelName(input, (string) message[0]);
-            ret[GetMuteAddress(input)] = (receiver, message) => receiver.ReceiveMuteStatus(input, (int) message[0] == 0);
+            ret[GetMuteAddress(input)] = (receiver, message) => receiver.ReceiveMuteStatus(input, Equals(MutedValue, message[0]));
         }
 
         foreach (var output in outputs)
         {
             ret[GetNameAddress(output)] = (receiver, message) => receiver.ReceiveChannelName(output, (string) message[0]);
-            ret[GetMuteAddress(output)] = (receiver, message) => receiver.ReceiveMuteStatus(output, (int) message[0] == 0);
+            ret[GetMuteAddress(output)] = (receiver, message) => receiver.ReceiveMuteStatus(output, Equals(MutedValue, message[0]));
             ret[GetFaderAddress(output)] = (receiver, message) => receiver.ReceiveFaderLevel(output, ToFaderLevel((float) message[0]));
         }
 
@@ -160,6 +141,14 @@ internal abstract class OscMixerApiBase : IMixerApi
 
         PopulateReceiverMap(ret);
         return ret;
+    }
+
+    protected void Broadcast(Action<IMixerReceiver> action)
+    {
+        foreach (var receiver in receivers)
+        {
+            action(receiver);
+        }
     }
 
     public void Dispose() => Client.Dispose();

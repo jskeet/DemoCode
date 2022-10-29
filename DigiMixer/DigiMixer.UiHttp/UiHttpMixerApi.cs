@@ -33,7 +33,7 @@ public class UiHttpMixerApi : IMixerApi
     private string? model;
     private string? firmware;
 
-    public UiHttpMixerApi(ILogger? logger, string host, int port)
+    public UiHttpMixerApi(ILogger? logger, string host, int port = 80)
     {
         this.logger = logger ?? NullLogger.Instance;
         this.host = host;

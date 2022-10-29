@@ -10,7 +10,7 @@ using OscCore;
 namespace OscMixerControl;
 
 /// <summary>
-/// Factors methods and constants for working with XAir mixers
+/// Factory methods and constants for working with X-Air mixers
 /// (e.g. XR12, XR16, XR18).
 /// </summary>
 public static class XAir
@@ -18,25 +18,27 @@ public static class XAir
     public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 10024) =>
         new XAirOscMixerApi(logger, host, port);
 
+    // TODO: Should the properties be exposed anywhere?
+
     /// <summary>
     /// The output channel ID for the left side of the main output.
     /// </summary>
-    internal static ChannelId MainOutputLeft { get; } = new ChannelId(100, false);
+    private static ChannelId MainOutputLeft { get; } = new ChannelId(100, false);
 
     /// <summary>
     /// The output channel ID for the right side of the main output.
     /// </summary>
-    internal static ChannelId MainOutputRight { get; } = new ChannelId(101, false);
+    private static ChannelId MainOutputRight { get; } = new ChannelId(101, false);
 
     /// <summary>
     /// The input channel ID for the left "aux" input.
     /// </summary>
-    internal static ChannelId AuxInputLeft { get; } = new ChannelId(17, input: true);
+    private static ChannelId AuxInputLeft { get; } = new ChannelId(17, input: true);
 
     /// <summary>
     /// The input channel ID for the right "aux" input.
     /// </summary>
-    internal static ChannelId AuxInputRight { get; } = new ChannelId(18, input: true);
+    private static ChannelId AuxInputRight { get; } = new ChannelId(18, input: true);
 
     private class XAirOscMixerApi : OscMixerApiBase
     {
@@ -54,7 +56,26 @@ public static class XAir
         public override async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
         {
             await Client.SendAsync(new OscMessage(InfoAddress));
-            await base.RequestAllData(channelIds);
+            // TODO: Apply some rigour to the delays - potentially wait for responses using InfoReceiver?
+            foreach (var channelId in channelIds)
+            {
+                await Client.SendAsync(new OscMessage(GetMuteAddress(channelId)));
+                await Client.SendAsync(new OscMessage(GetNameAddress(channelId)));
+                if (channelId.IsOutput)
+                {
+                    await Client.SendAsync(new OscMessage(GetFaderAddress(channelId)));
+                }
+                await Task.Delay(20);
+            }
+
+            foreach (var input in channelIds.Where(c => c.IsInput))
+            {
+                foreach (var output in channelIds.Where(c => c.IsOutput))
+                {
+                    await Client.SendAsync(new OscMessage(GetFaderAddress(input, output)));
+                }
+                await Task.Delay(20);
+            }
         }
 
         public override async Task<MixerChannelConfiguration> DetectConfiguration()
@@ -155,6 +176,8 @@ public static class XAir
             return prefix + (outputId == MainOutputLeft ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
         }
 
+        protected override object MutedValue { get; } = 0;
+        protected override object UnmutedValue { get; } = 1;
         protected override string GetFaderAddress(ChannelId outputId) => GetOutputPrefix(outputId) + "/mix/fader";
         protected override string GetMuteAddress(ChannelId channelId) => GetPrefix(channelId) + "/mix/on";
         protected override string GetNameAddress(ChannelId channelId) => GetPrefix(channelId) + "/config/name";
