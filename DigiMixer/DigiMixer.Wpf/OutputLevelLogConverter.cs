@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using DigiMixer.Core;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace DigiMixer.Wpf
@@ -18,10 +19,11 @@ namespace DigiMixer.Wpf
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not double db)
+            if (value is not MeterLevel level)
             {
                 throw new ArgumentException();
             }
+            var db = level.Value;
             return db switch
             {      
                 >= -5f => (db + 5f) * (100f / 5f) + 500,

@@ -1,4 +1,5 @@
-﻿using DigiMixer.Wpf.Utilities;
+﻿using DigiMixer.Core;
+using DigiMixer.Wpf.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,18 +27,18 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
 
     public bool IsStereo => Model.IsStereo;
     public string Name => Model.Name;
-    public double Output => Model.MeterLevel.Value;
-    public double StereoOutput => Model.StereoMeterLevel.Value;
+    public MeterLevel Output => Model.MeterLevel;
+    public MeterLevel StereoOutput => Model.StereoMeterLevel;
 
-    private double peakOutput;
-    public double PeakOutput
+    private MeterLevel peakOutput;
+    public MeterLevel PeakOutput
     {
         get => peakOutput;
         private set => SetProperty(ref peakOutput, value);
     }
 
-    private double stereoPeakOutput;
-    public double StereoPeakOutput
+    private MeterLevel stereoPeakOutput;
+    public MeterLevel StereoPeakOutput
     {
         get => stereoPeakOutput;
         private set => SetProperty(ref stereoPeakOutput, value);
@@ -82,20 +83,20 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
     private class PeakBuffer
     {
         private Queue<OutputRecord> queue;
-        private double currentPeak;
+        private MeterLevel currentPeak;
         private readonly long bufferPeriodTicks;
 
         internal PeakBuffer(long bufferPeriodTicks)
         {
             this.bufferPeriodTicks = bufferPeriodTicks;
             queue = new Queue<OutputRecord>();
-            currentPeak = double.MinValue;
+            currentPeak = MeterLevel.MinValue;
         }
 
         /// <summary>
         /// Adds a value to the buffer, trimming the buffer and returning the current peak.
         /// </summary>
-        internal double UpdatePeak(double value)
+        internal MeterLevel UpdatePeak(MeterLevel value)
         {
             long now = DateTime.UtcNow.Ticks;
 
@@ -118,7 +119,7 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
             // to recalculate.
             else if (trimmedPeak)
             {
-                currentPeak = queue.Count == 0 ? double.MinValue : queue.Max(entry => entry.Value);
+                currentPeak = queue.Count == 0 ? MeterLevel.MinValue : queue.Max(entry => entry.Value);
             }
 
             // Now we've worked out the new peak, enqueue the new value with a suitable expiry.
@@ -127,6 +128,6 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
             return currentPeak;
         }
 
-        record struct OutputRecord(long ExpiryTicks, double Value);
+        record struct OutputRecord(long ExpiryTicks, MeterLevel Value);
     }
 }
