@@ -164,7 +164,7 @@ public static class XAir
             static MeterLevel ToMeterLevel(byte[] blob, int index)
             {
                 short level = BitConverter.ToInt16(blob, index * 2 + 4);
-                return new MeterLevel(level / 256.0);
+                return MeterLevel.FromDb(level / 256.0);
             }
         }
 
