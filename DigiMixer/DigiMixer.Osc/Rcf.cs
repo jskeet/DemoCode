@@ -168,12 +168,7 @@ public static class Rcf
                 receiver.ReceiveMeterLevel(MainOutputRight, ToMeterLevel((float) message[27]));
             };
 
-            static MeterLevel ToMeterLevel(float value)
-            {
-                var scaled = (value - 1) * 40;
-                // This is massively wrong, but it's a start.
-                return new MeterLevel(scaled);
-            }
+            static MeterLevel ToMeterLevel(float value) => new MeterLevel(value);
         }
 
         // Addresses

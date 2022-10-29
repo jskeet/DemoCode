@@ -32,13 +32,13 @@
         <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap" x:Name="title" MaxWidth="{Binding ActualWidth, ElementName=metersAndFaders}" HorizontalAlignment="Stretch" />
         <StackPanel Grid.Row="1" Margin="0,5,0,0" Orientation="Horizontal" MinWidth="75" x:Name="metersAndFaders">
             <Grid Width="5" Margin="3,3,0,3">
-                <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="600" Value="{Binding PeakOutput, Mode=OneWay, Converter={StaticResource OutputLevelConverter}}"  />
-                <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="600" Value="{Binding Output, Mode=OneWay, Converter={StaticResource OutputLevelConverter}}" />
+                <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding PeakOutput.Value, Mode=OneWay}"  />
+                <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding Output.Value, Mode=OneWay}" />
             </Grid>
 
             <Grid Width="5" Margin="3,3,0,3" Visibility="{Binding IsStereo, Converter={StaticResource MeterVisibilityConverter}}">
-                <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="600" Value="{Binding StereoPeakOutput, Mode=OneWay, Converter={StaticResource OutputLevelConverter}}"  />
-                <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="600" Value="{Binding StereoOutput, Mode=OneWay, Converter={StaticResource OutputLevelConverter}}" />
+                <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding StereoPeakOutput.Value, Mode=OneWay}"  />
+                <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding StereoOutput.Value, Mode=OneWay}" />
             </Grid>
             
             <ItemsControl ItemsSource="{Binding Faders}" Margin="3,3,0,0">

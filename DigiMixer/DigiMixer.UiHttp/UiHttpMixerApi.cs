@@ -277,11 +277,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             // 240 is actually the highest value we see, but let's make sure that's actually the case...
             int normalized = Math.Min((int) rawValue, 240);
-
-            // -240 to 0.
-            int signed = normalized - 240;
-            // This is massively wrong, but it's a start.
-            return new MeterLevel(signed / 3.0);
+            return new MeterLevel(normalized / 240.0);
         }
     }
 
