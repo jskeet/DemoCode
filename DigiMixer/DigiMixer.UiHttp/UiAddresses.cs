@@ -4,18 +4,18 @@ namespace DigiMixer.UiHttp;
 
 public static class UiAddresses
 {
-    public static ChannelId MainOutputLeft { get; } = new ChannelId(100, input: false);
-    public static ChannelId MainOutputRight { get; } = new ChannelId(101, input: false);
+    public static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
+    public static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
 
     private const int LineInLeftValue = 100;
     private const int LineInRightValue = 101;
     private const int PlayerLeftValue = 102;
     private const int PlayerRightValue = 103;
 
-    public static ChannelId LineInLeft { get; } = new ChannelId(LineInLeftValue, input: true);
-    public static ChannelId LineInRight { get; } = new ChannelId(LineInRightValue, input: true);
-    public static ChannelId PlayerLeft { get; } = new ChannelId(PlayerLeftValue, input: true);
-    public static ChannelId PlayerRight { get; } = new ChannelId(PlayerRightValue, input: true);
+    public static ChannelId LineInLeft { get; } = ChannelId.Input(LineInLeftValue);
+    public static ChannelId LineInRight { get; } = ChannelId.Input(LineInRightValue);
+    public static ChannelId PlayerLeft { get; } = ChannelId.Input(PlayerLeftValue);
+    public static ChannelId PlayerRight { get; } = ChannelId.Input(PlayerRightValue);
 
     internal const string StereoIndex = "stereoIndex";
     
@@ -61,12 +61,12 @@ public static class UiAddresses
         {
             return null;
         }
-        bool isInput = address[0] != 'a';
+        Func<int, ChannelId> channelIdFactory = address[0] == 'a' ? ChannelId.Output : ChannelId.Input;
         for (int index = 2; index < address.Length; index++)
         {
             if (address[index] == '.')
             {
-                return int.TryParse(address[2..index], out var zeroBasedId) ? new ChannelId(zeroBasedId + 1, isInput) : null;
+                return int.TryParse(address[2..index], out var zeroBasedId) ? channelIdFactory(zeroBasedId + 1) : null;
             }
         }
         return null;

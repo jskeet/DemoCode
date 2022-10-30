@@ -23,22 +23,22 @@ public static class XAir
     /// <summary>
     /// The output channel ID for the left side of the main output.
     /// </summary>
-    private static ChannelId MainOutputLeft { get; } = new ChannelId(100, false);
+    private static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
 
     /// <summary>
     /// The output channel ID for the right side of the main output.
     /// </summary>
-    private static ChannelId MainOutputRight { get; } = new ChannelId(101, false);
+    private static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
 
     /// <summary>
     /// The input channel ID for the left "aux" input.
     /// </summary>
-    private static ChannelId AuxInputLeft { get; } = new ChannelId(17, input: true);
+    private static ChannelId AuxInputLeft { get; } = ChannelId.Input(17);
 
     /// <summary>
     /// The input channel ID for the right "aux" input.
     /// </summary>
-    private static ChannelId AuxInputRight { get; } = new ChannelId(18, input: true);
+    private static ChannelId AuxInputRight { get; } = ChannelId.Input(18);
 
     private class XAirOscMixerApi : OscMixerApiBase
     {
@@ -96,27 +96,27 @@ public static class XAir
                 "XR18" => (16, 6),
                 _ => (inputLinks.Count * 2, outputLinks.Count * 2)
             };
-            var inputs = Enumerable.Range(1, inputCount).Select(i => new ChannelId(i, input: true));
+            var inputs = Enumerable.Range(1, inputCount).Select(i => ChannelId.Input(i));
             if (model == "XR18")
             {
                 inputs = inputs.Append(AuxInputLeft).Append(AuxInputRight);
             }
-            var outputs = Enumerable.Range(1, outputCount).Select(i => new ChannelId(i, input: false))
+            var outputs = Enumerable.Range(1, outputCount).Select(i => ChannelId.Output(i))
                 .Append(MainOutputLeft).Append(MainOutputRight);
 
-            var stereoPairs = CreateStereoPairs(inputCount, inputLinks, input: true)
-                .Concat(CreateStereoPairs(outputCount, outputLinks, input: false))
+            var stereoPairs = CreateStereoPairs(inputCount, inputLinks, ChannelId.Input)
+                .Concat(CreateStereoPairs(outputCount, outputLinks, ChannelId.Output))
                 .Append(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
-            IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, bool input)
+            IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, Func<int, ChannelId> factory)
             {
                 var count = Math.Min(max, pairs.Count * 2);
                 for (int i = 1; i <= count - 1; i += 2)
                 {
                     if (pairs[i / 2])
                     {
-                        yield return new StereoPair(new ChannelId(i, input), new ChannelId(i + 1, input), StereoFlags.SplitNames);
+                        yield return new StereoPair(factory(i), factory(i + 1), StereoFlags.SplitNames);
                     }
                 }
             }
@@ -145,7 +145,7 @@ public static class XAir
                 var blob = (byte[]) message[0];
                 for (int i = 1; i <= 18; i++)
                 {
-                    ChannelId inputId = new ChannelId(i, input: true);
+                    ChannelId inputId = ChannelId.Input(i);
                     levels[i - 1] = (inputId, ToMeterLevel(blob, i - 1));
                 }
                 receiver.ReceiveMeterLevels(levels);
@@ -157,7 +157,7 @@ public static class XAir
                 var blob = (byte[]) message[0];
                 for (int i = 1; i <= 6; i++)
                 {
-                    ChannelId outputId = new ChannelId(i, input: false);
+                    ChannelId outputId = ChannelId.Output(i);
                     levels[i - 1] = (outputId, ToMeterLevel(blob, i - 1));
                 }
                 levels[6] = (MainOutputLeft, ToMeterLevel(blob, 6));
@@ -185,8 +185,8 @@ public static class XAir
         protected override string GetFaderAddress(ChannelId outputId) => GetOutputPrefix(outputId) + "/mix/fader";
         protected override string GetMuteAddress(ChannelId channelId) => GetPrefix(channelId) + "/mix/on";
         protected override string GetNameAddress(ChannelId channelId) => GetPrefix(channelId) + "/config/name";
-        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 16).Select(id => new ChannelId(id, input: true)).Append(AuxInputLeft);
-        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(id => new ChannelId(id, input: false)).Append(MainOutputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 16).Select(id => ChannelId.Input(id)).Append(AuxInputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(id => ChannelId.Output(id)).Append(MainOutputLeft);
 
         private static string GetInputPrefix(ChannelId inputId) =>
             inputId == AuxInputLeft ? "/rtn/aux" : $"/ch/{inputId.Value:00}";
