@@ -239,15 +239,15 @@ public class UiHttpMixerApi : IMixerApi
             return;
         }
 
+        var levels = new (ChannelId, MeterLevel)[inputs + aux + 2];
+        int index = 0;
+
         int inputsStart = Header.Length;
         for (int i = 0;  i < inputs; i++)
         {
             var rawLevel = rawData[inputsStart + i * InputsMediaLinesIn.Length + InputsMediaLinesIn.Pre];
             var meterLevel = ToMeterLevel(rawLevel);
-            foreach (var receiver in receivers)
-            {
-                receiver.ReceiveMeterLevel(new ChannelId(i + 1, input: true), meterLevel);
-            }
+            levels[index++] = (new ChannelId(i + 1, input: true), meterLevel);
         }
 
         int auxStart = Header.Length + (inputs + media) * InputsMediaLinesIn.Length + (subgroups + fx) * SubgroupsFx.Length;
@@ -255,10 +255,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             var rawLevel = rawData[auxStart + i * AuxMains.Length + AuxMains.PostFader];
             var meterLevel = ToMeterLevel(rawLevel);
-            foreach (var receiver in receivers)
-            {
-                receiver.ReceiveMeterLevel(new ChannelId(i + 1, input: false), meterLevel);
-            }
+            levels[index++] = (new ChannelId(i + 1, input: false), meterLevel);
         }
 
         // TODO: Validate that we have 2 main outputs?
@@ -267,10 +264,11 @@ public class UiHttpMixerApi : IMixerApi
         {
             var rawLevel = rawData[mainStart + i * AuxMains.Length + AuxMains.PostFader];
             var meterLevel = ToMeterLevel(rawLevel);
-            foreach (var receiver in receivers)
-            {
-                receiver.ReceiveMeterLevel(new ChannelId(UiAddresses.MainOutputLeft.Value + i, input: false), meterLevel);
-            }
+            levels[index++] = (new ChannelId(UiAddresses.MainOutputLeft.Value + i, input: false), meterLevel);
+        }
+        foreach (var receiver in receivers)
+        {
+            receiver.ReceiveMeterLevels(levels);
         }
 
         MeterLevel ToMeterLevel(byte rawValue)

@@ -164,17 +164,20 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
             }
         }
 
-        public void ReceiveMeterLevel(ChannelId channelId, MeterLevel level)
+        public void ReceiveMeterLevels((ChannelId channelId, MeterLevel level)[] levels)
         {
-            if (mixer.TryGetChannelBase(channelId, out var channel))
+            foreach (var (channelId, level) in levels)
             {
-                if (channelId == channel.LeftOrMonoChannelId)
+                if (mixer.TryGetChannelBase(channelId, out var channel))
                 {
-                    channel.MeterLevel = level;
-                }
-                else
-                {
-                    channel.StereoMeterLevel = level;
+                    if (channelId == channel.LeftOrMonoChannelId)
+                    {
+                        channel.MeterLevel = level;
+                    }
+                    else
+                    {
+                        channel.StereoMeterLevel = level;
+                    }
                 }
             }
         }

@@ -13,7 +13,7 @@ internal class ConsoleReceiver : IMixerReceiver
     public void ReceiveFaderLevel(ChannelId outputId, FaderLevel level) =>
         Log($"Fader level {outputId.Value} has level {level.Value}");
 
-    public void ReceiveMeterLevel(ChannelId channel, MeterLevel level)
+    public void ReceiveMeterLevels((ChannelId channelId, MeterLevel level)[] levels)
     {
     }
 

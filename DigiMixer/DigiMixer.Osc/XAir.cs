@@ -141,24 +141,28 @@ public static class XAir
 
             map[InputChannelLevelsMeter] = (receiver, message) =>
             {
+                var levels = new (ChannelId, MeterLevel)[18];
                 var blob = (byte[]) message[0];
                 for (int i = 1; i <= 18; i++)
                 {
                     ChannelId inputId = new ChannelId(i, input: true);
-                    receiver.ReceiveMeterLevel(inputId, ToMeterLevel(blob, i - 1));
+                    levels[i - 1] = (inputId, ToMeterLevel(blob, i - 1));
                 }
+                receiver.ReceiveMeterLevels(levels);
             };
 
             map[OutputChannelLevelsMeter] = (receiver, message) =>
             {
+                var levels = new (ChannelId, MeterLevel)[8];
                 var blob = (byte[]) message[0];
                 for (int i = 1; i <= 6; i++)
                 {
                     ChannelId outputId = new ChannelId(i, input: false);
-                    receiver.ReceiveMeterLevel(outputId, ToMeterLevel(blob, i - 1));
+                    levels[i - 1] = (outputId, ToMeterLevel(blob, i - 1));
                 }
-                receiver.ReceiveMeterLevel(XAir.MainOutputLeft, ToMeterLevel(blob, 6));
-                receiver.ReceiveMeterLevel(XAir.MainOutputRight, ToMeterLevel(blob, 7));
+                levels[6] = (XAir.MainOutputLeft, ToMeterLevel(blob, 6));
+                levels[7] = (XAir.MainOutputRight, ToMeterLevel(blob, 7));
+                receiver.ReceiveMeterLevels(levels);
             };
 
             static MeterLevel ToMeterLevel(byte[] blob, int index)
