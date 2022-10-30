@@ -18,12 +18,12 @@ public static class Rcf
     /// <summary>
     /// The output channel ID for the left side of the main output.
     /// </summary>
-    private static ChannelId MainOutputLeft { get; } = new ChannelId(100, false);
+    private static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
 
     /// <summary>
     /// The output channel ID for the right side of the main output.
     /// </summary>
-    private static ChannelId MainOutputRight { get; } = new ChannelId(101, false);
+    private static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
 
     // See https://github.com/Jille/rcf-m18/blob/master/gen/source.txt for more information
     // App also sends:

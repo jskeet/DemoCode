@@ -87,7 +87,7 @@ public class UiHttpMixerApi : IMixerApi
             .Append(UiAddresses.MainOutputLeft).Append(UiAddresses.MainOutputRight);
 
         var stereoPairs = channels.Where(pair => pair.Value)
-            .Select(pair => new StereoPair(pair.Key, new ChannelId(pair.Key.Value + 1, pair.Key.IsInput), StereoFlags.FullyIndependent))
+            .Select(pair => new StereoPair(pair.Key, pair.Key.WithValue(pair.Key.Value + 1), StereoFlags.FullyIndependent))
             // TODO: Check that we don't have independent faders/mutes
             .Append(new StereoPair(UiAddresses.MainOutputLeft, UiAddresses.MainOutputRight, StereoFlags.None));
 
@@ -247,7 +247,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             var rawLevel = rawData[inputsStart + i * InputsMediaLinesIn.Length + InputsMediaLinesIn.Pre];
             var meterLevel = ToMeterLevel(rawLevel);
-            levels[index++] = (new ChannelId(i + 1, input: true), meterLevel);
+            levels[index++] = (ChannelId.Input(i + 1), meterLevel);
         }
 
         int auxStart = Header.Length + (inputs + media) * InputsMediaLinesIn.Length + (subgroups + fx) * SubgroupsFx.Length;
@@ -255,7 +255,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             var rawLevel = rawData[auxStart + i * AuxMains.Length + AuxMains.PostFader];
             var meterLevel = ToMeterLevel(rawLevel);
-            levels[index++] = (new ChannelId(i + 1, input: false), meterLevel);
+            levels[index++] = (ChannelId.Output(i + 1), meterLevel);
         }
 
         // TODO: Validate that we have 2 main outputs?
@@ -264,7 +264,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             var rawLevel = rawData[mainStart + i * AuxMains.Length + AuxMains.PostFader];
             var meterLevel = ToMeterLevel(rawLevel);
-            levels[index++] = (new ChannelId(UiAddresses.MainOutputLeft.Value + i, input: false), meterLevel);
+            levels[index++] = (ChannelId.Output(UiAddresses.MainOutputLeft.Value + i), meterLevel);
         }
         foreach (var receiver in receivers)
         {
@@ -283,9 +283,9 @@ public class UiHttpMixerApi : IMixerApi
     {
         var ret = new Dictionary<string, Action<IMixerReceiver, UiMessage>>();
 
-        var inputs = Enumerable.Range(1, 22).Select(id => new ChannelId(id, input: true)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
+        var inputs = Enumerable.Range(1, 22).Select(id => ChannelId.Input(id)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
         // Note: no MainOutputRight here as it doesn't have a separate address, so we don't need a separate receiver map.
-        var outputs = Enumerable.Range(1, 8).Select(id => new ChannelId(id, input: false)).Append(UiAddresses.MainOutputLeft);
+        var outputs = Enumerable.Range(1, 8).Select(id => ChannelId.Output(id)).Append(UiAddresses.MainOutputLeft);
 
         // We don't know what order we'll get firmware and model in.
         ret[UiAddresses.Model] = (receiver, message) =>
