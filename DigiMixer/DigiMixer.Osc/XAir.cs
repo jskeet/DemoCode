@@ -99,14 +99,14 @@ public static class XAir
             var inputs = Enumerable.Range(1, inputCount).Select(i => new ChannelId(i, input: true));
             if (model == "XR18")
             {
-                inputs = inputs.Append(XAir.AuxInputLeft).Append(XAir.AuxInputRight);
+                inputs = inputs.Append(AuxInputLeft).Append(AuxInputRight);
             }
             var outputs = Enumerable.Range(1, outputCount).Select(i => new ChannelId(i, input: false))
-                .Append(XAir.MainOutputLeft).Append(XAir.MainOutputRight);
+                .Append(MainOutputLeft).Append(MainOutputRight);
 
             var stereoPairs = CreateStereoPairs(inputCount, inputLinks, input: true)
                 .Concat(CreateStereoPairs(outputCount, outputLinks, input: false))
-                .Append(new StereoPair(XAir.MainOutputLeft, XAir.MainOutputRight, StereoFlags.None));
+                .Append(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
             IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, bool input)
@@ -160,8 +160,8 @@ public static class XAir
                     ChannelId outputId = new ChannelId(i, input: false);
                     levels[i - 1] = (outputId, ToMeterLevel(blob, i - 1));
                 }
-                levels[6] = (XAir.MainOutputLeft, ToMeterLevel(blob, 6));
-                levels[7] = (XAir.MainOutputRight, ToMeterLevel(blob, 7));
+                levels[6] = (MainOutputLeft, ToMeterLevel(blob, 6));
+                levels[7] = (MainOutputRight, ToMeterLevel(blob, 7));
                 receiver.ReceiveMeterLevels(levels);
             };
 
