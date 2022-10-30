@@ -154,18 +154,23 @@ public static class Rcf
                 {
                     return;
                 }
+
+                var levels = new (ChannelId, MeterLevel)[20 + 6 + 2];
+                int index = 0;
+
                 for (int i = 1; i <= 20; i++)
                 {
                     ChannelId inputId = ChannelId.Input(i);
-                    receiver.ReceiveMeterLevel(inputId, ToMeterLevel((float) message[i - 1]));
+                    levels[index++] = (inputId, ToMeterLevel((float) message[i - 1]));
                 }
                 for (int i = 1; i <= 6; i++)
                 {
                     ChannelId outputId = ChannelId.Output(i);
-                    receiver.ReceiveMeterLevel(outputId, ToMeterLevel((float) message[i + 30]));
+                    levels[index++] = (outputId, ToMeterLevel((float) message[i + 30]));
                 }
-                receiver.ReceiveMeterLevel(MainOutputLeft, ToMeterLevel((float) message[26]));
-                receiver.ReceiveMeterLevel(MainOutputRight, ToMeterLevel((float) message[27]));
+                levels[index++] = (MainOutputLeft, ToMeterLevel((float) message[26]));
+                levels[index++] = (MainOutputRight, ToMeterLevel((float) message[27]));
+                receiver.ReceiveMeterLevels(levels);
             };
 
             static MeterLevel ToMeterLevel(float value) => new MeterLevel(value);
