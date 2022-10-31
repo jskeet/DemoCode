@@ -52,8 +52,13 @@ public static class Rcf
 
         private MixerInfo currentInfo = new MixerInfo(null, null, null);
 
-        private static readonly OscMessage[] RequestAllInfoMessages =
-            Enumerable.Range(1, 13).Append(22).Select(i => new OscMessage($"/{i:00}/99/up_{i:000}", 0)).ToArray();
+        private static readonly OscMessage[] RequestAllInfoMessages = Enumerable.Range(1, 13)
+            .Append(22)
+            .Select(i => new OscMessage($"/{i:00}/99/up_{i:000}", 0))
+            .Append(new OscMessage(FirmwareAddress, "0"))
+            .Append(new OscMessage(TargetIdAddress, " "))
+            .Append(new OscMessage(SerialNumberAddress, " "))
+            .ToArray();
 
         internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort) :
             base(logger, logger => new UdpOscClient(logger, host, outboundPort, inboundPort))
