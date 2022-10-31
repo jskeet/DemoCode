@@ -53,7 +53,7 @@ public static class Rcf
         private MixerInfo currentInfo = new MixerInfo(null, null, null);
 
         private static readonly OscMessage[] RequestAllInfoMessages =
-            Enumerable.Range(0, 32).Select(i => new OscMessage($"/{i:00}/99/up_{i:000}", 0)).ToArray();
+            Enumerable.Range(1, 13).Append(22).Select(i => new OscMessage($"/{i:00}/99/up_{i:000}", 0)).ToArray();
 
         internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort) :
             base(logger, logger => new UdpOscClient(logger, host, outboundPort, inboundPort))
@@ -65,8 +65,11 @@ public static class Rcf
             foreach (var message in RequestAllInfoMessages)
             {
                 await Client.SendAsync(new OscMessage(message.Address, 0));
+                // /01/99/up_01 actually takes a bit longer, but that's okay.
+                // We're not relying on having all the data - we just don't want buffers to get too full.
                 await Task.Delay(20);
             }
+            // There's no address for an *actual* Main channel name, so we just fake it here.
             Broadcast(receiver => receiver.ReceiveChannelName(MainOutputLeft, "Main"));
         }
 
@@ -81,8 +84,12 @@ public static class Rcf
         {
             // TODO: See how long this actually takes...
             var token = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
-            var bundle = new OscBundle(DateTime.UtcNow, new OscMessage(StereoLinkAddress, " "));
-            var result = await InfoReceiver.RequestAndWait(Client, token, bundle, StereoLinkAddress);
+            var messages = new[] { new OscMessage(StereoLinkAddress, " ") };
+            var result = await InfoReceiver.RequestAndWait(Client, token, messages, StereoLinkAddress);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Detection timed out");
+            }
             // TODO: Is there such a thing as an output stereo pair?
             // (Sort of: we can assign Main L and Main R to arbitrary buses, but they're not known to be paired.
             // We could potentially detect that.)
