@@ -14,13 +14,13 @@ internal sealed class InfoReceiver
     private ConcurrentDictionary<string, OscMessage> messages;
     private readonly HashSet<string> addresses;
     private int remainingValues;
-    private readonly TaskCompletionSource<IDictionary<string, OscMessage>> source;
+    private readonly TaskCompletionSource<IDictionary<string, OscMessage>?> source;
 
     private InfoReceiver(string[] addresses)
     {
         this.addresses = addresses.ToHashSet();
         remainingValues = this.addresses.Count;
-        source = new TaskCompletionSource<IDictionary<string, OscMessage>>();
+        source = new TaskCompletionSource<IDictionary<string, OscMessage>?>();
         messages = new ConcurrentDictionary<string, OscMessage>();
     }
 
@@ -42,41 +42,24 @@ internal sealed class InfoReceiver
 
     /// <summary>
     /// Requests values for the given set of addresses, returning them as a dictionary of messages when all have been received.
+    /// If the request is cancelled via the cancellation token, a null reference is returned (and no exception is thrown).
     /// </summary>
-    internal static async Task<IDictionary<string, OscMessage>> RequestAndWait(IOscClient client, CancellationToken cancellationToken, params string[] addresses)
-    {
-        var receiver = new InfoReceiver(addresses);
-        client.PacketReceived += receiver.Receive;
-
-        using var _ = cancellationToken.Register(() => receiver.source.TrySetCanceled());
-        try
-        {
-            foreach (var address in addresses)
-            {
-                await client.SendAsync(new OscMessage(address)).ConfigureAwait(false);
-            }
-            return await receiver.source.Task.ConfigureAwait(false);
-        }
-        finally
-        {
-            client.PacketReceived -= receiver.Receive;
-        }
-    }
+    internal static Task<IDictionary<string, OscMessage>?> RequestAndWait(IOscClient client, CancellationToken cancellationToken, params string[] addresses) =>
+        RequestAndWait(client, cancellationToken, addresses.Select(addr => new OscMessage(addr)), addresses);
 
     /// <summary>
-    /// Sends the given bundle to request a refresh for the given addresses, then waits for them all to be received,
+    /// Sends the given messages to request a refresh for the given addresses, then waits for them all to be received,
     /// returning them as a dictionary of messages when all have been received.
     /// </summary>
-    internal static async Task<IDictionary<string, OscMessage>> RequestAndWait(IOscClient client, CancellationToken cancellationToken, OscBundle bundle, params string[] addresses)
+    internal static async Task<IDictionary<string, OscMessage>?> RequestAndWait(IOscClient client, CancellationToken cancellationToken, IEnumerable<OscMessage> messages, params string[] addresses)
     {
         var receiver = new InfoReceiver(addresses);
         client.PacketReceived += receiver.Receive;
 
-        using var _ = cancellationToken.Register(() => receiver.source.TrySetCanceled());
+        using var _ = cancellationToken.Register(() => receiver.source.TrySetResult(null));
         try
         {
-            // TODO: Why does sending a bundle not work? Isn't that what the Android client does?
-            foreach (var message in (IEnumerable<OscMessage>) bundle)
+            foreach (var message in messages)
             {
                 await client.SendAsync(message);
             }

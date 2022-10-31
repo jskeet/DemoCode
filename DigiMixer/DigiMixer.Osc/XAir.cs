@@ -6,6 +6,8 @@ using DigiMixer.Core;
 using DigiMixer.Osc;
 using Microsoft.Extensions.Logging;
 using OscCore;
+using System.Diagnostics;
+using System.Threading.Channels;
 
 namespace OscMixerControl;
 
@@ -55,27 +57,37 @@ public static class XAir
 
         public override async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
         {
+            var stopwatch = Stopwatch.StartNew();
             await Client.SendAsync(new OscMessage(InfoAddress));
             // TODO: Apply some rigour to the delays - potentially wait for responses using InfoReceiver?
             foreach (var channelId in channelIds)
             {
-                await Client.SendAsync(new OscMessage(GetMuteAddress(channelId)));
-                await Client.SendAsync(new OscMessage(GetNameAddress(channelId)));
-                if (channelId.IsOutput)
+                var muteAddress = GetMuteAddress(channelId);
+                var nameAddress = GetNameAddress(channelId);
+                var faderAddress = channelId.IsOutput ? GetFaderAddress(channelId) : null;
+                var result = await InfoReceiver.RequestAndWait(Client, CreateCancellationToken(),
+                    channelId.IsOutput ? new[] { muteAddress, nameAddress, GetFaderAddress(channelId) }
+                    : new[] { muteAddress, nameAddress });
+                if (result is null)
                 {
-                    await Client.SendAsync(new OscMessage(GetFaderAddress(channelId)));
+                    Logger.LogTrace("Fetching name/mute info for {channel} timed out", channelId);
                 }
-                await Task.Delay(20);
             }
 
             foreach (var input in channelIds.Where(c => c.IsInput))
             {
-                foreach (var output in channelIds.Where(c => c.IsOutput))
+                var addresses = channelIds.Where(c => c.IsOutput).Select(output => GetFaderAddress(input, output)).ToArray();
+                var result = await InfoReceiver.RequestAndWait(Client, CreateCancellationToken(), addresses);
+                if (result is null)
                 {
-                    await Client.SendAsync(new OscMessage(GetFaderAddress(input, output)));
+                    Logger.LogTrace("Fetching fader input/output info for {channel} timed out", input);
                 }
-                await Task.Delay(20);
             }
+            stopwatch.Stop();
+            Logger.LogTrace("Requested all data in {ms}ms", stopwatch.ElapsedMilliseconds);
+
+            // In reality we get through all of these in about 50ms, but let's allow for a glitchy connection.
+            CancellationToken CreateCancellationToken() => new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
         }
 
         public override async Task<MixerChannelConfiguration> DetectConfiguration()
@@ -85,6 +97,10 @@ public static class XAir
                 InfoAddress,
                 InputChannelLinkAddress,
                 BusChannelLinkAddress);
+            if (result is null)
+            {
+                throw new InvalidOperationException("Detection timed out");
+            }
             var inputLinks = result[InputChannelLinkAddress].Select(x => x is 1).ToList();
             var outputLinks = result[BusChannelLinkAddress].Select(x => x is 1).ToList();
             var model = (string) result[InfoAddress][2];
@@ -177,7 +193,7 @@ public static class XAir
         protected override string GetFaderAddress(ChannelId inputId, ChannelId outputId)
         {
             string prefix = GetInputPrefix(inputId);
-            return prefix + (outputId == MainOutputLeft ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
+            return prefix + (IsMainOutput(outputId) ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
         }
 
         protected override object MutedValue { get; } = 0;
@@ -189,12 +205,18 @@ public static class XAir
         protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(id => ChannelId.Output(id)).Append(MainOutputLeft);
 
         private static string GetInputPrefix(ChannelId inputId) =>
-            inputId == AuxInputLeft ? "/rtn/aux" : $"/ch/{inputId.Value:00}";
+            IsAuxInput(inputId) ? "/rtn/aux" : $"/ch/{inputId.Value:00}";
 
         private static string GetOutputPrefix(ChannelId outputId) =>
-            outputId == MainOutputLeft ? "/lr" : $"/bus/{outputId.Value}";
+            IsMainOutput(outputId) ? "/lr" : $"/bus/{outputId.Value}";
 
         private static string GetPrefix(ChannelId channelId) =>
             channelId.IsInput ? GetInputPrefix(channelId) : GetOutputPrefix(channelId);
+
+        private static bool IsMainOutput(ChannelId channelId) =>
+            channelId == MainOutputLeft || channelId == MainOutputRight;
+
+        private static bool IsAuxInput(ChannelId channelId) =>
+            channelId == AuxInputLeft || channelId == AuxInputRight;
     }
 }
