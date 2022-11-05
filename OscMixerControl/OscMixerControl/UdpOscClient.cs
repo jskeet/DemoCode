@@ -50,6 +50,18 @@ namespace OscMixerControl
             }
         }
 
-        public void Dispose() => cts.Cancel();
+        public void Dispose()
+        {
+            cts.Cancel();
+            try
+            {
+                client.Dispose();
+            }
+            catch
+            {
+                // If disposing the UdpClient fails, there's really nothing we can
+                // we about it, and it shouldn't do any further harm. Just swallow the error.
+            }
+        }
     }
 }
