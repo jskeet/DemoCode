@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Logging;
 using OscCore;
 using OscMixerControl;
-using System.Net;
-using System.Net.Sockets;
 
 namespace DigiMixer.Osc;
 
@@ -14,6 +12,9 @@ public static class Rcf
 {
     public static IMixerApi CreateMixerApi(ILogger logger, string host, int outboundPort = 8000, int inboundPort = 9000) =>
         new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, outboundPort, inboundPort));
+
+    public static IMixerApi CreateMixerApiForProxy(ILogger logger, string host, int proxyPort = 8001) =>
+        new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, proxyPort));
 
     /// <summary>
     /// The output channel ID for the left side of the main output.
@@ -43,11 +44,6 @@ public static class Rcf
         private const string StereoLinkAddress = "/27/00/gb_078";
         private const string RequestPollAddress = "/00/00/pl_000";
 
-        private const string InputChannelLevelsMeter = "/meters/1";
-        private const string OutputChannelLevelsMeter = "/meters/5";
-        private const string InputChannelLinkAddress = "/config/chlink";
-        private const string BusChannelLinkAddress = "/config/buslink";
-
         private const string MetersAddress = "/00/00/vmeter";
 
         private MixerInfo currentInfo = new MixerInfo(null, null, null);
@@ -62,6 +58,11 @@ public static class Rcf
 
         internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort) :
             base(logger, logger => new UdpOscClient(logger, host, outboundPort, inboundPort))
+        {
+        }
+
+        internal RcfOscMixerApi(ILogger logger, string host, int proxyPort) :
+            base(logger, logger => new UdpOscClient(logger, host, proxyPort))
         {
         }
 
