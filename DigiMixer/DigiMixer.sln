@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Scratchpad", "Dig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Wpf", "DigiMixer.Wpf\DigiMixer.Wpf.csproj", "{9C8B189F-0658-4B14-9A31-BBC58CD2B223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Core", "DigiMixer.Core\DigiMixer.Core.csproj", "{2EBEB007-4969-4D92-B8D1-E6BEE2DBFD68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Core", "DigiMixer.Core\DigiMixer.Core.csproj", "{2EBEB007-4969-4D92-B8D1-E6BEE2DBFD68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.RcfProxy", "DigiMixer.RcfProxy\DigiMixer.RcfProxy.csproj", "{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{2EBEB007-4969-4D92-B8D1-E6BEE2DBFD68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EBEB007-4969-4D92-B8D1-E6BEE2DBFD68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EBEB007-4969-4D92-B8D1-E6BEE2DBFD68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
