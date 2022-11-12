@@ -26,27 +26,42 @@ namespace OscMixerControl
             StartReceiving();
         }
 
-        public Task SendAsync(OscPacket packet)
+        public async Task SendAsync(OscPacket packet)
         {
             var data = packet.ToByteArray();
-            return client.SendAsync(data, data.Length);
+            await client.SendAsync(data, data.Length).ConfigureAwait(false);
         }
 
-        public Task SendAsync(OscPacket packet, IPEndPoint endPoint)
+        public async Task SendAsync(OscPacket packet, IPEndPoint endPoint)
         {
             var data = packet.ToByteArray();
-            return client.SendAsync(data, data.Length, endPoint);
+            await client.SendAsync(data, data.Length, endPoint).ConfigureAwait(false);
         }
 
+        // TODO: Avoid async void methods, and observe exceptions more appropriately.
         private async void StartReceiving()
         {
             while (!cts.IsCancellationRequested)
             {
-                var result = await client.ReceiveAsync();
-                var buffer = result.Buffer;
-                var packet = OscPacket.Read(buffer, 0, buffer.Length);
-                // TODO: Maybe do this asynchronously...
-                PacketReceived?.Invoke(this, packet);
+                try
+                {
+                    var result = await client.ReceiveAsync();
+                    var buffer = result.Buffer;
+                    var packet = OscPacket.Read(buffer, 0, buffer.Length);
+                    // TODO: Maybe do this asynchronously...
+                    PacketReceived?.Invoke(this, packet);
+                }
+                catch (SocketException)
+                {
+                    // We'll keep trying to receive data; we expect
+                    // the caller to dispose of this object (which will break
+                    // the loop) if they want to stop fully.
+                    await Task.Delay(1000);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Just a timing issue; we'll exit the loop imminently.
+                }
             }
         }
 
