@@ -76,7 +76,7 @@ public static class Rcf
                 await Task.Delay(20);
             }
             // There's no address for an *actual* Main channel name, so we just fake it here.
-            Broadcast(receiver => receiver.ReceiveChannelName(MainOutputLeft, "Main"));
+            Receiver.ReceiveChannelName(MainOutputLeft, "Main");
         }
 
         public override async Task Connect()
@@ -132,28 +132,28 @@ public static class Rcf
             await Client.SendAsync(new OscMessage(RequestPollAddress, 1f));
         }
 
-        protected override void PopulateReceiverMap(Dictionary<string, Action<IMixerReceiver, OscMessage>> map)
+        protected override void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map)
         {
             // TODO: Check these make sense later...
-            map[FirmwareAddress] = (receiver, message) =>
+            map[FirmwareAddress] = message =>
             {
                 currentInfo = new MixerInfo(currentInfo.Model, currentInfo.Name, (string) message[0]);
-                receiver.ReceiveMixerInfo(currentInfo);
+                Receiver.ReceiveMixerInfo(currentInfo);
             };
 
-            map[TargetIdAddress] = (receiver, message) =>
+            map[TargetIdAddress] = message =>
             {
                 currentInfo = new MixerInfo((string) message[0], currentInfo.Name, currentInfo.Version);
-                receiver.ReceiveMixerInfo(currentInfo);
+                Receiver.ReceiveMixerInfo(currentInfo);
             };
 
-            map[SerialNumberAddress] = (receiver, message) =>
+            map[SerialNumberAddress] = message =>
             {
                 currentInfo = new MixerInfo(currentInfo.Model, (string) message[0], currentInfo.Version);
-                receiver.ReceiveMixerInfo(currentInfo);
+                Receiver.ReceiveMixerInfo(currentInfo);
             };
 
-            map[MetersAddress] = (receiver, message) =>
+            map[MetersAddress] = message =>
             {
                 // Meter format:
                 // 0-19: Inputs (20)
@@ -183,7 +183,7 @@ public static class Rcf
                 }
                 levels[index++] = (MainOutputLeft, ToMeterLevel((float) message[26]));
                 levels[index++] = (MainOutputRight, ToMeterLevel((float) message[27]));
-                receiver.ReceiveMeterLevels(levels);
+                Receiver.ReceiveMeterLevels(levels);
             };
 
             static MeterLevel ToMeterLevel(float value) => new MeterLevel(value);
@@ -210,8 +210,8 @@ public static class Rcf
             : $"/22/00/gb_12{channelId.Value:0}";
 
         // Note: ignoring FX returns (21-23) here, but including the player channels (19-20).
-        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 20).Select(id => ChannelId.Input(id));
-        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(id => ChannelId.Output(id)).Append(MainOutputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 20).Select(ChannelId.Input);
+        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(ChannelId.Output).Append(MainOutputLeft);
 
         private static string GetOutputPrefix(ChannelId outputId)
         {

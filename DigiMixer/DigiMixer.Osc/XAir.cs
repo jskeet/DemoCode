@@ -145,17 +145,17 @@ public static class XAir
             await Client.SendAsync(new OscMessage("/batchsubscribe", OutputChannelLevelsMeter, OutputChannelLevelsMeter, 0, 0, 0 /* fast */));
         }
 
-        protected override void PopulateReceiverMap(Dictionary<string, Action<IMixerReceiver, OscMessage>> map)
+        protected override void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map)
         {
-            map[InfoAddress] = (receiver, message) =>
+            map[InfoAddress] = message =>
             {
                 string version = (string) message[0] + " / " + (string) message[3];
                 string model = (string) message[2];
                 string name = (string) message[1];
-                receiver.ReceiveMixerInfo(new MixerInfo(model, name, version));
+                Receiver.ReceiveMixerInfo(new MixerInfo(model, name, version));
             };
 
-            map[InputChannelLevelsMeter] = (receiver, message) =>
+            map[InputChannelLevelsMeter] = message =>
             {
                 var levels = new (ChannelId, MeterLevel)[18];
                 var blob = (byte[]) message[0];
@@ -164,10 +164,10 @@ public static class XAir
                     ChannelId inputId = ChannelId.Input(i);
                     levels[i - 1] = (inputId, ToMeterLevel(blob, i - 1));
                 }
-                receiver.ReceiveMeterLevels(levels);
+                Receiver.ReceiveMeterLevels(levels);
             };
 
-            map[OutputChannelLevelsMeter] = (receiver, message) =>
+            map[OutputChannelLevelsMeter] = message =>
             {
                 var levels = new (ChannelId, MeterLevel)[8];
                 var blob = (byte[]) message[0];
@@ -178,7 +178,7 @@ public static class XAir
                 }
                 levels[6] = (MainOutputLeft, ToMeterLevel(blob, 6));
                 levels[7] = (MainOutputRight, ToMeterLevel(blob, 7));
-                receiver.ReceiveMeterLevels(levels);
+                Receiver.ReceiveMeterLevels(levels);
             };
 
             static MeterLevel ToMeterLevel(byte[] blob, int index)
@@ -201,8 +201,8 @@ public static class XAir
         protected override string GetFaderAddress(ChannelId outputId) => GetOutputPrefix(outputId) + "/mix/fader";
         protected override string GetMuteAddress(ChannelId channelId) => GetPrefix(channelId) + "/mix/on";
         protected override string GetNameAddress(ChannelId channelId) => GetPrefix(channelId) + "/config/name";
-        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 16).Select(id => ChannelId.Input(id)).Append(AuxInputLeft);
-        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(id => ChannelId.Output(id)).Append(MainOutputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 16).Select(ChannelId.Input).Append(AuxInputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(ChannelId.Output).Append(MainOutputLeft);
 
         private static string GetInputPrefix(ChannelId inputId) =>
             IsAuxInput(inputId) ? "/rtn/aux" : $"/ch/{inputId.Value:00}";

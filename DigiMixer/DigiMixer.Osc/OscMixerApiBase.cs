@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using OscCore;
 using OscMixerControl;
-using System.Collections.Concurrent;
 
 namespace DigiMixer.Osc;
 
@@ -18,13 +17,15 @@ namespace DigiMixer.Osc;
 internal abstract class OscMixerApiBase : IMixerApi
 {
     // Note: not static as it could be different for different mixers, even just XR12 vs XR16 vs XR18 vs X32
-    private readonly Dictionary<string, Action<IMixerReceiver, OscMessage>> receiverActionsByAddress;
+    private readonly Dictionary<string, Action<OscMessage>> receiverActionsByAddress;
 
     protected ILogger Logger { get; }
     private readonly Func<ILogger, IOscClient> clientProvider;
     protected IOscClient Client { get; private set; }
     private Task receivingTask;
-    private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
+    private readonly DelegatingReceiver receiver = new();
+
+    protected IMixerReceiver Receiver => receiver;
 
     protected abstract object MutedValue { get; }
     protected abstract object UnmutedValue { get; }
@@ -57,14 +58,14 @@ internal abstract class OscMixerApiBase : IMixerApi
     /// <summary>
     /// Populates the address to receiver action map for any addresses which aren't just faders/mutes/names.
     /// </summary>
-    protected abstract void PopulateReceiverMap(Dictionary<string, Action<IMixerReceiver, OscMessage>> map);
+    protected abstract void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map);
 
     // TODO: Document this more
     protected abstract IEnumerable<ChannelId> GetPotentialInputChannels();
     protected abstract IEnumerable<ChannelId> GetPotentialOutputChannels();
 
     public void RegisterReceiver(IMixerReceiver receiver) =>
-        receivers.Add(receiver);
+        this.receiver.RegisterReceiver(receiver);
 
     public abstract Task RequestAllData(IReadOnlyList<ChannelId> channelIds);
 
@@ -79,7 +80,7 @@ internal abstract class OscMixerApiBase : IMixerApi
 
     private void ReceivePacket(object? sender, OscPacket e)
     {
-        if (receivers.IsEmpty)
+        if (receiver.IsEmpty)
         {
             return;
         }
@@ -100,19 +101,16 @@ internal abstract class OscMixerApiBase : IMixerApi
         {
             return;
         }
-        foreach (var receiver in receivers)
-        {
-            action(receiver, message);
-        }
+        action(message);
     }
 
     private static float FromFaderLevel(FaderLevel level) => level.Value / (float) FaderLevel.MaxValue;
 
     private static FaderLevel ToFaderLevel(float value) => new FaderLevel((int) (value * FaderLevel.MaxValue));
 
-    private Dictionary<string, Action<IMixerReceiver, OscMessage>> BuildReceiverMap()
+    private Dictionary<string, Action<OscMessage>> BuildReceiverMap()
     {
-        var ret = new Dictionary<string, Action<IMixerReceiver, OscMessage>>();
+        var ret = new Dictionary<string, Action<OscMessage>>();
 
         // TODO: Populate this on-demand? Would avoid assumptions about the number of inputs/outputs...
         var inputs = GetPotentialInputChannels();
@@ -120,35 +118,27 @@ internal abstract class OscMixerApiBase : IMixerApi
 
         foreach (var input in inputs)
         {
-            ret[GetNameAddress(input)] = (receiver, message) => receiver.ReceiveChannelName(input, (string) message[0]);
-            ret[GetMuteAddress(input)] = (receiver, message) => receiver.ReceiveMuteStatus(input, Equals(MutedValue, message[0]));
+            ret[GetNameAddress(input)] = message => receiver.ReceiveChannelName(input, (string) message[0]);
+            ret[GetMuteAddress(input)] = message => receiver.ReceiveMuteStatus(input, Equals(MutedValue, message[0]));
         }
 
         foreach (var output in outputs)
         {
-            ret[GetNameAddress(output)] = (receiver, message) => receiver.ReceiveChannelName(output, (string) message[0]);
-            ret[GetMuteAddress(output)] = (receiver, message) => receiver.ReceiveMuteStatus(output, Equals(MutedValue, message[0]));
-            ret[GetFaderAddress(output)] = (receiver, message) => receiver.ReceiveFaderLevel(output, ToFaderLevel((float) message[0]));
+            ret[GetNameAddress(output)] = message => receiver.ReceiveChannelName(output, (string) message[0]);
+            ret[GetMuteAddress(output)] = message => receiver.ReceiveMuteStatus(output, Equals(MutedValue, message[0]));
+            ret[GetFaderAddress(output)] = message => receiver.ReceiveFaderLevel(output, ToFaderLevel((float) message[0]));
         }
 
         foreach (var input in inputs)
         {
             foreach (var output in outputs)
             {
-                ret[GetFaderAddress(input, output)] = (receiver, message) => receiver.ReceiveFaderLevel(input, output, ToFaderLevel((float) message[0]));
+                ret[GetFaderAddress(input, output)] = message => receiver.ReceiveFaderLevel(input, output, ToFaderLevel((float) message[0]));
             }
         }
 
         PopulateReceiverMap(ret);
         return ret;
-    }
-
-    protected void Broadcast(Action<IMixerReceiver> action)
-    {
-        foreach (var receiver in receivers)
-        {
-            action(receiver);
-        }
     }
 
     public void Dispose() => Client.Dispose();
