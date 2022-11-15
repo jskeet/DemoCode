@@ -1,9 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.Wpf.Utilities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace DigiMixer.Wpf;
 
@@ -73,9 +70,11 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
                 break;
             case nameof(ChannelBase.MeterLevel):
                 RaisePropertyChanged(nameof(Output));
+                PeakOutput = peakBuffer.UpdatePeak(Output);
                 break;
             case nameof(ChannelBase.StereoMeterLevel):
                 RaisePropertyChanged(nameof(StereoOutput));
+                StereoPeakOutput = stereoPeakBuffer.UpdatePeak(StereoOutput);
                 break;
         }
     }
