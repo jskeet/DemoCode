@@ -133,7 +133,7 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
             this.mixer = mixer;
         }
 
-        public void ReceiveChannelName(ChannelId channelId, string name)
+        public void ReceiveChannelName(ChannelId channelId, string? name)
         {
             if (mixer.TryGetChannelBase(channelId, out var channel))
             {
