@@ -4,7 +4,7 @@ namespace DigiMixer.Scratchpad;
 
 internal class ConsoleReceiver : IMixerReceiver
 {
-    public void ReceiveChannelName(ChannelId channelId, string name) =>
+    public void ReceiveChannelName(ChannelId channelId, string? name) =>
         Log($"{channelId} has name {name}");
 
     public void ReceiveFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
