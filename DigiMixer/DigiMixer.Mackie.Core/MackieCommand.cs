@@ -1,4 +1,4 @@
-﻿namespace DigiMixer.Mackie;
+﻿namespace DigiMixer.Mackie.Core;
 
 public enum MackieCommand : byte
 {
@@ -10,5 +10,5 @@ public enum MackieCommand : byte
     ChannelValues = 0x13,
     BroadcastControl = 0x15,
     MeterLayout = 0x16,
-    ChannelName = 0x18
+    ChannelNames = 0x18
 }

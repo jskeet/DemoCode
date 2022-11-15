@@ -11,5 +11,6 @@
         <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR18">Launch XR18</Button>
         <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR16">Launch XR16</Button>
         <Button Margin="3" HorizontalAlignment="Left" Click="LaunchM18">Launch M18</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchDL16S">Launch DL16S</Button>
     </StackPanel>
 </Window>

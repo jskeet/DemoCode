@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 
-namespace DigiMixer.Mackie;
+namespace DigiMixer.Mackie.Core;
 
 // TODO: Work out thread safety better.
 
@@ -139,6 +138,10 @@ public sealed class MackieController : IDisposable
     private async Task SendPacket(MackiePacket packet, CancellationToken cancellationToken)
     {
         var data = packet.ToByteArray();
+        if (logger.IsEnabled(LogLevel.Trace))
+        {
+            logger.LogTrace("Sending packet: {packet}", packet);
+        }
         await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -152,8 +155,10 @@ public sealed class MackieController : IDisposable
 
     public void Dispose()
     {
+        // TODO: Wait for all outstanding tasks?
+
+        // Cancelling the token should stop everything else (at the end of the receiving loop).
         cts?.Cancel();
-        // TODO: Wait for all tasks?
     }
 
     public async Task Start()
@@ -165,7 +170,8 @@ public sealed class MackieController : IDisposable
         tcpClient = new TcpClient { NoDelay = true };
         try
         {
-            await tcpClient.ConnectAsync(host, port, cts.Token);
+            // TODO: Use ConnectAsync instead? We don't really want to hand control back to the caller until this has completed though...
+            tcpClient.Connect(host, port);
 
             var stream = tcpClient.GetStream();
             // TODO: Is this enough? In theory I guess it could be 256K...
@@ -182,7 +188,7 @@ public sealed class MackieController : IDisposable
                 var bytesRead = await stream.ReadAsync(buffer, position, buffer.Length - position, cts.Token);
                 // The index at the end of where we have valid data.
                 int end = position + bytesRead;
-                while (MackiePacket.TryParse(buffer, start, end) is MackiePacket packet)
+                while (MackiePacket.TryParse(buffer, start, end - start) is MackiePacket packet)
                 {
                     // TODO: Remember this task somewhere...
                     _ = HandlePacketReceived(packet, cts.Token);

@@ -1,4 +1,5 @@
-﻿using DigiMixer.Osc;
+﻿using DigiMixer.Mackie;
+using DigiMixer.Osc;
 using DigiMixer.UiHttp;
 using Microsoft.Extensions.Logging;
 using OscMixerControl;
@@ -39,6 +40,13 @@ public partial class MainWindow : Window
     private async void LaunchM18(object sender, RoutedEventArgs e)
     {
         var api = Rcf.CreateMixerApi(CreateLogger("M18"), "192.168.1.58");
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
+    }
+
+    private async void LaunchDL16S(object sender, RoutedEventArgs e)
+    {
+        var api = new MackieMixerApi(CreateLogger("DL16S"), "192.168.1.59");
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }

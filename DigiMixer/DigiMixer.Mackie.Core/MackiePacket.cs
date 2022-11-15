@@ -1,6 +1,8 @@
-﻿namespace DigiMixer.Mackie;
+﻿using System.Text;
 
-public class MackiePacket
+namespace DigiMixer.Mackie.Core;
+
+public sealed class MackiePacket
 {
     private static readonly byte[] emptyBody = new byte[0];
     private const byte Header0 = 0xab;
@@ -12,7 +14,7 @@ public class MackiePacket
     public int Length => Body.Length == 0 ? 8 : Body.Length + 12;
     public MackiePacketBody Body { get; }
 
-    internal MackiePacket(byte sequence, MackiePacketType type, MackieCommand command, MackiePacketBody body)
+    public MackiePacket(byte sequence, MackiePacketType type, MackieCommand command, MackiePacketBody body)
     {
         Sequence = sequence;
         Type = type;
@@ -93,5 +95,27 @@ public class MackiePacket
     }
 
     // TODO: Include the hex of the body?
-    public override string ToString() => $"Seq: {Sequence:x2}; Type: {Type}; Command: {Command}; Body: {Body.Length} bytes";
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.Append($"Seq: {Sequence:x2}; Type: {Type}; Command: {Command}; Body: {Body.Length} bytes");
+        if (Body.Length > 0)
+        {
+            var data = Body.InNetworkOrder().Data;
+            builder.Append(":");
+            for (int i = 0; i < 8 && i < data.Length; i += 4)
+            {
+                if (i != 0)
+                {
+                    builder.Append(" ");
+                }
+                builder.AppendFormat(" {0:x2} {1:x2} {2:x2} {3:x2}", data[i], data[i + 1], data[i + 2], data[i + 3]);
+            }
+            if (Body.Length > 8)
+            {
+                builder.Append("...");
+            }
+        }
+        return builder.ToString();
+    }
 }

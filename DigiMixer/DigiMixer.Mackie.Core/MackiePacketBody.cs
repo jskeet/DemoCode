@@ -5,7 +5,7 @@ namespace DigiMixer.Mackie;
 /// <summary>
 /// The body of a Mackie protocol packet.
 /// </summary>
-public class MackiePacketBody
+public sealed class MackiePacketBody
 {
     /// <summary>
     /// An empty packet body.
@@ -85,12 +85,12 @@ public class MackiePacketBody
     public uint GetUInt32(int chunk)
     {
         uint raw = BitConverter.ToUInt32(data, chunk * 4);
-        return IsNetworkOrder
+        return !IsNetworkOrder
             ? raw
-            : ((raw >> 24) << 0) |
-              ((raw >> 16) << 8) |
-              ((raw >> 8) << 16) |
-              ((raw >> 0) << 24);
+            : (((raw >> 24) & 0xff) << 0) |
+              (((raw >> 16) & 0xff) << 8) |
+              (((raw >> 8) & 0xff) << 16) |
+              (((raw >> 0) & 0xff) << 24);
     }
 
     /// <summary>
@@ -111,13 +111,13 @@ public class MackiePacketBody
     {
         var builder = new StringBuilder();
         builder.Append(IsNetworkOrder ? "(N)" : "(S)");
-        for (int i = 0; i < data.Length; i++)
+        for (int i = 0; i < data.Length; i += 4)
         {
             if (i != 0)
             {
                 builder.Append(" ");
             }
-            builder.AppendFormat(" {x:00} {x:00} {x:00} {x:00}", data[i], data[i + 1], data[i + 2], data[i + 3]);
+            builder.AppendFormat(" {0:x2} {1:x2} {2:x2} {3:x2}", data[i], data[i + 1], data[i + 2], data[i + 3]);
         }
         return builder.ToString();
     }
