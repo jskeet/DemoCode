@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Mackie;
+using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
