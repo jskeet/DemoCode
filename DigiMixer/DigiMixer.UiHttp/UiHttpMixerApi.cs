@@ -27,7 +27,7 @@ public class UiHttpMixerApi : IMixerApi
     private Task sendingClientReadTask;
     private IUiClient receivingClient;
     private Task receivingClientReadTask;
-    private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
+    private readonly DelegatingReceiver receiver = new();
 
     // We get these separately, so when we've seen both, we respond with "mixer info received".
     private string? model;
@@ -46,12 +46,12 @@ public class UiHttpMixerApi : IMixerApi
     }
 
     public void RegisterReceiver(IMixerReceiver receiver) =>
-        receivers.Add(receiver);
+        this.receiver.RegisterReceiver(receiver);
 
     public async Task Connect()
     {
-        sendingClient?.Dispose();
-        receivingClient?.Dispose();
+        sendingClient.Dispose();
+        receivingClient.Dispose();
 
         // Create two clients: one to send all changes to, and the other to
         // receive all information from. That way we have our own changes reflected back to us,
@@ -168,18 +168,18 @@ public class UiHttpMixerApi : IMixerApi
     public async Task SendKeepAlive()
     {
         // Note: this call *does* need to send a message to receivingClient
-        await (sendingClient?.Send(UiMessage.AliveMessage) ?? Task.CompletedTask);
-        await (receivingClient?.Send(UiMessage.AliveMessage) ?? Task.CompletedTask);
+        await sendingClient.Send(UiMessage.AliveMessage);
+        await receivingClient.Send(UiMessage.AliveMessage);
     }
 
     public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
-        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
     public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
-        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
     public Task SetMuted(ChannelId inputId, bool muted) =>
-        sendingClient?.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
 
     private void ReceiveMessage(object? sender, UiMessage message)
     {
@@ -192,7 +192,7 @@ public class UiHttpMixerApi : IMixerApi
             Console.WriteLine($"Value: {message.Value}");
             Console.WriteLine();
         }*/
-        if (receivers.IsEmpty)
+        if (receiver.IsEmpty)
         {
             return;
         }
@@ -209,10 +209,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             return;
         }
-        foreach (var receiver in receivers)
-        {
-            action(receiver, message);
-        }
+        action(receiver, message);
     }
 
     private void ProcessMeters(string base64)
@@ -266,10 +263,7 @@ public class UiHttpMixerApi : IMixerApi
             var meterLevel = ToMeterLevel(rawLevel);
             levels[index++] = (ChannelId.Output(UiAddresses.MainOutputLeft.Value + i), meterLevel);
         }
-        foreach (var receiver in receivers)
-        {
-            receiver.ReceiveMeterLevels(levels);
-        }
+        receiver.ReceiveMeterLevels(levels);
 
         MeterLevel ToMeterLevel(byte rawValue)
         {
@@ -283,9 +277,9 @@ public class UiHttpMixerApi : IMixerApi
     {
         var ret = new Dictionary<string, Action<IMixerReceiver, UiMessage>>();
 
-        var inputs = Enumerable.Range(1, 22).Select(id => ChannelId.Input(id)).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
+        var inputs = Enumerable.Range(1, 22).Select(ChannelId.Input).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
         // Note: no MainOutputRight here as it doesn't have a separate address, so we don't need a separate receiver map.
-        var outputs = Enumerable.Range(1, 8).Select(id => ChannelId.Output(id)).Append(UiAddresses.MainOutputLeft);
+        var outputs = Enumerable.Range(1, 8).Select(ChannelId.Output).Append(UiAddresses.MainOutputLeft);
 
         // We don't know what order we'll get firmware and model in.
         ret[UiAddresses.Model] = (receiver, message) =>
@@ -335,5 +329,12 @@ public class UiHttpMixerApi : IMixerApi
 
     private static FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderLevel.MaxValue));
 
-    public void Dispose() => sendingClient?.Dispose();
+    public void Dispose()
+    {
+        sendingClient.Dispose();
+        receivingClient.Dispose();
+
+        sendingClient = IUiClient.Fake.Instance;
+        receivingClient = IUiClient.Fake.Instance;
+    }
 }

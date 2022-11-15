@@ -13,7 +13,7 @@ namespace DigiMixer.Core;
 public class AutoReceiveMixerApi : IMixerApi
 {
     private readonly IMixerApi target;
-    private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
+    private readonly DelegatingReceiver receiver = new();
 
     public AutoReceiveMixerApi(IMixerApi target)
     {
@@ -29,7 +29,7 @@ public class AutoReceiveMixerApi : IMixerApi
 
     public void RegisterReceiver(IMixerReceiver receiver)
     {
-        receivers.Add(receiver);
+        this.receiver.RegisterReceiver(receiver);
         target.RegisterReceiver(receiver);
     }
 
@@ -41,27 +41,18 @@ public class AutoReceiveMixerApi : IMixerApi
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
         await target.SetFaderLevel(inputId, outputId, level);
-        foreach (var receiver in receivers)
-        {
-            receiver.ReceiveFaderLevel(inputId, outputId, level);
-        }
+        receiver.ReceiveFaderLevel(inputId, outputId, level);
     }
 
     public async Task SetFaderLevel(ChannelId outputId, FaderLevel level)
     {
         await target.SetFaderLevel(outputId, level);
-        foreach (var receiver in receivers)
-        {
-            receiver.ReceiveFaderLevel(outputId, level);
-        }
+        receiver.ReceiveFaderLevel(outputId, level);
     }
 
     public async Task SetMuted(ChannelId channelId, bool muted)
     {
         await target.SetMuted(channelId, muted);
-        foreach (var receiver in receivers)
-        {
-            receiver.ReceiveMuteStatus(channelId, muted);
-        }
+        receiver.ReceiveMuteStatus(channelId, muted);
     }
 }

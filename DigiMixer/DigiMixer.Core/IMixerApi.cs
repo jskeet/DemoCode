@@ -7,6 +7,8 @@
 /// </summary>
 public interface IMixerApi : IDisposable
 {
+    // TODO: How do we deregister? Should we have another method?
+
     /// <summary>
     /// Registers the given receiver for updates to the state of the mixer.
     /// </summary>
