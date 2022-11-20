@@ -56,4 +56,6 @@ internal static class MackieConversions
             >= 8 => 10f
         };
     }
+
+    internal static MeterLevel ToMeterLevel(float value) => MeterLevel.FromDb(value);
 }

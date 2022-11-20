@@ -65,8 +65,8 @@ public sealed class MackiePacket
         byte[] packet = new byte[Length];
         packet[0] = Header0;
         packet[1] = Sequence;
-        packet[2] = (byte) ((Body.Length / 4) >> 8);
-        packet[3] = (byte) ((Body.Length / 4) >> 0);
+        packet[2] = (byte) (Body.ChunkCount >> 8);
+        packet[3] = (byte) (Body.ChunkCount >> 0);
         packet[4] = (byte) Type;
         packet[5] = (byte) Command;
 
