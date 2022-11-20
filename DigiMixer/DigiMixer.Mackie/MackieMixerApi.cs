@@ -2,7 +2,9 @@
 using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Reflection.Emit;
+using System.Collections.Concurrent;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DigiMixer.Mackie;
@@ -18,6 +20,8 @@ public class MackieMixerApi : IMixerApi
 
     private readonly Dictionary<int, ChannelValueAction> channelValueActions;
     private readonly Dictionary<int, Action<string>> channelNameActions;
+
+    private ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> pendingChannelDataTasks = new();
 
     private MackieController? controller;
     private Task? controllerTask;
@@ -47,19 +51,30 @@ public class MackieMixerApi : IMixerApi
         await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8]);
         await controller.SendRequest((MackieCommand) 3, MackiePacketBody.Empty);
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 });
+
+        var inputMeters = Enumerable.Range(1, 18).Select(input => (input - 1) * 7 + 0x22);
+        var mainMeters = new int[] { 0xbe, 0xbf };
+        var auxMeters = Enumerable.Range(1, 6).Select(aux => (aux - 1) * 4 + 0xc6);
+        var meterLayout = inputMeters.Concat(mainMeters).Concat(auxMeters).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
         //var meterLayout = Enumerable.Range(1, 221).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
-        //await controller.SendRequest(MackieCommand.MeterLayout, new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray());
-        //await controller.SendRequest(MackieCommand.BroadcastControl, new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 });
+        await controller.SendRequest(MackieCommand.MeterLayout, new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray());
+        await controller.SendRequest(MackieCommand.BroadcastControl, new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 });
     }
 
-    public Task<MixerChannelConfiguration> DetectConfiguration()
+    public async Task<MixerChannelConfiguration> DetectConfiguration()
     {
-        // TODO: Actually detect stuff
         var inputs = Enumerable.Range(1, 18).Select(ChannelId.Input);
         var outputs = new[] { MackieAddresses.MainOutputLeft, MackieAddresses.MainOutputRight }.Concat(Enumerable.Range(1, 6).Select(ChannelId.Output));
-        var stereoPairs = new[] { new StereoPair(MackieAddresses.MainOutputLeft, MackieAddresses.MainOutputRight, StereoFlags.None) };
-        var configuration = new MixerChannelConfiguration(inputs, outputs, stereoPairs);
-        return Task.FromResult(configuration);
+
+        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token;
+        var pendingTask = PendingChannelDataTask.Start(pendingChannelDataTasks, cancellationToken);
+        await RequestChannelData(cancellationToken).ConfigureAwait(false);
+        var pendingData = await pendingTask.ConfigureAwait(false);
+
+        var stereoPairs = pendingData.GetStereoLinks()
+            .Append(MackieAddresses.MainOutputLeft)
+            .Select(link => new StereoPair(link, link.WithValue(link.Value + 1), StereoFlags.None));
+        return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
     }
 
     public void RegisterReceiver(IMixerReceiver receiver) =>
@@ -69,11 +84,14 @@ public class MackieMixerApi : IMixerApi
     {
         //var firmwareInfo = await SendRequest(MackieCommand.FirmwareInfo, MackiePacketBody.Empty);
         //var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 3 });
-        await SendRequest(MackieCommand.ChannelInfoControl, new MackiePacketBody(new byte[] { 0, 0, 0, 6 }));
+        await RequestChannelData().ConfigureAwait(false);
     }
 
+    private async Task RequestChannelData(CancellationToken cancellationToken = default) =>
+        await SendRequest(MackieCommand.ChannelInfoControl, new MackiePacketBody(new byte[] { 0, 0, 0, 6 }), cancellationToken).ConfigureAwait(false);
+
     public async Task SendKeepAlive() =>
-        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty);
+        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty).ConfigureAwait(false);
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
@@ -120,7 +138,37 @@ public class MackieMixerApi : IMixerApi
 
     private void HandleBroadcastPacket(MackiePacket packet)
     {
-        // TODO
+        var body = packet.Body;
+
+        // 2 chunks of header, then 26 chunks values:
+        // - Input channels 1-18 (pre-fader)
+        // - Main L/R (post-fader)
+        // - Aux 1-6 (post-fader)
+        if (body.ChunkCount != 2 + 26)
+        {
+            return;
+        }
+
+        var levels = new (ChannelId, MeterLevel)[18 + 2 + 6];
+
+        int index = 0;
+        for (int i = 1; i <= 18; i++)
+        {
+            ChannelId inputId = ChannelId.Input(i);
+            levels[index] = (inputId, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+            index++;
+        }
+        levels[index] = (MackieAddresses.MainOutputLeft, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+        index++;
+        levels[index] = (MackieAddresses.MainOutputRight, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+        index++;
+        for (int i = 1; i <= 6; i++)
+        {
+            ChannelId outputId = ChannelId.Output(i);
+            levels[index] = (outputId, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+            index++;
+        }
+        receiver.ReceiveMeterLevels(levels);
     }
 
     private void HandleChannelValues(MackiePacket packet)
@@ -137,7 +185,7 @@ public class MackieMixerApi : IMixerApi
             return;
         }
         int start = body.GetInt32(0);
-        for (int i = 2; i < body.Length / 4; i++)
+        for (int i = 2; i < body.ChunkCount; i++)
         {
             int address = start - 2 + i;
 
@@ -178,6 +226,7 @@ public class MackieMixerApi : IMixerApi
         foreach (var inputId in inputIds)
         {
             dictionary.Add(MackieAddresses.GetMuteAddress(inputId), (body, chunk) => receiver.ReceiveMuteStatus(inputId, body.GetInt32(chunk) != 0));
+            dictionary.Add(MackieAddresses.GetStereoLinkAddress(inputId), CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(inputId, body.GetInt32(chunk) == 1)));
             foreach (var outputId in outputIds)
             {
                 dictionary.Add(MackieAddresses.GetFaderAddress(inputId, outputId), (body, chunk) =>
@@ -190,7 +239,17 @@ public class MackieMixerApi : IMixerApi
             dictionary.Add(MackieAddresses.GetMuteAddress(outputId), (body, chunk) => receiver.ReceiveMuteStatus(outputId, body.GetInt32(chunk) != 0));
             dictionary.Add(MackieAddresses.GetFaderAddress(outputId), (body, chunk) =>
                 receiver.ReceiveFaderLevel(outputId, MackieConversions.ToFaderLevel(body.GetSingle(chunk))));
+            dictionary.Add(MackieAddresses.GetStereoLinkAddress(outputId), CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(outputId, body.GetInt32(chunk) == 1)));
         }
+
+        ChannelValueAction CreatePendingDataAction(Action<PendingChannelDataTask, MackiePacketBody, int> action) => (body, chunk) =>
+        {
+            foreach (var pendingDataTask in pendingChannelDataTasks.Keys)
+            {
+                action(pendingDataTask, body, chunk);
+            }
+        };
+
         return dictionary;
     }
 
@@ -217,12 +276,29 @@ public class MackieMixerApi : IMixerApi
         return dictionary;
     }
 
+    private void MaybeCompleteChannelInfo(MackiePacket packet)
+    {
+        var body = packet.Body;
+        if (body.Length < 1)
+        {
+            return;
+        }
+        if (body.GetInt32(0) != 7)
+        {
+            return;
+        }
+        foreach (var pendingDataTask in pendingChannelDataTasks.Keys)
+        {
+            pendingDataTask.SignalCompletion();
+        }
+    }
+
     private void MapController(MackieController controller)
     {
         controller.MapBroadcastAction(HandleBroadcastPacket);
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        // TODO: Include "if the value is 7, indicate end of data"?
+        controller.MapCommandAction(MackieCommand.ChannelInfoControl, MaybeCompleteChannelInfo);
         controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
         controller.MapCommandAction(MackieCommand.ChannelNames, HandleChannelNames);
@@ -235,4 +311,53 @@ public class MackieMixerApi : IMixerApi
         controller is null
             ? new MackiePacket(1, MackiePacketType.Response, command, MackiePacketBody.Empty)
             : await controller.SendRequest(command, body, cancellationToken).ConfigureAwait(false);
+
+    /// <summary>
+    /// TODO: Rename this, maybe handle it differently... it's all a bit odd, basically.
+    /// This is used when detecting configuration. We issue a "give me all the data" command, and then wait for the mixer to send "all done".
+    /// That's fiddly.
+    /// </summary>
+    private class PendingChannelDataTask
+    {
+        private readonly TaskCompletionSource<PendingChannelDataTask> tcs;
+        private readonly CancellationTokenRegistration cancellationTokenRegistration;
+        // TODO: Use a different collection type. Most concurrent collections don't have a way of removing an item.
+        private readonly ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> parentCollection;
+
+        private readonly ConcurrentDictionary<ChannelId, bool> stereoLinks;
+
+        private PendingChannelDataTask(ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> parentCollection, CancellationToken cancellationToken)
+        {
+            this.parentCollection = parentCollection;
+            stereoLinks = new();
+            tcs = new TaskCompletionSource<PendingChannelDataTask>();
+            cancellationTokenRegistration = cancellationToken.Register(SignalCancellation);
+            parentCollection[this] = this;
+        }
+
+        public static Task<PendingChannelDataTask> Start(ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> parentCollection, CancellationToken cancellationToken)
+        {
+            var obj = new PendingChannelDataTask(parentCollection, cancellationToken);
+            return obj.tcs.Task;
+        }
+
+        private void SignalCancellation()
+        {
+            tcs.TrySetCanceled();
+            cancellationTokenRegistration.Unregister();
+            parentCollection.TryRemove(this, out _);
+        }
+
+        public void SignalCompletion()
+        {
+            tcs.TrySetResult(this);
+            cancellationTokenRegistration.Unregister();
+            parentCollection.TryRemove(this, out _);
+        }
+
+        public void SetStereoLink(ChannelId channelId, bool stereo) =>
+            stereoLinks[channelId] = stereo;
+
+        public IEnumerable<ChannelId> GetStereoLinks() => stereoLinks.Where(pair => pair.Value).Select(pair => pair.Key).ToList();
+    }
 }

@@ -55,7 +55,9 @@ await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 
 await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 3 });
 await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 4 });
 await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 0x12 });
-await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[] { 0, 0, 0, 6 });
+//await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[] { 0, 0, 0, 6 });
+
+await controller.SendRequest(MackieCommand.ChannelValues, new MackiePacketBodyBuilder(2).SetInt32(0, 1).SetInt32(1, 0x0500 | (100 << 16)).Build());
 
 //var meterLayout = Enumerable.Range(1, 221).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
 //await controller.SendRequest(MackieCommand.MeterLayout, new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray());

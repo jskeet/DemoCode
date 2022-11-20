@@ -33,17 +33,23 @@ internal static class MackieAddresses
     }
 
     internal static int GetFaderAddress(ChannelId outputId) =>
-        outputId == MainOutputLeft ? 0x09d7 : (outputId.Value - 1) * 90 + 0x0a32;
+        outputId == MainOutputLeft ? 0x09d7 : GetOutputOrigin(outputId) + 1;
 
     internal static int GetMuteAddress(ChannelId channelId) =>
-        channelId.IsInput ? GetInputOrigin(channelId) + 7
+        channelId.IsInput ? GetInputOrigin(channelId) + 0x07
         : channelId == MainOutputLeft ? 0x09d8
-        : (channelId.Value - 1) * 90 + 0x0a31;
+        : GetOutputOrigin(channelId) + 0;
 
     internal static int GetNameAddress(ChannelId channelId) =>
         channelId.IsInput ? channelId.Value
         : channelId == MainOutputLeft ? 0x21
         : channelId.Value + 0x21;
 
+    internal static int GetStereoLinkAddress(ChannelId channelId) =>
+        channelId.IsInput
+        ? GetInputOrigin(channelId) + 0x0b
+        : GetOutputOrigin(channelId) + 0x04;
+
     private static int GetInputOrigin(ChannelId inputId) => (inputId.Value - 1) * 100 + 1;
+    private static int GetOutputOrigin(ChannelId outputId) => (outputId.Value - 1) * 90 + 0x0a31;
 }

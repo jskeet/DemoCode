@@ -22,6 +22,7 @@ public sealed class MackiePacketBody
     private byte[] data;
     public ReadOnlySpan<byte> Data => data.AsSpan();
     public int Length => Data.Length;
+    public int ChunkCount => Length / 4;
 
     public bool IsNetworkOrder { get; }
 
