@@ -41,9 +41,9 @@ namespace OscMixerControl
         // TODO: Avoid async void methods, and observe exceptions more appropriately.
         private async void StartReceiving()
         {
-            while (!cts.IsCancellationRequested)
+            try
             {
-                try
+                while (!cts.IsCancellationRequested)
                 {
                     var result = await client.ReceiveAsync();
                     var buffer = result.Buffer;
@@ -51,17 +51,18 @@ namespace OscMixerControl
                     // TODO: Maybe do this asynchronously...
                     PacketReceived?.Invoke(this, packet);
                 }
-                catch (SocketException)
+            }
+            catch (Exception)
+            {
+                // If the exception is caused by the client being disposed
+                // after the cancellation token being cancelled, that's fine.
+                if (cts.IsCancellationRequested)
                 {
-                    // We'll keep trying to receive data; we expect
-                    // the caller to dispose of this object (which will break
-                    // the loop) if they want to stop fully.
-                    await Task.Delay(1000);
+                    return;
                 }
-                catch (ObjectDisposedException)
-                {
-                    // Just a timing issue; we'll exit the loop imminently.
-                }
+                // TODO: Log the exception.
+                // It's probably because the mixer is unavailable. The caller
+                // is expected to notice this, dispose and reconnect.
             }
         }
 
