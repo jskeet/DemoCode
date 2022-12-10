@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JonSkeet.MiscUtil" Version="0.2.0" />
+    <PackageReference Include="JonSkeet.MiscUtil" Version="0.2.0" NoWarn="NU1701" />
     <PackageReference Include="NodaTime" Version="3.0.3" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.9" />
   </ItemGroup>
