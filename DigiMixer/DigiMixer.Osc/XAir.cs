@@ -7,7 +7,6 @@ using DigiMixer.Osc;
 using Microsoft.Extensions.Logging;
 using OscCore;
 using System.Diagnostics;
-using System.Threading.Channels;
 
 namespace OscMixerControl;
 

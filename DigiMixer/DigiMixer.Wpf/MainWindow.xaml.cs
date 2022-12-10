@@ -30,6 +30,13 @@ public partial class MainWindow : Window
         Launch(mixer);
     }
 
+    private async void LaunchX32(object sender, RoutedEventArgs e)
+    {
+        var api = XAir.CreateMixerApi(CreateLogger("X32"), "192.168.1.62", 10023);
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
+    }
+
     private async void LaunchXR16(object sender, RoutedEventArgs e)
     {
         var api = XAir.CreateMixerApi(CreateLogger("XR16"), "192.168.1.185");
