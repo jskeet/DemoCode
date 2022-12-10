@@ -2,16 +2,27 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
+
 namespace OscMixerControl
 {
     /// <summary>
-    /// Factors methods and constants for working with XAir mixers
-    /// (e.g. XR12, XR16, XR18).
+    /// The <see cref="IMixerDescriptor"/> for working with XAir mixers (e.g. XR12, XR16, XR18).
     /// </summary>
-    public static class XAir
+    public class XAirDescriptor : IMixerDescriptor
     {
-        public const string InputChannelLevelsMeter = "/meters/1";
-        public const string OutputChannelLevelsMeter = "/meters/5";
+        public static XAirDescriptor Instance { get; } = new XAirDescriptor();
+
+        private XAirDescriptor()
+        {
+        }
+
+        public string InputChannelLevelsMeter => "/meters/1";
+        public string OutputChannelLevelsMeter => "/meters/5";
+        public bool ReflectsChanges => true;
+
+        public short GetMeterValue(byte[] blob, int index) =>
+            BitConverter.ToInt16(blob, index * 2 + 4);
 
         /// <summary>
         /// Creates a main input channel representation for the given mixer.
@@ -20,7 +31,7 @@ namespace OscMixerControl
         /// <param name="index">The index of the channel, in the range 1-18.</param>
         /// <param name="stereo">True for stereo inputs (expecting the index to be the lower one); false for mono</param>
         /// <returns>The new channel.</returns>
-        public static Channel CreateInputChannel(Mixer mixer, int index, bool stereo = false)
+        public Channel CreateInputChannel(Mixer mixer, int index, bool stereo = false)
         {
             var prefix = $"/ch/{index:00}";
             return new Channel(mixer,
@@ -40,7 +51,7 @@ namespace OscMixerControl
         /// <param name="channelIndex">The index of the channel, in the range 1-18.</param>
         /// <param name="stereo">True for stereo inputs (expecting the index to be the lower one); false for mono</param>
         /// <returns>The new channel.</returns>
-        public static Channel CreateBusInputChannel(Mixer mixer, int busIndex, int channelIndex, bool stereo = false)
+        public Channel CreateBusInputChannel(Mixer mixer, int busIndex, int channelIndex, bool stereo = false)
         {
             var prefix = $"/ch/{channelIndex:00}";
             return new Channel(mixer,
@@ -61,7 +72,7 @@ namespace OscMixerControl
         /// </summary>
         /// <param name="mixer">The mixer this channel belongs to.</param>
         /// <returns>The new channel.</returns>
-        public static Channel CreateAuxInputChannel(Mixer mixer)
+        public Channel CreateAuxInputChannel(Mixer mixer)
         {
             var prefix = $"/rtn/aux";
             return new Channel(mixer,
@@ -79,7 +90,7 @@ namespace OscMixerControl
         /// <param name="mixer">The mixer this channel belongs to.</param>
         /// <param name="busIndex">The index of the bus, in the range 1-6.</param>
         /// <returns>The new channel.</returns>
-        public static Channel CreateBusAuxInputChannel(Mixer mixer, int busIndex)
+        public Channel CreateBusAuxInputChannel(Mixer mixer, int busIndex)
         {
             var prefix = $"/rtn/aux";
             return new Channel(mixer,
@@ -98,7 +109,7 @@ namespace OscMixerControl
         /// <param name="mixer">The mixer the output channel belongs to.</param>
         /// <param name="index">The index of the bus, in the range 1-6.</param>
         /// <returns>The output channel.</returns>
-        public static Channel CreateAuxOutputChannel(Mixer mixer, int index, bool stereo = false)
+        public Channel CreateAuxOutputChannel(Mixer mixer, int index, bool stereo = false)
         {
             var prefix = $"/bus/{index}";
             return new Channel(mixer,
@@ -116,7 +127,7 @@ namespace OscMixerControl
         /// </summary>
         /// <param name="mixer">The mixer the output channel belongs to.</param>
         /// <returns>The output channel.</returns>
-        public static Channel CreateMainOutputChannel(Mixer mixer) =>
+        public Channel CreateMainOutputChannel(Mixer mixer) =>
             new Channel(mixer,
                 "/lr/config/name",
                 "/lr/mix/fader",

@@ -61,6 +61,8 @@ namespace OscMixerControl
             }
         }
 
+        private bool LocalReflect => !mixer.Descriptor.ReflectsChanges;
+
         /// <summary>
         /// The level of the fader, as set by the user.
         /// </summary>
@@ -95,13 +97,13 @@ namespace OscMixerControl
         public bool HasOn => onAddress is object;
 
         public Task SetName(string value) =>
-            mixer.SendAsync(new OscMessage(nameAddress, value));
+            mixer.SendAsync(new OscMessage(nameAddress, value), LocalReflect);
 
         public Task SetFaderLevel(float value) =>
-            mixer.SendAsync(new OscMessage(faderLevelAddress, value));
+            mixer.SendAsync(new OscMessage(faderLevelAddress, value), LocalReflect);
 
         public Task SetOn(int value) =>
-            mixer.SendAsync(new OscMessage(onAddress, value));
+            mixer.SendAsync(new OscMessage(onAddress, value), LocalReflect);
 
         private void HandleNameMessage(object sender, OscMessage message)
         {
@@ -113,11 +115,11 @@ namespace OscMixerControl
         private void HandleOutputLevelMessage(object sender, OscMessage message)
         {
             var blob = (byte[]) message[0];
-            Output = BitConverter.ToInt16(blob, meterIndex * 2 + 4);
+            Output = mixer.Descriptor.GetMeterValue(blob, meterIndex);
             RaisePropertyChanged(nameof(Output));
             if (meterIndex2 is int index2)
             {
-                Output2 = BitConverter.ToInt16(blob, index2 * 2 + 4);
+                Output2 = mixer.Descriptor.GetMeterValue(blob, index2);
                 RaisePropertyChanged(nameof(Output2));
             }
         }

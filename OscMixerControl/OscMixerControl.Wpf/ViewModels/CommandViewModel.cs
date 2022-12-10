@@ -4,12 +4,9 @@
 
 using Microsoft.Extensions.Logging;
 using OscCore;
-using OscMixerControl.Wpf.Models;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace OscMixerControl.Wpf.ViewModels
 {
@@ -28,7 +25,7 @@ namespace OscMixerControl.Wpf.ViewModels
 
         public CommandViewModel(ILogger logger)
         {
-            mixer = new Mixer();
+            mixer = new Mixer(XAirDescriptor.Instance);
             mixer.PacketReceived += (sender, packet) => logger.LogPacket(packet);
 
             Parameters = new ObservableCollection<CommandParameterViewModel>();
