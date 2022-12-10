@@ -31,7 +31,8 @@ namespace OscMixerControl.Wpf.ViewModels
         {
             this.logger = logger;
             renewTimer = new DispatcherTimer(TimeSpan.FromSeconds(5), DispatcherPriority.Normal, RefreshSubscriptionsAsync, Dispatcher.CurrentDispatcher);
-            Mixer = new Mixer();
+            // TODO: Allow the user to specify this, or detect it.
+            Mixer = new Mixer(XAirDescriptor.Instance);
             Mixer.PacketReceived += (sender, packet) =>
             {
                 if (LogPackets)
@@ -41,13 +42,13 @@ namespace OscMixerControl.Wpf.ViewModels
             };
 
             InputChannels = Enumerable.Range(1, 5)
-                .Select(index => new ChannelViewModel(XAir.CreateInputChannel(Mixer, index), $"Input {index}"))
+                .Select(index => new ChannelViewModel(Mixer.Descriptor.CreateInputChannel(Mixer, index), $"Input {index}"))
                 .ToList();
 
             // Outputs
             OutputChannels = Enumerable.Range(1, 6)
-                .Select(index => new ChannelViewModel(XAir.CreateAuxOutputChannel(Mixer, index), $"Bus {index}"))
-                .Concat(new[] { new ChannelViewModel(XAir.CreateMainOutputChannel(Mixer), "Main") })
+                .Select(index => new ChannelViewModel(Mixer.Descriptor.CreateAuxOutputChannel(Mixer, index), $"Bus {index}"))
+                .Concat(new[] { new ChannelViewModel(Mixer.Descriptor.CreateMainOutputChannel(Mixer), "Main") })
                 .ToList();
         }
 
@@ -63,8 +64,8 @@ namespace OscMixerControl.Wpf.ViewModels
             {
                 await channelVm.RequestDataOnce().ConfigureAwait(false);
             }
-            await Mixer.SendBatchSubscribeAsync(XAir.InputChannelLevelsMeter, XAir.InputChannelLevelsMeter, 0, 0, TimeFactor.Medium);
-            await Mixer.SendBatchSubscribeAsync(XAir.OutputChannelLevelsMeter, XAir.OutputChannelLevelsMeter, 0, 0, TimeFactor.Medium);
+            await Mixer.SendBatchSubscribeAsync(Mixer.Descriptor.InputChannelLevelsMeter, Mixer.Descriptor.InputChannelLevelsMeter, 0, 0, TimeFactor.Medium);
+            await Mixer.SendBatchSubscribeAsync(Mixer.Descriptor.OutputChannelLevelsMeter, Mixer.Descriptor.OutputChannelLevelsMeter, 0, 0, TimeFactor.Medium);
         }
 
         private async void RefreshSubscriptionsAsync(object sender, EventArgs e)

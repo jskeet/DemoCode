@@ -12,13 +12,19 @@ namespace OscMixerControl
     public class Mixer : IDisposable
     {
         // TODO: Should the mixer keep current values for everything? It could do, but that's a lot of data.
-
+        
         private IOscClient client;
         private Func<IOscClient> clientProvider;
         private ConcurrentDictionary<string, EventHandler<OscMessage>> messageHandlers =
             new ConcurrentDictionary<string, EventHandler<OscMessage>>();
         
         public event EventHandler<OscPacket> PacketReceived;
+        public IMixerDescriptor Descriptor { get; }
+
+        public Mixer(IMixerDescriptor descriptor)
+        {
+            Descriptor = descriptor;
+        }
 
         public void Connect(string address, int port) =>
             Connect(() => new UdpOscClient(address, port));
@@ -55,8 +61,26 @@ namespace OscMixerControl
             }
         }
 
-        public Task SendAsync(OscPacket packet) =>
-            client?.SendAsync(packet) ?? Task.CompletedTask;
+        /// <summary>
+        /// Sends the given packet to the hardware mixer, optionally immediately acting as if it
+        /// had been sent back by the mixer and received by this object.
+        /// </summary>
+        /// <param name="packet">The packet to send</param>
+        /// <param name="localReflect">False (the default) if the packet should only be sent;
+        /// True if this object should then respond as if the hardware mixer had sent the packet back
+        /// immediately.</param>
+        public async Task SendAsync(OscPacket packet, bool localReflect = false)
+        {
+            if (client is null)
+            {
+                return;
+            }
+            await client.SendAsync(packet);
+            if (localReflect)
+            {
+                HandlePacketReceived(this, packet);
+            }
+        }
 
         /// <summary>
         /// Convenience method to send a simple request that just consists of the OSC
