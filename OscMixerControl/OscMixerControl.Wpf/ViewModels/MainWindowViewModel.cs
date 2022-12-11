@@ -18,7 +18,7 @@ namespace OscMixerControl.Wpf.ViewModels
         public Log Log { get; }
         public ILogger Logger => Log.Logger;
 
-        private string mixerAddress = "192.168.1.170";
+        private string mixerAddress = "192.168.1.41";
         public string MixerAddress
         {
             get => mixerAddress;

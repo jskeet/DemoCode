@@ -1,0 +1,7 @@
+﻿// This is the format of /js/initparams.js:
+
+curSetup = /* see formatted-cur-setup.json */;function staticInitDataArray() {dataValue=/* see formatted-data-config.json */;
+
+netConfig=/* see formatted-net-config.json */;
+
+}

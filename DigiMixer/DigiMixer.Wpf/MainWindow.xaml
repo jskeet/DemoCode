@@ -1,0 +1,17 @@
+﻿<Window x:Class="DigiMixer.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigiMixer.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" SizeToContent="WidthAndHeight">
+    <StackPanel Margin="10">
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchUi24R">Launch Ui24R</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchX32">Launch X32</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR18">Launch XR18</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR16">Launch XR16</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchM18">Launch M18</Button>
+        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchDL16S">Launch DL16S</Button>
+    </StackPanel>
+</Window>

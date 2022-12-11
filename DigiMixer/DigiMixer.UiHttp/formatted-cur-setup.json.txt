@@ -1,0 +1,12 @@
+﻿{
+  input: 24,
+  fx: 4,
+  aux: 10,
+  bankSize: 8,
+  sub: 6,
+  maxx: false,
+  rec: true,
+  phantom: 20,
+  linein: 2,
+  uniqueid: "8100C002204620952082107914052408"
+}
