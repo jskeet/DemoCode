@@ -19,7 +19,7 @@ public struct MeterLevel : IEquatable<MeterLevel>, IComparable<MeterLevel>
         Value = value;
 
     /// <summary>
-    /// Converts from <see cref="Core.MeterLevel"/> levels (non-positive dB)
+    /// Converts from decibel levels (non-positive dB)
     /// to a value that spaces the following ranges equally:
     /// - -5dB to 0dB     => 500 to 600
     /// - -10dB to -5dB   => 400 to 500
