@@ -21,21 +21,35 @@ public class X32Descriptor : IMixerDescriptor
     public string OutputChannelLevelsMeter => "/meters/2";
     public bool ReflectsChanges => false;
 
-    public short GetMeterValue(byte[] blob, int index)
+    public double GetMeterValue(byte[] blob, int index)
     {
-        // TODO: Make this a lot better
-        float linear = BitConverter.ToSingle(blob, index * 4 + 4);
-        double db = linear switch
-        {
-            float f when f >= 0.8f => (f - 1) * 12.5,
-            float f when f >= 0.55f => (f - 0.8) * 10 - 2.5,
-            float f when f >= 0.30f => (f - 0.55) * 20 - 5,
-            float f when f >= 0.10f => (f - 0.3) * 50 - 10,
-            float f when f >= 0.03f => (f - 0.1) * 142.9 - 20,
-            float f when f >= 0.01f => (f - 0.03) * 500 - 30,
-            _ => short.MinValue / 256d
-        };
-        return (short) (db * 256);
+        float raw = BitConverter.ToSingle(blob, index * 4 + 4);
+        // I have no source for this other than trial and error - but it comes *really* close.
+        // Test data obtained using the oscillator:
+        // 0 => 0dB
+        // 0.000089 => -81dB
+        // 0.000126 => -78dB
+        // 0.000177 => -75dB
+        // 0.000251 => -72dB
+        // 0.000998 => -60dB
+        // 0.001774 => -55dB
+        // 0.003155 => -50dB
+        // 0.005611 => -45dB
+        // 0.009978 => -40dB
+        // 0.017743 => -35dB
+        // 0.031552 => -30dB
+        // 0.056108 => -25dB
+        // 0.099775 => -20dB
+        // 0.177429 => -15dB
+        // 0.315517 => -10dB
+        // 0.420749 => -7.5dB
+        // 0.561078 => -5dB
+        // 0.629540 => -4dB
+        // 0.706356 => -3dB
+        // 0.792544 => -2dB
+        // 0.889249 => -1dB
+        // 1 => 0dB
+        return raw == 0 ? double.NegativeInfinity : 8.67 * Math.Log(raw);
     }
 
     /// <summary>

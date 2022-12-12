@@ -21,8 +21,8 @@ namespace OscMixerControl
         public string OutputChannelLevelsMeter => "/meters/5";
         public bool ReflectsChanges => true;
 
-        public short GetMeterValue(byte[] blob, int index) =>
-            BitConverter.ToInt16(blob, index * 2 + 4);
+        public double GetMeterValue(byte[] blob, int index) =>
+            BitConverter.ToInt16(blob, index * 2 + 4) / 256.0;
 
         /// <summary>
         /// Creates a main input channel representation for the given mixer.

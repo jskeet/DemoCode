@@ -20,6 +20,7 @@
             <local:LogLevelBrushConverter x:Key="LevelConverter" ErrorBrush="Red" WarnBrush="Orange" CriticalBrush="Red" />
             <local:VolumeConverter x:Key="VolumeConverter" />
             <local:MeterTextConverter x:Key="MeterTextConverter" />
+            <local:OutputLevelConverter x:Key="OutputLevelConverter" />
             <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>

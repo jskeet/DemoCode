@@ -23,11 +23,11 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}" />
         <Slider Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="3,0,3,0" Orientation="Vertical" Minimum="0" Maximum="1024" Height="100" Value="{Binding FaderLevel}"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Output,Converter={StaticResource MeterTextConverter}}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Output, Converter={StaticResource MeterTextConverter}}"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-            <ProgressBar Orientation="Vertical" Minimum="-25600" Maximum="0" Value="{Binding Output, Mode=OneWay}" HorizontalAlignment="Left" MinWidth="5" Height="80" />
-            <ProgressBar Margin="3,0,0,0" Orientation="Vertical" Minimum="-25600" Maximum="0"
-                         Value="{Binding Output2, Mode=OneWay}" HorizontalAlignment="Left" MinWidth="5" Height="80"
+            <ProgressBar Orientation="Vertical" Minimum="0" Maximum="1" Value="{Binding Output, Mode=OneWay, Converter={StaticResource OutputLevelConverter}}" HorizontalAlignment="Left" MinWidth="5" Height="80" />
+            <ProgressBar Margin="3,0,0,0" Orientation="Vertical" Minimum="0" Maximum="1"
+                         Value="{Binding Output2, Mode=OneWay, Converter={StaticResource OutputLevelConverter}}" HorizontalAlignment="Left" MinWidth="5" Height="80"
                          Visibility="{Binding HasOutput2, Converter={StaticResource VisibilityConverter}}" />
         </StackPanel>
         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FaderLevel, Converter={StaticResource VolumeConverter}}" />

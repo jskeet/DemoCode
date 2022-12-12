@@ -27,8 +27,8 @@ namespace OscMixerControl.Wpf.ViewModels
             set => Model.SetName(value);
         }
 
-        public short Output => Model.Output;
-        public short Output2 => Model.Output2;
+        public double Output => Model.Output;
+        public double Output2 => Model.Output2;
         public bool HasOutput2 => Model.HasOutput2;
 
         public int FaderLevel

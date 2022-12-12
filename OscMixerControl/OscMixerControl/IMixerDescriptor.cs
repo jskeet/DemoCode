@@ -29,10 +29,10 @@ public interface IMixerDescriptor
     string OutputChannelLevelsMeter { get; }
 
     /// <summary>
-    /// Returns the value for the given index, as an integer value, which is
-    /// 256 * the dB value (for compatibility with earlier code).
+    /// Returns the value for the given index, as a decibel value.
+    /// (The expected maximum value is 0dB.)
     /// </summary>
-    short GetMeterValue(byte[] blob, int index);
+    double GetMeterValue(byte[] blob, int index);
 
     /// <summary>
     /// Creates a main input channel representation for the given mixer.

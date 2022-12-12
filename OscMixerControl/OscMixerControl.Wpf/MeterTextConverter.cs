@@ -15,12 +15,12 @@ namespace OscMixerControl.Wpf
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not short level)
+            if (value is not double db)
             {
                 throw new ArgumentException();
             }
             // TODO: Caching?
-            return (level / 256) + " db";
+            return db + " dB";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>

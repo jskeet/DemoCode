@@ -69,17 +69,15 @@ namespace OscMixerControl
         public float FaderLevel { get; private set; }
 
         /// <summary>
-        /// The current output of the channel.
-        /// (Always non-positive; divide by 256.0 to get to dB.)
+        /// The current output of the channel, as a dB value.
         /// </summary>
-        public short Output { get; private set; }
+        public double Output { get; private set; } = double.NegativeInfinity;
 
         /// <summary>
         /// The current second output of the channel (usually for the right
-        /// side if the left side is in <see cref="Output"/>).
-        /// (Always non-positive; divide by 256.0 to get to dB.)
+        /// side if the left side is in <see cref="Output"/>), as a dB value.
         /// </summary>
-        public short Output2 { get; private set; }
+        public double Output2 { get; private set; } = double.NegativeInfinity;
 
         public bool HasOutput2 => meterIndex2.HasValue;
 
