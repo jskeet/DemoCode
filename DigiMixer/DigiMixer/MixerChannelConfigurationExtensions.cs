@@ -1,10 +1,4 @@
 ﻿using DigiMixer.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DigiMixer;
 
@@ -21,9 +15,9 @@ internal static class MixerChannelConfigurationExtensions
             .AsReadOnly();
 
         MonoOrStereoPairChannelId? GetPair(ChannelId channelId) =>
-    leftStereos.TryGetValue(channelId, out var pair) ? new MonoOrStereoPairChannelId(channelId, pair.Right, pair.Flags)
-    : rightStereos.Contains(channelId) ? null
-    : new MonoOrStereoPairChannelId(channelId, null, StereoFlags.None);
+            leftStereos.TryGetValue(channelId, out var pair) ? new MonoOrStereoPairChannelId(channelId, pair.Right, pair.Flags)
+            : rightStereos.Contains(channelId) ? null
+            : new MonoOrStereoPairChannelId(channelId, null, StereoFlags.None);
     }
 
     internal static IReadOnlyList<MonoOrStereoPairChannelId> GetPossiblyPairedOutputs(this MixerChannelConfiguration configuration)
@@ -35,8 +29,8 @@ internal static class MixerChannelConfigurationExtensions
                 .ToList()
                 .AsReadOnly();
         MonoOrStereoPairChannelId? GetPair(ChannelId channelId) =>
-    leftStereos.TryGetValue(channelId, out var pair) ? new MonoOrStereoPairChannelId(channelId, pair.Right, pair.Flags)
-    : rightStereos.Contains(channelId) ? null
-    : new MonoOrStereoPairChannelId(channelId, null, StereoFlags.None);
+            leftStereos.TryGetValue(channelId, out var pair) ? new MonoOrStereoPairChannelId(channelId, pair.Right, pair.Flags)
+            : rightStereos.Contains(channelId) ? null
+            : new MonoOrStereoPairChannelId(channelId, null, StereoFlags.None);
     }
 }
