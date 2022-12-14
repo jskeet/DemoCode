@@ -99,12 +99,6 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
         }
     }
 
-    public async Task Start()
-    {
-        await Api.Connect();
-        await RequestAllData();
-    }
-
     private MixerInfo? mixerInfo;
     public MixerInfo? MixerInfo
     {
