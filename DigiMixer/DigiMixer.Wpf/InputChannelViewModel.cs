@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace DigiMixer.Wpf;
 
@@ -22,7 +20,10 @@ public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
         Brushes.LightGray,
         Brushes.LightSteelBlue,
         Brushes.Salmon,
-        Brushes.MediumSpringGreen
+        Brushes.MediumSpringGreen,
+        Brushes.MidnightBlue,
+        Brushes.MintCream,
+        Brushes.MistyRose
     };
 
     public IReadOnlyList<FaderViewModel> Faders { get; set; }
