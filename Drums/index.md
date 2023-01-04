@@ -6,8 +6,9 @@ This is not a MIDI sequencer or anything similar; it's purely for
 fetching and manipulating information from Roland V-Drum kits.
 
 I'm very grateful to Roland for providing the [TD-17 MIDI
-implementation](https://www.roland.com/global/support/by_product/td-17/owners_manuals/b28f606f-fa2e-4cb3-b4ec-1d25ce06a918/) document which has been absolutely vital in
-writing this code.
+implementation](https://static.roland.com/assets/media/pdf/TD-17_MIDI_Imple_eng01_W.pdf) document which has been absolutely vital in
+writing this code. (There's now a [new document](https://static.roland.com/assets/media/pdf/TD-17_MIDI_Imple_eng04_W.pdf) as well, with
+changes for the v2 firmware.)
 
 Feedback is very welcome - it's still early days, but please email
 skeet@pobox.com or [file an
