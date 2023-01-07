@@ -144,7 +144,11 @@ namespace VDrumExplorer.Model.Midi
 
                     var identity = identities[0];
                     logger.LogInformation("  Detected single Roland device identity: {identity}", identity);
-                    var matchingKeys = knownIdentifiers.Where(sk => sk.FamilyCode == identity.FamilyCode && sk.FamilyNumberCode == identity.FamilyNumberCode).ToList();
+                    var matchingKeys = knownIdentifiers
+                        .Where(sk => sk.FamilyCode == identity.FamilyCode &&
+                               sk.FamilyNumberCode == identity.FamilyNumberCode &&
+                               sk.SoftwareRevision == identity.SoftwareRevision)
+                        .ToList();
                     if (matchingKeys.Count != 1)
                     {
                         logger.LogWarning($"  {(matchingKeys.Count == 0 ? "No" : "Multiple")} known V-Drums schemas detected for MIDI device. Skipping.");
