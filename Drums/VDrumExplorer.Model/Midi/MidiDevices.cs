@@ -57,9 +57,13 @@ namespace VDrumExplorer.Model.Midi
                 {
                     byte rawDeviceId = data[2];
                     var manufacturerId = (ManufacturerId) data[5];
+                    // Note: we treat the family code and family number code as little-endian just for
+                    // backwards compatibility with existing files.
                     int familyCode = data[6] + (data[7] << 8);
                     int familyNumberCode = data[8] + (data[9] << 8);
-                    int revision = data[10] + (data[11] << 8) + (data[12] << 16) + (data[13] << 24);
+                    // The software revision is treated as big-endian as that appears to be how it's intended,
+                    // given the rest of the data format.
+                    int revision = (data[10] << 24) + (data[11] << 16) + (data[12] << 8) + (data[13] << 0);
                     identities.Add(new DeviceIdentity(rawDeviceId, manufacturerId, familyCode, familyNumberCode, revision));
                 }
             }

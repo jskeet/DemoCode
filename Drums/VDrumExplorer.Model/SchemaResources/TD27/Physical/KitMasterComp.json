@@ -1,5 +1,6 @@
 ﻿{
-  "size": "0x16",
+  "(revision:0x00)size": "0x16",
+  "(revision:0x02)size": "0x17",
   "fields": [
     {
       "name": "CompressorSwitch",
@@ -13,9 +14,11 @@
         "Single soft compressor",
         "Single hard compressor",
         "Single limiter",
+        "(revision:0x02)Single parallel",
         "2 band soft compressor",
         "2 band hard compressor",
-        "2 band limiter"
+        "2 band limiter",
+        "(revision:0x02)2 band parallel"
       ]
     },
     {
@@ -30,7 +33,8 @@
     {
       "description": "Lo gain",
       "type": "range16",
-      "min": -48,
+      "(revision:0x00)min": -48,
+      "(revision:0x02)min": -120,
       "max": 48,
       "divisor": 2,
       "suffix": "dB",
@@ -39,7 +43,8 @@
     {
       "description": "Hi gain",
       "type": "range16",
-      "min": -48,
+      "(revision:0x00)min": -48,
+      "(revision:0x02)min": -120,
       "max": 48,
       "divisor": 2,
       "suffix": "dB",
@@ -48,7 +53,8 @@
     {
       "description": "Lo threshold",
       "type": "range16",
-      "min": -48,
+      "(revision:0x00)min": -48,
+      "(revision:0x02)min": -60,
       "max": 0,
       "suffix": "dB",
       "default": -12
@@ -56,7 +62,8 @@
     {
       "description": "Hi threshold",
       "type": "range16",
-      "min": -48,
+      "(revision:0x00)min": -48,
+      "(revision:0x02)min": -60,
       "max": 0,
       "suffix": "dB",
       "default": -12
@@ -152,6 +159,14 @@
       "multiplier": 10,
       "suffix": "ms",
       "default": 4
+    },
+    {
+      "revision": "0x02",
+      "description": "Balance",
+      "type": "range8",
+      // TODO: Work out how to display this.
+      "min": 1,
+      "max": 100
     }
   ]
 }

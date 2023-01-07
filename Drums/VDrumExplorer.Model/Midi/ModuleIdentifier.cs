@@ -13,12 +13,12 @@ namespace VDrumExplorer.Model.Midi
     public sealed class ModuleIdentifier : IEquatable<ModuleIdentifier?>
     {
         public static ModuleIdentifier AE01 { get; } = new ModuleIdentifier("AE-01", 0x5a, 0x35a, 0, 0);
-        public static ModuleIdentifier AE10 { get; } = new ModuleIdentifier("AE-10", 0x2f, 0x32f, 0, 0x00_01_00_00);
+        public static ModuleIdentifier AE10 { get; } = new ModuleIdentifier("AE-10", 0x2f, 0x32f, 0, 0x00_00_01_00);
         public static ModuleIdentifier TD07 { get; } = new ModuleIdentifier("TD-07", 0x75, 0x375, 0, 0);
         public static ModuleIdentifier TD17 { get; } = new ModuleIdentifier("TD-17", 0x4b, 0x34b, 0, 0);
         public static ModuleIdentifier TD27 { get; } = new ModuleIdentifier("TD-27", 0x63, 0x363, 0, 0);
-        public static ModuleIdentifier TD50 { get; } = new ModuleIdentifier("TD-50", 0x24, 0x324, 0, 0x00_00_01_00);
-        public static ModuleIdentifier TD50X { get; } = new ModuleIdentifier("TD-50X", 0x07, 0x407, 0, 0x00_00_01_00);
+        public static ModuleIdentifier TD50 { get; } = new ModuleIdentifier("TD-50", 0x24, 0x324, 0, 0x00_01_00_00);
+        public static ModuleIdentifier TD50X { get; } = new ModuleIdentifier("TD-50X", 0x07, 0x407, 0, 0x00_01_00_00);
 
         /// <summary>
         /// The name of the module, e.g. "TD-17".
@@ -32,11 +32,13 @@ namespace VDrumExplorer.Model.Midi
 
         /// <summary>
         /// The family code as reported by a Midi identity response.
+        /// Note: this is currently interpreted in a little-endian sense, for legacy reasons.
         /// </summary>
         public int FamilyCode { get; }
 
         /// <summary>
         /// The family number code as reported by a Midi identity response.
+        /// Note: this is currently interpreted in a little-endian sense, for legacy reasons.
         /// </summary>
         public int FamilyNumberCode { get; }
 
