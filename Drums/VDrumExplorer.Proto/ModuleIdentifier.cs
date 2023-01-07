@@ -11,7 +11,7 @@ namespace VDrumExplorer.Proto
     internal partial class ModuleIdentifier
     {
         internal Model.Midi.ModuleIdentifier ToModel() =>
-            new Model.Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode);
+            new Model.Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode, SoftwareRevision);
         
         internal static ModuleIdentifier FromModel(Model.Midi.ModuleIdentifier id) =>
             new ModuleIdentifier
@@ -19,7 +19,8 @@ namespace VDrumExplorer.Proto
                 Name = id.Name,
                 ModelId = id.ModelId,
                 FamilyCode = id.FamilyCode,
-                FamilyNumberCode = id.FamilyNumberCode
+                FamilyNumberCode = id.FamilyNumberCode,
+                SoftwareRevision = id.SoftwareRevision
             };
 
         internal ModuleSchema GetSchema()

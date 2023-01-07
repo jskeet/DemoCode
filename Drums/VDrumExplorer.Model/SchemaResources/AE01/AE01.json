@@ -3,7 +3,8 @@
     "name": "AE-01",
     "modelId": "0x5a",
     "familyCode": "0x0358",
-    "familyNumberCode": "0x0"
+    "familyNumberCode": "0x0",
+    "softwareRevision": "0x0"
   },
   "instrumentGroups": [],
   "lookups": {

@@ -26,16 +26,33 @@ namespace VDrumExplorer.Model
         /// The known set of schemas, loaded lazily.
         /// </summary>
         public static IReadOnlyDictionary<ModuleIdentifier, Lazy<ModuleSchema>> KnownSchemas { get; }
-            = new Dictionary<ModuleIdentifier, Lazy<ModuleSchema>>
+
+        static ModuleSchema()
+        {
+            var builder = new Dictionary<ModuleIdentifier, Lazy<ModuleSchema>>();
+            AddSchema(ModuleIdentifier.AE01);
+            AddSchema(ModuleIdentifier.AE10);
+            AddSchema(ModuleIdentifier.TD07);
+            AddSchema(ModuleIdentifier.TD17);
+            AddSchema(ModuleIdentifier.TD27, 2);
+            AddSchema(ModuleIdentifier.TD50);
+            AddSchema(ModuleIdentifier.TD50X);
+
+            void AddSchema(ModuleIdentifier identifier, params int[] additionalSoftwareRevisions)
             {
-                { ModuleIdentifier.AE01, LazyFromAssemblyResources("SchemaResources.AE01", "AE01.json") },
-                { ModuleIdentifier.AE10, LazyFromAssemblyResources("SchemaResources.AE10", "AE10.json") },
-                { ModuleIdentifier.TD07, LazyFromAssemblyResources("SchemaResources.TD07", "TD07.json") },
-                { ModuleIdentifier.TD17, LazyFromAssemblyResources("SchemaResources.TD17", "TD17.json") },
-                { ModuleIdentifier.TD27, LazyFromAssemblyResources("SchemaResources.TD27", "TD27.json") },
-                { ModuleIdentifier.TD50, LazyFromAssemblyResources("SchemaResources.TD50", "TD50.json") },
-                { ModuleIdentifier.TD50X, LazyFromAssemblyResources("SchemaResources.TD50X", "TD50X.json") }
-            }.AsReadOnly();
+                string name = identifier.Name.Replace("-", "");
+                string resourceBase = $"SchemaResources.{name}";
+                string resourceName = $"{name}.json";
+                builder.Add(identifier, LazyFromAssemblyResources(resourceBase, resourceName, identifier.SoftwareRevision));
+
+                foreach (var softwareRevision in additionalSoftwareRevisions)
+                {
+                    var newIdentifier = identifier.WithSoftwareRevision(softwareRevision);
+                    builder.Add(newIdentifier, LazyFromAssemblyResources(resourceBase, resourceName, softwareRevision));
+                }
+            }
+            KnownSchemas = builder.AsReadOnly();
+        }
 
         /// <summary>
         /// The identifier for the module.
@@ -134,14 +151,14 @@ namespace VDrumExplorer.Model
             return (InstrumentField) field;
         }
 
-        private static Lazy<ModuleSchema> LazyFromAssemblyResources(string resourceBase, string resourceName) =>
-            new Lazy<ModuleSchema>(() => FromAssemblyResources(typeof(ModuleSchema).Assembly, resourceBase, resourceName));
+        private static Lazy<ModuleSchema> LazyFromAssemblyResources(string resourceBase, string resourceName, int softwareRevision) =>
+            new Lazy<ModuleSchema>(() => FromAssemblyResources(typeof(ModuleSchema).Assembly, resourceBase, resourceName, softwareRevision));
 
-        public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName) =>
-            FromJson(JsonLoader.FromAssemblyResources(assembly, resourceBase).LoadResource(resourceName));
+        public static ModuleSchema FromAssemblyResources(Assembly assembly, string resourceBase, string resourceName, int softwareRevision) =>
+            FromJson(JsonLoader.FromAssemblyResources(assembly, resourceBase).LoadResource(resourceName, softwareRevision));
 
-        public static ModuleSchema FromDirectory(string path, string resourceName) =>
-            FromJson(JsonLoader.FromDirectory(path).LoadResource(resourceName));
+        public static ModuleSchema FromDirectory(string path, string resourceName, int softwareRevision) =>
+            FromJson(JsonLoader.FromDirectory(path).LoadResource(resourceName, softwareRevision));
 
         private static ModuleSchema FromJson(JObject json) =>
             new ModuleSchema(ModuleJson.FromJson(json));

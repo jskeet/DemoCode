@@ -3,7 +3,8 @@
     "name": "AE-10",
     "modelId": "0x2f",
     "familyCode": "0x032f",
-    "familyNumberCode": "0x0"
+    "familyNumberCode": "0x0",
+    "softwareRevision": "0x00_01_00_00"
   },
   "instrumentGroups": [],
   "lookups": {
