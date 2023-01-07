@@ -9,7 +9,6 @@ using System.IO;
 using System.Windows.Input;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Audio;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Proto;
 using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Audio;
@@ -36,10 +35,10 @@ namespace VDrumExplorer.ViewModel.Home
         public ICommand SaveLogCommand { get; }
         public ICommand LoadFileCommand { get; }
 
-        public IReadOnlyList<ModuleIdentifier> KnownSchemas { get; }
+        public IReadOnlyList<ModuleIdentifierViewModel> KnownSchemas { get; }
 
-        private ModuleIdentifier selectedSchema;
-        public ModuleIdentifier SelectedSchema
+        private ModuleIdentifierViewModel selectedSchema;
+        public ModuleIdentifierViewModel SelectedSchema
         {
             get => selectedSchema;
             set => SetProperty(ref selectedSchema, value);
@@ -58,7 +57,7 @@ namespace VDrumExplorer.ViewModel.Home
             RecordInstrumentAudioCommand = new DelegateCommand(RecordInstrumentAudio, true);
             SaveLogCommand = new DelegateCommand(SaveLog, true);
             LoadFileCommand = new DelegateCommand(LoadFile, true);
-            KnownSchemas = ModuleSchema.KnownSchemas.Keys.ToReadOnlyList();
+            KnownSchemas = ModuleIdentifierViewModel.GetIdentifiersForKnownSchemas();
             selectedSchema = KnownSchemas[0];
         }
 
@@ -69,7 +68,7 @@ namespace VDrumExplorer.ViewModel.Home
             set => SetProperty(ref loadKitFromDeviceNumber, (DeviceViewModel.ConnectedDevice?.Schema).ValidateKitNumber(value));
         }
 
-        private void OpenSchemaExplorer() => viewServices.ShowSchemaExplorer(new ModuleSchemaViewModel(ModuleSchema.KnownSchemas[SelectedSchema].Value));
+        private void OpenSchemaExplorer() => viewServices.ShowSchemaExplorer(new ModuleSchemaViewModel(ModuleSchema.KnownSchemas[SelectedSchema.Identifier].Value));
 
         private async void LoadModuleFromDevice()
         {
