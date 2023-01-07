@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Property",
+    "source": {
+      "xyz": "abc",
+      "(revision:0x2)conditional": "def"
+    },
+    "expectedResults": {
+      "0x1": {
+        "xyz": "abc"
+      },
+      "0x2": {
+        "xyz": "abc",
+        "conditional": "def"
+      }
+    }
+  },
+  {
+    "name": "ArrayStringValue",
+    "source": {
+      "values": [ "first", "second", "(revision:0x2)conditional", "third" ]
+    },
+    "expectedResults": {
+      "0x1": {
+        "values": [ "first", "second", "third" ]
+      },
+      "0x2": {
+        "values": [ "first", "second", "conditional", "third" ]
+      }
+    }
+  },
+  {
+    "name": "ArrayObject",
+    "source": {
+      "array": [
+        { "first": "1" },
+        {
+          "revision": "0x2",
+          "conditional": "yes"
+        },
+        { "second": "2" }
+      ]
+    },
+    "expectedResults": {
+      "0x1": {
+        "array": [
+          { "first": "1" },
+          { "second": "2" }
+        ]
+      },
+      "0x2": {
+        "array": [
+          { "first": "1" },
+          {
+            "conditional": "yes"
+          },
+          { "second": "2" }
+        ]
+      }
+    }
+  }
+]
