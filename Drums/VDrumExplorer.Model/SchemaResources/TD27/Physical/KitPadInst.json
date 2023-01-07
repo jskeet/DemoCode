@@ -1,5 +1,6 @@
 ﻿{
-  "size": "0x19",
+  "(revision:0x00)size": "0x19",
+  "(revision:0x02)size": "0x1b",
   "fields": [
     {
       "description": "Instrument",
@@ -72,6 +73,27 @@
       "type": "range16",
       "min": -100,
       "max": 100
+    },
+    {
+      "revision": "0x02",
+      "description": "User sample transient type",
+      "type": "enum",
+      "values": [
+        "Type 1",
+        "Type 2",
+        "Type 3",
+        "Type 4"
+      ]
+    },
+    {
+      "revision": "0x02",
+      "description": "Transient attack type",
+      "type": "enum",
+      "values": [
+        "Normal",
+        "Wide 1",
+        "Wide 2"
+      ]
     }
   ]
 }

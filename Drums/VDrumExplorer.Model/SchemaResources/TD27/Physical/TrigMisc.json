@@ -1,5 +1,6 @@
 {
-  "size": "0x3e",
+  "(revision:0x00)size": "0x3e",
+  "(revision:0x02)size": "0x46",
   "fields": [
     {
       "name": "Name",
@@ -70,10 +71,39 @@
       "type": "range8",
       "min": 0,
       "max": 80,
-      "repeat":
-      {
+      "repeat": {
         "items": "pads"
       }
+    },
+    {
+      "revision": "0x02",
+      "description": "Hi-hat VH-14D offset",
+      "type": "range32",
+      "min": -100,
+      "max": 100
+    },
+    {
+      "revision": "0x02",
+      "description": "Hi-hat VH-14D foot splash sensitivity",
+      "type": "range16",
+      "min": -10,
+      "max": 10
+    },
+    {
+      "revision": "0x02",
+      "description": "Hi-hat VH-14D noise cancel",
+      "type": "range8",
+      "min": 0,
+      "max": 2,
+      "valueOffset": 1
+    },
+    {
+      "revision": "0x02",
+      "description": "Hi-hat VH-14D pressure sensitivity",
+      "type": "range8",
+      "min": 0,
+      "max": 4,
+      "valueOffset": 1
     }
   ]
 }
