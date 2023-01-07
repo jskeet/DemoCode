@@ -80,20 +80,21 @@ namespace VDrumExplorer.Model.Schema.Json
         /// Loads the given resource name as a JObject.
         /// </summary>
         /// <param name="resourceName">The name of the resource to load.</param>
-        /// <param name="softwareRevision">The software revision to apply </param>
+        /// <param name="revision">The software revision to apply as a filter.</param>
         /// <returns>The parsed JObject.</returns>
-        public JObject LoadResource(string resourceName, int softwareRevision)
+        public JObject LoadResource(string resourceName, int revision)
         {
             Preconditions.CheckNotNull(resourceName, nameof(resourceName));
-            JToken token = LoadResourceToken(resourceName, new Stack<string>(), softwareRevision);
+            JToken token = LoadResourceToken(resourceName, new Stack<string>());
             if (token.Type != JTokenType.Object)
             {
                 throw new InvalidOperationException($"Resource {resourceName} is not an object");
             }
+            RevisionFilter.VisitObject((JObject) token, revision);
             return (JObject) token;
         }
 
-        private JToken LoadResourceToken(string resourceName, Stack<string> loadedResources, int softwareRevision)
+        private JToken LoadResourceToken(string resourceName, Stack<string> loadedResources)
         {
             if (loadedResources.Contains(resourceName))
             {
@@ -126,7 +127,7 @@ namespace VDrumExplorer.Model.Schema.Json
                             return value;
                         }
                         string newResourceName = valueText.Substring(ResourcePrefix.Length).Trim();
-                        return LoadResourceToken(newResourceName, loadedResources, softwareRevision);
+                        return LoadResourceToken(newResourceName, loadedResources);
                     case JObject obj:
                         foreach (var property in obj.Properties())
                         {

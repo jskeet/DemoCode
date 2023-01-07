@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="../td27.vdrum" LogicalName="td27.vdrum" />
+    <EmbeddedResource Include="Schema\Json\RevisionFilterTests.json" />
   </ItemGroup>
 
 </Project>
