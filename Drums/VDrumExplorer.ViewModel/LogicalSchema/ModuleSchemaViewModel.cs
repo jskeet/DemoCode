@@ -9,7 +9,7 @@ namespace VDrumExplorer.ViewModel.LogicalSchema
 {
     public sealed class ModuleSchemaViewModel : ViewModelBase<ModuleSchema>
     {
-        public string Title => $"Schema Explorer: {Model.Identifier.Name}";
+        public string Title => $"Schema Explorer: {Model.Identifier.Name} (rev 0x{Model.Identifier.SoftwareRevision:x})";
 
         public ModuleSchemaViewModel(ModuleSchema model) : base(model)
         {
