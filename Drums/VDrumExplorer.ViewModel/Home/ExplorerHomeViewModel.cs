@@ -15,9 +15,10 @@ using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
 using VDrumExplorer.ViewModel.Dialogs;
+using VDrumExplorer.ViewModel.Logging;
 using VDrumExplorer.ViewModel.LogicalSchema;
 
-namespace VDrumExplorer.ViewModel.Logging
+namespace VDrumExplorer.ViewModel.Home
 {
     public class ExplorerHomeViewModel : ViewModelBase
     {
