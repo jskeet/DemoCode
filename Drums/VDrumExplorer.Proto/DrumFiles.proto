@@ -25,6 +25,12 @@ message ModuleIdentifier
 	int32 model_id = 2;
 	int32 family_code = 3;
 	int32 family_number_code = 4;
+	
+	// The software revision, if known. This was not originally part of
+	// ModuleIdentifier; it should always be set by new code, but making it
+	// optional allows us to detect old files and infer the correct revision
+	// based on the content of the file (at least in some cases).
+	optional int32 software_revision = 5;
 }
 
 // A data for a field container within a module.

@@ -31,13 +31,19 @@ namespace VDrumExplorer.Model.Schema.Json
         /// </summary>
         public HexInt32? FamilyNumberCode { get; set; }
 
+        /// <summary>
+        /// The software revision as reported by a Midi identity response.
+        /// </summary>
+        public HexInt32? SoftwareRevision { get; set; }
+
         public ModuleIdentifier ToModuleIdentifier()
         {
             Validation.ValidateNotNull(Name, nameof(Name));
             Validation.ValidateNotNull(ModelId, nameof(ModelId));
             Validation.ValidateNotNull(FamilyCode, nameof(FamilyCode));
             Validation.ValidateNotNull(FamilyNumberCode, nameof(FamilyNumberCode));
-            return new ModuleIdentifier(Name, ModelId.Value, FamilyCode.Value, FamilyNumberCode.Value);
+            Validation.ValidateNotNull(SoftwareRevision, nameof(SoftwareRevision));
+            return new ModuleIdentifier(Name, ModelId.Value, FamilyCode.Value, FamilyNumberCode.Value, SoftwareRevision.Value);
         }
     }
 }

@@ -4,6 +4,7 @@
 
 using BenchmarkDotNet.Attributes;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Benchmarks
 {
@@ -12,6 +13,6 @@ namespace VDrumExplorer.Benchmarks
     {
         [Benchmark]
         public ModuleSchema LoadTD27Schema() =>
-            ModuleSchema.FromAssemblyResources(typeof(ModuleSchema).Assembly, "TD27", "TD27.json");
+            ModuleSchema.FromAssemblyResources(typeof(ModuleSchema).Assembly, "TD27", "TD27.json", ModuleIdentifier.TD27.SoftwareRevision);
     }
 }

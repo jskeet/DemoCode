@@ -3,7 +3,8 @@
     "name": "TD-50",
     "modelId": "0x24",
     "familyCode": "0x0324",
-    "familyNumberCode": "0x0"
+    "familyNumberCode": "0x0",
+    "softwareRevision": "0x00_00_01_00"
   },
   "instrumentGroups": "$resource:InstrumentGroups.json",
   "lookups": {

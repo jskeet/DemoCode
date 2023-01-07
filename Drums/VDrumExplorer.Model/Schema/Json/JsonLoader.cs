@@ -80,11 +80,12 @@ namespace VDrumExplorer.Model.Schema.Json
         /// Loads the given resource name as a JObject.
         /// </summary>
         /// <param name="resourceName">The name of the resource to load.</param>
+        /// <param name="softwareRevision">The software revision to apply </param>
         /// <returns>The parsed JObject.</returns>
-        public JObject LoadResource(string resourceName)
+        public JObject LoadResource(string resourceName, int softwareRevision)
         {
             Preconditions.CheckNotNull(resourceName, nameof(resourceName));
-            JToken token = LoadResourceToken(resourceName, new Stack<string>());
+            JToken token = LoadResourceToken(resourceName, new Stack<string>(), softwareRevision);
             if (token.Type != JTokenType.Object)
             {
                 throw new InvalidOperationException($"Resource {resourceName} is not an object");
@@ -92,7 +93,7 @@ namespace VDrumExplorer.Model.Schema.Json
             return (JObject) token;
         }
 
-        private JToken LoadResourceToken(string resourceName, Stack<string> loadedResources)
+        private JToken LoadResourceToken(string resourceName, Stack<string> loadedResources, int softwareRevision)
         {
             if (loadedResources.Contains(resourceName))
             {
@@ -125,7 +126,7 @@ namespace VDrumExplorer.Model.Schema.Json
                             return value;
                         }
                         string newResourceName = valueText.Substring(ResourcePrefix.Length).Trim();
-                        return LoadResourceToken(newResourceName, loadedResources);
+                        return LoadResourceToken(newResourceName, loadedResources, softwareRevision);
                     case JObject obj:
                         foreach (var property in obj.Properties())
                         {
