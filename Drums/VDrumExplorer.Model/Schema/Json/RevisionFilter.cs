@@ -38,7 +38,7 @@ namespace VDrumExplorer.Model.Schema.Json;
 internal sealed class RevisionFilter
 {
     private const string ContainerRevisionPropertyName = "revision";
-    private static readonly Regex StringPattern = new Regex(@"^\(revision:(?<expression>!?[0-9a-fA-Fx, ]+)\)(?<remainder>.*)$");
+    private static readonly Regex StringPattern = new Regex(@"^\(revision:(?<expression>!?[0-9a-fA-Fx, _]+)\)(?<remainder>.*)$");
 
     private readonly bool negated;
     private readonly IReadOnlyList<int> values;
