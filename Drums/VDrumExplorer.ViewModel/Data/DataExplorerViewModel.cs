@@ -70,9 +70,11 @@ namespace VDrumExplorer.ViewModel.Data
 
         public string CopyDataTitle => IsKitExplorer ? "Copy Kit" : "Copy Data";
 
+        private string SchemaIdentifierDisplayName => $"{Model.Schema.Identifier.Name} rev 0x{Model.Schema.Identifier.SoftwareRevision:x}";
+
         public string Title => FileName is null
-            ? $"{ExplorerName} ({Model.Schema.Identifier.Name})"
-            : $"{ExplorerName} ({Model.Schema.Identifier.Name}) - {fileName}";
+            ? $"{ExplorerName} ({SchemaIdentifierDisplayName})"
+            : $"{ExplorerName} ({SchemaIdentifierDisplayName}) - {fileName}";
 
         public IReadOnlyList<int> MidiChannels { get; } = Enumerable.Range(1, 16).ToList();
 
