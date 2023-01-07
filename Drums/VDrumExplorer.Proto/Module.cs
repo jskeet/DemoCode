@@ -17,7 +17,7 @@ namespace VDrumExplorer.Proto
             {
                 snapshot.Add(container.ToModel());
             }
-            var schema = Identifier.GetSchema();
+            var schema = Identifier.GetOrInferSchema(schema => snapshot.IsValidForNode(schema.LogicalRoot), logger);
             return Model.Module.FromSnapshot(schema, snapshot, logger);
         }
 

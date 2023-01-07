@@ -60,5 +60,16 @@ namespace VDrumExplorer.Model.Data
             var toAddress = to.DescendantFieldContainers().Min(fc => fc.Address);
             return Relocated(fromAddress, toAddress);
         }
+
+        /// <summary>
+        /// Validates that all the given data segments correspond to field containers
+        /// (matching both address and length) within the given node.
+        /// </summary>
+        /// <param name="schema">The schema to validate this snapshot against.</param>        
+        public bool IsValidForNode(TreeNode node)
+        {
+            var fieldContainersByAddress = node.DescendantFieldContainers().ToDictionary(fc => fc.Address);
+            return Segments.All(segment => fieldContainersByAddress.TryGetValue(segment.Address, out var fc) && fc.Size == segment.Size);
+        }
     }
 }

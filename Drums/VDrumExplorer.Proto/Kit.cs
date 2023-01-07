@@ -18,7 +18,8 @@ namespace VDrumExplorer.Proto
             {
                 snapshot.Add(container.ToModel());
             }
-            return Model.Kit.FromSnapshot(Identifier.GetSchema(), snapshot, DefaultKitNumber == 0 ? 1 : DefaultKitNumber, logger);
+            var schema = Identifier.GetOrInferSchema(schema => snapshot.IsValidForNode(schema.Kit1Root), logger);
+            return Model.Kit.FromSnapshot(schema, snapshot, DefaultKitNumber == 0 ? 1 : DefaultKitNumber, logger);
         }
 
         internal static Kit FromModel(Model.Kit kit) =>
