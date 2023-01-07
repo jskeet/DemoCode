@@ -31,7 +31,7 @@ namespace VDrumExplorer.Proto
             {
                 DrumFile.FileOneofCase.Kit => (object) file.Kit.ToModel(logger),
                 DrumFile.FileOneofCase.Module => file.Module.ToModel(logger),
-                DrumFile.FileOneofCase.ModuleAudio => file.ModuleAudio.ToModel(),
+                DrumFile.FileOneofCase.ModuleAudio => file.ModuleAudio.ToModel(logger),
                 _ => throw new InvalidDataException($"Unknown file case {file.FileCase}")
             };
         }
