@@ -8,6 +8,7 @@ using VDrumExplorer.Model.Audio;
 using VDrumExplorer.Model.Midi;
 using VDrumExplorer.NAudio;
 using VDrumExplorer.ViewModel;
+using VDrumExplorer.ViewModel.Home;
 using VDrumExplorer.ViewModel.Logging;
 
 namespace VDrumExplorer.Gui
