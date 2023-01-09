@@ -5,7 +5,8 @@
     "familyCode": "0x034b",
     "familyNumberCode": "0x0",
     "(revision:0x0)softwareRevision": "0x0",
-    "(revision:0x1)softwareRevision": "0x1"
+    "(revision:0x1)softwareRevision": "0x1",
+    "(revision:0x2)softwareRevision": "0x2"
   },
   "instrumentGroups": "$resource:InstrumentGroups.json",
   "lookups": {
@@ -54,8 +55,10 @@
     "Kit": "$resource:Physical/Kit.json",
     "KitAmbience": "$resource:Physical/KitAmbience.json",
     "KitCommon": "$resource:Physical/KitCommon.json",
+    "(revision:0x02)KitMasterComp": "$resource:Physical/KitMasterComp.json",
     "KitMfx": "$resource:Physical/KitMfx.json",
     "KitMidi": "$resource:Physical/KitMidi.json",
+    "(revision:0x02)KitReverb": "$resource:Physical/KitReverb.json",
     "KitUnitCommon": "$resource:Physical/KitUnitCommon.json",
     "KitUnitInst": "$resource:Physical/KitUnitInst.json",
     "KitUnitVEdit": "$resource:Physical/KitUnitVEdit.json",
