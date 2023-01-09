@@ -47,6 +47,16 @@
           "path": "KitAmbience"
         },
         {
+          "revision": "0x02",
+          "description": "Kit Reverb",
+          "path": "KitReverb"
+        },
+        {
+          "revision": "0x02",
+          "description": "Kit Master Compressor",
+          "path": "KitMasterComp"
+        },
+        {
           "description": "Kit MultiFx",
           "path": "KitMfx"
         }

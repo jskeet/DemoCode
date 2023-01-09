@@ -1,5 +1,6 @@
 ﻿{
-  "size": "0x18",
+  "(revision:0x00,0x01)size": "0x18",
+  "(revision:0x02)size": "0x1c",
   "fields": [
     {
       "description": "Pan",
@@ -148,6 +149,11 @@
     },
     {
       "description": "Multi FX Send Level",
+      "type": "volume32"
+    },
+    {
+      "revision": "0x02",
+      "description": "Reverb Send Level",
       "type": "volume32"
     }
   ]
