@@ -33,7 +33,7 @@ namespace VDrumExplorer.Model
             AddSchema(ModuleIdentifier.AE01);
             AddSchema(ModuleIdentifier.AE10);
             AddSchema(ModuleIdentifier.TD07);
-            AddSchema(ModuleIdentifier.TD17);
+            AddSchema(ModuleIdentifier.TD17, 0x01);
             AddSchema(ModuleIdentifier.TD27, 0x02);
             AddSchema(ModuleIdentifier.TD50);
             AddSchema(ModuleIdentifier.TD50X);
