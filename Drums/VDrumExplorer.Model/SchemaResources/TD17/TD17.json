@@ -4,7 +4,8 @@
     "modelId": "0x4b",
     "familyCode": "0x034b",
     "familyNumberCode": "0x0",
-    "softwareRevision": "0x0"
+    "(revision:0x0)softwareRevision": "0x0",
+    "(revision:0x1)softwareRevision": "0x1"
   },
   "instrumentGroups": "$resource:InstrumentGroups.json",
   "lookups": {
