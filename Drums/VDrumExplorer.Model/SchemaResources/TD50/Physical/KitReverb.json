@@ -47,13 +47,13 @@
       "description": "LF damp",
       "type": "range8",
       "min": 0,
-      "max": 127
+      "max": 100
     },
     {
       "description": "HF damp",
       "type": "range8",
       "min": 0,
-      "max": 127
+      "max": 100
     },
     {
       "description": "Spread",
