@@ -118,20 +118,16 @@
       "type": "range8",
       "min": 0,
       "max": 100,
-      "valueOffset": 1,
-      "divisor": 10,
-      "suffix": "ms",
-      "default": 10
+      "off": 0,
+      "offLabel": 0.1
     },
     {
       "description": "Hi Attack",
       "type": "range8",
       "min": 0,
       "max": 100,
-      "valueOffset": 1,
-      "divisor": 10,
-      "suffix": "ms",
-      "default": 10
+      "off": 0,
+      "offLabel": 0.1
     },
     {
       "description": "Lo Release",
