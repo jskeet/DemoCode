@@ -20,8 +20,8 @@ updating for 1.0.0-alpha06+, with new screenshots etc.**
 
 # Requirements
 
-- Windows 8.1 or Windows 10
-- .NET 4.7.2 or later
+- Windows 8.1, Windows 10 or Windows 11
+- .NET 4.8 or later
 - To be genuinely useful, a Roland TD-07, TD-17, TD-27, TD-50, or TD-50X V-Drums drum kit, turned on and connected via USB (see later for details)
 
 # Installation
