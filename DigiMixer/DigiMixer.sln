@@ -23,7 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Mackie", "DigiMix
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.MackieDump", "DigiMixer.MackieDump\DigiMixer.MackieDump.csproj", "{7129AE6D-A217-4FE6-B589-6156D7FA4132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Mackie.Core", "DigiMixer.Mackie.Core\DigiMixer.Mackie.Core.csproj", "{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Mackie.Core", "DigiMixer.Mackie.Core\DigiMixer.Mackie.Core.csproj", "{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Diagnostics", "DigiMixer.Diagnostics\DigiMixer.Diagnostics.csproj", "{7288E17E-8DD0-4696-9ED6-265D4369677F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries", "DigiMixer.QuSeries\DigiMixer.QuSeries.csproj", "{94FECD12-299A-478A-BD36-D3CB052EAEE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries.Scratchpad", "DigiMixer.QuSeries.Scratchpad\DigiMixer.QuSeries.Scratchpad.csproj", "{B70280C0-272F-4F85-8D81-F2238AD1193F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.QuSeries.Core", "DigiMixer.QuSeries.Core\DigiMixer.QuSeries.Core.csproj", "{8A99DC16-0CC6-4711-92D5-D6759C7C8744}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +83,22 @@ Global
 		{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7288E17E-8DD0-4696-9ED6-265D4369677F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7288E17E-8DD0-4696-9ED6-265D4369677F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7288E17E-8DD0-4696-9ED6-265D4369677F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7288E17E-8DD0-4696-9ED6-265D4369677F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94FECD12-299A-478A-BD36-D3CB052EAEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94FECD12-299A-478A-BD36-D3CB052EAEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94FECD12-299A-478A-BD36-D3CB052EAEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94FECD12-299A-478A-BD36-D3CB052EAEE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B70280C0-272F-4F85-8D81-F2238AD1193F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B70280C0-272F-4F85-8D81-F2238AD1193F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B70280C0-272F-4F85-8D81-F2238AD1193F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B70280C0-272F-4F85-8D81-F2238AD1193F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
