@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />
     <ProjectReference Include="..\DigiMixer.Osc\DigiMixer.Osc.csproj" />
+    <ProjectReference Include="..\DigiMixer.UCNet\DigiMixer.UCNet.csproj" />
     <ProjectReference Include="..\DigiMixer.UiHttp\DigiMixer.UiHttp.csproj" />
     <ProjectReference Include="..\DigiMixer\DigiMixer.csproj" />
   </ItemGroup>

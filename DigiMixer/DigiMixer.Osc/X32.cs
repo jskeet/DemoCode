@@ -93,7 +93,7 @@ public static class X32
         private static MeterLevel ToMeterLevel(byte[] blob, int index)
         {
             float raw = BitConverter.ToSingle(blob, index * 4 + 4);
-            var db = raw == 0 ? double.NegativeInfinity : 8.67 * Math.Log(raw);
+            var db = raw == 0 ? double.NegativeInfinity : 20 * Math.Log10(raw);
             return MeterLevel.FromDb(db);
         }
 

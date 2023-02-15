@@ -32,6 +32,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries.Scratchpad", "DigiMixer.QuSeries.Scratchpad\DigiMixer.QuSeries.Scratchpad.csproj", "{B70280C0-272F-4F85-8D81-F2238AD1193F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.QuSeries.Core", "DigiMixer.QuSeries.Core\DigiMixer.QuSeries.Core.csproj", "{8A99DC16-0CC6-4711-92D5-D6759C7C8744}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet", "DigiMixer.UCNet\DigiMixer.UCNet.csproj", "{36493FCE-C777-413F-B3BC-1E6C25D177EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet.Scratchpad", "DigiMixer.UCNet.Scratchpad\DigiMixer.UCNet.Scratchpad.csproj", "{369161C0-8D09-441B-8027-6642C6E60008}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.UCNet.Core", "DigiMixer.UCNet.Core\DigiMixer.UCNet.Core.csproj", "{1F479E07-BBED-4F80-93D4-A55154861E6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +104,18 @@ Global
 		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A99DC16-0CC6-4711-92D5-D6759C7C8744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36493FCE-C777-413F-B3BC-1E6C25D177EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36493FCE-C777-413F-B3BC-1E6C25D177EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36493FCE-C777-413F-B3BC-1E6C25D177EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36493FCE-C777-413F-B3BC-1E6C25D177EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{369161C0-8D09-441B-8027-6642C6E60008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{369161C0-8D09-441B-8027-6642C6E60008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{369161C0-8D09-441B-8027-6642C6E60008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{369161C0-8D09-441B-8027-6642C6E60008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

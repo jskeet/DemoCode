@@ -3,10 +3,8 @@
 // as found in the LICENSE.txt file.
 
 using DigiMixer.Core;
-using DigiMixer.Osc;
 using Microsoft.Extensions.Logging;
 using OscCore;
-using System.Diagnostics;
 
 namespace DigiMixer.Osc;
 

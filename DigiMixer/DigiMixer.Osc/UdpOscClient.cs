@@ -79,8 +79,7 @@ internal sealed class UdpOscClient : IOscClient
     public void Dispose()
     {
         cts.Cancel();
-        receivingClient?.Dispose();
-        sendingClient?.Dispose();
-        // TODO: dispose of receivingClient and sendingClient?
+        receivingClient.Dispose();
+        sendingClient.Dispose();
     }
 }

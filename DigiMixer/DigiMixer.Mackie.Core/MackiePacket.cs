@@ -46,9 +46,6 @@ public sealed class MackiePacket
     /// <summary>
     /// Creates a response packet responding to this packet, which must be a request packet.
     /// </summary>
-    /// <param name="body"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     internal MackiePacket CreateResponse(MackiePacketBody body)
     {
         if (Type != MackiePacketType.Request)

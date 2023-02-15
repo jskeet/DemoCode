@@ -7,6 +7,7 @@
 /// </summary>
 public struct FaderLevel
 {
+    // TODO: Inclusive or exclusive?
     public const int MaxValue = 1024;
 
     /// <summary>
@@ -17,4 +18,6 @@ public struct FaderLevel
     // TODO: Operators, comparisons?
     public FaderLevel(int value) =>
         Value = value;
+
+    public override string ToString() => $"Level: {Value}";
 }

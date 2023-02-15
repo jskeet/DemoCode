@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Mackie;
 using DigiMixer.Osc;
+using DigiMixer.UCNet;
 using DigiMixer.UiHttp;
 using Microsoft.Extensions.Logging;
 using System.Windows;
@@ -53,6 +54,13 @@ public partial class MainWindow : Window
     private async void LaunchDL16S(object sender, RoutedEventArgs e)
     {
         var api = new MackieMixerApi(CreateLogger("DL16S"), "192.168.1.59");
+        var mixer = await Mixer.Detect(api);
+        Launch(mixer);
+    }
+
+    private async void Launch16R(object sender, RoutedEventArgs e)
+    {
+        var api = StudioLive.CreateMixerApi(CreateLogger("16R"), "192.168.1.61");
         var mixer = await Mixer.Detect(api);
         Launch(mixer);
     }

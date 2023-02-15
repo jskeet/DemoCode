@@ -166,7 +166,6 @@ public sealed class MackieController : IDisposable
         CheckState(expectedRunning: false);
         
         cts = new CancellationTokenSource();
-        // We always read from localCts, so that after disposal we can still check it.
         tcpClient = new TcpClient { NoDelay = true };
         try
         {
@@ -203,6 +202,7 @@ public sealed class MackieController : IDisposable
                 else
                 {
                     Buffer.BlockCopy(buffer, start, buffer, 0, end - start);
+                    position = end - start;
                 }
             }
         }
@@ -214,6 +214,7 @@ public sealed class MackieController : IDisposable
         finally
         {
             tcpClient?.Dispose();
+            cts?.Dispose();
             cts = null;
             tcpClient = null;
         }

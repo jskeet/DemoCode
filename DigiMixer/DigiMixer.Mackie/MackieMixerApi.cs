@@ -3,8 +3,6 @@ using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DigiMixer.Mackie;
