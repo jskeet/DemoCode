@@ -2,12 +2,11 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using DigiMixer.Osc;
 using Microsoft.Extensions.Logging;
 using OscCore;
 using System.Net.Sockets;
 
-namespace OscMixerControl;
+namespace DigiMixer.Osc;
 
 internal sealed class UdpOscClient : IOscClient
 {

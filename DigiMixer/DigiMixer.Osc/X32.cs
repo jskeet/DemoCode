@@ -3,11 +3,10 @@
 // as found in the LICENSE.txt file.
 
 using DigiMixer.Core;
-using DigiMixer.Osc;
 using Microsoft.Extensions.Logging;
 using OscCore;
 
-namespace OscMixerControl;
+namespace DigiMixer.Osc;
 
 /// <summary>
 /// Factory methods and constants for working with X-32 mixers.
@@ -56,7 +55,7 @@ public static class X32
             {
                 for (int i = 1; i <= totalChannels; i += 2)
                 {
-                    string address = $"{prefix}{i}-{i+1}";
+                    string address = $"{prefix}{i}-{i + 1}";
                     if (result[address][0] is 1)
                     {
                         yield return new StereoPair(factory(i), factory(i + 1), StereoFlags.SplitNames);

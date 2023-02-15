@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace DigiMixer.Mackie;
+namespace DigiMixer.Mackie.Core;
 
 /// <summary>
 /// The body of a Mackie protocol packet.
@@ -88,10 +88,10 @@ public sealed class MackiePacketBody
         uint raw = BitConverter.ToUInt32(data, chunk * 4);
         return !IsNetworkOrder
             ? raw
-            : (((raw >> 24) & 0xff) << 0) |
-              (((raw >> 16) & 0xff) << 8) |
-              (((raw >> 8) & 0xff) << 16) |
-              (((raw >> 0) & 0xff) << 24);
+            : (raw >> 24 & 0xff) << 0 |
+              (raw >> 16 & 0xff) << 8 |
+              (raw >> 8 & 0xff) << 16 |
+              (raw >> 0 & 0xff) << 24;
     }
 
     /// <summary>

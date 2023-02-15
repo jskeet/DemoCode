@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Reflection.Emit;
-
-namespace DigiMixer.Core;
+﻿namespace DigiMixer.Core;
 
 /// <summary>
 /// Implementation of <see cref="IMixerApi"/> which delegates all

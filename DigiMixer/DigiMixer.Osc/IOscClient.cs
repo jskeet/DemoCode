@@ -4,7 +4,7 @@
 
 using OscCore;
 
-namespace OscMixerControl;
+namespace DigiMixer.Osc;
 
 internal interface IOscClient : IDisposable
 {

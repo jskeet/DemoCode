@@ -2,7 +2,6 @@
 using DigiMixer.Osc;
 using DigiMixer.UiHttp;
 using Microsoft.Extensions.Logging;
-using OscMixerControl;
 using System.Windows;
 
 namespace DigiMixer.Wpf;

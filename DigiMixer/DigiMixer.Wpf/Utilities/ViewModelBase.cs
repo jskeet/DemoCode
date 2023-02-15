@@ -1,10 +1,9 @@
-﻿using DigiMixer.Wpf.Utilities;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace DigiMixer.Wpf;
+namespace DigiMixer.Wpf.Utilities;
 
 /// <summary>
 /// Base for view model classes, supporting simple property changes.
