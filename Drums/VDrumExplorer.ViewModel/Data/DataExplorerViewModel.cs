@@ -166,7 +166,7 @@ namespace VDrumExplorer.ViewModel.Data
                 }
                 FileName = fileName;
             }
-            using (var stream = File.OpenWrite(fileName))
+            using (var stream = File.Create(fileName))
             {
                 SaveToStream(stream);
             }
