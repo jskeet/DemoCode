@@ -3,7 +3,7 @@
 /// <summary>
 /// A general-purpose packet from/to a Qu mixer, with a type and arbitrary-length data.
 /// </summary>
-public class QuGeneralPacket : QuPacket
+public class QuGeneralPacket : QuControlPacket
 {
     public byte Type { get; }
     private readonly byte[] data;
@@ -17,7 +17,7 @@ public class QuGeneralPacket : QuPacket
         this.data = data;
     }
 
-    public override void WriteTo(Stream stream)
+    public override byte[] ToByteArray()
     {
         var packet = new byte[Length];
         packet[0] = 0x7f;
@@ -25,7 +25,7 @@ public class QuGeneralPacket : QuPacket
         packet[2] = (byte) (data.Length & 0xff);
         packet[3] = (byte) (data.Length >> 8);
         data.CopyTo(packet.AsSpan().Slice(4));
-        stream.Write(packet);
+        return packet;
     }
 
     public override string ToString()

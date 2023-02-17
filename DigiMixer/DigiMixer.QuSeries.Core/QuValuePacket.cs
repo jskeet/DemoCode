@@ -6,7 +6,7 @@ namespace DigiMixer.QuSeries.Core;
 /// A packet with a single 16-bit value, either directly from a client to the mixer,
 /// or from the mixer broadcasting a client's packet to other clients.
 /// </summary>
-public class QuValuePacket : QuPacket
+public class QuValuePacket : QuControlPacket
 {
     public byte ClientId { get; }
     public byte Section { get; }
@@ -23,7 +23,7 @@ public class QuValuePacket : QuPacket
 
     public override int Length => 9;
 
-    public override void WriteTo(Stream stream)
+    public override byte[] ToByteArray()
     {
         var packet = new byte[Length];
         packet[0] = 0xf7;
@@ -33,7 +33,7 @@ public class QuValuePacket : QuPacket
         // Note offsets of 3 and 7 rather than 2 and 6, as packet includes the fixed-length indicator.
         MemoryMarshal.Cast<byte, int>(span.Slice(3))[0] = Address;
         MemoryMarshal.Cast<byte, ushort>(span.Slice(7))[0] = RawValue;
-        stream.Write(packet);
+        return packet;
     }
 
     public override string ToString() =>

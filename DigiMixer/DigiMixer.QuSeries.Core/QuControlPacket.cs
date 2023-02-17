@@ -1,18 +1,18 @@
-﻿using System.Net.Sockets;
-using System.Runtime.InteropServices;
+﻿namespace DigiMixer.QuSeries.Core;
 
-namespace DigiMixer.QuSeries.Core;
-
-public abstract class QuPacket
+/// <summary>
+/// A packet sent to or from a Qu mixer over TCP.
+/// </summary>
+public abstract class QuControlPacket
 {
     /// <summary>
     /// The total packet length on the wire.
     /// </summary>
     public abstract int Length { get; }
 
-    public static QuPacket Create(byte type, byte[] data) => new QuGeneralPacket(type, data);
+    public static QuControlPacket Create(byte type, byte[] data) => new QuGeneralPacket(type, data);
 
-    public static QuPacket? TryParse(ReadOnlySpan<byte> data)
+    public static QuControlPacket? TryParse(ReadOnlySpan<byte> data)
     {
         if (data.Length < 4)
         {
@@ -44,5 +44,5 @@ public abstract class QuPacket
         }
     }
 
-    public abstract void WriteTo(Stream stream);
+    public abstract byte[] ToByteArray();
 }

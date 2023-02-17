@@ -32,7 +32,7 @@ class ConvertWiresharkDumps
             }
         }
 
-        void MaybeSaveConverted(QuPacket packet)
+        void MaybeSaveConverted(QuControlPacket packet)
         {
             if (packet is not QuGeneralPacket qgp)
             {

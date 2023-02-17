@@ -12,13 +12,13 @@ public class QuPacketBuffer
     }
 
     // TODO: Asynchronous action?
-    public void Process(ReadOnlySpan<byte> data, Action<QuPacket> action)
+    public void Process(ReadOnlySpan<byte> data, Action<QuControlPacket> action)
     {
         var span = buffer.AsSpan();
         data.CopyTo(span.Slice(currentLength));
         currentLength += data.Length;
         int start = 0;
-        while (QuPacket.TryParse(span.Slice(start, currentLength - start)) is QuPacket packet)
+        while (QuControlPacket.TryParse(span.Slice(start, currentLength - start)) is QuControlPacket packet)
         {
             action(packet);
             start += packet.Length;

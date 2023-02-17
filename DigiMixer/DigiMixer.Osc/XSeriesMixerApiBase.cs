@@ -5,7 +5,6 @@
 using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using OscCore;
-using OscMixerControl;
 using System.Diagnostics;
 
 namespace DigiMixer.Osc;

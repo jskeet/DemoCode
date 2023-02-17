@@ -38,7 +38,7 @@ class DecodeWireshark
             buffer.Process(packet.Data, quPacket => LogPacket(description, quPacket));
         }
 
-        void LogPacket(string description, QuPacket packet) => Console.Write(packet);
+        void LogPacket(string description, QuControlPacket packet) => Console.Write(packet);
 
         bool ClientMixerPacket(IPV4Packet packet) =>
             (packet.Source.Address.Equals(clientAddr) || packet.Source.Address.Equals(mixerAddr)) &&

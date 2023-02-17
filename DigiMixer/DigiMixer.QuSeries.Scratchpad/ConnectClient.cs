@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using DigiMixer.QuSeries.Core;
+using System.Net;
 using System.Net.Sockets;
 
 namespace DigiMixer.QuSeries.Scratchpad;
@@ -23,7 +24,7 @@ internal class ConnectClient
         tcpClient.Connect(address, 51326);
 
         int? mixerUdpPort = null;
-        var action = new Action<QuPacket>(LogPacket) + new Action<QuPacket>(AssignUdpPort);
+        var action = new Action<QuControlPacket>(LogPacket) + new Action<QuControlPacket>(AssignUdpPort);
 
         // We send keepalive messages via UDP.
         var udpLoop = StartUdpLoop();
@@ -40,9 +41,9 @@ internal class ConnectClient
         
         var introPackets = new[]
         {
-            QuPacket.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) }),
+            QuControlPacket.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) }),
             // This is required in order to get notifications from other clients.
-            QuPacket.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f")),
+            QuControlPacket.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f")),
             //QuPacket.Create(type: 4, Decode("14 00 00 00  ff 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
             //QuPacket.Create(type: 4, Decode("15 00 00 00  fa c1 23 06 04 00 00 28", "d1 04 1c 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
             /*
@@ -63,7 +64,7 @@ internal class ConnectClient
 
         foreach (var packet in introPackets)
         {
-            packet.WriteTo(stream);
+            stream.Write(packet.ToByteArray());
             await Task.Delay(100);
         }
         
@@ -92,7 +93,7 @@ internal class ConnectClient
         await Task.Delay(60*1000);
         finished = true;
 
-        async Task StartLoop(Action<QuPacket> action)
+        async Task StartLoop(Action<QuControlPacket> action)
         {
             var packetBuffer = new QuPacketBuffer(100_000);
             byte[] buffer = new byte[1024];
@@ -133,7 +134,7 @@ internal class ConnectClient
             }
         }
 
-        void AssignUdpPort(QuPacket packet)
+        void AssignUdpPort(QuControlPacket packet)
         {
             if (packet is not QuGeneralPacket { Type: 0 } qgp ||
                 qgp.Data.Length != 2)
@@ -145,7 +146,7 @@ internal class ConnectClient
         }
     }
 
-    static void LogPacket(QuPacket packet) => Console.WriteLine($"Received: {packet}");
+    static void LogPacket(QuControlPacket packet) => Console.WriteLine($"Received: {packet}");
 
     private static byte[] Decode(params string[] hexData)
     {
