@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VDrumExplorer.Model\VDrumExplorer.Model.csproj" />
+    <PackageReference Include="Google.Protobuf" Version="3.22.0" />
   </ItemGroup>
 
 </Project>
