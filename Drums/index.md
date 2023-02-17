@@ -26,7 +26,7 @@ updating for 1.0.0-alpha06+, with new screenshots etc.**
 
 # Installation
 
-Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha11/VDrumExplorer-Setup-1.0.0-alpha11.msi)
+Download: [Windows Installer](https://github.com/jskeet/DemoCode/releases/download/VDrumExplorer-1.0.0-alpha13/VDrumExplorer-Setup-1.0.0-alpha13.msi)
 
 As of 1.0.0-alpha02, there's a Windows installer. Download the
 latest installer above, or from the [releases](https://github.com/jskeet/DemoCode/releases)
@@ -377,6 +377,17 @@ apologies in advance.)
 - (Internal) Consider generating/writing C# code from schema to have a cleaner model
 
 # Version history
+
+## Version 1.0.0-alpha13 (2023-02-17)
+
+- Fixed bug when overwriting existing file (if the new file is shorter, old data would still be present)
+
+## Version 1.0.0-alpha12 (2023-01-09)
+
+- Requires .NET 4.8 instead of 4.7.2
+- Minor schema fixes (e.g. attack in KitMasterComp)
+- Detection of software revisions (module firmware)
+- Support for TD-17 and TD-27 version 2 firmware
 
 ## Version 1.0.0-alpha11 (2021-11-12)
 
