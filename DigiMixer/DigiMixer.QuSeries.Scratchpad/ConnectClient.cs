@@ -60,6 +60,7 @@ internal class ConnectClient
             QuPacket.Create(type: 4, Decode("0f 00")),
             QuPacket.Create(type: 4, Decode("07 00")),*/
             //QuPacket.Create(type: 4, Decode("02 00")),
+            QuControlPacket.Create(type: 4, Decode("02 00")),
         };
 
         foreach (var packet in introPackets)
@@ -90,7 +91,7 @@ internal class ConnectClient
         packet5.WriteTo(stream);
         */
 
-        await Task.Delay(60*1000);
+        await Task.Delay(1000);
         finished = true;
 
         async Task StartLoop(Action<QuControlPacket> action)

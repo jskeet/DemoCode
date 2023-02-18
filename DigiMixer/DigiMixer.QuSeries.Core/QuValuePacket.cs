@@ -37,5 +37,5 @@ public class QuValuePacket : QuControlPacket
     }
 
     public override string ToString() =>
-        $"Client: {ClientId:X2}; Section: {Section:X2}; Address: {Address:X8}; RawValue: {RawValue:X4}";
+        $"Value: Client: {ClientId:X2}; Section: {Section:X2}; Address: {Address:X8}; RawValue: {RawValue:X4}";
 }

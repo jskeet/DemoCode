@@ -1,6 +1,8 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.QuSeries.Core;
 using Microsoft.Extensions.Logging;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace DigiMixer.QuSeries;
 
@@ -26,15 +28,24 @@ internal class QuMixerApi : IMixerApi
     private readonly ILogger logger;
     private readonly string host;
     private readonly int port;
+    private readonly LinkedList<PacketListener> temporaryListeners = new();
+    private readonly LinkedList<Action<QuControlPacket>> packetHandlers = new();
+
     private CancellationTokenSource? cts;
-    private QuClient? client;
-    private Task? clientTask;
+    private QuControlClient? controlClient;
+    private QuMeterClient? meterClient;
+    private Task? controlClientTask;
+    private Task? meterClientTask;
+    private int? mixerUdpPort;
+
+    private MixerInfo currentMixerInfo = new MixerInfo(null, null, null);
 
     internal QuMixerApi(ILogger logger, string host, int port)
     {
         this.logger = logger;
         this.host = host;
         this.port = port;
+        AddPacketHandlers();
     }
 
     public async Task Connect()
@@ -42,77 +53,283 @@ internal class QuMixerApi : IMixerApi
         Dispose();
 
         cts = new CancellationTokenSource();
-        client = new QuClient(logger, host, port);
-        client.ControlPacketReceived += HandleControlPacket;
-        client.MeterPacketReceived += HandleMeterPacket;
-        clientTask = client.Start();
+        meterClient = new QuMeterClient(logger, host);
+        meterClient.PacketReceived += HandleMeterPacket;
+        meterClientTask = meterClient.Start();
+        controlClient = new QuControlClient(logger, host, port);
+        controlClient.PacketReceived += HandleControlPacket;
+        controlClientTask = controlClient.Start();
 
-        await client.SendAsync(QuPackets.RequestControlPackets, cts.Token);
+        await controlClient.SendAsync(QuPackets.InitialHandshakeRequest(meterClient.LocalUdpPort), cts.Token);
+        await controlClient.SendAsync(QuPackets.RequestControlPackets, cts.Token);
     }
 
     public async Task<MixerChannelConfiguration> DetectConfiguration()
     {
-        var dataPacket = await RequestData(QuPackets.RequestFullData, QuPackets.FullDataType);
-        return null!;
+        var packet = await RequestData(QuPackets.RequestFullData, QuPackets.FullDataType, TimeSpan.FromSeconds(2));
+        var data = new FullDataPacket(packet);
+
+        var inputs = Enumerable.Range(1, data.InputCount).Select(i => ChannelId.Input(i));
+        var outputs = Enumerable.Range(1, data.MixCount).Select(i => ChannelId.Output(i))
+            .Append(MainOutputLeft).Append(MainOutputRight);
+
+        var stereoPairs = new List<StereoPair>();
+        for (int i = 1; i <= data.InputCount; i+=2)
+        {
+            if (data.InputLinked(i))
+            {
+                stereoPairs.Add(new StereoPair(ChannelId.Input(i), ChannelId.Input(i + 1), StereoFlags.FullyIndependent));
+            }
+        }
+        stereoPairs.Add(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
+        return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
     }
 
     public void RegisterReceiver(IMixerReceiver receiver) => this.receiver.RegisterReceiver(receiver);
 
-    public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) => SendPacket(QuPackets.RequestFullData);
+    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    {
+        await SendPacket(QuPackets.RequestNetworkInformation);
+        await SendPacket(QuPackets.RequestVersionInformation);
+        await SendPacket(QuPackets.RequestFullData);
+    }
 
     public async Task SendKeepAlive()
     {
-        if (client is not null && cts is not null)
+        if (meterClient is not null && cts is not null && mixerUdpPort is int port)
         {
-            await client.SendKeepAliveAsync(cts.Token);
+            await meterClient.SendKeepAliveAsync(port, cts.Token);
         }
     }
 
     public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
     public Task SetFaderLevel(ChannelId outputId, FaderLevel level)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
     public Task SetMuted(ChannelId channelId, bool muted)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
-    private async Task<QuControlPacket> RequestData(QuControlPacket requestPacket, byte expectedResponseType)
+    private async Task<QuGeneralPacket> RequestData(QuControlPacket requestPacket, byte expectedResponseType, TimeSpan timeout)
     {
-        if (client is null || cts is null)
+        if (controlClient is null || cts is null)
         {
             throw new InvalidOperationException("Not connected");
         }
-        // FIXME
-        return null!;
+        // TODO: thread safety...
+        var listener = new PacketListener(packet => packet is QuGeneralPacket qgp && qgp.Type == expectedResponseType, timeout);
+        temporaryListeners.AddLast(listener);
+        await controlClient.SendAsync(requestPacket, cts.Token);
+        return (QuGeneralPacket) await listener.Task;
     }
 
     private async Task SendPacket(QuControlPacket packet)
     {
-        if (client is not null)
+        if (controlClient is not null)
         {
-            await client.SendAsync(packet, cts?.Token ?? default);
+            await controlClient.SendAsync(packet, cts?.Token ?? default);
         }
     }
 
+    private void HandleControlPacket(object? sender, QuControlPacket packet)
+    {
+        if (QuPackets.IsInitialHandshakeResponse(packet, out var mixerUdpPort))
+        {
+            this.mixerUdpPort = mixerUdpPort;
+            return;
+        }
+        var node = temporaryListeners.First;
+        while (node is not null)
+        {
+            if (node.Value.HandlePacket(packet))
+            {
+                node.Value.Dispose();
+                temporaryListeners.Remove(node);
+            }
+            node = node.Next;
+        }
+        foreach (var handler in packetHandlers)
+        {
+            handler(packet);
+        }
+    }
 
-    private void HandleControlPacket(object? sender, QuControlPacket e)
+    private void HandleMeterPacket(object? sender, QuMeterPacket packet)
     {
     }
 
-    private void HandleMeterPacket(object? sender, QuMeterPacket e)
+    private void HandleFullDataPacket(QuGeneralPacket packet)
     {
+        var data = new FullDataPacket(packet);
+        for (int channel = 1; channel <= data.InputCount; channel++)
+        {
+            var channelId = ChannelId.Input(channel);
+            receiver.ReceiveMuteStatus(channelId, data.InputMuted(channel));
+            receiver.ReceiveChannelName(channelId, data.GetInputName(channel));
+            receiver.ReceiveFaderLevel(channelId, MainOutputLeft, data.InputFaderLevel(channel));
+
+            for (int mix = 1; mix <= data.MixCount; mix++)
+            {
+                var mixId = ChannelId.Output(mix);
+                receiver.ReceiveFaderLevel(channelId, mixId, data.InputMixFaderLevel(channel, mix));
+            }
+        }
+
+        for (int mix = 1; mix <= data.MixCount; mix++)
+        {
+            var mixId = ChannelId.Output(mix);
+            receiver.ReceiveMuteStatus(mixId, data.MixMuted(mix));
+            receiver.ReceiveChannelName(mixId, data.GetMixName(mix));
+            receiver.ReceiveFaderLevel(mixId, data.MixFaderLevel(mix));
+        }
+
+        receiver.ReceiveMuteStatus(MainOutputLeft, data.MainMuted());
+        receiver.ReceiveChannelName(MainOutputLeft, data.GetMainName() ?? "Main");
+        receiver.ReceiveFaderLevel(MainOutputLeft, data.MainFaderLevel());
+    }
+
+    private void HandleNetworkInformationPacket(QuGeneralPacket packet)
+    {
+        // Network information packet:
+        // IP address (4 bytes)
+        // Subnet mask (4 bytes)
+        // Gateway (4 bytes)
+        // DHCP enabled (1 byte)
+        // Name (15 bytes)
+        // ???? (4 bytes)
+        var data = packet.Data;
+        string name = Encoding.ASCII.GetString(data.Slice(13, 15));
+        currentMixerInfo = new MixerInfo(currentMixerInfo.Model, name, currentMixerInfo.Version);
+        receiver.ReceiveMixerInfo(currentMixerInfo);
+    }
+
+    private void HandleVersionInformationPacket(QuGeneralPacket packet)
+    {
+        // Note: the model is probably encoded in the first two bytes, but that's hard to check...
+        var data = packet.Data;
+        int firmwareMajor = data[3];
+        int firmwareMinor = data[2];
+        ushort revision = MemoryMarshal.Read<ushort>(data.Slice(4, 2));
+        currentMixerInfo = new MixerInfo("Qu-???", currentMixerInfo.Name, $"{firmwareMajor}.{firmwareMinor} rev {revision}");
+        receiver.ReceiveMixerInfo(currentMixerInfo);
+    }
+
+    private void HandleValuePacket(QuValuePacket packet)
+    {
+        // logger.LogInformation("Received value packet: Client: {client}; Section: {section}; Address:{address}; Value:{value}", packet.ClientId, packet.Section, $"0x{packet.Address:x8}", packet.RawValue);
+        
+        // Fader and mute
+        if (packet.Section == 4 && (packet.Address & 0xff_00_00_00) == 0x07_00_00_00)
+        {
+            int networkChannel = (packet.Address & 0x00_ff_00_00) >> 16;
+            ChannelId? possibleChannelId = QuConversions.NetworkToChannelId(networkChannel);
+            if (possibleChannelId is not ChannelId channelId)
+            {
+                return;
+            }
+            if ((packet.Address & 0xff) == 0x07)
+            {
+                if (channelId.IsInput)
+                {
+                    receiver.ReceiveFaderLevel(channelId, MainOutputLeft, QuConversions.RawToFaderLevel(packet.RawValue));
+                }
+                else
+                {
+                    receiver.ReceiveFaderLevel(channelId, QuConversions.RawToFaderLevel(packet.RawValue));
+                }
+            }
+            else if ((packet.Address & 0xff) == 0x06)
+            {
+                receiver.ReceiveMuteStatus(channelId, packet.RawValue == 1);
+            }
+        }
+        else if (packet.Section == 4 && (packet.Address & 0xff_ff) == 0x0c_0a)
+        {
+            int mix = (packet.Address >> 24) + 1;
+            int input = ((packet.Address & 0xff_00_00) >> 16) + 1;
+            receiver.ReceiveFaderLevel(ChannelId.Input(input), ChannelId.Output(mix), QuConversions.RawToFaderLevel(packet.RawValue));
+        }
+    }
+
+    private void AddPacketHandlers()
+    {
+        AddGeneralHandlerForType(QuPackets.FullDataType, HandleFullDataPacket);
+        AddGeneralHandlerForType(QuPackets.NetworkInformationType, HandleNetworkInformationPacket);
+        AddGeneralHandlerForType(QuPackets.VersionInformationType, HandleVersionInformationPacket);
+        packetHandlers.AddLast(packet =>
+        {
+            if (packet is QuValuePacket qvp)
+            {
+                HandleValuePacket(qvp);
+            }
+        });
+
+        void AddGeneralHandlerForType(byte type, Action<QuGeneralPacket> action)
+        {
+            packetHandlers.AddLast(packet =>
+            {
+                if (packet is QuGeneralPacket general && general.Type == type)
+                {
+                    action(general);
+                }
+            });
+        }
     }
 
     public void Dispose()
     {
-        client?.Dispose();
-        clientTask = null;
+        controlClient?.Dispose();
+        controlClient = null;
+        controlClientTask = null;
+        meterClient?.Dispose();
+        meterClient = null;
+        meterClientTask = null;
+        mixerUdpPort = null;
+    }
+
+    private class PacketListener : IDisposable
+    {
+        private readonly TaskCompletionSource<QuControlPacket> tcs;
+        private readonly CancellationTokenSource cts;
+        private readonly Func<QuControlPacket, bool> predicate;
+        private readonly CancellationTokenRegistration ctr;
+
+        internal Task<QuControlPacket> Task => tcs.Task;
+
+        internal PacketListener(Func<QuControlPacket, bool> predicate, TimeSpan timeout)
+        {
+            tcs = new TaskCompletionSource<QuControlPacket>();
+            cts = new CancellationTokenSource(timeout);
+            ctr = cts.Token.Register(() => tcs.TrySetCanceled());
+            this.predicate = predicate;
+        }
+
+        internal bool HandlePacket(QuControlPacket packet)
+        {
+            // If we've already cancelled the task, the listener is done.
+            if (tcs.Task.IsCanceled)
+            {
+                return true;
+            }
+            if (!predicate(packet))
+            {
+                return false;
+            }
+            tcs.TrySetResult(packet);
+            return true;
+        }
+
+        public void Dispose()
+        {
+            ctr.Unregister();
+            cts.Dispose();
+        }
     }
 }

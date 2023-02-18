@@ -3,6 +3,7 @@ using DigiMixer.Diagnostics;
 using DigiMixer.QuSeries.Core;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 class ConvertWiresharkDumps
 {
@@ -50,29 +51,42 @@ class ConvertWiresharkDumps
             while (address + 16 < data.Length)
             {
                 int lineLength = Math.Min(data.Length - address, 16);
-                writer.Write(address.ToString("X4"));
-                writer.Write("  ");
-                WriteHex(data.Slice(address, Math.Min(lineLength, 8)));
+                var line = new StringBuilder();
+                line.Append(address.ToString("X4"));
+                line.Append("  ");
+                AppendHex(line, data.Slice(address, Math.Min(lineLength, 8)));
                 if (lineLength > 8)
                 {
-                    writer.Write("  ");
-                    WriteHex(data.Slice(address + 8, Math.Min(lineLength - 8, 8)));
+                    line.Append("  ");
+                    AppendHex(line, data.Slice(address + 8, Math.Min(lineLength - 8, 8)));
                 }
-                // TODO: Maybe the ASCII?
-                writer.WriteLine();
+                while (line.Length < 56)
+                {
+                    line.Append(' ');
+                }
+                for (int i = 0; i < lineLength; i++)
+                {
+                    if (i == 8)
+                    {
+                        line.Append("  ");
+                    }
+                    byte b = data[address + i];
+                    line.Append(b >= ' ' && b <= '~' ? (char) b : '.');
+                }
+                writer.WriteLine(line.ToString());
                 address += 16;
             }
             Console.WriteLine($"Created {outputFile}");
 
-            void WriteHex(ReadOnlySpan<byte> bytes)
+            void AppendHex(StringBuilder builder, ReadOnlySpan<byte> bytes)
             {
                 for (int i = 0; i < bytes.Length; i++)
                 {
                     if (i != 0)
                     {
-                        writer.Write(" ");
+                        builder.Append(' ');
                     }
-                    writer.Write(bytes[i].ToString("x2"));
+                    builder.Append(bytes[i].ToString("x2"));
                 }
             }
         }

@@ -32,6 +32,6 @@ public class QuGeneralPacket : QuControlPacket
     {
         var hexSpan = Data.Length <= 10 ? Data : Data.Slice(0, 10);
         string dataDescription = BitConverter.ToString(hexSpan.ToArray()) + (Data.Length <= 10 ? "" : $"... ({Data.Length} bytes)");
-        return $"Received: {Type}: {dataDescription}";
+        return $"General: {Type}: {dataDescription}";
     }
 }

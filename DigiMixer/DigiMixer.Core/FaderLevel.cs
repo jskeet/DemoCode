@@ -4,6 +4,8 @@
 /// The level of a fader, within the scale of the mixer. This is represented
 /// as a 10-bit integer; the mixer representation may vary, and the scale of what's represented
 /// by each value may also vary significantly.
+/// 
+/// TODO: Make this much clearer, or dB-based
 /// </summary>
 public struct FaderLevel
 {
