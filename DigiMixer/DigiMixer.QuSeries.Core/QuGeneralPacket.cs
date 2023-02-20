@@ -28,10 +28,23 @@ public class QuGeneralPacket : QuControlPacket
         return packet;
     }
 
+    private const int FullDataLength = 10;
     public override string ToString()
     {
-        var hexSpan = Data.Length <= 10 ? Data : Data.Slice(0, 10);
-        string dataDescription = BitConverter.ToString(hexSpan.ToArray()) + (Data.Length <= 10 ? "" : $"... ({Data.Length} bytes)");
+        var hexSpan = Data.Length <= FullDataLength ? Data : Data.Slice(0, FullDataLength);
+        string dataDescription = BitConverter.ToString(hexSpan.ToArray()) + (Data.Length <= FullDataLength ? "" : $"... ({Data.Length} bytes)");
         return $"General: {Type}: {dataDescription}";
+    }
+
+    internal bool HasNonZeroData()
+    {
+        for (int i = 0; i < data.Length; i++)
+        {
+            if (data[i] != 0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

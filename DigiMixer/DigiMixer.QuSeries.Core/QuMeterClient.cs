@@ -15,7 +15,7 @@ public class QuMeterClient : IDisposable
     private UdpClient? udpClient;
 
     public int LocalUdpPort { get; }
-    public event EventHandler<QuMeterPacket>? PacketReceived;
+    public event EventHandler<QuGeneralPacket>? PacketReceived;
 
     public QuMeterClient(ILogger logger, string host)
     {
@@ -45,12 +45,14 @@ public class QuMeterClient : IDisposable
         while (!cts.IsCancellationRequested)
         {
             var result = await udpClient.ReceiveAsync(cts.Token);
-            var packet = new QuMeterPacket(result.Buffer);
-            if (logger.IsEnabled(LogLevel.Trace) && false)
+            if (QuControlPacket.TryParse(result.Buffer) is QuGeneralPacket packet)
             {
-                logger.LogTrace("Received packet: {packet}", packet);
+                if (logger.IsEnabled(LogLevel.Trace) && packet.HasNonZeroData())
+                {
+                    logger.LogTrace("Received packet: {packet}", packet);
+                }
+                PacketReceived?.Invoke(this, packet);
             }
-            PacketReceived?.Invoke(this, packet);
         }
     }
 

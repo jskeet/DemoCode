@@ -20,6 +20,8 @@ internal static class QuPackets
     internal const byte FullDataType = 0x06;
     internal const byte NetworkInformationType = 0x0c;
     internal const byte VersionInformationType = 0x01;
+    internal const byte InputMeterType = 0x23;
+    internal const byte OutputMeterType = 0x24;
 
     internal static QuControlPacket InitialHandshakeRequest(int localUdpPort) =>
         QuControlPacket.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) });

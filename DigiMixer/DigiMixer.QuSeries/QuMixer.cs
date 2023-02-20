@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.QuSeries.Core;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -102,19 +103,29 @@ internal class QuMixerApi : IMixerApi
         }
     }
 
-    public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
+    public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
-        return Task.CompletedTask;
+        int address = outputId == MainOutputLeft
+            ? 0x07_00_04_07 | ((inputId.Value - 1) << 16)
+            : (outputId.Value - 1) << 24 | ((inputId.Value - 1) << 16) | 0x0c_0a;
+        var packet = new QuValuePacket(4, 4, address, QuConversions.FaderLevelToRaw(level));
+        await SendPacket(packet);
     }
 
-    public Task SetFaderLevel(ChannelId outputId, FaderLevel level)
+    public async Task SetFaderLevel(ChannelId outputId, FaderLevel level)
     {
-        return Task.CompletedTask;
+        int networkChannelId = QuConversions.ChannelIdToNetwork(outputId);
+        int address = 0x07_00_04_07 | (networkChannelId << 16);
+        var packet = new QuValuePacket(4, 4, address, QuConversions.FaderLevelToRaw(level));
+        await SendPacket(packet);
     }
 
-    public Task SetMuted(ChannelId channelId, bool muted)
+    public async Task SetMuted(ChannelId channelId, bool muted)
     {
-        return Task.CompletedTask;
+        int networkChannelId = QuConversions.ChannelIdToNetwork(channelId);
+        int address = 0x07_00_00_06 | (networkChannelId << 16);
+        var packet = new QuValuePacket(4, 4, address, (ushort) (muted ? 1 : 0));
+        await SendPacket(packet);
     }
 
     private async Task<QuGeneralPacket> RequestData(QuControlPacket requestPacket, byte expectedResponseType, TimeSpan timeout)
@@ -161,8 +172,35 @@ internal class QuMixerApi : IMixerApi
         }
     }
 
-    private void HandleMeterPacket(object? sender, QuMeterPacket packet)
+    private void HandleMeterPacket(object? sender, QuGeneralPacket packet)
     {
+        if (packet.Type == QuPackets.InputMeterType)
+        {
+            var data = packet.Data;
+            // TODO: Don't hard code this. (Where should we remember it?)
+            var meters = new (ChannelId, MeterLevel)[32];
+            for (int i = 0; i < meters.Length; i++)
+            {
+                var slice = data.Slice(i * 20, 20);
+                meters[i] = (ChannelId.Input(i + 1), QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(slice.Slice(6, 2))));
+            }
+            receiver.ReceiveMeterLevels(meters);
+        }
+        else if (packet.Type == QuPackets.OutputMeterType)
+        {
+            var data = packet.Data;
+            // TODO: Don't hard code this. (Where should we remember it?)
+            var meters = new (ChannelId, MeterLevel)[6];
+            for (int i = 0; i < 4; i++)
+            {
+                var slice = data.Slice(i * 20, 20);
+                meters[i] = (ChannelId.Output(i + 1), QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(slice.Slice(10, 2))));
+            }
+            // TODO: Stereo meters
+            meters[4] = (MainOutputLeft, QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(data.Slice(200, 20).Slice(10, 2))));
+            meters[5] = (MainOutputRight, QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(data.Slice(220, 20).Slice(10, 2))));
+            receiver.ReceiveMeterLevels(meters);
+        }
     }
 
     private void HandleFullDataPacket(QuGeneralPacket packet)

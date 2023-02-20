@@ -13,12 +13,15 @@ public class QuValuePacket : QuControlPacket
     public ushort RawValue { get; }
     public int Address { get; }
 
-    internal QuValuePacket(ReadOnlySpan<byte> data)
+    public QuValuePacket(byte clientId, byte section, int address, ushort rawValue) =>
+        (ClientId, Section, Address, RawValue) = (clientId, section, address, rawValue);
+
+    internal QuValuePacket(ReadOnlySpan<byte> data) : this(
+        data[0],
+        data[1],
+        MemoryMarshal.Cast<byte, int>(data.Slice(2))[0],
+        MemoryMarshal.Cast<byte, ushort>(data.Slice(6))[0])
     {
-        ClientId = data[0];
-        Section = data[1];
-        Address = MemoryMarshal.Cast<byte, int>(data.Slice(2))[0];
-        RawValue = MemoryMarshal.Cast<byte, ushort>(data.Slice(6))[0];
     }
 
     public override int Length => 9;

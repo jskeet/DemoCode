@@ -62,6 +62,10 @@ public sealed class QuControlClient : IDisposable
             while (cts?.IsCancellationRequested == false)
             {
                 var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cts?.Token ?? new CancellationToken(true));
+                if (bytesRead == 0)
+                {
+                    throw new InvalidOperationException("Unexpected TCP stream termination");
+                }
                 packetBuffer.Process(buffer.AsSpan().Slice(0, bytesRead), ProcessPacket);
             }
         }
@@ -76,7 +80,11 @@ public sealed class QuControlClient : IDisposable
         }
     }
 
-    private void ProcessPacket(QuControlPacket packet) => PacketReceived?.Invoke(this, packet);
+    private void ProcessPacket(QuControlPacket packet)
+    {
+        logger.LogTrace("Received packet: {packet}", packet);
+        PacketReceived?.Invoke(this, packet);
+    }
 
     public void Dispose()
     {

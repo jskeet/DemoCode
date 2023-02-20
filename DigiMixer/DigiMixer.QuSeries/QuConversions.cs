@@ -12,6 +12,12 @@ internal class QuConversions
     internal static ushort FaderLevelToRaw(FaderLevel level) =>
         (ushort) (level.Value * MaxRawFaderLevel / FaderLevel.MaxValue);
 
+    public static MeterLevel RawToMeterLevel(ushort raw)
+    {
+        var db = (raw - 0x8000) / 256.0;
+        return MeterLevel.FromDb(db);
+    }
+
     internal static ChannelId? NetworkToChannelId(int channel) => channel switch
     {
         >= 0 and < 32 => ChannelId.Input(channel + 1),
@@ -19,4 +25,9 @@ internal class QuConversions
         46 => QuMixerApi.MainOutputLeft,
         _ => null
     };
+
+    internal static int ChannelIdToNetwork(ChannelId channel) =>
+        channel.IsInput ? channel.Value - 1
+        : channel == QuMixerApi.MainOutputLeft ? 46
+        : channel.Value + 38;
 }
