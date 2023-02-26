@@ -1,0 +1,60 @@
+{
+  "id": "beamz-bbp94-full",
+  "displayName": "Beamz BBP94 (full control)",
+  "channels": 10,
+  "groups": [
+    {
+      "description": "Main DMX",
+      "elements": [
+        {
+          "description": "Dimmer",
+          "type": "range"
+        },
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        },
+        {
+          "description": "White",
+          "type": "range"
+        },
+        {
+          "description": "Amber",
+          "type": "range"
+        },
+        {
+          "description": "Ultraviolet",
+          "type": "range"
+        },
+        {
+          "description": "Strobe",
+          "type": "range"
+        },
+        {
+          "description": "Program",
+          "type": "enum",
+          "lowerValues": {
+            "Manual": 0,
+            "Colour output": 51,
+            "Colour jumping": 101,
+            "Colour gradual": 151,
+            "Colour pulse": 201,
+            "Sound control": 251
+          }
+        },
+        {
+          "description": "Program speed",
+          "type": "range"
+        }
+      ]
+    }
+  ]
+}

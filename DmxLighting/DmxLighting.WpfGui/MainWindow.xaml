@@ -9,7 +9,12 @@
         Loaded="LoadSchema">
     <ScrollViewer Margin="5">
         <StackPanel Orientation="Vertical">
-            <local:FixtureControl />
+            <GroupBox Header="Fixture 1">
+                <local:FixtureControl x:Name="Fixture1" />
+            </GroupBox>
+            <GroupBox Header="Fixture 2">
+                <local:FixtureControl x:Name="Fixture2"/>
+            </GroupBox>
         </StackPanel>
     </ScrollViewer>
 </Window>

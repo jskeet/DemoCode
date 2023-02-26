@@ -1,0 +1,36 @@
+{
+  "id": "beamz-bbp94-simple",
+  "displayName": "Beamz BBP94 (simple control)",
+  "channels": 6,
+  "groups": [
+    {
+      "description": "Main DMX",
+      "elements": [
+        {
+          "description": "Red",
+          "type": "range"
+        },
+        {
+          "description": "Green",
+          "type": "range"
+        },
+        {
+          "description": "Blue",
+          "type": "range"
+        },
+        {
+          "description": "White",
+          "type": "range"
+        },
+        {
+          "description": "Amber",
+          "type": "range"
+        },
+        {
+          "description": "Ultraviolet",
+          "type": "range"
+        }
+      ]
+    }
+  ]
+}

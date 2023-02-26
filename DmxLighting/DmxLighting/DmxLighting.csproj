@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="SchemaResources/**/*.json" />
+    <None Remove="SchemaResources\Beamz\BBP94-Full.json" />
+    <None Remove="SchemaResources\Beamz\BBP94-Simple.json" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

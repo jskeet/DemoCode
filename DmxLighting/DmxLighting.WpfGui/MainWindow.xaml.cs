@@ -22,13 +22,19 @@ namespace DmxLighting.WpfGui
             //var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.LattaAlvor.86SmallPar.json");
             //var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.Equinox.FusionOrbit37.json");
             //var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.UKing.StageDiscoLaser-Simple.json");
-            var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.UKing.StageDiscoLaser-Full.json");
-            var universe = new DmxUniverse(universeNumber: 1, size: 34);
+            //var schema = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.UKing.StageDiscoLaser-Full.json");
+            var universe = new DmxUniverse(universeNumber: 1, size: 16);
             var acnSender = new StreamingAcnSender("192.168.1.46");
             acnSender.SendUniverse(universe);
             acnSender.WatchUniverse(universe);
-            var data = schema.ToFixtureData(universe, fixtureFirstChannel: 1);
-            DataContext = new FixtureViewModel { Data = data, Universe = universe, Sender = acnSender };
+
+            var schema1 = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.Beamz.BBP94-Full.json");
+            var data1 = schema1.ToFixtureData(universe, fixtureFirstChannel: 1);
+            Fixture1.DataContext = new FixtureViewModel { Data = data1, Universe = universe, Sender = acnSender };
+
+            var schema2 = FixtureSchema.FromJsonResource("DmxLighting.SchemaResources.Beamz.BBP94-Simple.json");
+            var data2 = schema2.ToFixtureData(universe, fixtureFirstChannel: 11);
+            Fixture2.DataContext = new FixtureViewModel { Data = data2, Universe = universe, Sender = acnSender };
         }
     }
 }
