@@ -58,6 +58,7 @@ internal sealed class UdpOscClient : IOscClient
         {
             while (!cts.IsCancellationRequested)
             {
+                // TODO: Use a single buffer repeatedly.
                 var result = await receivingClient.ReceiveAsync(cts.Token);
                 var buffer = result.Buffer;
                 var packet = OscPacket.Read(buffer, 0, buffer.Length);
