@@ -44,6 +44,8 @@ public class QuMeterClient : IDisposable
 
         while (!cts.IsCancellationRequested)
         {
+            // TODO: Receive into an existing buffer, and try to avoid allocating irrelevant information on the heap?
+            // (All the zero-data packets, for example...)
             var result = await udpClient.ReceiveAsync(cts.Token);
             if (QuControlPacket.TryParse(result.Buffer) is QuGeneralPacket packet)
             {
