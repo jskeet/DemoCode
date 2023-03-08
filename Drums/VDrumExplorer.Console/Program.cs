@@ -34,7 +34,7 @@ namespace VDrumExplorer.Console
             rootCommand.AddCommand(ProxyMidiCommand.Command);
             rootCommand.AddCommand(ListAerophoneStudioSets.Command);
             rootCommand.AddCommand(CopyAerophoneStudioSets.Command);
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
             rootCommand.AddCommand(CheckMfxDefaultsCommand.Command);
             rootCommand.AddCommand(DumpDeviceSegmentCommand.Command);
