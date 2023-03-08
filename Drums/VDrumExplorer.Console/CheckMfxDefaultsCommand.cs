@@ -1,7 +1,7 @@
 ﻿// Copyright 2020 Jon Skeet. All rights reserved.
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
