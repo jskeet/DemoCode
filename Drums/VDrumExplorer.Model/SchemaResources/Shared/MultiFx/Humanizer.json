@@ -1,0 +1,102 @@
+{
+  "description": "Humanizer",
+  "fields": [
+    {
+      "description": "Drive switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Drive",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Vowel 1",
+      "type": "enum32",
+      "values": [
+        "a",
+        "e",
+        "i",
+        "o",
+        "u"
+      ]
+    },
+    {
+      "description": "Vowel 2",
+      "type": "enum32",
+      "values": [
+        "a",
+        "e",
+        "i",
+        "o",
+        "u"
+      ]
+    },
+    {
+      "description": "Rate",
+      "type": "tempo",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
+    },
+    {
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Input sync switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Input sync threshold",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Manual",
+      "type": "range32",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "description": "Low gain",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Pan",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "valueOffset": -64,
+      "default": 64
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

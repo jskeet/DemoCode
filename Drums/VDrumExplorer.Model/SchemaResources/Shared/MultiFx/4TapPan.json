@@ -1,0 +1,133 @@
+{
+  "description": "Equalizer",
+  "fields": [
+    {
+      "description": "Delay 1",
+      "type": "tempo",
+      "suffix": "ms",
+      "min": 1,
+      "max": 2600,
+      "default": 150,
+      "noteDefault": 10
+    },
+    {
+      "description": "Delay 2",
+      "type": "tempo",
+      "suffix": "ms",
+      "min": 1,
+      "max": 2600,
+      "default": 150,
+      "noteDefault": 10
+    },
+    {
+      "description": "Delay 3",
+      "type": "tempo",
+      "suffix": "ms",
+      "min": 1,
+      "max": 2600,
+      "default": 150,
+      "noteDefault": 10
+    },
+    {
+      "description": "Delay 4",
+      "type": "tempo",
+      "suffix": "ms",
+      "min": 1,
+      "max": 2600,
+      "default": 150,
+      "noteDefault": 10
+    },
+    {
+      "description": "Delay 1 Feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%",
+      "default": 74
+    },
+    {
+      "description": "High Frequency Damp",
+      "type": "enum32",
+      "values": [
+        "200Hz",
+        "250Hz",
+        "315Hz",
+        "400Hz",
+        "500Hz",
+        "630Hz",
+        "800Hz",
+        "1000Hz",
+        "1250Hz",
+        "1600Hz",
+        "2000Hz",
+        "2500Hz",
+        "3150Hz",
+        "4000Hz",
+        "5000Hz",
+        "6300Hz",
+        "8000Hz",
+        "Bypass"
+      ],
+      "default": 17
+    },
+    {
+      "description": "Delay 1 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Delay 2 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Delay 3 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Delay 4 Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Low gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "High gain",
+      "type": "range32",
+      "min": 0,
+      "max": 30,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "name": "Placeholder field",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

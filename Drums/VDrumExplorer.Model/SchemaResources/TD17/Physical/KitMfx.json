@@ -35,7 +35,18 @@
         "Isolator",
         "Ring modulator",
         "Pitch shifter",
-        "Auto pan"
+        "Auto pan",
+        "(revision:0x2)Equalizer",
+        "(revision:0x2)Spectrum",
+        "(revision:0x2)Low Boost",
+        "(revision:0x2)Enhancer",
+        "(revision:0x2)Humanizer",
+        "(revision:0x2)Slicer",
+        "(revision:0x2)Step flanger",
+        "(revision:0x2)Hexa-chorus",
+        "(revision:0x2)4Tap pan delay",
+        "(revision:0x2)Enhancer -> flanger",
+        "(revision:0x2)Speaker sim"
       ]
     },
     {
@@ -84,7 +95,18 @@
           "Isolator": "$resource:../Shared/MultiFx/Isolator.json",
           "Ring modulator": "$resource:../Shared/MultiFx/RingModulator.json",
           "Pitch shifter": "$resource:../Shared/MultiFx/PitchShifter.json",
-          "Auto pan": "$resource:../Shared/MultiFx/AutoPan.json"
+          "Auto pan": "$resource:../Shared/MultiFx/AutoPan.json",
+          "(revision:0x2)Equalizer": "$resource:../Shared/MultiFx/Equalizer.json",
+          "(revision:0x2)Spectrum": "$resource:../Shared/MultiFx/Spectrum.json",
+          "(revision:0x2)Low Boost": "$resource:../Shared/MultiFx/LowBoost.json",
+          "(revision:0x2)Enhancer": "$resource:../Shared/MultiFx/Enhancer.json",
+          "(revision:0x2)Humanizer": "$resource:../Shared/MultiFx/Humanizer.json",
+          "(revision:0x2)Slicer": "$resource:../Shared/MultiFx/Slicer.json",
+          "(revision:0x2)Step flanger": "$resource:../Shared/MultiFx/StepFlanger.json",
+          "(revision:0x2)Hexa-chorus": "$resource:../Shared/MultiFx/HexaChorus.json",
+          "(revision:0x2)4Tap pan delay": "$resource:../Shared/MultiFx/4TapPan.json",
+          "(revision:0x2)Enhancer -> flanger": "$resource:../Shared/MultiFx/EnhancerToFlanger.json",
+          "(revision:0x2)Speaker sim": "$resource:../Shared/MultiFx/SpeakerSim.json"
         }
       }
     }
