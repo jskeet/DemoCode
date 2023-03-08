@@ -1,0 +1,163 @@
+{
+  "description": "Slicer",
+  "fields": [
+    {
+      "description": "Step 01",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 02",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 03",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 04",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 05",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 06",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 07",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 08",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 09",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 10",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 11",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 12",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 13",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 14",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 15",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Step 16",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    },
+    {
+      "description": "Rate",
+      "type": "tempo",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
+    },
+    {
+      "description": "Attack",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Input sync switch",
+      "type": "boolean32"
+    },
+    {
+      "description": "Input sync threshold",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Mode",
+      "type": "enum32",
+      "values": [
+        "Legato",
+        "Slash"
+      ]
+    },
+    {
+      "description": "Shuffle",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127
+    },
+  ]
+}
