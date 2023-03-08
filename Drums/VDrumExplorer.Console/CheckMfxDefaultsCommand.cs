@@ -25,7 +25,7 @@ namespace VDrumExplorer.Console
             Description = "Checks the default settings for each MFX option",
             Handler = new CheckMfxDefaultsCommand(),
         }
-        .AddRequiredOption<string>("--path", "Path to logical node containing MFX")
+        .AddRequiredOption<string>("--path", "Path to logical node containing MFX (e.g. '/Kits/Kit[100]/MultiFX[1]')")
         .AddOptionalOption("--switch", "Field name for switch", "Type")
         .AddOptionalOption("--parameters", "Field name for parameters", "Parameters");
 
@@ -74,14 +74,19 @@ namespace VDrumExplorer.Console
                     }
 
                     console.WriteLine($"Comparing fields for {modelFields.Description}");
+                    bool anyDifferences = false;
                     foreach (var (modelField, deviceField) in AsNumericFields(modelFields.Fields).Zip(AsNumericFields(deviceFields.Fields)))
                     {
                         if (modelField.RawValue != deviceField.RawValue)
                         {
                             console.WriteLine($"{modelField.SchemaField.Name}: Device={deviceField.RawValue}; Model={modelField.RawValue}");
+                            anyDifferences = true;
                         }
                     }
-                    console.WriteLine();
+                    if (anyDifferences)
+                    {
+                        console.WriteLine();
+                    }
                 }
             }
             finally
