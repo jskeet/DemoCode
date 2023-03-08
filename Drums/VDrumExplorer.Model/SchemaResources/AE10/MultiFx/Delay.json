@@ -14,7 +14,7 @@
     "Level"
   ],
   "fields": [
-        {
+    {
       "description": "placeholder",
       "type": "placeholder32"
     },
@@ -38,7 +38,7 @@
       "min": 0,
       "max": 1300
     },
-        {
+    {
       "description": "placeholder",
       "type": "placeholder32"
     },
