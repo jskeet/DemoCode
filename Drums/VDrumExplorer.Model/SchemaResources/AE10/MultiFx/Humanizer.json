@@ -47,7 +47,8 @@
         "o",
         "u"
       ]
-    },  {
+    },
+    {
       "description": "placeholder",
       "type": "placeholder32"
     },
@@ -60,7 +61,7 @@
       "default": 10,
       "suffix": "Hz"
     },
-        {
+    {
       "description": "placeholder",
       "type": "placeholder32"
     },
@@ -70,7 +71,6 @@
       "min": 0,
       "max": 127
     },
-    
     {
       "description": "Input sync switch",
       "type": "fixme_boolean32"

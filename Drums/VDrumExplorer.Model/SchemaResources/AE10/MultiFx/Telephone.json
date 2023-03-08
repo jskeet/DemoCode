@@ -5,7 +5,7 @@
     "Treble",
     "Balance",
     "Level"
-    ],
+  ],
   "fields": [
     {
       "description": "Voice quality",
