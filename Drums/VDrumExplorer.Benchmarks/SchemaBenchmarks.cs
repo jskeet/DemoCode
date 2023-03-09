@@ -4,7 +4,6 @@
 
 using BenchmarkDotNet.Attributes;
 using VDrumExplorer.Model;
-using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Benchmarks
 {

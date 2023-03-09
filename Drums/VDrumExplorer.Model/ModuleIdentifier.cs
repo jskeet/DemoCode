@@ -4,7 +4,7 @@
 
 using System;
 
-namespace VDrumExplorer.Model.Midi
+namespace VDrumExplorer.Model
 {
     /// <summary>
     /// Everything required to confidently identify a module, including software revision.

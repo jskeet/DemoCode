@@ -5,10 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.Model.Schema.Physical;
-using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.Model.Data.Fields
 {

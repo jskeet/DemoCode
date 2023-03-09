@@ -5,8 +5,6 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data;
