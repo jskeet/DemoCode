@@ -5,7 +5,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Model;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.ViewModel.Home;
