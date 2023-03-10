@@ -2,7 +2,6 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Utility;
@@ -24,10 +23,8 @@ namespace VDrumExplorer.Model.Schema.Physical
         /// </summary>
         private IReadOnlyDictionary<string, IContainer> ContainersByName { get; }
 
-        internal IContainer? GetContainerOrNull(ReadOnlySpan<char> name)
-        {
-            return ContainersByName.GetValueOrDefault(name.ToString());
-        }
+        internal IContainer? GetContainerOrNull(string name) =>
+            ContainersByName.GetValueOrDefault(name);
 
         internal ContainerContainer(ModuleSchema schema, string name, string description, ModuleAddress address, string path, List<IContainer> containers)
             : base(schema, name, description, address, path)

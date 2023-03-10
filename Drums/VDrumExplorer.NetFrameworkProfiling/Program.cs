@@ -29,7 +29,7 @@ namespace VDrumExplorer.NetFrameworkProfiling
                 var model = (Module) Timing.DebugConsoleLogTiming("Loaded model", () => ProtoIo.LoadModel(file, NullLogger.Instance));
 
                 var containers = model.Schema.PhysicalRoot.DescendantsAndSelf().OfType<FieldContainer>().ToList();
-                Timing.DebugConsoleLogTiming("Populated dictionaries", () => containers.ForEach(fc => fc.GetFieldOrNull("".AsSpan())));
+                Timing.DebugConsoleLogTiming("Populated dictionaries", () => containers.ForEach(fc => fc.GetFieldOrNull("")));
             }
         }
     }

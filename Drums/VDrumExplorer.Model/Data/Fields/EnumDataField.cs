@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Security.Cryptography;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
@@ -38,5 +39,15 @@ namespace VDrumExplorer.Model.Data.Fields
             SchemaField.RawNumberByName.TryGetValue(value, out int number) && TrySetRawValue(number);
 
         public override string FormattedText => Value;
+
+        public override bool TrySetFormattedText(string text)
+        {
+            if (SchemaField.RawNumberByName.TryGetValue(text, out int rawValue))
+            {
+                RawValue = rawValue;
+                return true;
+            }
+            return false;
+        }
     }
 }

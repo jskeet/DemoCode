@@ -3,8 +3,8 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields
@@ -99,5 +99,15 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         public override string FormattedText => Instrument.Name;
+
+        public override bool TrySetFormattedText(string text)
+        {
+            var instrument = Schema.PresetInstruments.Concat(Schema.UserSampleInstruments).FirstOrDefault(inst => inst.Name == text);
+            if (instrument is not null)
+            {
+                SetInstrument(instrument);
+            }
+            return instrument is not null;
+        }
     }
 }

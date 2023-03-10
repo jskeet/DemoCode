@@ -26,6 +26,7 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         public override string FormattedText => Text;
+        public override bool TrySetFormattedText(string text) => TrySetText(text);
 
         private string text;
         public string Text

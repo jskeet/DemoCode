@@ -43,6 +43,7 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         public abstract string FormattedText { get; }
+        public abstract bool TrySetFormattedText(string text);
         protected abstract IField GetSchemaField();
         public abstract void Reset();
 
