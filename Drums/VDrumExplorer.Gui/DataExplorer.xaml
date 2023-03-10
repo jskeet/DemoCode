@@ -15,6 +15,15 @@
                 <!-- It's annoying that we can't use ApplicationCommands here, but I haven't managed to make it work. -->
                 <MenuItem Command="{Binding SaveFileCommand}" Header="Save" IsCheckable="False"/>
                 <MenuItem Command="{Binding SaveFileAsCommand}" Header="Save As" IsCheckable="False"/>
+                <MenuItem Header="Convert to..." ItemsSource="{Binding ConvertibleModuleIdentifiers}" Visibility="{Binding HasConvertibleModuleIdentifiers, Converter={StaticResource VisibilityConverter}}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Command="{Binding DataContext.ConvertCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Menu}}"
+                                      CommandParameter="{Binding .}"
+                                      Header="{Binding DisplayName}" HorizontalContentAlignment="Left" />
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Visibility="{Binding IsKitExplorer, Converter={StaticResource VisibilityConverter}}" Margin="{StaticResource PanelMargin}">

@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows.Input;
 using VDrumExplorer.Model;
 using VDrumExplorer.Proto;
+using VDrumExplorer.ViewModel.Home;
 
 namespace VDrumExplorer.ViewModel.Data
 {
@@ -56,5 +57,11 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void CopyDataToTemporaryStudioSet() =>
             CopyDataToDevice(Model.LogicalRoot, Model.Schema.PhysicalRoot.ResolveContainer("TemporaryStudioSet").Address);
+
+        protected override void ConvertToAlternativeSchema(ModuleSchema schema)
+        {
+            var converted = new Kit(Kit.Data.ConvertToSchema(schema, Logger), Kit.DefaultKitNumber);
+            ViewServices.ShowKitExplorer(new KitExplorerViewModel(ViewServices, Logger, DeviceViewModel, converted));
+        }
     }
 }

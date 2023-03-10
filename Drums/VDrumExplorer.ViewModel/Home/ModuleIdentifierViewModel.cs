@@ -16,7 +16,7 @@ public class ModuleIdentifierViewModel : ViewModelBase<ModuleIdentifier>
 {
     private readonly bool includeRevision;
 
-    private ModuleIdentifierViewModel(ModuleIdentifier model, bool includeRevision) : base(model)
+    internal ModuleIdentifierViewModel(ModuleIdentifier model, bool includeRevision) : base(model)
     {
         this.includeRevision = includeRevision;
     }
