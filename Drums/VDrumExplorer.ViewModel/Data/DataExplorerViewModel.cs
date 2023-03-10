@@ -14,6 +14,8 @@ using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Dialogs;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Diagnostics;
+using VDrumExplorer.ViewModel.Home;
 
 namespace VDrumExplorer.ViewModel.Data
 {
@@ -36,6 +38,8 @@ namespace VDrumExplorer.ViewModel.Data
         public DelegateCommand SaveFileAsCommand { get; }
         public CommandBase CopyDataToDeviceCommand { get; }
         public virtual ICommand CopyToTemporaryStudioSetCommand => CommandBase.NotImplemented;
+
+        public ICommand ConvertCommand { get; }
 
         public void SaveHandler(object sender, EventArgs e)
         {
@@ -76,6 +80,8 @@ namespace VDrumExplorer.ViewModel.Data
             : $"{ExplorerName} ({SchemaIdentifierDisplayName}) - {fileName}";
 
         public IReadOnlyList<int> MidiChannels { get; } = Enumerable.Range(1, 16).ToList();
+        public IReadOnlyList<ModuleIdentifierViewModel> ConvertibleModuleIdentifiers { get; }
+        public bool HasConvertibleModuleIdentifiers => ConvertibleModuleIdentifiers.Any();
 
         private int selectedMidiChannel = 10;
         public int SelectedMidiChannel
@@ -132,6 +138,14 @@ namespace VDrumExplorer.ViewModel.Data
             PasteNodeCommand = new DelegateCommand(PasteNode, true);
             Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
             SelectedNode = Root[0];
+
+            ConvertCommand = new DelegateCommand<ModuleIdentifierViewModel>(ConvertToAlternativeSchema, true);
+            var moduleId = data.Schema.Identifier;
+            ConvertibleModuleIdentifiers = ModuleSchema.KnownSchemas.Keys
+                .Where(key => key.Name == moduleId.Name)
+                .Except(new[] { moduleId })
+                .Select(id => new ModuleIdentifierViewModel(id, true))
+                .ToList();
         }
 
         private bool readOnly;
@@ -245,7 +259,7 @@ namespace VDrumExplorer.ViewModel.Data
 
         protected abstract void CopyDataToDevice();
 
-        public void CopyNode()
+        private void CopyNode()
         {
             var sourceNode = SelectedNode?.Model.SchemaNode;
             if (sourceNode is null)
@@ -256,7 +270,7 @@ namespace VDrumExplorer.ViewModel.Data
             CopiedSnapshot = new NodeSnapshot(sourceNode, snapshot);
         }
 
-        public void PasteNode()
+        private void PasteNode()
         {
             var targetNode = SelectedNode?.Model.SchemaNode;
             if (CopiedSnapshot?.IsValidForTarget(targetNode) != true)
@@ -266,5 +280,10 @@ namespace VDrumExplorer.ViewModel.Data
             var relocated = CopiedSnapshot.Data.Relocated(CopiedSnapshot.SourceNode, targetNode!);
             Model.LoadPartialSnapshot(relocated, Logger);
         }
+
+        private void ConvertToAlternativeSchema(ModuleIdentifierViewModel targetId) =>
+            ConvertToAlternativeSchema(ModuleSchema.KnownSchemas[targetId.Identifier].Value);
+
+        protected abstract void ConvertToAlternativeSchema(ModuleSchema schema);
     }
 }
