@@ -84,7 +84,7 @@ namespace VDrumExplorer.Model.Schema.Physical
                     var segment = span.Slice(segmentStart, i - segmentStart);
                     if (current is ContainerContainer cc)
                     {
-                        current = cc.GetContainerOrNull(segment)
+                        current = cc.GetContainerOrNull(segment.ToString())
                             ?? throw new ArgumentException($"Container '{segment.ToString()}' not found within container '{cc.Path}'");
                     }
                     else
@@ -107,9 +107,10 @@ namespace VDrumExplorer.Model.Schema.Physical
 
             // Now find the container, and the field within it.
             IContainer container = lastSlash == -1 ? this : ResolveContainer(span.Slice(0, lastSlash));
+            string fieldNameText = fieldName.ToString();
             return container is FieldContainer fc
-                ? fc.GetFieldOrNull(fieldName)?? throw new ArgumentException($"No field '{fieldName.ToString()}' within container '{fc.Path}'")
-                : throw new ArgumentException($"Container '{container.Path}' is not a field container, so cannot contain field '{fieldName.ToString()}'");
+                ? fc.GetFieldOrNull(fieldNameText)?? throw new ArgumentException($"No field '{fieldNameText}' within container '{fc.Path}'")
+                : throw new ArgumentException($"Container '{container.Path}' is not a field container, so cannot contain field '{fieldNameText}'");
         }
     }
 }

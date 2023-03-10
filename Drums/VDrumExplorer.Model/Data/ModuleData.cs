@@ -3,6 +3,9 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,6 +80,81 @@ namespace VDrumExplorer.Model.Data
         }
 
         internal IReadOnlyList<IDataField> GetDataFields(FieldContainer container) => fieldsByFieldContainer[container];
+
+        internal IEnumerable<(string, string)> GetDataFieldFormattedValues(FieldContainer container)
+        {
+            List<(string, string)> pairs = new();
+            foreach (var field in GetDataFields(container))
+            {
+                AddField(field);
+            }
+            return pairs;
+
+            void AddField(IDataField field, string namePrefix = "")
+            {
+                if (field is OverlayDataField odf)
+                {
+                    string prefix = field.SchemaField.Name + ".";
+                    foreach (var overlayField in odf.CurrentFieldList.Fields)
+                    {
+                        AddField(overlayField, prefix);
+                    }
+                }
+                else
+                {
+                    pairs.Add((namePrefix + field.SchemaField.Name, field.FormattedText));
+                }
+            }
+        }
+
+        // TODO: Put this into FieldContainer accepting a list of key/value pairs? (And a similar reverse operation?)
+        // The traversal down containers may be trickier to generalize.
+        internal void MergeTextValues(FieldContainer container, IEnumerable<(string key, string value)> values, ILogger logger)
+        {
+            foreach (var (fieldName, value) in values)
+            {
+                var dataField = GetDataField(fieldName);
+                if (dataField is null)
+                {
+                    logger.LogWarning("Field '{name}' not found in container '{container}'", fieldName, container.Path);
+                    continue;
+                }
+                if (!dataField.TrySetFormattedText(value))
+                {
+                    logger.LogWarning("Invalid value for field '{field}': '{value}'", dataField.SchemaField.Path, value);
+                }
+
+            }
+
+            IDataField? GetDataField(string name)
+            {
+                var field = container.GetFieldOrNull(name);
+                if (field is not null)
+                {
+                    return this.GetDataField(field);
+                }
+                return GetOverlayDataField(name);
+            }
+
+            IDataField? GetOverlayDataField(string name)
+            {
+                int dotIndex = name.IndexOf('.');
+                if (dotIndex == -1)
+                {
+                    return null;
+                }
+                string beforeDot = name.Substring(0, dotIndex);
+                var overlay = container.GetFieldOrNull(beforeDot) as OverlayField;
+                if (overlay is null)
+                {
+                    return null;
+                }
+                string afterDot = name.Substring(dotIndex + 1);
+                // We assume the controlling type has been set before the overlay fields appear...
+                var overlayFields = ((OverlayDataField) this.GetDataField(overlay)).CurrentFieldList;
+                return overlayFields.Fields.FirstOrDefault(f => f.SchemaField.Name == afterDot);
+            }
+        }
 
         // TODO: Check how often this is called, and whether we need to optimize.
         internal IDataField GetDataField(IField field) =>
@@ -169,6 +247,58 @@ namespace VDrumExplorer.Model.Data
             }
 
             LoadPartialSnapshot(snapshot, logger);
+        }
+
+        /// <summary>
+        /// Converts this instance to a new <see cref="ModuleData"/> to the given schema,
+        /// using the formatted text values (and field/cotnainer names) in the conversion,
+        /// logging any conversion failures along the way. This is not likely to go well
+        /// unless the new and old schema are very similar.
+        /// </summary>
+        public ModuleData ConvertToSchema(ModuleSchema schema, ILogger logger)
+        {
+            var root = schema.LogicalRoot.ResolveNode(LogicalRoot.SchemaNode.Path);
+            var newData = new ModuleData(root);
+            MergeData(LogicalRoot.SchemaNode.Container, root.Container);
+            return newData;
+
+            void MergeData(IContainer oldContainer, IContainer newContainer)
+            {
+                switch ((oldContainer, newContainer))
+                {
+                    case (FieldContainer ofc, FieldContainer nfc):
+                        MergeFields(ofc, nfc);
+                        break;
+                    case (ContainerContainer occ, ContainerContainer ncc):
+                        MergeContainers(occ, ncc);
+                        break;
+                    default:
+                        logger.LogError("Schema conversion error: '{path}' container types are not the same", oldContainer.Path);
+                        break;
+                }
+
+                // TODO: Put this into FieldContainer accepting a list of key/value pairs? (And a similar reverse operation?)
+                // The traversal down containers may be trickier to generalize.
+                void MergeFields(FieldContainer ofc, FieldContainer nfc)
+                {
+                    var pairs = this.GetDataFieldFormattedValues(ofc);
+                    newData.MergeTextValues(nfc, pairs, logger);
+                }
+
+                void MergeContainers(ContainerContainer occ, ContainerContainer ncc)
+                {
+                    foreach (var oldChild in occ.Containers)
+                    {
+                        var newChild = ncc.GetContainerOrNull(oldChild.Name);
+                        if (newChild is null)
+                        {
+                            logger.LogWarning("Ignoring container '{container}': no such container in target schema", oldChild.Path);
+                            continue;
+                        }
+                        MergeData(oldChild, newChild);
+                    }
+                }
+            }
         }
     }
 }

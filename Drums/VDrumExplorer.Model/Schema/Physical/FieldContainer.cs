@@ -2,9 +2,13 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDrumExplorer.Model.Data;
+using VDrumExplorer.Model.Data.Fields;
 using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.Utility;
 
@@ -49,6 +53,6 @@ namespace VDrumExplorer.Model.Schema.Physical
                 x.Address.CompareTo(y.Address);
         }
 
-        internal IField? GetFieldOrNull(ReadOnlySpan<char> fieldName) => FieldsByName.GetValueOrDefault(fieldName.ToString());
+        internal IField? GetFieldOrNull(string fieldName) => FieldsByName.GetValueOrDefault(fieldName);
     }
 }

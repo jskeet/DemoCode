@@ -13,5 +13,14 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         public override string FormattedText => SchemaField.FormatRawValue(RawValue);
+        public override bool TrySetFormattedText(string text)
+        {
+            if (SchemaField.TryParseFormattedValue(text) is int rawValue)
+            {
+                RawValue = rawValue;
+                return true;
+            }
+            return false;
+        }
     }
 }

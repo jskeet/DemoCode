@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -76,8 +77,34 @@ namespace VDrumExplorer.Model.Data.Fields
             set => MusicalNoteDataField.Value = value;
         }
 
+        private const string TempoSyncFormatPrefix = "Tempo sync: ";
+        private const string FixedFormatPrefix = "Fixed: ";
+
         public string NumericFormattedText => NumericDataField.FormattedText;
-        public override string FormattedText => TempoSync ? $"Tempo sync: {MusicalNote}" : $"Fixed: {NumericDataField.FormattedText}";
+        public override string FormattedText => TempoSync ? TempoSyncFormatPrefix + MusicalNote : FixedFormatPrefix + NumericDataField.FormattedText;
+
+        public override bool TrySetFormattedText(string text)
+        {
+            if (text.StartsWith(TempoSyncFormatPrefix, StringComparison.Ordinal))
+            {
+                text = text.Substring(TempoSyncFormatPrefix.Length);
+                if (MusicalNoteDataField.TrySetFormattedText(text))
+                {
+                    TempoSync = true;
+                    return true;
+                }
+            }
+            else if (text.StartsWith(FixedFormatPrefix, StringComparison.Ordinal))
+            {
+                text = text.Substring(FixedFormatPrefix.Length);
+                if (NumericDataField.TrySetFormattedText(text))
+                {
+                    TempoSync = false;
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public override void Reset()
         {
