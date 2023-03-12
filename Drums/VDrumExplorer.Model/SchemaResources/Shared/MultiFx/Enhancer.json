@@ -6,14 +6,14 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 64
     },
     {
       "description": "Mix",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 64
     },
     {
       "description": "Low gain",

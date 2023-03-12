@@ -89,7 +89,7 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 80
+      "default": 127
     }
   ]
 }

@@ -19,7 +19,7 @@
       "type": "range32",
       "min": 0,
       "max": 125,
-      "default": 8,
+      "default": 10,
       "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
     },
     {
@@ -27,7 +27,7 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 63
+      "default": 64
     },
     {
       "description": "High Frequency Damp",
@@ -52,7 +52,7 @@
         "8000Hz",
         "Bypass"
       ],
-      "default": 11
+      "default": 17
     },
     {
       "description": "Low Gain",

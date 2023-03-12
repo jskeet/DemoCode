@@ -50,8 +50,8 @@
       "max": 200,
       "divisor": 20,
       "suffix": "Hz",
-      "default": 10,
-      "noteDefault": 18
+      "default": 30,
+      "noteDefault": 13
     },
     {
       "description": "Depth",
@@ -86,8 +86,8 @@
       "max": 200,
       "divisor": 20,
       "suffix": "Hz",
-      "default": 10,
-      "noteDefault": 18
+      "default": 80,
+      "noteDefault": 6
     },
     {
       "description": "Low Gain",
