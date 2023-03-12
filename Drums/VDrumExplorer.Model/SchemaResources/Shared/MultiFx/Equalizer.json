@@ -4,6 +4,7 @@
     {
       "description": "Low freq",
       "type": "enum32",
+      "default": 12,
       "values": [
         "20Hz",
         "25Hz",
@@ -15,6 +16,7 @@
         "100Hz",
         "125Hz",
         "160Hz",
+        "200Hz",
         "250Hz",
         "315Hz",
         "400Hz"
@@ -26,11 +28,13 @@
       "min": 0,
       "max": 30,
       "suffix": "dB",
-      "valueOffset": -15
+      "valueOffset": -15,
+      "default": 15
     },
     {
       "description": "Mid 1 freq",
       "type": "enum32",
+      "default": 16,
       "values": [
         "200Hz",
         "250Hz",
@@ -54,6 +58,7 @@
     {
       "description": "Mid 1 gain",
       "type": "range32",
+      "default": 15,
       "min": 0,
       "max": 30,
       "suffix": "dB",
@@ -73,6 +78,7 @@
     {
       "description": "Mid 2 freq",
       "type": "enum32",
+      "default": 16,
       "values": [
         "200Hz",
         "250Hz",
@@ -99,7 +105,8 @@
       "min": 0,
       "max": 30,
       "suffix": "dB",
-      "valueOffset": -15
+      "valueOffset": -15,
+      "default": 15
     },
     {
       "description": "Mid 2 Q",
@@ -115,6 +122,7 @@
     {
       "description": "High freq",
       "type": "enum32",
+      "default": 3,
       "values": [
         "2000Hz",
         "2500Hz",
@@ -134,7 +142,8 @@
       "min": 0,
       "max": 30,
       "suffix": "dB",
-      "valueOffset": -15
+      "valueOffset": -15,
+      "default": 15
     },
     {
       "description": "Level",

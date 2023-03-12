@@ -13,14 +13,14 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Step 03",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 30
     },
     {
       "description": "Step 04",
@@ -41,21 +41,21 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Step 07",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 30
     },
     {
       "description": "Step 08",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Step 09",
@@ -69,14 +69,14 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Step 11",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 30
     },
     {
       "description": "Step 12",
@@ -90,28 +90,28 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Step 14",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Step 15",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 30
     },
     {
       "description": "Step 16",
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Rate",
@@ -121,13 +121,15 @@
       "divisor": 20,
       "suffix": "Hz",
       "default": 10,
-      "noteDefault": 18
+      "noteDefault": 18,
+      "syncDefault": 1
     },
     {
       "description": "Attack",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 50
     },
     {
       "description": "Input sync switch",
@@ -137,7 +139,8 @@
       "description": "Input sync threshold",
       "type": "range32",
       "min": 0,
-      "max": 127
+      "max": 127,
+      "default": 60
     },
     {
       "description": "Mode",
@@ -157,7 +160,8 @@
       "description": "Level",
       "type": "range32",
       "min": 0,
-      "max": 127
-    },
+      "max": 127,
+      "default": 127
+    }
   ]
 }

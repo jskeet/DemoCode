@@ -1,5 +1,5 @@
 {
-  "description": "Equalizer",
+  "description": "Hexa Chorus",
   "fields": [
     {
       "description": "Pre delay",
@@ -24,7 +24,7 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 40
+      "default": 20
     },
     {
       "description": "Pre delay deviation",
@@ -46,7 +46,7 @@
       "type": "range32",
       "min": 0,
       "max": 20,
-      "default": 0
+      "default": 20
     },
     {
       "name": "Placeholder field",
