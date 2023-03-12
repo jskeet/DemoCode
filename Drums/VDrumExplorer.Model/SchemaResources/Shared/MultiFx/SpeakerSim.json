@@ -4,6 +4,7 @@
     {
       "description": "Speaker type",
       "type": "enum32",
+      "default": 6,
       "values": [
         "Small 1",
         "Small 2",
@@ -28,7 +29,8 @@
       "type": "range32",
       "min": 0,
       "max": 2,
-      "valueOffset": 1
+      "valueOffset": 1,
+      "default": 1
     },
     {
       "description": "Mic level",
@@ -42,7 +44,7 @@
       "type": "range32",
       "min": 0,
       "max": 127,
-      "default": 127
+      "default": 0
     },
     {
       "description": "Level",

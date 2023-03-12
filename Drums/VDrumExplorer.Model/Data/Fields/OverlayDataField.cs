@@ -131,5 +131,6 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         public override string FormattedText => throw new InvalidOperationException($"{nameof(OverlayDataField)} cannot be formatted");
+        public override bool TrySetFormattedText(string text) => throw new InvalidOperationException($"{nameof(OverlayDataField)} cannot be parsed");
     }
 }

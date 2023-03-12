@@ -5,7 +5,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDrumExplorer.Model;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Utility;
 
 namespace VDrumExplorer.ViewModel.Home;
@@ -17,7 +16,7 @@ public class ModuleIdentifierViewModel : ViewModelBase<ModuleIdentifier>
 {
     private readonly bool includeRevision;
 
-    private ModuleIdentifierViewModel(ModuleIdentifier model, bool includeRevision) : base(model)
+    internal ModuleIdentifierViewModel(ModuleIdentifier model, bool includeRevision) : base(model)
     {
         this.includeRevision = includeRevision;
     }

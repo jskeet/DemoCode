@@ -12,7 +12,14 @@ namespace VDrumExplorer.Model.Schema.Fields
     /// </summary>
     public abstract class NumericFieldBase : FieldBase
     {
+        /// <summary>
+        /// The raw (unformatted) minimum value.
+        /// </summary>
         public int Min => NumericBaseParameters.Min;
+
+        /// <summary>
+        /// The raw (unformatted) maximum value.
+        /// </summary>
         public int Max => NumericBaseParameters.Max;
         public int Default => NumericBaseParameters.Default;
         internal NumericCodec Codec => NumericBaseParameters.Codec;

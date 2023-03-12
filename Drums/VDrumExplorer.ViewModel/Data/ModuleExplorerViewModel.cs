@@ -100,5 +100,11 @@ namespace VDrumExplorer.ViewModel.Data
         }
 
         protected override void CopyDataToDevice() => CopyDataToDevice(SelectedNode?.Model, null);
+
+        protected override void ConvertToAlternativeSchema(ModuleSchema schema)
+        {
+            var converted = new Module(Module.Data.ConvertToSchema(schema, Logger));
+            ViewServices.ShowModuleExplorer(new ModuleExplorerViewModel(ViewServices, Logger, DeviceViewModel, converted));
+        }
     }
 }

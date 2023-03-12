@@ -2,9 +2,10 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Newtonsoft.Json;
 using System;
 
-namespace VDrumExplorer.Model.Midi
+namespace VDrumExplorer.Model
 {
     /// <summary>
     /// Everything required to confidently identify a module, including software revision.
@@ -23,23 +24,27 @@ namespace VDrumExplorer.Model.Midi
         /// <summary>
         /// The name of the module, e.g. "TD-17".
         /// </summary>
+        [JsonProperty("name")]
         public string Name { get; }
 
         /// <summary>
         /// The ID of the module.
         /// </summary>
+        [JsonProperty("modelId")]
         public int ModelId { get; }
 
         /// <summary>
         /// The family code as reported by a Midi identity response.
         /// Note: this is currently interpreted in a little-endian sense, for legacy reasons.
         /// </summary>
+        [JsonProperty("familyCode")]
         public int FamilyCode { get; }
 
         /// <summary>
         /// The family number code as reported by a Midi identity response.
         /// Note: this is currently interpreted in a little-endian sense, for legacy reasons.
         /// </summary>
+        [JsonProperty("familyNumberCode")]
         public int FamilyNumberCode { get; }
 
         /// <summary>
@@ -53,8 +58,10 @@ namespace VDrumExplorer.Model.Midi
         /// The software revision, as reported by a Midi identity response.
         /// (Firmware updates may or may not change this.)
         /// </summary>
+        [JsonProperty("softwareRevision")]
         public int SoftwareRevision { get; }
 
+        [JsonConstructor]
         public ModuleIdentifier(string name, int modelId, int familyCode, int familyNumberCode, int softwareRevision) =>
             (Name, ModelId, FamilyCode, FamilyNumberCode, SoftwareRevision, ModelIdLength) =
             (name, modelId, familyCode, familyNumberCode, softwareRevision, DetermineModelIdLength(name));

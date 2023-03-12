@@ -6,7 +6,6 @@ using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text;
-using VDrumExplorer.Model.Data;
 
 namespace VDrumExplorer.Proto
 {
@@ -22,7 +21,7 @@ namespace VDrumExplorer.Proto
         /// Creates a model from the data in a stream.
         /// </summary>
         /// <param name="stream">The stream to read data from.</param>
-        /// <param name="validationResult">The result of validating the data.</param>
+        /// <param name="logger">A logger to report non-fatal validation issues.</param>
         /// <returns>The model data. The type depends on the data in the stream.</returns>
         public static object ReadModel(Stream stream, ILogger logger)
         {
@@ -38,7 +37,7 @@ namespace VDrumExplorer.Proto
 
         /// <summary>
         /// Loads a model from the data in a file. This is a convenience method to call
-        /// <see cref="ReadModel(Stream)"/> using a file.
+        /// <see cref="ReadModel(Stream, ILogger)"/> using a file.
         /// </summary>
         /// <param name="file">The file to load.</param>
         /// <param name="logger">The logger to write validation results to.</param>

@@ -25,5 +25,19 @@ namespace VDrumExplorer.Model.Data.Fields
         }
 
         public override string FormattedText => Value ? "On" : "Off";
+        public override bool TrySetFormattedText(string text)
+        {
+            switch (text)
+            {
+                case "Off":
+                    Value = false;
+                    return true;
+                case "On":
+                    Value = true;
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

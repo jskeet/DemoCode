@@ -1,0 +1,63 @@
+{
+  "description": "Hexa Chorus",
+  "fields": [
+    {
+      "description": "Pre delay",
+      "type": "range32",
+      "min": 0,
+      "max": 125,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json",
+      "default": 20
+    },
+    {
+      "description": "Rate",
+      "type": "tempo",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
+    },
+    {
+      "description": "Depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 20
+    },
+    {
+      "description": "Pre delay deviation",
+      "type": "range32",
+      "min": 0,
+      "max": 20,
+      "default": 0
+    },
+    {
+      "description": "Depth deviation",
+      "type": "range32",
+      "min": 0,
+      "max": 40,
+      "default": 20,
+      "valueOffset": -20
+    },
+    {
+      "description": "Pan deviation",
+      "type": "range32",
+      "min": 0,
+      "max": 20,
+      "default": 20
+    },
+    {
+      "name": "Placeholder field",
+      "type": "placeholder32"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

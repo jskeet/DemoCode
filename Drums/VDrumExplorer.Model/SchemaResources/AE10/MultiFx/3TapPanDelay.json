@@ -1,8 +1,18 @@
 {
   "description": "3-Tap Pan Delay",
   "order": [
-    "DelayLeft", "DelayCenter", "DelayRight", "CenterFeedback", "HFDamp",
-    "LeftLevel", "CenterLevel", "RightLevel", "HighGain", "LowGain", "Balance", "Level"
+    "DelayLeft",
+    "DelayCenter",
+    "DelayRight",
+    "CenterFeedback",
+    "HFDamp",
+    "LeftLevel",
+    "CenterLevel",
+    "RightLevel",
+    "HighGain",
+    "LowGain",
+    "Balance",
+    "Level"
   ],
   "fields": [
     {

@@ -21,7 +21,7 @@ namespace VDrumExplorer.Model
         // to do so in a view model though, really.
         public int DefaultKitNumber { get; set; }
 
-        private Kit(ModuleData data, int defaultKitNumber) =>
+        public Kit(ModuleData data, int defaultKitNumber) =>
             (Schema, Data, DefaultKitNumber, KitRoot) =
             (data.Schema, data, defaultKitNumber, data.Schema.Kit1Root);
 

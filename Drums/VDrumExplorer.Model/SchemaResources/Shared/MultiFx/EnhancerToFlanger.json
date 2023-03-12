@@ -1,0 +1,69 @@
+{
+  "description": "Enhancer to flanger",
+  "fields": [
+    {
+      "description": "Enhancer sens",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 64
+    },
+    {
+      "description": "Enhancer mix",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 64
+    },
+    {
+      "description": "Flanger pre delay",
+      "type": "range32",
+      "min": 0,
+      "max": 125,
+      "default": 20,
+      "values": "$resource:../Shared/CustomNumeric/PreDelay.json"
+    },
+    {
+      "description": "Flanger rate",
+      "type": "tempo",
+      "min": 1,
+      "max": 200,
+      "divisor": 20,
+      "suffix": "Hz",
+      "default": 10,
+      "noteDefault": 18
+    },
+    {
+      "description": "Flanger depth",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 40
+    },
+    {
+      "description": "Flanger feedback",
+      "type": "range32",
+      "min": 0,
+      "max": 98,
+      "valueOffset": -49,
+      "multiplier": 2,
+      "suffix": "%",
+      "default": 79
+    },
+    {
+      "description": "Balance",
+      "type": "range32",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "values": "$resource:../Shared/CustomNumeric/Balance.json"
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}

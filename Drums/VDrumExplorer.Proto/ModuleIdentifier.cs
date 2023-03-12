@@ -4,7 +4,6 @@
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using VDrumExplorer.Model;
@@ -13,10 +12,10 @@ namespace VDrumExplorer.Proto
 {
     internal partial class ModuleIdentifier
     {
-        internal Model.Midi.ModuleIdentifier ToModel() =>
-            new Model.Midi.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode, SoftwareRevision);
+        internal Model.ModuleIdentifier ToModel() =>
+            new Model.ModuleIdentifier(Name, ModelId, FamilyCode, FamilyNumberCode, SoftwareRevision);
         
-        internal static ModuleIdentifier FromModel(Model.Midi.ModuleIdentifier id) =>
+        internal static ModuleIdentifier FromModel(Model.ModuleIdentifier id) =>
             new ModuleIdentifier
             {
                 Name = id.Name,
@@ -43,7 +42,7 @@ namespace VDrumExplorer.Proto
             return schema.Value;
         }
 
-        private Model.Midi.ModuleIdentifier InferModelWithRevision(Func<ModuleSchema, bool> validator, ILogger logger)
+        private Model.ModuleIdentifier InferModelWithRevision(Func<ModuleSchema, bool> validator, ILogger logger)
         {
             logger.LogInformation("File has no software revision in the module identifier. Attempting to infer an appropriate revision.");
             var thisModel = ToModel();

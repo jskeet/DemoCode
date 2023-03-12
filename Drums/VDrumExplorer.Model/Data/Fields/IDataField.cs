@@ -10,6 +10,11 @@ namespace VDrumExplorer.Model.Data.Fields
     public interface IDataField : INotifyPropertyChanged
     {
         string FormattedText { get; }
+        /// <summary>
+        /// Attempt to parse the given text, matching it to an underlying
+        /// value and setting that in the data model.
+        /// </summary>
+        bool TrySetFormattedText(string text);
         IField SchemaField { get; }
         void Reset();
     }

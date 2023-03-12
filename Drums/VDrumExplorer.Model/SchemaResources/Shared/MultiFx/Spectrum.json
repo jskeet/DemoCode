@@ -1,0 +1,95 @@
+{
+  "description": "Spectrum",
+  "fields": [
+    {
+      "description": "250Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "500Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "1000Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "1250Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "2000Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "3150Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "4000Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "8000Hz",
+      "type": "range32",
+      "min": 0,
+      "max": 31,
+      "valueOffset": -15,
+      "suffix": "dB",
+      "default": 15
+    },
+    {
+      "description": "Q",
+      "type": "enum32",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0",
+        "4.0",
+        "8.0"
+      ]
+    },
+    {
+      "description": "Level",
+      "type": "range32",
+      "min": 0,
+      "max": 127,
+      "default": 127
+    }
+  ]
+}
