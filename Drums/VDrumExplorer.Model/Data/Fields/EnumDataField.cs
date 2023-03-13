@@ -3,7 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using System.Security.Cryptography;
 using VDrumExplorer.Model.Schema.Fields;
 
 namespace VDrumExplorer.Model.Data.Fields

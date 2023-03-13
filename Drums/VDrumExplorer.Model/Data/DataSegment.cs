@@ -69,10 +69,6 @@ namespace VDrumExplorer.Model.Data
         {
             ValidateRange(offset, bytes.Length);
             var targetSpan = data.AsSpan().Slice(offset.LogicalValue);
-            if (bytes.SequenceEqual(targetSpan))
-            {
-                return;
-            }
             bytes.CopyTo(targetSpan);
         }
 
