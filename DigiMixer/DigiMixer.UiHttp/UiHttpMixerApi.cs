@@ -84,12 +84,12 @@ public class UiHttpMixerApi : IMixerApi
         var orderedChannelIds = channels.Keys.OrderBy(ch => ch.Value);
         var inputChannelIds = orderedChannelIds.Where(ch => ch.IsInput);
         var outputChannelIds = orderedChannelIds.Where(ch => ch.IsOutput)
-            .Append(UiAddresses.MainOutputLeft).Append(UiAddresses.MainOutputRight);
+            .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
 
         var stereoPairs = channels.Where(pair => pair.Value)
             .Select(pair => new StereoPair(pair.Key, pair.Key.WithValue(pair.Key.Value + 1), StereoFlags.FullyIndependent))
             // TODO: Check that we don't have independent faders/mutes
-            .Append(new StereoPair(UiAddresses.MainOutputLeft, UiAddresses.MainOutputRight, StereoFlags.None));
+            .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
 
         return new MixerChannelConfiguration(inputChannelIds, outputChannelIds , stereoPairs);
         
@@ -261,7 +261,7 @@ public class UiHttpMixerApi : IMixerApi
         {
             var rawLevel = rawData[mainStart + i * AuxMains.Length + AuxMains.PostFader];
             var meterLevel = ToMeterLevel(rawLevel);
-            levels[index++] = (ChannelId.Output(UiAddresses.MainOutputLeft.Value + i), meterLevel);
+            levels[index++] = (ChannelId.Output(ChannelId.MainOutputLeft.Value + i), meterLevel);
         }
         receiver.ReceiveMeterLevels(levels);
 
@@ -279,7 +279,7 @@ public class UiHttpMixerApi : IMixerApi
 
         var inputs = Enumerable.Range(1, 22).Select(ChannelId.Input).Append(UiAddresses.PlayerLeft).Append(UiAddresses.PlayerRight).Append(UiAddresses.LineInLeft).Append(UiAddresses.LineInRight);
         // Note: no MainOutputRight here as it doesn't have a separate address, so we don't need a separate receiver map.
-        var outputs = Enumerable.Range(1, 8).Select(ChannelId.Output).Append(UiAddresses.MainOutputLeft);
+        var outputs = Enumerable.Range(1, 8).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft);
 
         // We don't know what order we'll get firmware and model in.
         ret[UiAddresses.Model] = (receiver, message) =>

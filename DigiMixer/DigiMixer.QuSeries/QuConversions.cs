@@ -22,12 +22,12 @@ internal class QuConversions
     {
         >= 0 and < 32 => ChannelId.Input(channel + 1),
         >= 39 and <= 45 => ChannelId.Output(channel - 38),
-        46 => QuMixerApi.MainOutputLeft,
+        46 => ChannelId.MainOutputLeft,
         _ => null
     };
 
     internal static int ChannelIdToNetwork(ChannelId channel) =>
         channel.IsInput ? channel.Value - 1
-        : channel == QuMixerApi.MainOutputLeft ? 46
+        : channel.IsMainOutput ? 46
         : channel.Value + 38;
 }

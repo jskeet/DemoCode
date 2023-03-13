@@ -4,9 +4,6 @@ namespace DigiMixer.UiHttp;
 
 public static class UiAddresses
 {
-    public static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
-    public static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
-
     private const int LineInLeftValue = 100;
     private const int LineInRightValue = 101;
     private const int PlayerLeftValue = 102;
@@ -28,12 +25,11 @@ public static class UiAddresses
     internal static string GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {
         string prefix = GetInputPrefix(inputId);
-        bool isMainOutput = outputId == MainOutputLeft || outputId == MainOutputRight;
-        return prefix + (isMainOutput ? ".mix" : $".aux.{outputId.Value - 1}.value");
+        return prefix + (outputId.IsMainOutput ? ".mix" : $".aux.{outputId.Value - 1}.value");
     }
 
     private static string GetOutputPrefix(ChannelId outputId) =>
-        outputId == MainOutputLeft || outputId == MainOutputRight ? "m" : $"a.{outputId.Value - 1}";
+        outputId.IsMainOutput ? "m" : $"a.{outputId.Value - 1}";
 
     internal static string GetFaderAddress(ChannelId outputId) => GetOutputPrefix(outputId) + ".mix";
 

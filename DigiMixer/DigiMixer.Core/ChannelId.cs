@@ -13,6 +13,19 @@ public struct ChannelId
     public int Value { get; }
     public bool IsInput { get; }
     public bool IsOutput => !IsInput;
+    /// <summary>
+    /// Returns true if this ID is <see cref="MainOutputLeft"/> or <see cref="MainOutputRight"/>; false otherwise.
+    /// </summary>
+    public bool IsMainOutput => Equals(MainOutputLeft) || Equals(MainOutputRight);
+
+    /// <summary>
+    /// The output channel ID for the left side of the main output.
+    /// </summary>
+    public static ChannelId MainOutputLeft { get; } = Output(100);
+    /// <summary>
+    /// The output channel ID for the right side of the main output.
+    /// </summary>
+    public static ChannelId MainOutputRight { get; } = Output(101);
 
     private ChannelId(int value, bool input) =>
         (Value, IsInput) = (value, input);

@@ -15,16 +15,6 @@ public static class StudioLive
     {
         private readonly string clientIdentifier;
 
-        /// <summary>
-        /// The output channel ID for the left side of the main output.
-        /// </summary>
-        internal static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
-
-        /// <summary>
-        /// The output channel ID for the right side of the main output.
-        /// </summary>
-        internal static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
-
         private readonly DelegatingReceiver receiver = new();
         private readonly ILogger logger;
         private readonly string host;
@@ -50,7 +40,7 @@ public static class StudioLive
         {
             var map = new Dictionary<string, Action<ParameterValueMessage>>();
             var possibleInputs = Enumerable.Range(1, 32).Select(ChannelId.Input);
-            var possibleOutputs = Enumerable.Range(1, 16).Select(ChannelId.Output).Append(MainOutputLeft);
+            var possibleOutputs = Enumerable.Range(1, 16).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft);
 
             foreach (var input in possibleInputs)
             {
@@ -132,7 +122,7 @@ public static class StudioLive
                             {
                                 var channelId = ChannelId.Input(i + 1);
                                 var level = GetFaderLevel(row, i);
-                                receiver.ReceiveFaderLevel(channelId, MainOutputLeft, level);
+                                receiver.ReceiveFaderLevel(channelId, ChannelId.MainOutputLeft, level);
                             }
                             break;
                         case MeterSource.Aux:
@@ -146,7 +136,7 @@ public static class StudioLive
                         case MeterSource.Main:
                             {
                                 var level = GetFaderLevel(row, 0);
-                                receiver.ReceiveFaderLevel(MainOutputLeft, level);
+                                receiver.ReceiveFaderLevel(ChannelId.MainOutputLeft, level);
                             }
                             break;
                     }
@@ -194,8 +184,8 @@ public static class StudioLive
                             break;
                         case (MeterSource.Main, MeterStage.PostLimiter):
                             // TODO: What if we don't have exactly 2 values? Left-only?
-                            result[index++] = (MainOutputLeft, GetMeterLevel(row, 0));
-                            result[index++] = (MainOutputRight, GetMeterLevel(row, 1));
+                            result[index++] = (ChannelId.MainOutputLeft, GetMeterLevel(row, 0));
+                            result[index++] = (ChannelId.MainOutputRight, GetMeterLevel(row, 1));
                             break;
                     }
                 }
@@ -241,7 +231,7 @@ public static class StudioLive
                 bool muted = ((double) channel["mute"]!) == 1.0;
                 receiver.ReceiveMuteStatus(id, muted);
                 double volume = (double) channel["volume"]!;
-                receiver.ReceiveFaderLevel(id, MainOutputLeft, ToFaderLevel(volume));
+                receiver.ReceiveFaderLevel(id, ChannelId.MainOutputLeft, ToFaderLevel(volume));
                 for (int j = 1; j <= aux.Count; j++)
                 {
                     ChannelId auxId = ChannelId.Output(j);
@@ -265,11 +255,11 @@ public static class StudioLive
             // Main
             {
                 string name = (string) main["username"]!;
-                receiver.ReceiveChannelName(MainOutputLeft, name);
+                receiver.ReceiveChannelName(ChannelId.MainOutputLeft, name);
                 bool muted = ((double) main["mute"]!) == 1.0;
-                receiver.ReceiveMuteStatus(MainOutputLeft, muted);
+                receiver.ReceiveMuteStatus(ChannelId.MainOutputLeft, muted);
                 double volume = (double) main["volume"]!;
-                receiver.ReceiveFaderLevel(MainOutputLeft, ToFaderLevel(volume));
+                receiver.ReceiveFaderLevel(ChannelId.MainOutputLeft, ToFaderLevel(volume));
             }
         }
 
@@ -322,10 +312,10 @@ public static class StudioLive
 
                 var inputs = Enumerable.Range(1, line.Count).Select(i => ChannelId.Input(i));
                 var outputs = Enumerable.Range(1, aux.Count).Select(i => ChannelId.Output(i))
-                    .Append(MainOutputLeft).Append(MainOutputRight);
+                    .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
                 var stereoPairs = CreateStereoPairs(line, ChannelId.Input)
                     .Concat(CreateStereoPairs(aux, ChannelId.Output))
-                    .Append(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
+                    .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
                 return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
                 IEnumerable<StereoPair> CreateStereoPairs(JObject parent, Func<int, ChannelId> factory)
@@ -397,7 +387,7 @@ public static class StudioLive
         internal static string GetFaderAddress(ChannelId inputId, ChannelId outputId)
         {
             string prefix = GetInputPrefix(inputId);
-            string suffix = IsMainOutput(outputId) ? "/volume" : $"/aux{outputId.Value}";
+            string suffix = outputId.IsMainOutput ? "/volume" : $"/aux{outputId.Value}";
             return prefix + suffix;
         }
 
@@ -411,12 +401,9 @@ public static class StudioLive
             $"line/ch{inputId.Value}";
 
         internal static string GetOutputPrefix(ChannelId outputId) =>
-            IsMainOutput(outputId) ? "main/ch1" : $"aux/ch{outputId.Value}";
+            outputId.IsMainOutput ? "main/ch1" : $"aux/ch{outputId.Value}";
 
         private static string GetPrefix(ChannelId channelId) =>
             channelId.IsInput ? GetInputPrefix(channelId) : GetOutputPrefix(channelId);
-
-        private static bool IsMainOutput(ChannelId channelId) =>
-            channelId == StudioLiveMixerApi.MainOutputLeft || channelId == StudioLiveMixerApi.MainOutputRight;
     }
 }

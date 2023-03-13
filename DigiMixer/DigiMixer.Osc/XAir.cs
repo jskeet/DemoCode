@@ -67,11 +67,11 @@ public static class XAir
                 inputs = inputs.Append(AuxInputLeft).Append(AuxInputRight);
             }
             var outputs = Enumerable.Range(1, outputCount).Select(i => ChannelId.Output(i))
-                .Append(MainOutputLeft).Append(MainOutputRight);
+                .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
 
             var stereoPairs = CreateStereoPairs(inputCount, inputLinks, ChannelId.Input)
                 .Concat(CreateStereoPairs(outputCount, outputLinks, ChannelId.Output))
-                .Append(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
+                .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
             IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, Func<int, ChannelId> factory)
@@ -108,8 +108,8 @@ public static class XAir
                 ChannelId outputId = ChannelId.Output(i);
                 levels[i - 1] = (outputId, ToMeterLevel(blob, i - 1));
             }
-            levels[6] = (MainOutputLeft, ToMeterLevel(blob, 6));
-            levels[7] = (MainOutputRight, ToMeterLevel(blob, 7));
+            levels[6] = (ChannelId.MainOutputLeft, ToMeterLevel(blob, 6));
+            levels[7] = (ChannelId.MainOutputRight, ToMeterLevel(blob, 7));
             Receiver.ReceiveMeterLevels(levels);
         }
 
@@ -121,14 +121,16 @@ public static class XAir
 
         // Addresses
 
-        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 16).Select(ChannelId.Input).Append(AuxInputLeft);
-        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(ChannelId.Output).Append(MainOutputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialInputChannels() =>
+            Enumerable.Range(1, 16).Select(ChannelId.Input).Append(AuxInputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() =>
+            Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft);
 
         protected override string GetInputPrefix(ChannelId inputId) =>
             IsAuxInput(inputId) ? "/rtn/aux" : $"/ch/{inputId.Value:00}";
 
         protected override string GetOutputPrefix(ChannelId outputId) =>
-            IsMainOutput(outputId) ? "/lr" : $"/bus/{outputId.Value}";
+            outputId.IsMainOutput ? "/lr" : $"/bus/{outputId.Value}";
 
         private static bool IsAuxInput(ChannelId channelId) =>
             channelId == AuxInputLeft || channelId == AuxInputRight;

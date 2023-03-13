@@ -62,7 +62,7 @@ public class MackieMixerApi : IMixerApi
     public async Task<MixerChannelConfiguration> DetectConfiguration()
     {
         var inputs = Enumerable.Range(1, 18).Select(ChannelId.Input);
-        var outputs = new[] { MackieAddresses.MainOutputLeft, MackieAddresses.MainOutputRight }.Concat(Enumerable.Range(1, 6).Select(ChannelId.Output));
+        var outputs = new[] { ChannelId.MainOutputLeft, ChannelId.MainOutputRight }.Concat(Enumerable.Range(1, 6).Select(ChannelId.Output));
 
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token;
         var pendingTask = PendingChannelDataTask.Start(pendingChannelDataTasks, cancellationToken);
@@ -70,7 +70,7 @@ public class MackieMixerApi : IMixerApi
         var pendingData = await pendingTask.ConfigureAwait(false);
 
         var stereoPairs = pendingData.GetStereoLinks()
-            .Append(MackieAddresses.MainOutputLeft)
+            .Append(ChannelId.MainOutputLeft)
             .Select(link => new StereoPair(link, link.WithValue(link.Value + 1), StereoFlags.None));
         return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
     }
@@ -156,9 +156,9 @@ public class MackieMixerApi : IMixerApi
             levels[index] = (inputId, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
             index++;
         }
-        levels[index] = (MackieAddresses.MainOutputLeft, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+        levels[index] = (ChannelId.MainOutputLeft, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
         index++;
-        levels[index] = (MackieAddresses.MainOutputRight, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+        levels[index] = (ChannelId.MainOutputRight, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
         index++;
         for (int i = 1; i <= 6; i++)
         {
@@ -219,7 +219,7 @@ public class MackieMixerApi : IMixerApi
         var dictionary = new Dictionary<int, ChannelValueAction>();
 
         var inputIds = Enumerable.Range(1, 18).Select(ChannelId.Input).ToList();
-        var outputIds = Enumerable.Range(1, 6).Select(ChannelId.Output).Append(MackieAddresses.MainOutputLeft).ToList();
+        var outputIds = Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).ToList();
 
         foreach (var inputId in inputIds)
         {
@@ -256,7 +256,7 @@ public class MackieMixerApi : IMixerApi
         var dictionary = new Dictionary<int, Action<string>>();
 
         var inputIds = Enumerable.Range(1, 18).Select(ChannelId.Input).ToList();
-        var outputIds = Enumerable.Range(1, 6).Select(ChannelId.Output).Append(MackieAddresses.MainOutputLeft).ToList();
+        var outputIds = Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).ToList();
         var allIds = inputIds.Concat(outputIds);
         foreach (var id in allIds)
         {
@@ -264,7 +264,7 @@ public class MackieMixerApi : IMixerApi
             {
                 string? effectiveName = name == "" ? null : name;
                 // TODO: Work out a neater place to put this.
-                if (effectiveName is null && id == MackieAddresses.MainOutputLeft)
+                if (effectiveName is null && id.IsMainOutput)
                 {
                     effectiveName = "Main";
                 }

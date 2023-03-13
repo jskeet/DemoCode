@@ -11,16 +11,6 @@ namespace DigiMixer.Osc;
 
 internal abstract class XSeriesMixerApiBase : OscMixerApiBase
 {
-    /// <summary>
-    /// The output channel ID for the left side of the main output.
-    /// </summary>
-    protected static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
-
-    /// <summary>
-    /// The output channel ID for the right side of the main output.
-    /// </summary>
-    protected static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
-
     protected const string XRemoteAddress = "/xremote";
     protected const string XInfoAddress = "/xinfo";
 
@@ -95,7 +85,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
     protected override sealed string GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {
         string prefix = GetInputPrefix(inputId);
-        return prefix + (IsMainOutput(outputId) ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
+        return prefix + (outputId.IsMainOutput ? "/mix/fader" : $"/mix/{outputId.Value:00}/level");
     }
 
     protected override sealed object MutedValue { get; } = 0;
@@ -109,7 +99,4 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
 
     private string GetPrefix(ChannelId channelId) =>
         channelId.IsInput ? GetInputPrefix(channelId) : GetOutputPrefix(channelId);
-
-    protected static bool IsMainOutput(ChannelId channelId) =>
-        channelId == MainOutputLeft || channelId == MainOutputRight;
 }

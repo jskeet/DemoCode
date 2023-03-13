@@ -15,16 +15,6 @@ public static class Rcf
     public static IMixerApi CreateMixerApiForProxy(ILogger logger, string host, int proxyPort = 8001) =>
         new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, proxyPort));
 
-    /// <summary>
-    /// The output channel ID for the left side of the main output.
-    /// </summary>
-    private static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
-
-    /// <summary>
-    /// The output channel ID for the right side of the main output.
-    /// </summary>
-    private static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
-
     // See https://github.com/Jille/rcf-m18/blob/master/gen/source.txt for more information
     // App also sends:
     // /xy/99/up_0xy (xy 00-31)
@@ -75,7 +65,7 @@ public static class Rcf
                 await Task.Delay(20);
             }
             // There's no address for an *actual* Main channel name, so we just fake it here.
-            Receiver.ReceiveChannelName(MainOutputLeft, "Main");
+            Receiver.ReceiveChannelName(ChannelId.MainOutputLeft, "Main");
         }
 
         public override async Task Connect()
@@ -120,9 +110,9 @@ public static class Rcf
             var stereoPairs = unlistedRightChannelNumbers
                 .OrderBy(x => x)
                 .Select(x => new StereoPair(ChannelId.Input(x - 1), ChannelId.Input(x), StereoFlags.None))
-                .Append(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
+                .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
             var outputs = Enumerable.Range(1, 6).Select(ch => ChannelId.Output(ch))
-                .Append(MainOutputLeft).Append(MainOutputRight);
+                .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
         }
 
@@ -180,8 +170,8 @@ public static class Rcf
                     ChannelId outputId = ChannelId.Output(i);
                     levels[index++] = (outputId, ToMeterLevel((float) message[i + 30]));
                 }
-                levels[index++] = (MainOutputLeft, ToMeterLevel((float) message[26]));
-                levels[index++] = (MainOutputRight, ToMeterLevel((float) message[27]));
+                levels[index++] = (ChannelId.MainOutputLeft, ToMeterLevel((float) message[26]));
+                levels[index++] = (ChannelId.MainOutputRight, ToMeterLevel((float) message[27]));
                 Receiver.ReceiveMeterLevels(levels);
             };
 
@@ -194,32 +184,31 @@ public static class Rcf
             $"{GetOutputPrefix(outputId)}/{inputId.Value:00}/fd_000";
 
         protected override string GetFaderAddress(ChannelId outputId) =>
-            IsMainOutput(outputId) ? "/00/00/fd_000" : $"/26/{outputId.Value:00}/fd_000";
+            outputId.IsMainOutput ? "/00/00/fd_000" : $"/26/{outputId.Value:00}/fd_000";
 
         // FIXME: This is just the main mute per input. We don't (apparently) have
         // linked mutes.
         protected override string GetMuteAddress(ChannelId channelId) =>
             channelId.IsInput ? $"/01/{channelId.Value:00}/mt_000"
-            : IsMainOutput(channelId) ? "/00/00/mt_000" : $"/26/{channelId.Value:00}/mt_000";
+            : channelId.IsMainOutput ? "/00/00/mt_000" : $"/26/{channelId.Value:00}/mt_000";
 
         protected override string GetNameAddress(ChannelId channelId) =>
             channelId.IsInput ? $"/22/00/gb_1{channelId.Value:00}"
             // FIXME: Unclear whether Main has a name address
-            : (channelId == MainOutputLeft || channelId == MainOutputRight) ? "/22/00/fixme"
+            : channelId.IsMainOutput ? "/22/00/fixme"
             : $"/22/00/gb_12{channelId.Value:0}";
 
         // Note: ignoring FX returns (21-23) here, but including the player channels (19-20).
-        protected override IEnumerable<ChannelId> GetPotentialInputChannels() => Enumerable.Range(1, 20).Select(ChannelId.Input);
-        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() => Enumerable.Range(1, 6).Select(ChannelId.Output).Append(MainOutputLeft);
+        protected override IEnumerable<ChannelId> GetPotentialInputChannels() =>
+            Enumerable.Range(1, 20).Select(ChannelId.Input);
+        protected override IEnumerable<ChannelId> GetPotentialOutputChannels() =>
+            Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft);
 
         private static string GetOutputPrefix(ChannelId outputId)
         {
-            int translatedValue = IsMainOutput(outputId) ? 1 : outputId.Value + 4;
+            int translatedValue = outputId.IsMainOutput ? 1 : outputId.Value + 4;
             return $"/{translatedValue:00}";
         }
-
-        private static bool IsMainOutput(ChannelId channelId) =>
-            channelId.IsOutput && (channelId == MainOutputLeft || channelId == MainOutputRight);
 
         protected override object MutedValue { get; } = 1f;
         protected override object UnmutedValue { get; } = 0f;

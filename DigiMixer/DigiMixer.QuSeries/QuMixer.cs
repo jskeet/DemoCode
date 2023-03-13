@@ -15,16 +15,6 @@ public class QuMixer
 
 internal class QuMixerApi : IMixerApi
 {
-    /// <summary>
-    /// The output channel ID for the left side of the main output.
-    /// </summary>
-    internal static ChannelId MainOutputLeft { get; } = ChannelId.Output(100);
-
-    /// <summary>
-    /// The output channel ID for the right side of the main output.
-    /// </summary>
-    internal static ChannelId MainOutputRight { get; } = ChannelId.Output(101);
-
     private readonly DelegatingReceiver receiver = new();
     private readonly ILogger logger;
     private readonly string host;
@@ -72,7 +62,7 @@ internal class QuMixerApi : IMixerApi
 
         var inputs = Enumerable.Range(1, data.InputCount).Select(i => ChannelId.Input(i));
         var outputs = Enumerable.Range(1, data.MixCount).Select(i => ChannelId.Output(i))
-            .Append(MainOutputLeft).Append(MainOutputRight);
+            .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
 
         var stereoPairs = new List<StereoPair>();
         for (int i = 1; i <= data.InputCount; i+=2)
@@ -82,7 +72,7 @@ internal class QuMixerApi : IMixerApi
                 stereoPairs.Add(new StereoPair(ChannelId.Input(i), ChannelId.Input(i + 1), StereoFlags.FullyIndependent));
             }
         }
-        stereoPairs.Add(new StereoPair(MainOutputLeft, MainOutputRight, StereoFlags.None));
+        stereoPairs.Add(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
         return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
     }
 
@@ -105,8 +95,8 @@ internal class QuMixerApi : IMixerApi
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
-        int address = outputId == MainOutputLeft
-            ? 0x07_00_04_07 | ((inputId.Value - 1) << 16)
+        int address =
+            outputId.IsMainOutput ? 0x07_00_04_07 | ((inputId.Value - 1) << 16)
             : (outputId.Value - 1) << 24 | ((inputId.Value - 1) << 16) | 0x0c_0a;
         var packet = new QuValuePacket(4, 4, address, QuConversions.FaderLevelToRaw(level));
         await SendPacket(packet);
@@ -197,8 +187,8 @@ internal class QuMixerApi : IMixerApi
                 meters[i] = (ChannelId.Output(i + 1), QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(slice.Slice(10, 2))));
             }
             // TODO: Stereo meters
-            meters[4] = (MainOutputLeft, QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(data.Slice(200, 20).Slice(10, 2))));
-            meters[5] = (MainOutputRight, QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(data.Slice(220, 20).Slice(10, 2))));
+            meters[4] = (ChannelId.MainOutputLeft, QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(data.Slice(200, 20).Slice(10, 2))));
+            meters[5] = (ChannelId.MainOutputRight, QuConversions.RawToMeterLevel(MemoryMarshal.Read<ushort>(data.Slice(220, 20).Slice(10, 2))));
             receiver.ReceiveMeterLevels(meters);
         }
     }
@@ -211,7 +201,7 @@ internal class QuMixerApi : IMixerApi
             var channelId = ChannelId.Input(channel);
             receiver.ReceiveMuteStatus(channelId, data.InputMuted(channel));
             receiver.ReceiveChannelName(channelId, data.GetInputName(channel));
-            receiver.ReceiveFaderLevel(channelId, MainOutputLeft, data.InputFaderLevel(channel));
+            receiver.ReceiveFaderLevel(channelId, ChannelId.MainOutputLeft, data.InputFaderLevel(channel));
 
             for (int mix = 1; mix <= data.MixCount; mix++)
             {
@@ -228,9 +218,9 @@ internal class QuMixerApi : IMixerApi
             receiver.ReceiveFaderLevel(mixId, data.MixFaderLevel(mix));
         }
 
-        receiver.ReceiveMuteStatus(MainOutputLeft, data.MainMuted());
-        receiver.ReceiveChannelName(MainOutputLeft, data.GetMainName() ?? "Main");
-        receiver.ReceiveFaderLevel(MainOutputLeft, data.MainFaderLevel());
+        receiver.ReceiveMuteStatus(ChannelId.MainOutputLeft, data.MainMuted());
+        receiver.ReceiveChannelName(ChannelId.MainOutputLeft, data.GetMainName() ?? "Main");
+        receiver.ReceiveFaderLevel(ChannelId.MainOutputLeft, data.MainFaderLevel());
     }
 
     private void HandleNetworkInformationPacket(QuGeneralPacket packet)
@@ -276,7 +266,7 @@ internal class QuMixerApi : IMixerApi
             {
                 if (channelId.IsInput)
                 {
-                    receiver.ReceiveFaderLevel(channelId, MainOutputLeft, QuConversions.RawToFaderLevel(packet.RawValue));
+                    receiver.ReceiveFaderLevel(channelId, ChannelId.MainOutputLeft, QuConversions.RawToFaderLevel(packet.RawValue));
                 }
                 else
                 {
