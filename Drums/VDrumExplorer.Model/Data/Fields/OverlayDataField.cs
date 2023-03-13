@@ -106,6 +106,9 @@ namespace VDrumExplorer.Model.Data.Fields
 
         internal override void Save(DataSegment segment)
         {
+            // Clear any existing data from the segment. This means we don't get left with
+            // "old" data; the state of the model completely determines the data in the segment.
+            segment.WriteBytes(Offset, new byte[Size]);
             // FIXME: Can we assume that the switch field has already been loaded? Feels brittle.
             foreach (DataFieldBase field in CurrentFieldList.Fields)
             {

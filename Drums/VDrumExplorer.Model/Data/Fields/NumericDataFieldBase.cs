@@ -47,6 +47,9 @@ namespace VDrumExplorer.Model.Data.Fields
                 : new[] { new DataValidationError(this, $"Invalid raw value {rawValue}") };
         }
 
+        internal void SaveDefault(DataSegment segment) =>
+            segment.WriteInt32(SchemaField.Offset, SchemaField.Codec, SchemaField.Default);
+
         internal override void Save(DataSegment segment) =>
             segment.WriteInt32(SchemaField.Offset, SchemaField.Codec, RawValue);
 

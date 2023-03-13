@@ -4,12 +4,12 @@
 
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using System.Linq;
+using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Json;
+using VDrumExplorer.Model.Schema.Physical;
 
 namespace VDrumExplorer.Model.Test.Json;
-
-// TODO: Perform actual binary round-tripping. There can be "left-over" binary data from parameters that aren't used in the
-// current overlay choices.
 
 public class JsonIoTest
 {
@@ -21,7 +21,8 @@ public class JsonIoTest
         var newModule = (Module) JsonIo.ReadModel(json, NullLogger.Instance);
         var newJson = newModule.ToJson();
         Assert.AreEqual(json, newJson);
-        // AssertDataEqual(module.Data, newModule.Data);        
+
+        AssertDataEqual(module.Data, newModule.Data);        
     }
 
     [Test]
@@ -32,10 +33,9 @@ public class JsonIoTest
         var newKit = (Kit) JsonIo.ReadModel(json, NullLogger.Instance);
         var newJson = newKit.ToJson();
         Assert.AreEqual(json, newJson);
-        // AssertDataEqual(kit.Data, newKit.Data);
+        AssertDataEqual(kit.Data, newKit.Data);
     }
 
-    /*
     private static void AssertDataEqual(ModuleData expectedData, ModuleData actualData)
     {
         var originalSegments = expectedData.CreateSnapshot().Segments.ToList();
@@ -48,7 +48,7 @@ public class JsonIoTest
             var newSegment = newSegments[i];
             Assert.AreEqual(originalSegment.Address, newSegment.Address, $"Address of segment {i}");
             Assert.AreEqual(originalSegment.Size, newSegment.Size, $"Size of segment {i}");
-            Assert.AreEqual(originalSegment.CopyData(), newSegment.CopyData(), $"Data in segment {i}");
+            Assert.AreEqual(originalSegment.CopyData(), newSegment.CopyData(), $"Data in segment starting at {originalSegment.Address}");
         }
-    }*/
+    }
 }

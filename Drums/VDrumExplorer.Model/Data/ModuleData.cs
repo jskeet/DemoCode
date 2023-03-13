@@ -188,10 +188,14 @@ namespace VDrumExplorer.Model.Data
             var snapshot = new ModuleDataSnapshot();
             foreach (var fc in fieldContainers)
             {
-                snapshot.Add(CreateDataSegment(fc, fieldsByFieldContainer[fc]));
+                snapshot.Add(CreateDataSegment(fc));
             }
             return snapshot;
         }
+
+        // Note: this is internal to aid with testing/debugging.
+        internal DataSegment CreateDataSegment(FieldContainer fieldContainer) =>
+            CreateDataSegment(fieldContainer, fieldsByFieldContainer[fieldContainer]);
 
         private DataSegment CreateDataSegment(FieldContainer fieldContainer, IReadOnlyList<IDataField> fields)
         {

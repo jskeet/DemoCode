@@ -54,9 +54,20 @@ namespace VDrumExplorer.Model.Data.Fields
 
         internal override void Save(DataSegment segment)
         {
+            // While editing, we can maintain the idea of "what would the note field be" while
+            // TempoSync is false, and vice versa. When saving to a data segment, we canonicalize
+            // the result so that the data is fully predictable from the effective value.
             SwitchDataField.Save(segment);
-            NumericDataField.Save(segment);
-            MusicalNoteDataField.Save(segment);
+            if (TempoSync)
+            {
+                MusicalNoteDataField.Save(segment);
+                NumericDataField.SaveDefault(segment);
+            }
+            else
+            {
+                NumericDataField.Save(segment);
+                MusicalNoteDataField.SaveDefault(segment);
+            }
         }
 
         public bool TempoSync
