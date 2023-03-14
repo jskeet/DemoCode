@@ -22,14 +22,14 @@ internal sealed class UiStreamClient : IUiClient
         writeBuffer = new byte[256];
     }
 
-    public async Task Send(UiMessage message)
+    public async Task Send(UiMessage message, CancellationToken cancellationToken)
     {
         if (logger.IsEnabled(LogLevel.Trace))
         {
             logger.LogTrace("Sending message: {message}", message);
         }
         int messageSize = message.WriteTo(writeBuffer);
-        await stream.WriteAsync(writeBuffer, 0, messageSize);
+        await stream.WriteAsync(writeBuffer, 0, messageSize, cancellationToken);
     }
 
     public async Task StartReading()

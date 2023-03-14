@@ -340,7 +340,7 @@ public static class StudioLive
         public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) =>
             SendMessage(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }));
 
-        public Task SendKeepAlive() => SendMessage(new KeepAliveMessage());
+        public Task SendKeepAlive(CancellationToken cancellationToken) => SendMessage(new KeepAliveMessage(), cancellationToken);
 
         public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
         {
@@ -365,11 +365,12 @@ public static class StudioLive
             return SendMessage(new ParameterValueMessage(address, 0, value));
         }
 
-        private async Task SendMessage(UCNetMessage message)
+        private async Task SendMessage(UCNetMessage message, CancellationToken cancellationToken = default)
         {
             if (client is not null)
             {
-                await client.Send(message, cts?.Token ?? default);
+                using var chained = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts?.Token ?? default);
+                await client.Send(message, chained.Token);
             }
         }
 

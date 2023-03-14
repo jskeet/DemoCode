@@ -23,7 +23,6 @@ public sealed class QuControlClient : IDisposable
         semaphore = new SemaphoreSlim(1);
     }
 
-
     public async Task SendAsync(QuControlPacket packet, CancellationToken cancellationToken)
     {
         if (tcpClient is null)

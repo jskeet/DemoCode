@@ -71,7 +71,7 @@ public class UiHttpMixerApi : IMixerApi
         try
         {
             sendingClient.MessageReceived += handler;
-            await sendingClient.Send(UiMessage.InitMessage);
+            await sendingClient.Send(UiMessage.InitMessage, default);
             // Normally we get all the information in 100ms, but let's allow a bit longer.
             // Unfortunately the lines are unordered, so we can't really spot the end.
             await Task.Delay(TimeSpan.FromMilliseconds(500));
@@ -161,25 +161,25 @@ public class UiHttpMixerApi : IMixerApi
         // Note: this call *does* need to send a message to receivingClient
         if (receivingClient is not null)
         {
-            await receivingClient.Send(UiMessage.InitMessage);
+            await receivingClient.Send(UiMessage.InitMessage, default);
         }
     }
 
-    public async Task SendKeepAlive()
+    public async Task SendKeepAlive(CancellationToken cancellationToken)
     {
         // Note: this call *does* need to send a message to receivingClient
-        await sendingClient.Send(UiMessage.AliveMessage);
-        await receivingClient.Send(UiMessage.AliveMessage);
+        await sendingClient.Send(UiMessage.AliveMessage, cancellationToken);
+        await receivingClient.Send(UiMessage.AliveMessage, cancellationToken);
     }
 
     public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
-        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level)), default) ?? Task.CompletedTask;
 
     public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
-        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level)), default) ?? Task.CompletedTask;
 
     public Task SetMuted(ChannelId inputId, bool muted) =>
-        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted), default) ?? Task.CompletedTask;
 
     private void ReceiveMessage(object? sender, UiMessage message)
     {

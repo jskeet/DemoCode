@@ -116,8 +116,11 @@ public static class Rcf
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
         }
 
-        public override async Task SendKeepAlive()
+        public override async Task SendKeepAlive(CancellationToken cancellationToken)
         {
+            // TODO: Observe the cancellation token, and implement a health check: basically keep track of the last time
+            // we received anything, and fail if it's too long ago.
+
             await Client.SendAsync(new OscMessage(RequestPollAddress, 1f));
         }
 

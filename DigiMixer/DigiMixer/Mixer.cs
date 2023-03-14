@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
@@ -20,12 +21,19 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
     public InputChannel GetInputChannel(ChannelId channelId) => leftOrMonoInputChannelMap[channelId];
     public OutputChannel GetOutputChannel(ChannelId channelId) => leftOrMonoOutputChannelMap[channelId];
 
-    public IMixerApi Api { get; }
+    /// <summary>
+    /// The current underlying API. This can change due to reconnections, so should only be
+    /// used transiently.
+    /// </summary>
+    internal IMixerApi Api { get; private set; }
 
     public MixerChannelConfiguration ChannelConfiguration { get; }
 
+    private readonly Func<IMixerApi> apiFactory;
     private bool disposed;
     private readonly Task keepAliveTask;
+    private readonly ConnectionTiming connectionTiming;
+    private readonly ILogger logger;
 
     // TODO: Reconnection
     /*
@@ -46,11 +54,14 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
         keepAliveTask = StartKeepAliveTask();
     }*/
 
-    private Mixer(IMixerApi api, MixerChannelConfiguration config)
+    private Mixer(ILogger logger, Func<IMixerApi> apiFactory, IMixerApi initialApi, MixerChannelConfiguration config, ConnectionTiming connectionTiming)
     {
-        Api = api;
+        this.logger = logger;
+        this.connectionTiming = connectionTiming;
+        this.apiFactory = apiFactory;
+        Api = initialApi;
         ChannelConfiguration = config;
-        api.RegisterReceiver(new MixerReceiver(this));
+        initialApi.RegisterReceiver(new MixerReceiver(this));
 
         OutputChannels = ChannelConfiguration.GetPossiblyPairedOutputs()
             .Select(output => new OutputChannel(this, output))
@@ -79,13 +90,30 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
     private Task RequestAllData() =>
         Api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
 
-    public static async Task<Mixer> Detect(IMixerApi api)
+    public static async Task<Mixer> Create(ILogger logger, Func<IMixerApi> apiFactory, ConnectionTiming? timing = null)
     {
-        await api.Connect();
-        var config = await api.DetectConfiguration();
-        var mixer = new Mixer(api, config);
-        await mixer.RequestAllData();
-        return mixer;
+        timing ??= new ConnectionTiming();
+        var api = apiFactory();
+        bool success = false;
+        try
+        {
+            await api.Connect();
+            // This acts as a health check
+            using var cts = new CancellationTokenSource(timing.KeepAliveTimeout);
+            await api.SendKeepAlive(cts.Token);
+            var config = await api.DetectConfiguration();
+            var mixer = new Mixer(logger, apiFactory, api, config, timing);
+            await mixer.RequestAllData();
+            success = true;
+            return mixer;
+        }
+        finally
+        {
+            if (!success)
+            {
+                api.Dispose();
+            }
+        }
     }
 
     private async Task StartKeepAliveTask()
@@ -94,8 +122,60 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
         // Do we need a memory barrier to access disposed properly?
         while (!disposed)
         {
-            await Api.SendKeepAlive();
-            await Task.Delay(3000);
+            try
+            {
+                using var cts = new CancellationTokenSource(connectionTiming.KeepAliveTimeout);
+                await Api.SendKeepAlive(cts.Token);
+                await Task.Delay(connectionTiming.KeepAliveInterval);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Mixer disconnected");
+                await ReconnectAsync();
+            }
+        }
+    }
+
+    private async Task ReconnectAsync()
+    {
+        // Initial reconnection
+        for (int i = 0; i < connectionTiming.InitialReconnectionAttempts && !disposed; i++)
+        {
+            logger.LogInformation("Attempting reconnection");
+            if (await AttemptReconnect())
+            {
+                return;
+            }
+            await Task.Delay(connectionTiming.InitialReconnectionInterval);
+        }
+        logger.LogInformation("Initial reconnection attempts failed; entering long-running reconnection loop.");
+        while (!disposed)
+        {
+            if (await AttemptReconnect())
+            {
+                return;
+            }
+            await Task.Delay(connectionTiming.EventualReconnectionInterval);
+        }
+
+        async Task<bool> AttemptReconnect()
+        {
+            // TODO: Use the same cancellation token for Connect as well?
+            try
+            {
+                Api?.Dispose();
+                Api = apiFactory();
+                Api.RegisterReceiver(new MixerReceiver(this));
+                await Api.Connect();
+                using var cts = new CancellationTokenSource(connectionTiming.KeepAliveTimeout);
+                await Api.SendKeepAlive(cts.Token);
+                logger.LogInformation("Reconnection successful.");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 

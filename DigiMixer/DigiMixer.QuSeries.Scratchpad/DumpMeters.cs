@@ -15,7 +15,7 @@ internal class DumpMeters
         //api.MeterHandler += LogMeter;
         await api.Connect();
         await Task.Delay(1000);
-        await api.SendKeepAlive();
+        await api.SendKeepAlive(default);
         await Task.Delay(1000);
         api.Dispose();
     }

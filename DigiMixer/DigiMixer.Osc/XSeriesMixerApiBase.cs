@@ -56,8 +56,10 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
         CancellationToken CreateCancellationToken() => new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
     }
 
-    public override sealed async Task SendKeepAlive()
+    public override sealed async Task SendKeepAlive(CancellationToken cancellationToken)
     {
+        // TODO: observe the cancellation token, and implement a health check.
+
         await Client.SendAsync(new OscMessage(XRemoteAddress));
         await Client.SendAsync(new OscMessage("/batchsubscribe", InputChannelLevelsMeter, InputChannelLevelsMeter, 0, 0, 0 /* fast */));
         await Client.SendAsync(new OscMessage("/batchsubscribe", OutputChannelLevelsMeter, OutputChannelLevelsMeter, 0, 0, 0 /* fast */));

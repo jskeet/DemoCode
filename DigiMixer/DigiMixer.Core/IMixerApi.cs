@@ -1,6 +1,6 @@
 ﻿namespace DigiMixer.Core;
 
-// FIXME: Expected thread safety?
+// FIXME: Expected thread safety? Cancellation tokens?
 
 /// <summary>
 /// Interface implemented by different protocols, e.g. OSC etc.
@@ -57,6 +57,7 @@ public interface IMixerApi : IDisposable
 
     /// <summary>
     /// Sends any keep-alive messages. This should be called roughly once every 3 seconds.
+    /// This also acts as a health check: the returned task should fail if the mixer connection is broken.
     /// </summary>
-    Task SendKeepAlive();
+    Task SendKeepAlive(CancellationToken cancellationToken);
 }

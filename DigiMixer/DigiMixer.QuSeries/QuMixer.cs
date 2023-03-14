@@ -85,11 +85,25 @@ internal class QuMixerApi : IMixerApi
         await SendPacket(QuPackets.RequestFullData);
     }
 
-    public async Task SendKeepAlive()
+    public async Task SendKeepAlive(CancellationToken cancellationToken)
     {
+        // Propagate any existing client failures.
+        if (controlClientTask?.IsFaulted == true)
+        {
+            controlClientTask.Wait();
+        }
+        if (meterClientTask?.IsFaulted == true)
+        {
+            meterClientTask.Wait();
+        }
+
+        // TODO: Fail if we haven't seen any data recently
+
+        // TODO: If we don't have a meter client, should we just fail?
         if (meterClient is not null && cts is not null && mixerUdpPort is int port)
         {
-            await meterClient.SendKeepAliveAsync(port, cts.Token);
+            using var chained = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
+            await meterClient.SendKeepAliveAsync(port, chained.Token);
         }
     }
 

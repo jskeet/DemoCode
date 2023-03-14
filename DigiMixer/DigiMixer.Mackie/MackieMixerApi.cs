@@ -88,8 +88,9 @@ public class MackieMixerApi : IMixerApi
     private async Task RequestChannelData(CancellationToken cancellationToken = default) =>
         await SendRequest(MackieCommand.ChannelInfoControl, new MackiePacketBody(new byte[] { 0, 0, 0, 6 }), cancellationToken).ConfigureAwait(false);
 
-    public async Task SendKeepAlive() =>
-        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty).ConfigureAwait(false);
+    // Note: this acts as a health-check implicitly.
+    public async Task SendKeepAlive(CancellationToken cancellationToken) =>
+        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken).ConfigureAwait(false);
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
@@ -301,9 +302,6 @@ public class MackieMixerApi : IMixerApi
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
         controller.MapCommandAction(MackieCommand.ChannelNames, HandleChannelNames);
     }
-
-    private Task<MackiePacket> SendRequest(MackieCommand command, byte[] body, CancellationToken cancellationToken = default) =>
-        SendRequest(command, new MackiePacketBody(body), cancellationToken);
 
     public async Task<MackiePacket> SendRequest(MackieCommand command, MackiePacketBody body, CancellationToken cancellationToken = default) =>
         controller is null

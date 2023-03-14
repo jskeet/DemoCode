@@ -33,7 +33,7 @@ public class AutoReceiveMixerApi : IMixerApi
     public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) =>
         target.RequestAllData(channelIds);
 
-    public Task SendKeepAlive() => target.SendKeepAlive();
+    public Task SendKeepAlive(CancellationToken cancellationToken) => target.SendKeepAlive(cancellationToken);
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {

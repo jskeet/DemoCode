@@ -4,7 +4,7 @@ internal interface IUiClient : IDisposable
 {
     Task StartReading();
     event EventHandler<UiMessage>? MessageReceived;
-    Task Send(UiMessage message);
+    Task Send(UiMessage message, CancellationToken cancellationToken);
 
     public class Fake : IUiClient
     {
@@ -19,7 +19,7 @@ internal interface IUiClient : IDisposable
 
         public void Dispose() { }
 
-        public Task Send(UiMessage message) => Task.CompletedTask;
+        public Task Send(UiMessage message, CancellationToken cancellationToken) => Task.CompletedTask;
 
         public Task StartReading() => Task.CompletedTask;
     }

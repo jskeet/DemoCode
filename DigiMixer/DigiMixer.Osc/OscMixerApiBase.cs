@@ -49,7 +49,7 @@ internal abstract class OscMixerApiBase : IMixerApi
     }
 
     public abstract Task<MixerChannelConfiguration> DetectConfiguration();
-    public abstract Task SendKeepAlive();
+    public abstract Task SendKeepAlive(CancellationToken cancellationToken);
     protected abstract string GetFaderAddress(ChannelId inputId, ChannelId outputId);
     protected abstract string GetFaderAddress(ChannelId outputId);
     protected abstract string GetMuteAddress(ChannelId channelId);

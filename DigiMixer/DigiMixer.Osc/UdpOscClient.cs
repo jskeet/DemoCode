@@ -35,6 +35,7 @@ internal sealed class UdpOscClient : IOscClient
     /// </summary>
     public UdpOscClient(ILogger logger, string host, int outboundPort, int inboundPort)
     {
+        // TODO: Can we use a single UdpClient for this?
         this.logger = logger;
         sendingClient = new UdpClient();
         sendingClient.Connect(host, outboundPort);

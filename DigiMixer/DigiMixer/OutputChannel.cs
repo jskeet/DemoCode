@@ -29,4 +29,3 @@ public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
         }
     }
 }
-
