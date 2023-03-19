@@ -101,10 +101,10 @@ public abstract class ChannelBase : INotifyPropertyChanged
 
     public void SetMuted(bool muted)
     {
-        Mixer.ApiWrapper.SetMuted(LeftOrMonoChannelId, muted);
+        Mixer.SetMuted(LeftOrMonoChannelId, muted);
         if (ChannelIdPair.RightMuteId is ChannelId right)
         {
-            Mixer.ApiWrapper.SetMuted(right, muted);
+            Mixer.SetMuted(right, muted);
         }
     }
 }

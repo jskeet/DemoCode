@@ -22,10 +22,10 @@ public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
 
     public void SetFaderLevel(FaderLevel level)
     {
-        Mixer.ApiWrapper.SetFaderLevel(LeftOrMonoChannelId, level);
+        Mixer.SetFaderLevel(LeftOrMonoChannelId, level);
         if ((StereoFlags & StereoFlags.SplitMutes) != 0 && RightChannelId is ChannelId right)
         {
-            Mixer.ApiWrapper.SetFaderLevel(right, level);
+            Mixer.SetFaderLevel(right, level);
         }
     }
 }

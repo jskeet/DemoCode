@@ -31,19 +31,19 @@ public class InputOutputMapping : IFader, INotifyPropertyChanged
 
     public void SetFaderLevel(FaderLevel level)
     {
-        mixer.ApiWrapper.SetFaderLevel(InputChannel.LeftOrMonoChannelId, OutputChannel.LeftOrMonoChannelId, level);
+        mixer.SetFaderLevel(InputChannel.LeftOrMonoChannelId, OutputChannel.LeftOrMonoChannelId, level);
         var rightInputId = InputChannel.ChannelIdPair.RightFaderId;
         if (rightInputId is not null)
         {
-            mixer.ApiWrapper.SetFaderLevel(rightInputId.Value, OutputChannel.LeftOrMonoChannelId, level);
+            mixer.SetFaderLevel(rightInputId.Value, OutputChannel.LeftOrMonoChannelId, level);
         }
 
         if (OutputChannel.ChannelIdPair.RightFaderId is ChannelId rightOutputId)
         {
-            mixer.ApiWrapper.SetFaderLevel(InputChannel.LeftOrMonoChannelId, rightOutputId, level);
+            mixer.SetFaderLevel(InputChannel.LeftOrMonoChannelId, rightOutputId, level);
             if (rightInputId is not null)
             {
-                mixer.ApiWrapper.SetFaderLevel(rightInputId.Value, rightOutputId, level);
+                mixer.SetFaderLevel(rightInputId.Value, rightOutputId, level);
             }
         }
     }

@@ -1,12 +1,17 @@
 ﻿using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DigiMixer;
 
-public sealed class Mixer : IDisposable, INotifyPropertyChanged
+public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
 {
+    private readonly Func<Task<IMixerApi>> apiFactory;
+    private readonly ConnectionTiming connectionTiming;
+    private readonly ILogger logger;
+
     private readonly Dictionary<ChannelId, InputChannel> leftOrMonoInputChannelMap;
     private readonly Dictionary<ChannelId, InputChannel> rightInputChannelMap;
     private readonly Dictionary<ChannelId, OutputChannel> leftOrMonoOutputChannelMap;
@@ -14,35 +19,45 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
     private readonly Dictionary<ChannelId, ChannelBase> allChannelMap;
     private readonly Dictionary<(ChannelId, ChannelId), InputOutputMapping> mappings;
 
+    public MixerChannelConfiguration ChannelConfiguration { get; }
     public IReadOnlyList<InputChannel> InputChannels { get; }
     public IReadOnlyList<OutputChannel> OutputChannels { get; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public InputChannel GetInputChannel(ChannelId channelId) => leftOrMonoInputChannelMap[channelId];
-    public OutputChannel GetOutputChannel(ChannelId channelId) => leftOrMonoOutputChannelMap[channelId];
-
-    public bool Connected => ApiWrapper.Connected;
+    // Mutable state...
 
     /// <summary>
-    /// The current underlying API. This can change due to reconnections, so should only be
-    /// used transiently.
+    /// The current underlying API.
+    /// This can change due to reconnections, so should only be used transiently.
     /// </summary>
-    internal ApiWrapper ApiWrapper { get; }
-
-    public MixerChannelConfiguration ChannelConfiguration { get; }
-
+    private IMixerApi api;
     private bool disposed;
-    private readonly Task keepAliveTask;
-    private readonly Task connectionCheckTask;
-    private readonly ConnectionTiming connectionTiming;
-    private readonly ILogger logger;
-    
+
+    private bool connected;
+    public bool Connected
+    {
+        get => connected;
+        set => this.SetProperty(PropertyChanged, ref connected, value);
+    }
+
+    private MixerInfo? mixerInfo;
+    public MixerInfo? MixerInfo
+    {
+        get => mixerInfo;
+        private set => this.SetProperty(PropertyChanged, ref mixerInfo, value);
+    }
+
     private Mixer(ILogger logger, Func<IMixerApi> apiFactory, IMixerApi initialApi, MixerChannelConfiguration config, ConnectionTiming connectionTiming)
     {
         this.logger = logger;
         this.connectionTiming = connectionTiming;
+        api = initialApi;
         ChannelConfiguration = config;
-        ApiWrapper = new ApiWrapper(logger, CreateAndSubscribeToApi, initialApi, connectionTiming);
+        Connected = true;
+        this.apiFactory = CreateAndSubscribeToApi;
+
+        // TODO: Construct a single MixerReceiver, which can then work out all the mappings
+        // and keep them privately.
         initialApi.RegisterReceiver(new MixerReceiver(this));
 
         OutputChannels = ChannelConfiguration.GetPossiblyPairedOutputs()
@@ -66,8 +81,8 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
         // We assume that even for split faders, we're happy to only *report* via a single input/output channel pair.
         // (We will ignore any information about other combinations.)
         mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannel.LeftOrMonoChannelId, om.OutputChannel.LeftOrMonoChannelId));
-        keepAliveTask = StartKeepAliveTask();
-        connectionCheckTask = StartConnectionCheckTask();
+        LogErrors(StartKeepAliveTask());
+        LogErrors(StartConnectionCheckTask());
 
         async Task<IMixerApi> CreateAndSubscribeToApi()
         {
@@ -75,13 +90,11 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
             using var cts = new CancellationTokenSource(connectionTiming.ConnectionTimeout);
             await api.Connect(cts.Token);
             api.RegisterReceiver(new MixerReceiver(this));
+            // TODO: Should this have a cancellation token, as it's part of connection?
             await api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
             return api;
         }
     }
-
-    private void RequestAllData() =>
-        ApiWrapper.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
 
     public static async Task<Mixer> Create(ILogger logger, Func<IMixerApi> apiFactory, ConnectionTiming? timing = null)
     {
@@ -94,7 +107,7 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
             await api.Connect(cts.Token);
             var config = await api.DetectConfiguration(cts.Token);
             var mixer = new Mixer(logger, apiFactory, api, config, timing);
-            mixer.RequestAllData();
+            mixer.RequestAllData(config.InputChannels.Concat(config.OutputChannels).ToList().AsReadOnly());
             success = true;
             return mixer;
         }
@@ -111,8 +124,8 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
     {
         while (!disposed)
         {
-            ApiWrapper.SendKeepAlive();
-            await Task.Delay(ApiWrapper.KeepAliveInterval);
+            LogErrors(api.SendKeepAlive());
+            await Task.Delay(api.KeepAliveInterval);
         }
     }
 
@@ -120,104 +133,90 @@ public sealed class Mixer : IDisposable, INotifyPropertyChanged
     {
         while (!disposed)
         {
-            // TODO: Propagate this from ApiWrapper instead.
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Connected)));
-            ApiWrapper.CheckConnection();
+            await CheckConnectionAndMaybeReconnect();
             await Task.Delay(connectionTiming.ConnectionCheckInterval);
         }
+
+        async Task CheckConnectionAndMaybeReconnect()
+        {
+            try
+            {
+                logger.LogTrace("Checking connection.");
+                using var cts = new CancellationTokenSource(connectionTiming.ConnectionCheckTimeout);
+                var result = await api.CheckConnection(cts.Token);
+
+                // Normal result: everything is fine.
+                if (result)
+                {
+                    return;
+                }
+                logger.LogError("Mixer API reported unhealthy connection; reconnecting.");
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error checking mixer connection status; assuming unhealthy and reconnecting.");
+            }
+
+            Connected = false;
+
+            // Dispose of the current API and stop further calls to it by using a placeholder while we're reconnecting.
+            api.Dispose();
+            api = NoOpApi.Instance;
+
+            long reconnectCounter = 0;
+            while (!disposed)
+            {
+                if (reconnectCounter < connectionTiming.InitialReconnectionAttempts)
+                {
+                    logger.LogInformation("Attempting reconnection");
+                }
+
+                try
+                {
+                    var candidateApi = await apiFactory();
+                    logger.LogInformation("Reconnection successful.");
+                    api = candidateApi;
+                    Connected = true;
+                    return;
+                }
+                catch
+                {
+                    // Ignore the error, wait and try again.
+                }
+
+                var interval = reconnectCounter < connectionTiming.InitialReconnectionAttempts
+                    ? connectionTiming.InitialReconnectionInterval : connectionTiming.EventualReconnectionInterval;
+                await Task.Delay(interval);
+                reconnectCounter++;
+
+                if (reconnectCounter == connectionTiming.InitialReconnectionAttempts)
+                {
+                    logger.LogInformation("Initial reconnection attempts failed; count={count}. Quietly trying to reconnect less frequently.", connectionTiming.InitialReconnectionAttempts);
+                }
+            }
+        }
     }
 
-    private MixerInfo? mixerInfo;
-    public MixerInfo? MixerInfo
+    internal void SetFaderLevel(ChannelId outputId, FaderLevel level) =>
+        LogErrors(api.SetFaderLevel(outputId, level));
+
+    internal void SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
+        LogErrors(api.SetFaderLevel(inputId, outputId, level));
+
+    internal void SetMuted(ChannelId channelId, bool muted) =>
+        LogErrors(api.SetMuted(channelId, muted));
+
+    internal void RequestAllData(ReadOnlyCollection<ChannelId> channels) =>
+        LogErrors(api.RequestAllData(channels));
+
+    private void LogErrors(Task task)
     {
-        get => mixerInfo;
-        set => this.SetProperty(PropertyChanged, ref mixerInfo, value);
-    }
-
-    // TODO: threading of receiving? (For meters in particular, best to invoke just once...)
-    // For OSC, we get this for free due to awaiting...
-
-    private bool TryGetOutputChannel(ChannelId channelId, [NotNullWhen(true)] out OutputChannel? channel) =>
-        leftOrMonoOutputChannelMap.TryGetValue(channelId, out channel);
-
-    private bool TryGetInputOutputMapping(ChannelId inputId, ChannelId outputId, [NotNullWhen(true)] out InputOutputMapping? mapping) =>
-        mappings.TryGetValue((inputId, outputId), out mapping);
-
-    private bool TryGetChannelBase(ChannelId channelId, [NotNullWhen(true)] out ChannelBase? channel) =>
-        allChannelMap.TryGetValue(channelId, out channel);
-
-    private class MixerReceiver : IMixerReceiver
-    {
-        private readonly Mixer mixer;
-
-        internal MixerReceiver(Mixer mixer)
-        {
-            this.mixer = mixer;
-        }
-
-        public void ReceiveChannelName(ChannelId channelId, string? name)
-        {
-            if (mixer.TryGetChannelBase(channelId, out var channel))
-            {
-                if (channelId == channel.LeftOrMonoChannelId)
-                {
-                    channel.LeftOrMonoName = name;
-                }
-                else
-                {
-                    channel.RightName = name;
-                }
-            }
-        }
-
-        public void ReceiveFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
-        {
-            if (mixer.TryGetInputOutputMapping(inputId, outputId, out var mapping))
-            {
-                mapping.FaderLevel = level;
-            }
-        }
-
-        public void ReceiveFaderLevel(ChannelId outputId, FaderLevel level)
-        {
-            if (mixer.TryGetOutputChannel(outputId, out var channel))
-            {
-                channel.FaderLevel = level;
-            }
-        }
-
-        public void ReceiveMeterLevels((ChannelId channelId, MeterLevel level)[] levels)
-        {
-            foreach (var (channelId, level) in levels)
-            {
-                if (mixer.TryGetChannelBase(channelId, out var channel))
-                {
-                    if (channelId == channel.LeftOrMonoChannelId)
-                    {
-                        channel.MeterLevel = level;
-                    }
-                    else
-                    {
-                        channel.StereoMeterLevel = level;
-                    }
-                }
-            }
-        }
-
-        public void ReceiveMixerInfo(MixerInfo info) => mixer.MixerInfo = info;
-
-        public void ReceiveMuteStatus(ChannelId channelId, bool muted)
-        {
-            if (mixer.TryGetChannelBase(channelId, out var channel))
-            {
-                channel.Muted = muted;
-            }
-        }
+        task.ContinueWith(t => logger.LogError(t.Exception, "Mixer error"), TaskContinuationOptions.OnlyOnFaulted);
     }
 
     public void Dispose()
     {
         disposed = true;
-        ApiWrapper.Dispose();
+        api.Dispose();
     }
 }
