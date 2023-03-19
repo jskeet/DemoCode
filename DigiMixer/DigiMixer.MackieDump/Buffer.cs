@@ -26,7 +26,7 @@ internal class PacketBuffer
         Buffer.BlockCopy(data, 0, buffer, position, data.Length);
         position += data.Length;
 
-        while (position != 0 && MackiePacket.TryParse(buffer, 0, position) is MackiePacket packet)
+        while (position != 0 && MackiePacket.TryParse(buffer.AsSpan().Slice(0, position)) is MackiePacket packet)
         {
             Console.WriteLine($"{name}: {packet}");
             if (position == packet.Length)

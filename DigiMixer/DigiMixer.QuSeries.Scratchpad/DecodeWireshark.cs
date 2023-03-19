@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using DigiMixer.Core;
 using DigiMixer.Diagnostics;
 using DigiMixer.QuSeries.Core;
 using System.Net;
@@ -27,15 +28,22 @@ class DecodeWireshark
 
         Console.WriteLine($"Control packets: {controlPackets.Count}");
 
-        QuPacketBuffer clientBuffer = new QuPacketBuffer(65540);
-        QuPacketBuffer mixerBuffer = new QuPacketBuffer(65540);
+        var clientProcessor = new MessageProcessor<QuControlPacket>(
+            QuControlPacket.TryParse,
+            packet => packet.Length,
+            quPacket => LogPacket("Mixer->Client", quPacket),
+            65540);
+        var mixerProcessor = new MessageProcessor<QuControlPacket>(
+            QuControlPacket.TryParse,
+            packet => packet.Length,
+            quPacket => LogPacket("Client->Mixer", quPacket),
+            65540);
 
         foreach (var packet in controlPackets)
         {
-            (var description, var buffer) = packet.Dest.Address.Equals(clientAddr)
-                ? ("Mixer->Client", clientBuffer)
-                : ("Client->Mixer", mixerBuffer);
-            buffer.Process(packet.Data, quPacket => LogPacket(description, quPacket));
+            var processor = packet.Dest.Address.Equals(clientAddr)
+                ? clientProcessor : mixerProcessor;
+            processor.Process(packet.Data);
         }
 
         void LogPacket(string description, QuControlPacket packet) => Console.Write(packet);

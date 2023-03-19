@@ -7,10 +7,15 @@ public sealed class QuControlClient : TcpControllerBase
 {
     public event EventHandler<QuControlPacket>? PacketReceived;
 
-    private QuPacketBuffer packetBuffer = new();
+    private MessageProcessor<QuControlPacket> processor;
 
     public QuControlClient(ILogger logger, string host, int port) : base(logger, host, port)
     {
+        processor = new MessageProcessor<QuControlPacket>(
+            QuControlPacket.TryParse,
+            packet => packet.Length,
+            ProcessPacket,
+            65540);
     }
 
     public async Task SendAsync(QuControlPacket packet, CancellationToken cancellationToken)
@@ -23,8 +28,7 @@ public sealed class QuControlClient : TcpControllerBase
         await Send(data, cancellationToken);
     }
 
-    protected override void ProcessData(ReadOnlySpan<byte> data) =>
-        packetBuffer.Process(data, ProcessPacket);
+    protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
 
     private void ProcessPacket(QuControlPacket packet)
     {

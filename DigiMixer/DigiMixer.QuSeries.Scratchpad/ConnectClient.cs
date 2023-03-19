@@ -1,4 +1,5 @@
-﻿using DigiMixer.QuSeries.Core;
+﻿using DigiMixer.Core;
+using DigiMixer.QuSeries.Core;
 using System.Net;
 using System.Net.Sockets;
 
@@ -38,7 +39,7 @@ internal class ConnectClient
         //var packet2 = QuPacket.Create(type: 4, Decode("00 01"));
         //packet2.WriteTo(stream);
 
-        
+
         var introPackets = new[]
         {
             QuControlPacket.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) }),
@@ -68,7 +69,7 @@ internal class ConnectClient
             stream.Write(packet.ToByteArray());
             await Task.Delay(100);
         }
-        
+
         /*
         
         var p1 = QuPacket.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f"));
@@ -96,7 +97,11 @@ internal class ConnectClient
 
         async Task StartLoop(Action<QuControlPacket> action)
         {
-            var packetBuffer = new QuPacketBuffer(100_000);
+            var packetBuffer = new MessageProcessor<QuControlPacket>(
+                QuControlPacket.TryParse,
+                packet => packet.Length,
+                action,
+                100_000);
             byte[] buffer = new byte[1024];
             Console.WriteLine($"Starting reading at {DateTime.UtcNow}");
             while (!finished)
@@ -107,7 +112,7 @@ internal class ConnectClient
                     Console.WriteLine($"Receiving stream broken at {DateTime.UtcNow}");
                     return;
                 }
-                packetBuffer.Process(buffer.AsSpan().Slice(0, bytesRead), action);
+                packetBuffer.Process(buffer.AsSpan().Slice(0, bytesRead));
             }
         }
 
@@ -118,7 +123,7 @@ internal class ConnectClient
             while (!finished)
             {
                 var result = await udpClient.ReceiveAsync();
-               
+
                 //Console.WriteLine($"Received UDP packet, {result.Buffer.Length} bytes");
                 var now = DateTime.UtcNow;
                 if (now > nextPing)

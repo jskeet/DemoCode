@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using DigiMixer.Core;
 using DigiMixer.Diagnostics;
 using DigiMixer.QuSeries.Core;
 using System.Net;
@@ -20,7 +21,11 @@ class ConvertWiresharkDumps
     {
         var dump = WiresharkDump.Load(file);
         var packets = dump.IPV4Packets.ToList();
-        var buffer = new QuPacketBuffer();
+        var processor = new MessageProcessor<QuControlPacket>(
+            QuControlPacket.TryParse,
+            packet => packet.Length,
+            MaybeSaveConverted,
+            65540);
         var clientAddr1 = IPAddress.Parse("192.168.1.140");
         var clientAddr2 = IPAddress.Parse("192.168.1.230");
         var mixerAddr = IPAddress.Parse("192.168.1.60");
@@ -29,7 +34,7 @@ class ConvertWiresharkDumps
             if (packet.Type == ProtocolType.Tcp && packet.Source.Address.Equals(mixerAddr) &&
                 (packet.Dest.Address.Equals(clientAddr1) || packet.Dest.Address.Equals(clientAddr2)))
             {
-                buffer.Process(packet.Data, MaybeSaveConverted);
+                processor.Process(packet.Data);
             }
         }
 

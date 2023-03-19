@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace DigiMixer.Mackie.Core;
 
@@ -22,24 +23,24 @@ public sealed class MackiePacket
         Body = body;
     }
 
-    public static MackiePacket? TryParse(byte[] buffer, int index, int length)
+    public static MackiePacket? TryParse(ReadOnlySpan<byte> data)
     {
-        if (length < 8 || buffer[index] != Header0)
+        if (data.Length < 8 || data[0] != Header0)
         {
             return null;
         }
-        byte seq = buffer[index + 1];
-        int chunkCount = (buffer[index + 2] << 8) + buffer[index + 3];
-        MackiePacketType type = (MackiePacketType) buffer[index + 4];
-        MackieCommand command = (MackieCommand) buffer[index + 5];
+        byte seq = data[1];
+        int chunkCount = (data[2] << 8) + data[3];
+        MackiePacketType type = (MackiePacketType) data[4];
+        MackieCommand command = (MackieCommand) data[5];
 
         // If we have any chunks, then there's the 8 byte header, the 4 byte chunks, then a 4 byte checksum.
-        if (chunkCount != 0 && length < chunkCount * 4 + 12)
+        if (chunkCount != 0 && data.Length < chunkCount * 4 + 12)
         {
             return null;
         }
         // Note: we don't validate the checksum in the final 4 bytes...
-        var body = chunkCount == 0 ? MackiePacketBody.Empty : new MackiePacketBody(buffer.AsSpan().Slice(index + 8, chunkCount * 4));
+        var body = chunkCount == 0 ? MackiePacketBody.Empty : new MackiePacketBody(data.Slice(8, chunkCount * 4));
         return new MackiePacket(seq, type, command, body);
     }
 

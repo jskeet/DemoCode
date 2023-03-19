@@ -16,15 +16,18 @@ public sealed class MackieController : TcpControllerBase
     private readonly List<Func<MackiePacket, CancellationToken, Task<MackiePacketBody?>>> requestHandlers;
     private readonly List<Func<MackiePacket, CancellationToken, Task>> broadcastHandlers;
 
-    // TODO: Use something like QuPacketBuffer
-    int position;
-    byte[] buffer = new byte[65536];
+    private readonly MessageProcessor<MackiePacket> processor;
 
     public MackieController(ILogger logger, string host, int port) : base(logger, host, port)
     {
         outstandingRequests = new OutstandingRequest[256];
         requestHandlers = new();
         broadcastHandlers = new();
+        processor = new MessageProcessor<MackiePacket>(
+            MackiePacket.TryParse,
+            packet => packet.Length,
+            HandlePacket,
+            65536);
     }
 
     // Note: all the MapCommand implementations just add a general purpose handler.
@@ -134,31 +137,10 @@ public sealed class MackieController : TcpControllerBase
         await Send(data, cancellationToken);
     }
 
-    protected override void ProcessData(ReadOnlySpan<byte> data)
+    private void HandlePacket(MackiePacket packet)
     {
-        // The index of the start of the next packet. It moves through the buffer as we manage to parse.
-        // Before reading data, it's always at the start of the buffer.
-        int start = 0;
-        var bytesRead = data.Length;
-        data.CopyTo(buffer.AsSpan().Slice(position));
-        // The index at the end of where we have valid data.
-        int end = position + bytesRead;
-        while (MackiePacket.TryParse(buffer, start, end - start) is MackiePacket packet)
-        {
-            HandlePacketReceived(packet, CancellationToken).ContinueWith(t => Logger.LogError(t.Exception, "Error processing packet"), TaskContinuationOptions.NotOnRanToCompletion);
-            start += packet.Length;
-        }
-        // If we've consumed the whole buffer, reset to the start. (No copying required.)
-        if (start == end)
-        {
-            position = 0;
-        }
-        // Otherwise, copy whatever's left.
-        else
-        {
-            Buffer.BlockCopy(buffer, start, buffer, 0, end - start);
-            position = end - start;
-        }
+        HandlePacketReceived(packet, CancellationToken)
+            .ContinueWith(t => Logger.LogError(t.Exception, "Error processing packet"), TaskContinuationOptions.NotOnRanToCompletion);
 
         async Task HandlePacketReceived(MackiePacket packet, CancellationToken cancellationToken)
         {
@@ -208,6 +190,8 @@ public sealed class MackieController : TcpControllerBase
             return MackiePacketBody.Empty;
         }
     }
+
+    protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
 
     private void CheckState(ControllerStatus expectedStatus, [CallerMemberName] string caller = "")
     {
