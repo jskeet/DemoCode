@@ -9,6 +9,8 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
 {
     public IReadOnlyList<InputChannelViewModel> InputChannels { get; }
     public IReadOnlyList<OutputChannelViewModel> OutputChannels { get; }
+    public MixerInfo MixerInfo => Model.MixerInfo ?? new MixerInfo("", "", "");
+
     public string ConnectionStatus => Model.Connected ? "Connected" : "Disconnected";
     private DispatcherTimer meterPeakUpdater;
 
@@ -42,8 +44,6 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
             vm.UpdatePeakOutputs();
         }
     }
-
-    public MixerInfo MixerInfo => Model.MixerInfo ?? new MixerInfo("", "", "");
 
     protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)
     {
