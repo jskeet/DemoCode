@@ -10,7 +10,7 @@ public static class TaskExtensions
     /// </summary>
     public static void Ignore(this Task task, ILogger logger = null)
     {
-        task.ContinueWith(t => logger?.LogError(t.Exception, "Ignored error"), TaskContinuationOptions.OnlyOnFaulted);
+        task.ContinueWith(t => logger?.LogError(t.Exception, "Ignored error"), TaskContinuationOptions.NotOnRanToCompletion);
     }
 
     /// <summary>

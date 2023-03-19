@@ -191,7 +191,7 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
 
     private void LogErrors(Task task)
     {
-        task.ContinueWith(t => logger.LogError(t.Exception, "Mixer error"), TaskContinuationOptions.OnlyOnFaulted);
+        task.ContinueWith(t => logger.LogError(t.Exception, "Mixer error"), TaskContinuationOptions.NotOnRanToCompletion);
     }
 
     public void Dispose()

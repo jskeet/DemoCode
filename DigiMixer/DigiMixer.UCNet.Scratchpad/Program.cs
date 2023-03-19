@@ -14,8 +14,7 @@ client.MessageReceived += (sender, message) => logger.LogInformation("Received {
 //client.MessageReceived += MaybeFormatJson;
 
 await client.Connect(default);
-var clientTask = client.Start();
-_ = clientTask.ContinueWith(task => Console.WriteLine(task.Exception), continuationOptions: TaskContinuationOptions.OnlyOnFaulted);
+client.Start();
 
 await client.Send(new UdpMetersMessage(listener.Port), default);
 var subscribe = JsonMessage.FromObject(new SubscribeBody(), MessageMode.ClientRequest);
@@ -33,7 +32,7 @@ while (true)
 /*
 var client = new UCNetClient(logger, "192.168.1.61", 53000);P
 var task = client.Start();
-task = task.ContinueWith(t => Console.WriteLine(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+task = task.ContinueWith(t => Console.WriteLine(t.Exception), TaskContinuationOptions.NotOnRanToCompletion);
 //var hello = new HelloPacket(53002);
 //await client.SendPacket(hello, default);
 var subscribe = JsonMessage.FromObject(new SubscribeBody());

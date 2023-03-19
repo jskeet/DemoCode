@@ -3,8 +3,6 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using System.Reflection.PortableExecutable;
-using System.Threading;
 
 namespace DigiMixer.UCNet;
 
@@ -24,7 +22,6 @@ public static class StudioLive
         private readonly Dictionary<string, Action<ParameterValueMessage>> parameterHandlers;
 
         private UCNetClient? client;
-        private Task? clientTask;
         private UCNetMeterListener? meterListener;
         private Task? meterListenerTask;
         private CancellationTokenSource? cts;
@@ -75,7 +72,7 @@ public static class StudioLive
             client = new UCNetClient(logger, host, port);
             client.MessageReceived += HandleMessage;
             await client.Connect(cancellationToken);
-            clientTask = client.Start();
+            client.Start();
             meterListener = new UCNetMeterListener(logger);
             meterListener.MessageReceived += (sender, message) => HandleMeter16Message(message);
             meterListenerTask = meterListener.Start();
@@ -359,7 +356,7 @@ public static class StudioLive
             {
                 return false;
             }
-            if (clientTask?.IsFaulted == true || clientTask?.IsCanceled == true)
+            if (client?.ControllerStatus != ControllerStatus.Running)
             {
                 return false;
             }
@@ -406,7 +403,6 @@ public static class StudioLive
         {
             client?.Dispose();
             meterListener?.Dispose();
-            clientTask = null;
             meterListenerTask = null;
         }
     }

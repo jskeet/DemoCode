@@ -22,6 +22,10 @@ public sealed class MackiePacketBody
     private byte[] data;
     public ReadOnlySpan<byte> Data => data.AsSpan();
     public int Length => Data.Length;
+
+    /// <summary>
+    /// Number of chunks in the data. Each chunk is 4 bytes long.
+    /// </summary>
     public int ChunkCount => Length / 4;
 
     public bool IsNetworkOrder { get; }

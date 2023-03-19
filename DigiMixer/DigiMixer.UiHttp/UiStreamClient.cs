@@ -41,6 +41,7 @@ internal sealed class UiStreamClient : IUiClient
         {
             while (!cts.IsCancellationRequested)
             {
+                // TODO: Generalize QuPacketBuffer and reuse.
                 int bytesRead = await stream.ReadAsync(buffer, bufferPosition, buffer.Length - bufferPosition, cts.Token);
                 int newBufferPosition = bufferPosition + bytesRead;
                 int messageStart = 0;

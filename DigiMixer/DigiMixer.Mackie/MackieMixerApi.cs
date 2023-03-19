@@ -22,14 +22,12 @@ public class MackieMixerApi : IMixerApi
     private ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> pendingChannelDataTasks = new();
 
     private MackieController? controller;
-    private Task? controllerTask;
 
     public MackieMixerApi(ILogger? logger, string host, int port = 50001)
     {
         this.logger = logger ?? NullLogger.Instance;
         this.host = host;
         this.port = port;
-        controllerTask = Task.CompletedTask;
 
         channelValueActions = PopulateChannelValueActions();
         channelNameActions = PopulateChannelNameActions();
@@ -42,7 +40,7 @@ public class MackieMixerApi : IMixerApi
         controller = new MackieController(logger, host, port);
         MapController(controller);
         await controller.Connect(cancellationToken);
-        controllerTask = controller.Start();
+        controller.Start();
 
         // Initialization handshake
         await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
@@ -186,7 +184,6 @@ public class MackieMixerApi : IMixerApi
     {
         controller?.Dispose();
         controller = null;
-        controllerTask = null;
     }
 
     private void HandleBroadcastPacket(MackiePacket packet)

@@ -45,7 +45,7 @@ controller.MapBroadcastAction(packet =>
 
 
 await controller.Connect(default);
-var task = controller.Start();
+controller.Start();
 
 await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty);
 await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8]);

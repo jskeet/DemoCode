@@ -25,7 +25,6 @@ internal class QuMixerApi : IMixerApi
     private CancellationTokenSource? cts;
     private QuControlClient? controlClient;
     private QuMeterClient? meterClient;
-    private Task? controlClientTask;
     private Task? meterClientTask;
     private int? mixerUdpPort;
 
@@ -50,7 +49,7 @@ internal class QuMixerApi : IMixerApi
         controlClient = new QuControlClient(logger, host, port);
         controlClient.PacketReceived += HandleControlPacket;
         await controlClient.Connect(cancellationToken);
-        controlClientTask = controlClient.Start();
+        controlClient.Start();
 
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         await controlClient.SendAsync(QuPackets.InitialHandshakeRequest(meterClient.LocalUdpPort), linkedCts.Token);
@@ -91,7 +90,7 @@ internal class QuMixerApi : IMixerApi
     public async Task<bool> CheckConnection(CancellationToken cancellationToken)
     {
         // Propagate any existing client failures.
-        if (controlClientTask?.IsFaulted == true)
+        if (controlClient?.ControllerStatus != ControllerStatus.Running)
         {
             return false;
         }
@@ -336,7 +335,6 @@ internal class QuMixerApi : IMixerApi
     {
         controlClient?.Dispose();
         controlClient = null;
-        controlClientTask = null;
         meterClient?.Dispose();
         meterClient = null;
         meterClientTask = null;

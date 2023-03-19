@@ -1,39 +1,28 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Net.Sockets;
+﻿using DigiMixer.Core;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
 namespace DigiMixer.Mackie.Core;
 
-// TODO: Work out thread safety better.
-
 /// <summary>
 /// Controller to handle the protocol for a Mackie DL-series mixer.
 /// </summary>
-public sealed class MackieController : IDisposable
+public sealed class MackieController : TcpControllerBase
 {
     private int nextSeq = 0;
     private readonly OutstandingRequest?[] outstandingRequests;
-    private readonly SemaphoreSlim semaphore;
-    private readonly ILogger logger;
-    private readonly string host;
-    private readonly int port;
-
-    private TcpClient? tcpClient;
-    private CancellationTokenSource? cts;
 
     // TODO: Think about thread safety. We don't write to the lists after starting, so it's probably okay...
     private readonly List<Func<MackiePacket, CancellationToken, Task<MackiePacketBody?>>> requestHandlers;
     private readonly List<Func<MackiePacket, CancellationToken, Task>> broadcastHandlers;
 
-    public bool Running => tcpClient is not null;
+    // TODO: Use something like QuPacketBuffer
+    int position;
+    byte[] buffer = new byte[65536];
 
-    public MackieController(ILogger logger, string host, int port)
+    public MackieController(ILogger logger, string host, int port) : base(logger, host, port)
     {
-        this.logger = logger;
-        this.host = host;
-        this.port = port;
         outstandingRequests = new OutstandingRequest[256];
-        semaphore = new SemaphoreSlim(1);
         requestHandlers = new();
         broadcastHandlers = new();
     }
@@ -85,13 +74,13 @@ public sealed class MackieController : IDisposable
     /// <param name="handler"></param>
     public void MapBroadcast(Func<MackiePacket, CancellationToken, Task> handler)
     {
-        CheckState(expectedRunning: false);
+        CheckState(ControllerStatus.NotConnected);
         broadcastHandlers.Add(handler);
     }
 
     public void MapBroadcastAction(Action<MackiePacket> handler)
     {
-        CheckState(expectedRunning: false);
+        CheckState(ControllerStatus.NotConnected);
         broadcastHandlers.Add((packet, cancellationToken) => { handler(packet); return Task.CompletedTask; });
     }
 
@@ -102,7 +91,7 @@ public sealed class MackieController : IDisposable
     /// If the task returns a null reference, the next matching handler is tried.</param>
     public void MapRequest(Func<MackiePacket, CancellationToken, Task<MackiePacketBody?>> handler)
     {
-        CheckState(expectedRunning: false);
+        CheckState(ControllerStatus.NotConnected);
         requestHandlers.Add(handler);
     }
 
@@ -111,7 +100,7 @@ public sealed class MackieController : IDisposable
 
     public async Task<MackiePacket> SendRequest(MackieCommand command, MackiePacketBody body, CancellationToken cancellationToken = default)
     {
-        CheckState(true);
+        CheckState(ControllerStatus.Running);
 
         byte seq;
 
@@ -138,98 +127,44 @@ public sealed class MackieController : IDisposable
     private async Task SendPacket(MackiePacket packet, CancellationToken cancellationToken)
     {
         var data = packet.ToByteArray();
-        if (logger.IsEnabled(LogLevel.Trace))
+        if (Logger.IsEnabled(LogLevel.Trace))
         {
-            logger.LogTrace("Sending packet: {packet}", packet);
+            Logger.LogTrace("Sending packet: {packet}", packet);
         }
-        await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
-        {
-            await tcpClient!.GetStream().WriteAsync(data, 0, data.Length, cancellationToken);
-        }
-        finally
-        {
-            semaphore.Release();
-        }
+        await Send(data, cancellationToken);
     }
 
-    public void Dispose()
+    protected override void ProcessData(ReadOnlySpan<byte> data)
     {
-        // TODO: Wait for all outstanding tasks?
-
-        // Cancelling the token should stop everything else (at the end of the receiving loop).
-        cts?.Cancel();
-    }
-
-    public async Task Connect(CancellationToken cancellationToken)
-    {
-        CheckState(expectedRunning: false);
-        tcpClient = new TcpClient { NoDelay = true };
-        await tcpClient.ConnectAsync(host, port, cancellationToken);
-    }
-
-    public async Task Start()
-    {
-        if (tcpClient is null)
+        // The index of the start of the next packet. It moves through the buffer as we manage to parse.
+        // Before reading data, it's always at the start of the buffer.
+        int start = 0;
+        var bytesRead = data.Length;
+        data.CopyTo(buffer.AsSpan().Slice(position));
+        // The index at the end of where we have valid data.
+        int end = position + bytesRead;
+        while (MackiePacket.TryParse(buffer, start, end - start) is MackiePacket packet)
         {
-            throw new InvalidOperationException("Must wait for Connect to complete before calling Start");
+            HandlePacketReceived(packet, CancellationToken).ContinueWith(t => Logger.LogError(t.Exception, "Error processing packet"), TaskContinuationOptions.NotOnRanToCompletion);
+            start += packet.Length;
         }
-
-        cts = new CancellationTokenSource();
-        try
+        // If we've consumed the whole buffer, reset to the start. (No copying required.)
+        if (start == end)
         {
-            var stream = tcpClient.GetStream();
-            // TODO: Is this enough? In theory I guess it could be 256K...
-            byte[] buffer = new byte[65536];
-
-            // The index at which to start reading.
-            int position = 0;
-
-            while (!cts.IsCancellationRequested)
-            {
-                // The index of the start of the next packet. It moves through the buffer as we manage to parse.
-                // Before reading data, it's always at the start of the buffer.
-                int start = 0;
-                var bytesRead = await stream.ReadAsync(buffer, position, buffer.Length - position, cts.Token);
-                // The index at the end of where we have valid data.
-                int end = position + bytesRead;
-                while (MackiePacket.TryParse(buffer, start, end - start) is MackiePacket packet)
-                {
-                    // TODO: Remember this task somewhere...
-                    _ = HandlePacketReceived(packet, cts.Token);
-                    start += packet.Length;
-                }
-                // If we've consumed the whole buffer, reset to the start. (No copying required.)
-                if (start == end)
-                {
-                    position = 0;
-                }
-                // Otherwise, copy whatever's left.
-                else
-                {
-                    Buffer.BlockCopy(buffer, start, buffer, 0, end - start);
-                    position = end - start;
-                }
-            }
+            position = 0;
         }
-        catch (Exception e) when (cts.IsCancellationRequested)
+        // Otherwise, copy whatever's left.
+        else
         {
-            // TODO: Work out if this is actually useful.
-            logger.LogInformation("Operation aborted due to controller shutdown", e);
-        }
-        finally
-        {
-            tcpClient?.Dispose();
-            cts?.Dispose();
-            cts = null;
-            tcpClient = null;
+            Buffer.BlockCopy(buffer, start, buffer, 0, end - start);
+            position = end - start;
         }
 
         async Task HandlePacketReceived(MackiePacket packet, CancellationToken cancellationToken)
         {
-            if (logger.IsEnabled(LogLevel.Trace))
+            if (Logger.IsEnabled(LogLevel.Trace))
             {
-                logger.LogTrace("Received packet: {packet}", packet);
+                Logger.LogTrace("Received packet: {packet}", packet);
             }
             switch (packet.Type)
             {
@@ -241,7 +176,7 @@ public sealed class MackieController : IDisposable
                     var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[packet.Sequence], null);
                     if (outstandingRequest is null)
                     {
-                        logger.LogError($"No outstanding request for sequence number: {packet.Sequence}");
+                        Logger.LogError($"No outstanding request for sequence number: {packet.Sequence}");
                     }
                     else
                     {
@@ -255,7 +190,7 @@ public sealed class MackieController : IDisposable
                     }
                     break;
                 default:
-                    logger.LogError($"Unhandled packet type: {packet.Type}");
+                    Logger.LogError($"Unhandled packet type: {packet.Type}");
                     break;
             }
         }
@@ -274,12 +209,11 @@ public sealed class MackieController : IDisposable
         }
     }
 
-    private void CheckState(bool expectedRunning, [CallerMemberName] string caller = "")
+    private void CheckState(ControllerStatus expectedStatus, [CallerMemberName] string caller = "")
     {
-        // TODO: Thread safety of this check...
-        if (Running != expectedRunning)
+        if (ControllerStatus != expectedStatus)
         {
-            throw new InvalidOperationException($"{caller} cannot be called when the controller is {(Running ? "running" : "stopped")}");
+            throw new InvalidOperationException($"{caller} cannot be called when the controller status is {ControllerStatus}");
         }
     }
 
