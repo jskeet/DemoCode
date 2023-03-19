@@ -46,14 +46,22 @@ public class UCNetClient : IDisposable
         }
     }
 
-    public async Task Start(CancellationToken initialCancellationToken)
+    public async Task Connect(CancellationToken cancellationToken)
     {
-        cts = new CancellationTokenSource();
         tcpClient = new TcpClient { NoDelay = true };
+        await tcpClient.ConnectAsync(host, port, cancellationToken);
+    }
+
+    public async Task Start()
+    {
+        if (tcpClient is null)
+        {
+            throw new InvalidOperationException("Must wait for Connect to complete before calling Start");
+        }
+
+        cts = new CancellationTokenSource();
         try
         {
-            await tcpClient.ConnectAsync(host, port, initialCancellationToken);
-
             var stream = tcpClient.GetStream();
             byte[] buffer = new byte[65542];
 

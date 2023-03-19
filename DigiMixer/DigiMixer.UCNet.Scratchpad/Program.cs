@@ -13,7 +13,8 @@ var listenerTask = listener.Start();
 client.MessageReceived += (sender, message) => logger.LogInformation("Received {type} with mode {mode}", message.Type, ((uint) message.Mode).ToString("x8"));
 //client.MessageReceived += MaybeFormatJson;
 
-var clientTask = client.Start(default);
+await client.Connect(default);
+var clientTask = client.Start();
 _ = clientTask.ContinueWith(task => Console.WriteLine(task.Exception), continuationOptions: TaskContinuationOptions.OnlyOnFaulted);
 
 await client.Send(new UdpMetersMessage(listener.Port), default);

@@ -74,7 +74,8 @@ public static class StudioLive
             cts = new CancellationTokenSource();
             client = new UCNetClient(logger, host, port);
             client.MessageReceived += HandleMessage;
-            clientTask = client.Start(default);
+            await client.Connect(cancellationToken);
+            clientTask = client.Start();
             meterListener = new UCNetMeterListener(logger);
             meterListener.MessageReceived += (sender, message) => HandleMeter16Message(message);
             meterListenerTask = meterListener.Start();

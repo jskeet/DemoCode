@@ -161,16 +161,23 @@ public sealed class MackieController : IDisposable
         cts?.Cancel();
     }
 
-    public async Task Start(CancellationToken initialCancellationToken)
+    public async Task Connect(CancellationToken cancellationToken)
     {
         CheckState(expectedRunning: false);
-        
-        cts = new CancellationTokenSource();
         tcpClient = new TcpClient { NoDelay = true };
+        await tcpClient.ConnectAsync(host, port, cancellationToken);
+    }
+
+    public async Task Start()
+    {
+        if (tcpClient is null)
+        {
+            throw new InvalidOperationException("Must wait for Connect to complete before calling Start");
+        }
+
+        cts = new CancellationTokenSource();
         try
         {
-            await tcpClient.ConnectAsync(host, port, initialCancellationToken);
-
             var stream = tcpClient.GetStream();
             // TODO: Is this enough? In theory I guess it could be 256K...
             byte[] buffer = new byte[65536];

@@ -49,11 +49,8 @@ internal class QuMixerApi : IMixerApi
         meterClientTask = meterClient.Start();
         controlClient = new QuControlClient(logger, host, port);
         controlClient.PacketReceived += HandleControlPacket;
-        controlClientTask = controlClient.Start(cancellationToken);
-
-        // FIXME: This is awful. It's needed at the moment because we don't know when the TCP client has connected.
-        // Separate out Connect from Start? Maybe have a separate Connected status?
-        await Task.Delay(500, cancellationToken);
+        await controlClient.Connect(cancellationToken);
+        controlClientTask = controlClient.Start();
 
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         await controlClient.SendAsync(QuPackets.InitialHandshakeRequest(meterClient.LocalUdpPort), linkedCts.Token);

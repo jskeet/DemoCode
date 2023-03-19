@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace DigiMixer.QuSeries.Core;
 
@@ -46,16 +47,24 @@ public sealed class QuControlClient : IDisposable
         }
     }
 
-    public async Task Start(CancellationToken initialCancellationToken)
+    public async Task Connect(CancellationToken cancellationToken)
     {
-        cts = new CancellationTokenSource();
         tcpClient = new TcpClient { NoDelay = true };
+        // TODO: Use ConnectAsync instead? We don't really want to hand control back to the caller until this has completed though...
+        await tcpClient.ConnectAsync(host, port, cancellationToken);
+    }
+
+    public async Task Start()
+    {
+        if (tcpClient is null)
+        {
+            throw new InvalidOperationException("Must wait for Connect to complete before calling Start");
+        }
+
+        cts = new CancellationTokenSource();
         var packetBuffer = new QuPacketBuffer();
         try
         {
-            // TODO: Use ConnectAsync instead? We don't really want to hand control back to the caller until this has completed though...
-            await tcpClient.ConnectAsync(host, port, initialCancellationToken);
-
             var stream = tcpClient.GetStream();
             byte[] buffer = new byte[32768];
             while (cts?.IsCancellationRequested == false)

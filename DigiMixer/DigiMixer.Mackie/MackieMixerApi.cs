@@ -41,11 +41,8 @@ public class MackieMixerApi : IMixerApi
 
         controller = new MackieController(logger, host, port);
         MapController(controller);
-        controllerTask = controller.Start(cancellationToken);
-
-        // FIXME: This is awful. It's needed at the moment because we don't know when the TCP client has connected.
-        // Separate out Connect from Start? Maybe have a separate Connected status?
-        await Task.Delay(500, cancellationToken);
+        await controller.Connect(cancellationToken);
+        controllerTask = controller.Start();
 
         // Initialization handshake
         await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
