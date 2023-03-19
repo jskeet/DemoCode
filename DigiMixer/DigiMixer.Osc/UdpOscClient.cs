@@ -11,35 +11,20 @@ namespace DigiMixer.Osc;
 internal sealed class UdpOscClient : IOscClient
 {
     private readonly ILogger logger;
-    private readonly UdpClient receivingClient;
-    private readonly UdpClient sendingClient;
+    private readonly UdpClient client;
     private readonly CancellationTokenSource cts;
 
     public event EventHandler<OscPacket>? PacketReceived;
 
     /// <summary>
-    /// Constructs a UDP client where the same port is used for both inbound and outbound communication.
-    /// </summary>
-    public UdpOscClient(ILogger logger, string host, int port)
-    {
-        this.logger = logger;
-        sendingClient = new UdpClient();
-        sendingClient.Connect(host, port);
-        receivingClient = sendingClient;
-        cts = new CancellationTokenSource();
-    }
-
-    /// <summary>
     /// Constructs a UDP client which connects to <paramref name="host"/> on
-    /// <paramref name="outboundPort"/>, but listens for messages on <paramref name="inboundPort"/>.
+    /// <paramref name="remotePort"/>, with an optionally specified local port.
     /// </summary>
-    public UdpOscClient(ILogger logger, string host, int outboundPort, int inboundPort)
+    public UdpOscClient(ILogger logger, string host, int remotePort, int? localPort = null)
     {
-        // TODO: Can we use a single UdpClient for this?
         this.logger = logger;
-        sendingClient = new UdpClient();
-        sendingClient.Connect(host, outboundPort);
-        receivingClient = new UdpClient(inboundPort);
+        client = localPort is null ? new UdpClient() : new UdpClient(localPort.Value);
+        client.Connect(host, remotePort);
         cts = new CancellationTokenSource();
     }
 
@@ -50,7 +35,7 @@ internal sealed class UdpOscClient : IOscClient
             logger.LogTrace("Sending OSC message: {message}", message.ToLogFormat());
         }
         var data = packet.ToByteArray();
-        return sendingClient.SendAsync(data, data.Length);
+        return client.SendAsync(data, data.Length);
     }
 
     public async Task StartReceiving()
@@ -60,7 +45,7 @@ internal sealed class UdpOscClient : IOscClient
             while (!cts.IsCancellationRequested)
             {
                 // TODO: Use a single buffer repeatedly.
-                var result = await receivingClient.ReceiveAsync(cts.Token);
+                var result = await client.ReceiveAsync(cts.Token);
                 var buffer = result.Buffer;
                 var packet = OscPacket.Read(buffer, 0, buffer.Length);
                 if (logger.IsEnabled(LogLevel.Trace) && packet is OscMessage message)
@@ -81,7 +66,6 @@ internal sealed class UdpOscClient : IOscClient
     public void Dispose()
     {
         cts.Cancel();
-        receivingClient.Dispose();
-        sendingClient.Dispose();
+        client.Dispose();
     }
 }

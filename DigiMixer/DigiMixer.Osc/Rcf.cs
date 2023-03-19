@@ -71,6 +71,9 @@ public static class Rcf
 
         public override async Task Connect(CancellationToken cancellationToken)
         {
+            // TODO: We've seen this part fail in the call to CheckConnection.
+            // It's unclear whether that's because we really need to send the next messages
+            // before we do a connection check. It seems to recover after a while, and that's confusing.
             await base.Connect(cancellationToken);
             await Client.SendAsync(new OscMessage(OptimizedMeterSendingAddress, "1"));
             await Client.SendAsync(new OscMessage(RequestPollAddress, 1f));
