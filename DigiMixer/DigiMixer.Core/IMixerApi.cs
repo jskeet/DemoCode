@@ -18,16 +18,16 @@ public interface IMixerApi : IDisposable
     /// <summary>
     /// Performs any initial connection required. This is separated from construction so that
     /// receivers may be registered before the initial connection is performed. Any previous connection
-    /// should be disconnected.
+    /// should be disconnected. This method should not return without definitely establishing a connection.
     /// </summary>
-    Task Connect();
+    Task Connect(CancellationToken cancellationToken);
 
     /// <summary>
     /// Detects the supported channel configuration of the mixer (including stereo links).
     /// Any already-registered receivers may receive additional information as part of this detection.
     /// </summary>
     /// <returns>A task representing the detected channel configuration.</returns>
-    Task<MixerChannelConfiguration> DetectConfiguration();
+    Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken);
 
     /// <summary>
     /// Requests all mixer data. Where channels are known, <paramref name="channelIds"/>
@@ -56,8 +56,19 @@ public interface IMixerApi : IDisposable
     Task SetMuted(ChannelId channelId, bool muted);
 
     /// <summary>
-    /// Sends any keep-alive messages. This should be called roughly once every 3 seconds.
-    /// This also acts as a health check: the returned task should fail if the mixer connection is broken.
+    /// Sends any keep-alive messages.
     /// </summary>
-    Task SendKeepAlive(CancellationToken cancellationToken);
+    Task SendKeepAlive();
+
+    /// <summary>
+    /// Checks the connection status, returning true for a healthy connection
+    /// or false if the mixer is unavailable. A faulted or cancelled task also represents
+    /// an unavailable connection.
+    /// </summary>
+    Task<bool> CheckConnection(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// The interval at which keep-alive messages should be sent.
+    /// </summary>
+    TimeSpan KeepAliveInterval { get; }
 }

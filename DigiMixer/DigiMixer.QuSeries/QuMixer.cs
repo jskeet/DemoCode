@@ -39,7 +39,7 @@ internal class QuMixerApi : IMixerApi
         AddPacketHandlers();
     }
 
-    public async Task Connect()
+    public async Task Connect(CancellationToken cancellationToken)
     {
         Dispose();
 
@@ -49,15 +49,21 @@ internal class QuMixerApi : IMixerApi
         meterClientTask = meterClient.Start();
         controlClient = new QuControlClient(logger, host, port);
         controlClient.PacketReceived += HandleControlPacket;
-        controlClientTask = controlClient.Start();
+        controlClientTask = controlClient.Start(cancellationToken);
 
-        await controlClient.SendAsync(QuPackets.InitialHandshakeRequest(meterClient.LocalUdpPort), cts.Token);
-        await controlClient.SendAsync(QuPackets.RequestControlPackets, cts.Token);
+        // FIXME: This is awful. It's needed at the moment because we don't know when the TCP client has connected.
+        // Separate out Connect from Start? Maybe have a separate Connected status?
+        await Task.Delay(500, cancellationToken);
+
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
+        await controlClient.SendAsync(QuPackets.InitialHandshakeRequest(meterClient.LocalUdpPort), linkedCts.Token);
+        await controlClient.SendAsync(QuPackets.RequestControlPackets, linkedCts.Token);
+        // TODO: Wait until we've had a reply?
     }
 
-    public async Task<MixerChannelConfiguration> DetectConfiguration()
+    public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
     {
-        var packet = await RequestData(QuPackets.RequestFullData, QuPackets.FullDataType, TimeSpan.FromSeconds(2));
+        var packet = await RequestData(QuPackets.RequestFullData, QuPackets.FullDataType, cancellationToken);
         var data = new FullDataPacket(packet);
 
         var inputs = Enumerable.Range(1, data.InputCount).Select(i => ChannelId.Input(i));
@@ -85,25 +91,29 @@ internal class QuMixerApi : IMixerApi
         await SendPacket(QuPackets.RequestFullData);
     }
 
-    public async Task SendKeepAlive(CancellationToken cancellationToken)
+    public async Task<bool> CheckConnection(CancellationToken cancellationToken)
     {
         // Propagate any existing client failures.
         if (controlClientTask?.IsFaulted == true)
         {
-            controlClientTask.Wait();
+            return false;
         }
         if (meterClientTask?.IsFaulted == true)
         {
-            meterClientTask.Wait();
+            return false;
         }
+        await RequestData(QuPackets.RequestVersionInformation, QuPackets.VersionInformationType, cancellationToken);
+        return true;
+    }
 
-        // TODO: Fail if we haven't seen any data recently
+    // TODO: Check this.
+    public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
 
-        // TODO: If we don't have a meter client, should we just fail?
+    public async Task SendKeepAlive()
+    {
         if (meterClient is not null && cts is not null && mixerUdpPort is int port)
         {
-            using var chained = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
-            await meterClient.SendKeepAliveAsync(port, chained.Token);
+            await meterClient.SendKeepAliveAsync(port, cts.Token);
         }
     }
 
@@ -132,14 +142,14 @@ internal class QuMixerApi : IMixerApi
         await SendPacket(packet);
     }
 
-    private async Task<QuGeneralPacket> RequestData(QuControlPacket requestPacket, byte expectedResponseType, TimeSpan timeout)
+    private async Task<QuGeneralPacket> RequestData(QuControlPacket requestPacket, byte expectedResponseType, CancellationToken cancellationToken)
     {
         if (controlClient is null || cts is null)
         {
             throw new InvalidOperationException("Not connected");
         }
         // TODO: thread safety...
-        var listener = new PacketListener(packet => packet is QuGeneralPacket qgp && qgp.Type == expectedResponseType, timeout);
+        var listener = new PacketListener(packet => packet is QuGeneralPacket qgp && qgp.Type == expectedResponseType, cancellationToken);
         temporaryListeners.AddLast(listener);
         await controlClient.SendAsync(requestPacket, cts.Token);
         return (QuGeneralPacket) await listener.Task;
@@ -265,7 +275,7 @@ internal class QuMixerApi : IMixerApi
 
     private void HandleValuePacket(QuValuePacket packet)
     {
-        // logger.LogInformation("Received value packet: Client: {client}; Section: {section}; Address:{address}; Value:{value}", packet.ClientId, packet.Section, $"0x{packet.Address:x8}", packet.RawValue);
+        // logger.LogInformation("Received value packet: Client: {client}; Section: {section}; Address: {address}; Value:{value}", packet.ClientId, packet.Section, $"0x{packet.Address:x8}", packet.RawValue);
         
         // Fader and mute
         if (packet.Section == 4 && (packet.Address & 0xff_00_00_00) == 0x07_00_00_00)
@@ -339,17 +349,15 @@ internal class QuMixerApi : IMixerApi
     private class PacketListener : IDisposable
     {
         private readonly TaskCompletionSource<QuControlPacket> tcs;
-        private readonly CancellationTokenSource cts;
         private readonly Func<QuControlPacket, bool> predicate;
         private readonly CancellationTokenRegistration ctr;
 
         internal Task<QuControlPacket> Task => tcs.Task;
 
-        internal PacketListener(Func<QuControlPacket, bool> predicate, TimeSpan timeout)
+        internal PacketListener(Func<QuControlPacket, bool> predicate, CancellationToken cancellationToken)
         {
             tcs = new TaskCompletionSource<QuControlPacket>();
-            cts = new CancellationTokenSource(timeout);
-            ctr = cts.Token.Register(() => tcs.TrySetCanceled());
+            ctr = cancellationToken.Register(() => tcs.TrySetCanceled());
             this.predicate = predicate;
         }
 
@@ -371,7 +379,6 @@ internal class QuMixerApi : IMixerApi
         public void Dispose()
         {
             ctr.Unregister();
-            cts.Dispose();
         }
     }
 }

@@ -34,10 +34,9 @@ public static class X32
         protected override string InputChannelLevelsMeter { get; } = "/meters/1";
         protected override string OutputChannelLevelsMeter { get; } = "/meters/2";
 
-        public override async Task<MixerChannelConfiguration> DetectConfiguration()
+        public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
-            var result = await InfoReceiver.RequestAndWait(Client, token,
+            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken,
                 InputChannelLinkAddresses.Concat(BusChannelLinkAddresses).ToArray());
             if (result is null)
             {

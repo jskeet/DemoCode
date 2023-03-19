@@ -5,5 +5,5 @@ namespace DigiMixer;
 public interface IFader
 {
     FaderLevel FaderLevel { get; }
-    Task SetFaderLevel(FaderLevel level);
+    void SetFaderLevel(FaderLevel level);
 }

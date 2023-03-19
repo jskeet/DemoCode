@@ -37,6 +37,7 @@ public static class Rcf
 
         private MixerInfo currentInfo = new MixerInfo(null, null, null);
 
+        // TODO: We're only using the address...
         private static readonly OscMessage[] RequestAllInfoMessages = Enumerable.Range(1, 13)
             .Append(22)
             .Select(i => new OscMessage($"/{i:00}/99/up_{i:000}", 0))
@@ -68,19 +69,17 @@ public static class Rcf
             Receiver.ReceiveChannelName(ChannelId.MainOutputLeft, "Main");
         }
 
-        public override async Task Connect()
+        public override async Task Connect(CancellationToken cancellationToken)
         {
-            await base.Connect();
+            await base.Connect(cancellationToken);
             await Client.SendAsync(new OscMessage(OptimizedMeterSendingAddress, "1"));
             await Client.SendAsync(new OscMessage(RequestPollAddress, 1f));
         }
 
-        public override async Task<MixerChannelConfiguration> DetectConfiguration()
+        public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
-            // TODO: See how long this actually takes...
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
             var messages = new[] { new OscMessage(StereoLinkAddress, " ") };
-            var result = await InfoReceiver.RequestAndWait(Client, token, messages, StereoLinkAddress);
+            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken, messages, StereoLinkAddress);
             if (result is null)
             {
                 throw new InvalidOperationException("Detection timed out");
@@ -116,12 +115,18 @@ public static class Rcf
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
         }
 
-        public override async Task SendKeepAlive(CancellationToken cancellationToken)
-        {
-            // TODO: Observe the cancellation token, and implement a health check: basically keep track of the last time
-            // we received anything, and fail if it's too long ago.
+        // TODO: Check this.
+        public override TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
 
+        public override async Task SendKeepAlive()
+        {
             await Client.SendAsync(new OscMessage(RequestPollAddress, 1f));
+        }
+
+        public override async Task<bool> CheckConnection(CancellationToken cancellationToken)
+        {
+            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken, new[] { new OscMessage(FirmwareAddress, 0) }, FirmwareAddress);
+            return result is not null;
         }
 
         protected override void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map)

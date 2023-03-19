@@ -161,7 +161,7 @@ public sealed class MackieController : IDisposable
         cts?.Cancel();
     }
 
-    public async Task Start()
+    public async Task Start(CancellationToken initialCancellationToken)
     {
         CheckState(expectedRunning: false);
         
@@ -169,8 +169,7 @@ public sealed class MackieController : IDisposable
         tcpClient = new TcpClient { NoDelay = true };
         try
         {
-            // TODO: Use ConnectAsync instead? We don't really want to hand control back to the caller until this has completed though...
-            tcpClient.Connect(host, port);
+            await tcpClient.ConnectAsync(host, port, initialCancellationToken);
 
             var stream = tcpClient.GetStream();
             // TODO: Is this enough? In theory I guess it could be 256K...

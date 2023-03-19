@@ -14,7 +14,7 @@ var logger = factory.CreateLogger("Scratchpad");
 Console.WriteLine("Connecting...");
 var mixer = new UiHttpMixerApi(logger, "192.168.1.57", 80);
 //mixer.RegisterReceiver(new ConsoleReceiver());
-await mixer.Connect();
+await mixer.Connect(default);
 await Task.Delay(3000);
 logger.LogInformation("About to request all info");
 await mixer.RequestAllData(null!);

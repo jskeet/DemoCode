@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Text;
 
 namespace DigiMixer.UiHttp;
 internal sealed class UiStreamClient : IUiClient
@@ -29,6 +28,7 @@ internal sealed class UiStreamClient : IUiClient
             logger.LogTrace("Sending message: {message}", message);
         }
         int messageSize = message.WriteTo(writeBuffer);
+        // TODO: Can we handle overlapping calls?
         await stream.WriteAsync(writeBuffer, 0, messageSize, cancellationToken);
     }
 

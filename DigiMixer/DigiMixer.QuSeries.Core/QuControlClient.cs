@@ -46,7 +46,7 @@ public sealed class QuControlClient : IDisposable
         }
     }
 
-    public async Task Start()
+    public async Task Start(CancellationToken initialCancellationToken)
     {
         cts = new CancellationTokenSource();
         tcpClient = new TcpClient { NoDelay = true };
@@ -54,7 +54,7 @@ public sealed class QuControlClient : IDisposable
         try
         {
             // TODO: Use ConnectAsync instead? We don't really want to hand control back to the caller until this has completed though...
-            tcpClient.Connect(host, port);
+            await tcpClient.ConnectAsync(host, port, initialCancellationToken);
 
             var stream = tcpClient.GetStream();
             byte[] buffer = new byte[32768];

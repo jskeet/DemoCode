@@ -39,10 +39,9 @@ public static class XAir
         protected override string InputChannelLevelsMeter { get; } = "/meters/1";
         protected override string OutputChannelLevelsMeter { get; } = "/meters/5";
 
-        public override async Task<MixerChannelConfiguration> DetectConfiguration()
+        public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
-            var result = await InfoReceiver.RequestAndWait(Client, token,
+            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken,
                 XInfoAddress,
                 InputChannelLinkAddress,
                 BusChannelLinkAddress);

@@ -53,7 +53,7 @@ public class ChannelViewModelBase<T> : ViewModelBase<T> where T : ChannelBase
     public bool Muted
     {
         get => Model.Muted;
-        set => Model.SetMuted(value).Ignore();
+        set => Model.SetMuted(value);
     }
 
     protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)

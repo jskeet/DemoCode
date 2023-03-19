@@ -20,12 +20,12 @@ public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
         internal set => this.SetProperty(PropertyChangedHandler, ref faderLevel, value);
     }
 
-    public async Task SetFaderLevel(FaderLevel level)
+    public void SetFaderLevel(FaderLevel level)
     {
-        await Mixer.Api.SetFaderLevel(LeftOrMonoChannelId, level);
+        Mixer.ApiWrapper.SetFaderLevel(LeftOrMonoChannelId, level);
         if ((StereoFlags & StereoFlags.SplitMutes) != 0 && RightChannelId is ChannelId right)
         {
-            await Mixer.Api.SetFaderLevel(right, level);
+            Mixer.ApiWrapper.SetFaderLevel(right, level);
         }
     }
 }

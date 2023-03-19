@@ -13,9 +13,9 @@ internal class DumpMeters
         // This won't compile, as I removed MeterHandler after figuring out the meters.
         // It's easy to put back if we need this code again though.
         //api.MeterHandler += LogMeter;
-        await api.Connect();
+        await api.Connect(default);
         await Task.Delay(1000);
-        await api.SendKeepAlive(default);
+        await api.SendKeepAlive();
         await Task.Delay(1000);
         api.Dispose();
     }

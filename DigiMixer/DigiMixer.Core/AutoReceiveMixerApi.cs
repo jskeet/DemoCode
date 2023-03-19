@@ -17,10 +17,16 @@ public class AutoReceiveMixerApi : IMixerApi
         this.target = target;
     }
 
-    public Task Connect() => target.Connect();
+    public TimeSpan KeepAliveInterval => target.KeepAliveInterval;
 
-    public Task<MixerChannelConfiguration> DetectConfiguration() =>
-        target.DetectConfiguration();
+    public Task<bool> CheckConnection(CancellationToken cancellationToken) =>
+        target.CheckConnection(cancellationToken);
+
+    public Task Connect(CancellationToken cancellationToken) =>
+        target.Connect(cancellationToken);
+
+    public Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken) =>
+        target.DetectConfiguration(cancellationToken);
 
     public void Dispose() => target.Dispose();
 
@@ -33,7 +39,7 @@ public class AutoReceiveMixerApi : IMixerApi
     public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) =>
         target.RequestAllData(channelIds);
 
-    public Task SendKeepAlive(CancellationToken cancellationToken) => target.SendKeepAlive(cancellationToken);
+    public Task SendKeepAlive() => target.SendKeepAlive();
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {

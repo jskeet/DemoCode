@@ -3,6 +3,8 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System.Reflection.PortableExecutable;
+using System.Threading;
 
 namespace DigiMixer.UCNet;
 
@@ -65,19 +67,19 @@ public static class StudioLive
                 ToFaderLevel(BitConverter.UInt32BitsToSingle(message.Value ?? 0));
         }
 
-        public async Task Connect()
+        public async Task Connect(CancellationToken cancellationToken)
         {
             Dispose();
 
             cts = new CancellationTokenSource();
             client = new UCNetClient(logger, host, port);
             client.MessageReceived += HandleMessage;
-            clientTask = client.Start();
+            clientTask = client.Start(default);
             meterListener = new UCNetMeterListener(logger);
             meterListener.MessageReceived += (sender, message) => HandleMeter16Message(message);
             meterListenerTask = meterListener.Start();
 
-            await SendMessage(new UdpMetersMessage(meterListener.Port));
+            await SendMessage(new UdpMetersMessage(meterListener.Port), cancellationToken);
         }
 
         private void HandleMessage(object? sender, UCNetMessage message)
@@ -273,7 +275,7 @@ public static class StudioLive
             }
         }
 
-        public async Task<MixerChannelConfiguration> DetectConfiguration()
+        public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
             var localClient = client;
             var localCts = cts;
@@ -282,12 +284,14 @@ public static class StudioLive
                 throw new InvalidOperationException("Not connected");
             }
 
+            using var methodCts = CancellationTokenSource.CreateLinkedTokenSource(localCts.Token, cancellationToken);
+
             TaskCompletionSource<MixerChannelConfiguration> tcs = new();
             try
             {
                 localClient.MessageReceived += LocalHandleMessage;
-                await localClient.Send(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }), localCts.Token);
-                return await tcs.Task.WaitAsync(TimeSpan.FromSeconds(100), localCts.Token);
+                await localClient.Send(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }), methodCts.Token);
+                return await tcs.Task.WaitAsync(methodCts.Token);
             }
             finally
             {
@@ -316,6 +320,7 @@ public static class StudioLive
                 var stereoPairs = CreateStereoPairs(line, ChannelId.Input)
                     .Concat(CreateStereoPairs(aux, ChannelId.Output))
                     .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
+                logger.LogInformation("Converted JSON");
                 return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
                 IEnumerable<StereoPair> CreateStereoPairs(JObject parent, Func<int, ChannelId> factory)
@@ -340,7 +345,29 @@ public static class StudioLive
         public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) =>
             SendMessage(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }));
 
-        public Task SendKeepAlive(CancellationToken cancellationToken) => SendMessage(new KeepAliveMessage(), cancellationToken);
+        // TODO: Check this.
+        public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
+
+        public Task SendKeepAlive() => SendMessage(new KeepAliveMessage());
+
+        public async Task<bool> CheckConnection(CancellationToken cancellationToken)
+        {
+            // TODO: Use whether or not we've received recent meter packets?
+            // Propagate any existing client failures.
+            if (meterListenerTask?.IsFaulted == true || meterListenerTask?.IsCanceled == true)
+            {
+                return false;
+            }
+            if (clientTask?.IsFaulted == true || clientTask?.IsCanceled == true)
+            {
+                return false;
+            }
+
+            // And send a keepalive message.
+            await SendMessage(new KeepAliveMessage(), cancellationToken);
+
+            return true;
+        }
 
         public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
         {

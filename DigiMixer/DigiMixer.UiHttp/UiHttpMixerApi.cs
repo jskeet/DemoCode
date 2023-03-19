@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 
 namespace DigiMixer.UiHttp;
 
@@ -48,7 +50,7 @@ public class UiHttpMixerApi : IMixerApi
     public void RegisterReceiver(IMixerReceiver receiver) =>
         this.receiver.RegisterReceiver(receiver);
 
-    public async Task Connect()
+    public async Task Connect(CancellationToken cancellationToken)
     {
         sendingClient.Dispose();
         receivingClient.Dispose();
@@ -56,14 +58,15 @@ public class UiHttpMixerApi : IMixerApi
         // Create two clients: one to send all changes to, and the other to
         // receive all information from. That way we have our own changes reflected back to us,
         // just like with other protocols.
-        sendingClient = await CreateStreamClient();
-        receivingClient = await CreateStreamClient();
+        sendingClient = await CreateStreamClient(cancellationToken);
+        receivingClient = await CreateStreamClient(cancellationToken);
         receivingClient.MessageReceived += ReceiveMessage;
         sendingClientReadTask = sendingClient.StartReading();
         receivingClientReadTask = receivingClient.StartReading();
+        await CheckConnection(cancellationToken);
     }
     
-    public async Task<MixerChannelConfiguration> DetectConfiguration()
+    public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
     {
         var channels = new ConcurrentDictionary<ChannelId, bool>();
 
@@ -71,10 +74,10 @@ public class UiHttpMixerApi : IMixerApi
         try
         {
             sendingClient.MessageReceived += handler;
-            await sendingClient.Send(UiMessage.InitMessage, default);
+            await sendingClient.Send(UiMessage.InitMessage, cancellationToken);
             // Normally we get all the information in 100ms, but let's allow a bit longer.
             // Unfortunately the lines are unordered, so we can't really spot the end.
-            await Task.Delay(TimeSpan.FromMilliseconds(500));
+            await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
         }
         finally
         {
@@ -110,10 +113,10 @@ public class UiHttpMixerApi : IMixerApi
         }
     }
 
-    private async Task<IUiClient> CreateStreamClient()
+    private async Task<IUiClient> CreateStreamClient(CancellationToken initialCancellationToken)
     {
         var tcpClient = new TcpClient() { NoDelay = true };
-        await tcpClient.ConnectAsync(host, port);
+        await tcpClient.ConnectAsync(host, port, initialCancellationToken);
         var stream = tcpClient.GetStream();
         byte[] preambleBytes = Encoding.ASCII.GetBytes(HttpPreamble);
         stream.Write(preambleBytes, 0, preambleBytes.Length);
@@ -161,25 +164,47 @@ public class UiHttpMixerApi : IMixerApi
         // Note: this call *does* need to send a message to receivingClient
         if (receivingClient is not null)
         {
-            await receivingClient.Send(UiMessage.InitMessage, default);
+            await receivingClient.Send(UiMessage.InitMessage);
         }
     }
 
-    public async Task SendKeepAlive(CancellationToken cancellationToken)
+    public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
+
+    public Task SendKeepAlive() => SendKeepAlive(default);
+
+    private async Task SendKeepAlive(CancellationToken cancellationToken)
     {
         // Note: this call *does* need to send a message to receivingClient
         await sendingClient.Send(UiMessage.AliveMessage, cancellationToken);
         await receivingClient.Send(UiMessage.AliveMessage, cancellationToken);
     }
 
+    public async Task<bool> CheckConnection(CancellationToken cancellationToken)
+    {
+        // Propagate any existing client failures.
+        if (sendingClientReadTask?.IsFaulted == true)
+        {
+            return false;
+        }
+        if (receivingClientReadTask?.IsFaulted == true)
+        {
+            return false;
+        }
+
+        // TODO: Fail if we haven't seen any data recently?
+        await SendKeepAlive(cancellationToken);
+
+        return true;
+    }
+
     public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
-        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level)), default) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(inputId, outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
     public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
-        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level)), default) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetFaderAddress(outputId), FromFaderLevel(level))) ?? Task.CompletedTask;
 
     public Task SetMuted(ChannelId inputId, bool muted) =>
-        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted), default) ?? Task.CompletedTask;
+        sendingClient.Send(UiMessage.CreateSetMessage(UiAddresses.GetMuteAddress(inputId), muted)) ?? Task.CompletedTask;
 
     private void ReceiveMessage(object? sender, UiMessage message)
     {

@@ -35,36 +35,43 @@ public class MackieMixerApi : IMixerApi
         channelNameActions = PopulateChannelNameActions();
     }
 
-    public async Task Connect()
+    public async Task Connect(CancellationToken cancellationToken)
     {
         Dispose();
 
         controller = new MackieController(logger, host, port);
         MapController(controller);
-        controllerTask = controller.Start();
+        controllerTask = controller.Start(cancellationToken);
+
+        // FIXME: This is awful. It's needed at the moment because we don't know when the TCP client has connected.
+        // Separate out Connect from Start? Maybe have a separate Connected status?
+        await Task.Delay(500, cancellationToken);
 
         // Initialization handshake
-        await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty);
+        await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
         // Both of these are (I think) needed to get large channel value packets
-        await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8]);
-        await controller.SendRequest((MackieCommand) 3, MackiePacketBody.Empty);
-        await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 });
+        await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8], cancellationToken);
+        await controller.SendRequest((MackieCommand) 3, MackiePacketBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
         var inputMeters = Enumerable.Range(1, 18).Select(input => (input - 1) * 7 + 0x22);
         var mainMeters = new int[] { 0xbe, 0xbf };
         var auxMeters = Enumerable.Range(1, 6).Select(aux => (aux - 1) * 4 + 0xc6);
         var meterLayout = inputMeters.Concat(mainMeters).Concat(auxMeters).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
         //var meterLayout = Enumerable.Range(1, 221).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
-        await controller.SendRequest(MackieCommand.MeterLayout, new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray());
-        await controller.SendRequest(MackieCommand.BroadcastControl, new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 });
+        await controller.SendRequest(MackieCommand.MeterLayout,
+            new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray(),
+            cancellationToken);
+        await controller.SendRequest(MackieCommand.BroadcastControl,
+            new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 },
+            cancellationToken);
     }
 
-    public async Task<MixerChannelConfiguration> DetectConfiguration()
+    public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
     {
         var inputs = Enumerable.Range(1, 18).Select(ChannelId.Input);
         var outputs = new[] { ChannelId.MainOutputLeft, ChannelId.MainOutputRight }.Concat(Enumerable.Range(1, 6).Select(ChannelId.Output));
 
-        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token;
         var pendingTask = PendingChannelDataTask.Start(pendingChannelDataTasks, cancellationToken);
         await RequestChannelData(cancellationToken).ConfigureAwait(false);
         var pendingData = await pendingTask.ConfigureAwait(false);
@@ -88,9 +95,18 @@ public class MackieMixerApi : IMixerApi
     private async Task RequestChannelData(CancellationToken cancellationToken = default) =>
         await SendRequest(MackieCommand.ChannelInfoControl, new MackiePacketBody(new byte[] { 0, 0, 0, 6 }), cancellationToken).ConfigureAwait(false);
 
-    // Note: this acts as a health-check implicitly.
-    public async Task SendKeepAlive(CancellationToken cancellationToken) =>
-        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken).ConfigureAwait(false);
+    // TODO: Check this.
+    public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
+
+    public async Task SendKeepAlive() =>
+        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty).ConfigureAwait(false);
+
+    public async Task<bool> CheckConnection(CancellationToken cancellationToken)
+    {
+        // TODO: Check if there's anything else better for this.
+        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
+        return true;
+    }
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {

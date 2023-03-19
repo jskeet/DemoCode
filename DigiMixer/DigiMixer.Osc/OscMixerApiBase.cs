@@ -6,6 +6,7 @@ using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using OscCore;
+using System.Threading;
 
 namespace DigiMixer.Osc;
 
@@ -38,18 +39,24 @@ internal abstract class OscMixerApiBase : IMixerApi
         receiverActionsByAddress = BuildReceiverMap();
     }
 
-    public virtual Task Connect()
+    public virtual async Task Connect(CancellationToken cancellationToken)
     {
         Client.Dispose();
         var newClient = clientProvider(Logger);
         newClient.PacketReceived += ReceivePacket;
         receivingTask = newClient.StartReceiving();
         Client = newClient;
-        return Task.CompletedTask;
+        // Only return when we're definitely connected.
+        if (!await CheckConnection(cancellationToken))
+        {
+            throw new InvalidOperationException("Unable to connect successfully.");
+        }
     }
 
-    public abstract Task<MixerChannelConfiguration> DetectConfiguration();
-    public abstract Task SendKeepAlive(CancellationToken cancellationToken);
+    public abstract Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken);
+    public abstract Task SendKeepAlive();
+    public abstract Task<bool> CheckConnection(CancellationToken cancellationToken);
+    public abstract TimeSpan KeepAliveInterval { get; }
     protected abstract string GetFaderAddress(ChannelId inputId, ChannelId outputId);
     protected abstract string GetFaderAddress(ChannelId outputId);
     protected abstract string GetMuteAddress(ChannelId channelId);

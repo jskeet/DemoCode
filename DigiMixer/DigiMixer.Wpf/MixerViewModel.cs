@@ -9,6 +9,7 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
 {
     public IReadOnlyList<InputChannelViewModel> InputChannels { get; }
     public IReadOnlyList<OutputChannelViewModel> OutputChannels { get; }
+    public string ConnectionStatus => Model.Connected ? "Connected" : "Disconnected";
     private DispatcherTimer meterPeakUpdater;
 
     public MixerViewModel(Mixer model) : base(model)
@@ -49,6 +50,10 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
         if (e.PropertyName == nameof(Model.MixerInfo))
         {
             RaisePropertyChanged(nameof(MixerInfo));
+        }
+        if (e.PropertyName == nameof(Model.Connected))
+        {
+            RaisePropertyChanged(nameof(ConnectionStatus));
         }
     }
 

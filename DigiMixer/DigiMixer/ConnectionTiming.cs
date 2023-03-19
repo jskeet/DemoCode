@@ -14,10 +14,19 @@ public record ConnectionTiming
     public TimeSpan KeepAliveInterval { get; init; } = TimeSpan.FromSeconds(3);
 
     /// <summary>
-    /// How long the keep-alive is permitted to take before being cancelled.
-    /// Defaults to 2 seconds.
+    /// How long to wait while making the initial connection. Defaults to 3 seconds.
     /// </summary>
-    public TimeSpan KeepAliveTimeout { get; init; } = TimeSpan.FromSeconds(2);
+    public TimeSpan ConnectionTimeout { get; init; } = TimeSpan.FromSeconds(3);
+
+    /// <summary>
+    /// Interval between connection check calls. Defaults to 1 second.
+    /// </summary>
+    public TimeSpan ConnectionCheckInterval { get; init; } = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// How long to wait for a connection check to complete. Defaults to 750ms.
+    /// </summary>
+    public TimeSpan ConnectionCheckTimeout { get; init; } = TimeSpan.FromMilliseconds(750);
 
     /// <summary>
     /// How long to wait between attempts to reconnect after a failure

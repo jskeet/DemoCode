@@ -99,12 +99,12 @@ public abstract class ChannelBase : INotifyPropertyChanged
         internal set => this.SetProperty(PropertyChanged, ref muted, value);
     }
 
-    public async Task SetMuted(bool muted)
+    public void SetMuted(bool muted)
     {
-        await Mixer.Api.SetMuted(LeftOrMonoChannelId, muted);
+        Mixer.ApiWrapper.SetMuted(LeftOrMonoChannelId, muted);
         if (ChannelIdPair.RightMuteId is ChannelId right)
         {
-            await Mixer.Api.SetMuted(right, muted);
+            Mixer.ApiWrapper.SetMuted(right, muted);
         }
     }
 }
