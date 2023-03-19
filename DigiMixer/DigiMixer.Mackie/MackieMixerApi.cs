@@ -84,9 +84,50 @@ public class MackieMixerApi : IMixerApi
 
     public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
-        //var firmwareInfo = await SendRequest(MackieCommand.FirmwareInfo, MackiePacketBody.Empty);
-        //var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 3 });
+        var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackiePacketBody.Empty);
+        string? firmwareVersion = GetMixerFirmwareVersion(versionInfo);
+
+        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 0x12 }));
+        string modelName = GetModelName(modelInfo);
+
+        var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 3 }));
+        string mixerName = GetMixerName(generalInfo);
+
+        receiver?.ReceiveMixerInfo(new MixerInfo(modelName, mixerName, firmwareVersion));
+
         await RequestChannelData().ConfigureAwait(false);
+
+        string? GetMixerFirmwareVersion(MackiePacket packet)
+        {
+            var body = packet.Body;
+
+            string? firmwareVersion = null;
+            // Firmware packets have an initial chunk with the XML and Mandolin version together, then
+            // key/value pairs of chunks. The mixer firmware version has a key of 2.
+            for (int chunk = 1; chunk < body.ChunkCount - 1; chunk += 2)
+            {
+                uint key = body.GetUInt32(chunk);
+                if (key == 2)
+                {
+                    uint value = body.GetUInt32(chunk + 1);
+                    firmwareVersion = "0x" + value.ToString("x8");
+                }
+            }
+            return firmwareVersion;
+        }
+
+        string GetModelName(MackiePacket packet)
+        {
+            var data = packet.Body.InSequentialOrder().Data;
+            // The use of 16 here is somewhat arbitrary... there's lots we don't understand in this packet.
+            return Encoding.UTF8.GetString(data.Slice(8, 16)).TrimEnd('\0');
+        }
+
+        string GetMixerName(MackiePacket packet)
+        {
+            var data = packet.Body.InSequentialOrder().Data;
+            return Encoding.UTF8.GetString(data.Slice(4)).TrimEnd('\0');
+        }
     }
 
     private async Task RequestChannelData(CancellationToken cancellationToken = default) =>
