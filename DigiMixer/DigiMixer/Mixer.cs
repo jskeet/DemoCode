@@ -12,13 +12,6 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
     private readonly ConnectionTiming connectionTiming;
     private readonly ILogger logger;
 
-    private readonly Dictionary<ChannelId, InputChannel> leftOrMonoInputChannelMap;
-    private readonly Dictionary<ChannelId, InputChannel> rightInputChannelMap;
-    private readonly Dictionary<ChannelId, OutputChannel> leftOrMonoOutputChannelMap;
-    private readonly Dictionary<ChannelId, OutputChannel> rightOutputChannelMap;
-    private readonly Dictionary<ChannelId, ChannelBase> allChannelMap;
-    private readonly Dictionary<(ChannelId, ChannelId), InputOutputMapping> mappings;
-
     public MixerChannelConfiguration ChannelConfiguration { get; }
     public IReadOnlyList<InputChannel> InputChannels { get; }
     public IReadOnlyList<OutputChannel> OutputChannels { get; }
@@ -52,14 +45,9 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
         this.logger = logger;
         this.connectionTiming = connectionTiming;
         api = initialApi;
+
         ChannelConfiguration = config;
         Connected = true;
-        this.apiFactory = CreateAndSubscribeToApi;
-
-        // TODO: Construct a single MixerReceiver, which can then work out all the mappings
-        // and keep them privately.
-        initialApi.RegisterReceiver(new MixerReceiver(this));
-
         OutputChannels = ChannelConfiguration.GetPossiblyPairedOutputs()
             .Select(output => new OutputChannel(this, output))
             .ToList()
@@ -69,18 +57,10 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
             .ToList()
             .AsReadOnly();
 
-        leftOrMonoInputChannelMap = InputChannels.ToDictionary(ch => ch.LeftOrMonoChannelId);
-        leftOrMonoOutputChannelMap = OutputChannels.ToDictionary(ch => ch.LeftOrMonoChannelId);
-        rightInputChannelMap = InputChannels.Where(ch => ch.IsStereo).ToDictionary(ch => ch.RightChannelId!.Value);
-        rightOutputChannelMap = OutputChannels.Where(ch => ch.IsStereo).ToDictionary(ch => ch.RightChannelId!.Value);
-        allChannelMap = leftOrMonoInputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value))
-            .Concat(leftOrMonoOutputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value)))
-            .Concat(rightInputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value)))
-            .Concat(rightOutputChannelMap.Select(pair => KeyValuePair.Create(pair.Key, (ChannelBase) pair.Value)))
-            .ToDictionary(pair => pair.Key, pair => pair.Value);
-        // We assume that even for split faders, we're happy to only *report* via a single input/output channel pair.
-        // (We will ignore any information about other combinations.)
-        mappings = InputChannels.SelectMany(ic => ic.OutputMappings).ToDictionary(om => (om.InputChannel.LeftOrMonoChannelId, om.OutputChannel.LeftOrMonoChannelId));
+        var receiver = new MixerReceiver(this);
+        initialApi.RegisterReceiver(receiver);
+
+        this.apiFactory = CreateAndSubscribeToApi;
         LogErrors(StartKeepAliveTask());
         LogErrors(StartConnectionCheckTask());
 
@@ -89,7 +69,7 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
             var api = apiFactory();
             using var cts = new CancellationTokenSource(connectionTiming.ConnectionTimeout);
             await api.Connect(cts.Token);
-            api.RegisterReceiver(new MixerReceiver(this));
+            api.RegisterReceiver(receiver);
             // TODO: Should this have a cancellation token, as it's part of connection?
             await api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
             return api;
@@ -119,6 +99,18 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
             }
         }
     }
+
+    internal void SetFaderLevel(ChannelId outputId, FaderLevel level) =>
+        LogErrors(api.SetFaderLevel(outputId, level));
+
+    internal void SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
+        LogErrors(api.SetFaderLevel(inputId, outputId, level));
+
+    internal void SetMuted(ChannelId channelId, bool muted) =>
+        LogErrors(api.SetMuted(channelId, muted));
+
+    internal void RequestAllData(ReadOnlyCollection<ChannelId> channels) =>
+        LogErrors(api.RequestAllData(channels));
 
     private async Task StartKeepAliveTask()
     {
@@ -196,18 +188,6 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
             }
         }
     }
-
-    internal void SetFaderLevel(ChannelId outputId, FaderLevel level) =>
-        LogErrors(api.SetFaderLevel(outputId, level));
-
-    internal void SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
-        LogErrors(api.SetFaderLevel(inputId, outputId, level));
-
-    internal void SetMuted(ChannelId channelId, bool muted) =>
-        LogErrors(api.SetMuted(channelId, muted));
-
-    internal void RequestAllData(ReadOnlyCollection<ChannelId> channels) =>
-        LogErrors(api.RequestAllData(channels));
 
     private void LogErrors(Task task)
     {
