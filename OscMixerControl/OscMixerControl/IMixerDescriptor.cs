@@ -5,7 +5,7 @@
 namespace OscMixerControl;
 
 /// <summary>
-/// Abstracts different OSC addresses for differnet models of mixer. This is
+/// Abstracts different OSC addresses for different models of mixer. This is
 /// a very incomplete abstraction, but allows for X32 and XAir mixers to be handled
 /// with the same code.
 /// </summary>
