@@ -7,7 +7,7 @@ namespace DigiMixer;
 /// An output channel which receives information from an <see cref="IMixerApi"/>,
 /// and can also transmit changes to it (e.g. for muting).
 /// </summary>
-public class OutputChannel : ChannelBase, IFader, INotifyPropertyChanged
+public class OutputChannel : ChannelBase, IFader
 {
     public OutputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair) : base(mixer, channelIdPair)
     {

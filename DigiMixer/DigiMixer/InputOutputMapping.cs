@@ -6,7 +6,7 @@ namespace DigiMixer;
 /// <summary>
 /// A mapping for an input to an output, with a fader level.
 /// </summary>
-public class InputOutputMapping : IFader, INotifyPropertyChanged
+public class InputOutputMapping : IFader
 {
     private readonly Mixer mixer;
 
