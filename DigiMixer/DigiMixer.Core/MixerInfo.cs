@@ -13,4 +13,6 @@ public sealed class MixerInfo
         Name = name;
         Version = version;
     }
+
+    public override string ToString() => $"{Name} ({Model}: {Version})";
 }
