@@ -135,5 +135,20 @@ namespace XTouchMini.Model
             };
             SendMidiMessage(0xb0, (byte) (0x2f + knob), (byte) midiValue);
         }
+
+        /// <summary>
+        /// Resets all the buttons and knob ring lights to off.
+        /// </summary>
+        public void Reset()
+        {
+            for (int i = 1; i <= 8; i++)
+            {
+                SetKnobRingState(i, KnobRingStyle.Fan, 0);
+            }
+            for (int i = 1; i <= 16; i++)
+            {
+                SetButtonLedState(i, LedState.Off);
+            }
+        }
     }
 }
