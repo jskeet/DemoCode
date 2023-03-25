@@ -55,7 +55,11 @@ public abstract class TcpControllerBase : IDisposable
             throw new InvalidOperationException($"Invalid state for {nameof(Start)}: {ControllerStatus}");
         }
         ControllerStatus = ControllerStatus.Running;
-        StartAsync().ContinueWith(t => Logger.LogCritical(t.Exception, "Unhandled error in TcpControllerBase"), TaskContinuationOptions.NotOnRanToCompletion);
+        StartAsync().ContinueWith(t =>
+        {
+            ControllerStatus = ControllerStatus.Faulted;
+            Logger.LogCritical(t.Exception, "Unhandled error in TcpControllerBase");
+        }, TaskContinuationOptions.NotOnRanToCompletion);
     }
 
     private async Task StartAsync()
