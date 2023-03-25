@@ -57,7 +57,18 @@ public static class UiAddresses
         {
             return null;
         }
-        Func<int, ChannelId> channelIdFactory = address[0] == 'a' ? ChannelId.Output : ChannelId.Input;
+        Func<int, ChannelId>? channelIdFactory = address[0] switch
+        {
+            'a' => ChannelId.Output,
+            'i' => ChannelId.Input,
+            'l' => id => ChannelId.Input(LineInLeftValue + id - 1),
+            'p' => id => ChannelId.Input(PlayerLeftValue + id - 1),
+            _ => null
+        };
+        if (channelIdFactory is null)
+        {
+            return null;
+        }
         for (int index = 2; index < address.Length; index++)
         {
             if (address[index] == '.')

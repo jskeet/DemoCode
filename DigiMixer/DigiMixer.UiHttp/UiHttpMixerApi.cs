@@ -68,7 +68,7 @@ public class UiHttpMixerApi : IMixerApi
     
     public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
     {
-        var channels = new ConcurrentDictionary<ChannelId, bool>();
+        var stereoChannelStatuses = new ConcurrentDictionary<ChannelId, bool>();
 
         EventHandler<UiMessage> handler = HandleMessage;
         try
@@ -84,12 +84,12 @@ public class UiHttpMixerApi : IMixerApi
             sendingClient.MessageReceived -= handler;
         }
 
-        var orderedChannelIds = channels.Keys.OrderBy(ch => ch.Value);
+        var orderedChannelIds = stereoChannelStatuses.Keys.OrderBy(ch => ch.Value);
         var inputChannelIds = orderedChannelIds.Where(ch => ch.IsInput);
         var outputChannelIds = orderedChannelIds.Where(ch => ch.IsOutput)
             .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
 
-        var stereoPairs = channels.Where(pair => pair.Value)
+        var stereoPairs = stereoChannelStatuses.Where(pair => pair.Value)
             .Select(pair => new StereoPair(pair.Key, pair.Key.WithValue(pair.Key.Value + 1), StereoFlags.FullyIndependent))
             // TODO: Check that we don't have independent faders/mutes
             .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
@@ -104,12 +104,18 @@ public class UiHttpMixerApi : IMixerApi
             {
                 return;
             }
+
             var maybeChannelId = UiAddresses.TryGetChannelId(address);
-            if (maybeChannelId is ChannelId auxOutputId)
+            if (maybeChannelId is ChannelId channelId)
             {
-                channels[auxOutputId] = message.Value == "0";
+                // The value is "-1" for mono, "1" for "this is the right channel",
+                // and "0" for "this is the left channel".
+                stereoChannelStatuses[channelId] = message.Value == "0";
             }
-            logger.LogWarning("Unexpected stereo index address: {address}", address);
+            else
+            {
+                logger.LogWarning("Unexpected stereo index address: {address}", address);
+            }
         }
     }
 
