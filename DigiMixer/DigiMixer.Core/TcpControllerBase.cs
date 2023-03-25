@@ -16,7 +16,7 @@ public abstract class TcpControllerBase : IDisposable
     public ControllerStatus ControllerStatus { get; private set; }
 
     protected CancellationToken CancellationToken => cts.Token;
-    protected ILogger Logger;
+    protected ILogger Logger { get; }
 
     protected TcpControllerBase(ILogger logger, string host, int port)
     {
