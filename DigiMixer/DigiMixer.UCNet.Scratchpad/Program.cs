@@ -8,7 +8,7 @@ var logger = factory.CreateLogger("UCNetClient");
 
 var client = new UCNetClient(logger, "192.168.1.61", 53000);
 var listener = new UCNetMeterListener(logger);
-var listenerTask = listener.Start();
+listener.Start();
 
 client.MessageReceived += (sender, message) => logger.LogInformation("Received {type} with mode {mode}", message.Type, ((uint) message.Mode).ToString("x8"));
 //client.MessageReceived += MaybeFormatJson;
@@ -16,7 +16,7 @@ client.MessageReceived += (sender, message) => logger.LogInformation("Received {
 await client.Connect(default);
 client.Start();
 
-await client.Send(new UdpMetersMessage(listener.Port), default);
+await client.Send(new UdpMetersMessage(listener.LocalPort), default);
 var subscribe = JsonMessage.FromObject(new SubscribeBody(), MessageMode.ClientRequest);
 await client.Send(subscribe, default);
 var presets = new FileRequestMessage("Listpresets/channel", 1000);

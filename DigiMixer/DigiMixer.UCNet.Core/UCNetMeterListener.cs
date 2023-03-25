@@ -1,76 +1,39 @@
-﻿using DigiMixer.UCNet.Core.Messages;
+﻿using DigiMixer.Core;
+using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System.Net.Sockets;
 
 namespace DigiMixer.UCNet.Core;
 
-public class UCNetMeterListener : IDisposable
+public class UCNetMeterListener : UdpControllerBase, IDisposable
 {
-    public int Port => ((IPEndPoint) client.Client.LocalEndPoint!).Port;
-
-    private readonly ILogger logger;
-    private readonly UdpClient client;
-    private readonly CancellationTokenSource cts;
+    public int LocalPort { get; }
 
     public event EventHandler<Meter16Message>? MessageReceived;
 
-    public UCNetMeterListener(ILogger logger, int port)
+    public UCNetMeterListener(ILogger logger, int port) : base(logger, port)
     {
-        client = new UdpClient(new IPEndPoint(IPAddress.Any, port));
-        cts = new CancellationTokenSource();
-        this.logger = logger;
-        Console.WriteLine(client.Client.LocalEndPoint);
+        LocalPort = port;
     }
 
-    public UCNetMeterListener(ILogger logger) : this(logger, FindAvailablePort())
+    public UCNetMeterListener(ILogger logger) : this(logger, FindAvailableUdpPort())
     {
     }
 
-    // For some reason, using port 0 doesn't prompt in Windows when it needs to get permission.
-    // It's find for just getting an available port though.
-    private static int FindAvailablePort()
+    protected override void ProcessData(ReadOnlySpan<byte> data)
     {
-        using (var tmpClient = new UdpClient(new IPEndPoint(IPAddress.Any, 0)))
+        var message = UCNetMessage.TryParseUdp(data);
+        switch (message)
         {
-            var endpoint = (IPEndPoint) tmpClient.Client.LocalEndPoint!;
-            return endpoint.Port;
+            case null:
+                Logger.LogWarning("Received UDP packet length {length} which isn't a full message", data.Length);
+                break;
+            case Meter16Message meters:
+                MessageReceived?.Invoke(this, meters);
+                break;
+            default:
+                Logger.LogWarning("Received UDP packet with unexpected meter type {type}", message.Type);
+                break;
         }
-    }
-
-    public async Task Start()
-    {
-        try
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                var result = await client.ReceiveAsync(cts.Token);
-                var message = UCNetMessage.TryParseUdp(result.Buffer);
-                switch (message)
-                {
-                    case null:
-                        logger.LogWarning("Received UDP packet length {length} which isn't a full message", result.Buffer.Length);
-                        break;
-                    case Meter16Message meters:
-                        MessageReceived?.Invoke(this, meters);
-                        break;
-                    default:
-                        logger.LogWarning("Received UDP packet with unexpected meter type {type}", message.Type);
-                        break;
-                }
-                var buffer = result.Buffer;
-            }
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Error in receive loop");
-            throw;
-        }
-    }
-
-    public void Dispose()
-    {
-        cts.Cancel();
-        client.Dispose();
     }
 }

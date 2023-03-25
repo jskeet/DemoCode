@@ -23,7 +23,6 @@ public static class StudioLive
 
         private UCNetClient? client;
         private UCNetMeterListener? meterListener;
-        private Task? meterListenerTask;
         private CancellationTokenSource? cts;
 
         internal StudioLiveMixerApi(ILogger logger, string host, int port)
@@ -75,9 +74,9 @@ public static class StudioLive
             client.Start();
             meterListener = new UCNetMeterListener(logger);
             meterListener.MessageReceived += (sender, message) => HandleMeter16Message(message);
-            meterListenerTask = meterListener.Start();
+            meterListener.Start();
 
-            await SendMessage(new UdpMetersMessage(meterListener.Port), cancellationToken);
+            await SendMessage(new UdpMetersMessage(meterListener.LocalPort), cancellationToken);
         }
 
         private void HandleMessage(object? sender, UCNetMessage message)
@@ -352,11 +351,8 @@ public static class StudioLive
         {
             // TODO: Use whether or not we've received recent meter packets?
             // Propagate any existing client failures.
-            if (meterListenerTask?.IsFaulted == true || meterListenerTask?.IsCanceled == true)
-            {
-                return false;
-            }
-            if (client?.ControllerStatus != ControllerStatus.Running)
+            if (client?.ControllerStatus != ControllerStatus.Running ||
+                meterListener?.ControllerStatus != ControllerStatus.Running)
             {
                 return false;
             }
@@ -403,7 +399,6 @@ public static class StudioLive
         {
             client?.Dispose();
             meterListener?.Dispose();
-            meterListenerTask = null;
         }
     }
 

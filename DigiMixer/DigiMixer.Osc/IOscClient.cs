@@ -10,7 +10,7 @@ internal interface IOscClient : IDisposable
 {
     Task SendAsync(OscPacket packet);
     event EventHandler<OscPacket> PacketReceived;
-    public Task StartReceiving();
+    void Start();
 
     public class Fake : IOscClient
     {
@@ -27,6 +27,6 @@ internal interface IOscClient : IDisposable
 
         public Task SendAsync(OscPacket packet) => Task.CompletedTask;
 
-        public Task StartReceiving() => Task.CompletedTask;
+        public void Start() { }
     }
 }

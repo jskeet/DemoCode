@@ -22,7 +22,6 @@ internal abstract class OscMixerApiBase : IMixerApi
     protected ILogger Logger { get; }
     private readonly Func<ILogger, IOscClient> clientProvider;
     protected IOscClient Client { get; private set; }
-    private Task receivingTask;
     private readonly DelegatingReceiver receiver = new();
 
     protected IMixerReceiver Receiver => receiver;
@@ -35,7 +34,6 @@ internal abstract class OscMixerApiBase : IMixerApi
         this.clientProvider = clientProvider;
         Logger = logger ?? NullLogger.Instance;
         Client = IOscClient.Fake.Instance;
-        receivingTask = Task.CompletedTask;
         receiverActionsByAddress = BuildReceiverMap();
     }
 
@@ -44,7 +42,7 @@ internal abstract class OscMixerApiBase : IMixerApi
         Client.Dispose();
         var newClient = clientProvider(Logger);
         newClient.PacketReceived += ReceivePacket;
-        receivingTask = newClient.StartReceiving();
+        newClient.Start();
         Client = newClient;
         // Only return when we're definitely connected.
         if (!await CheckConnection(cancellationToken))

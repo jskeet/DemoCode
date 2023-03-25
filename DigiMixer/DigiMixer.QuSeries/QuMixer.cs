@@ -2,6 +2,7 @@
 using DigiMixer.QuSeries.Core;
 using Microsoft.Extensions.Logging;
 using System.Drawing;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -25,8 +26,7 @@ internal class QuMixerApi : IMixerApi
     private CancellationTokenSource? cts;
     private QuControlClient? controlClient;
     private QuMeterClient? meterClient;
-    private Task? meterClientTask;
-    private int? mixerUdpPort;
+    private IPEndPoint? mixerUdpEndPoint;
 
     private MixerInfo currentMixerInfo = new MixerInfo(null, null, null);
 
@@ -43,9 +43,9 @@ internal class QuMixerApi : IMixerApi
         Dispose();
 
         cts = new CancellationTokenSource();
-        meterClient = new QuMeterClient(logger, host);
+        meterClient = new QuMeterClient(logger);
         meterClient.PacketReceived += HandleMeterPacket;
-        meterClientTask = meterClient.Start();
+        meterClient.Start();
         controlClient = new QuControlClient(logger, host, port);
         controlClient.PacketReceived += HandleControlPacket;
         await controlClient.Connect(cancellationToken);
@@ -90,11 +90,8 @@ internal class QuMixerApi : IMixerApi
     public async Task<bool> CheckConnection(CancellationToken cancellationToken)
     {
         // Propagate any existing client failures.
-        if (controlClient?.ControllerStatus != ControllerStatus.Running)
-        {
-            return false;
-        }
-        if (meterClientTask?.IsFaulted == true)
+        if (controlClient?.ControllerStatus != ControllerStatus.Running ||
+            meterClient?.ControllerStatus != ControllerStatus.Running)
         {
             return false;
         }
@@ -107,9 +104,9 @@ internal class QuMixerApi : IMixerApi
 
     public async Task SendKeepAlive()
     {
-        if (meterClient is not null && cts is not null && mixerUdpPort is int port)
+        if (meterClient is not null && cts is not null && mixerUdpEndPoint is not null)
         {
-            await meterClient.SendKeepAliveAsync(port, cts.Token);
+            await meterClient.SendKeepAliveAsync(mixerUdpEndPoint, cts.Token);
         }
     }
 
@@ -163,7 +160,7 @@ internal class QuMixerApi : IMixerApi
     {
         if (QuPackets.IsInitialHandshakeResponse(packet, out var mixerUdpPort))
         {
-            this.mixerUdpPort = mixerUdpPort;
+            this.mixerUdpEndPoint = new IPEndPoint(IPAddress.Parse(host), mixerUdpPort);
             return;
         }
         var node = temporaryListeners.First;
@@ -337,8 +334,7 @@ internal class QuMixerApi : IMixerApi
         controlClient = null;
         meterClient?.Dispose();
         meterClient = null;
-        meterClientTask = null;
-        mixerUdpPort = null;
+        mixerUdpEndPoint = null;
     }
 
     private class PacketListener : IDisposable
