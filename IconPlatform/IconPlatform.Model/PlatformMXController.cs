@@ -25,7 +25,7 @@ namespace IconPlatform.Model
 
         public static async Task<PlatformMXController> ConnectAsync(string portName)
         {
-            var controller = new PlatformMXController(portName, portName.StartsWith("Platform M") ? (byte) 0x14 : (byte) 0x15);
+            var controller = new PlatformMXController(portName, portName?.StartsWith("Platform M") ?? true ? (byte) 0x14 : (byte) 0x15);
             await controller.MaybeReconnect();
             return controller;
         }
