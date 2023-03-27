@@ -1,5 +1,6 @@
 ﻿using Commons.Music.Midi;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,11 +71,12 @@ namespace IconPlatform.Model
             {
                 return;
             }
+            
             int? zeroChannel = (data[0], data[1]) switch
             {
                 (0x90, var c) => c % 8,
                 (0xb0, var c) => c % 8,
-                (var ec, _) when ec >= 0xe0 && ec < 0xe8 => ec - 0xe0,
+                (var ec, _) when ec >= 0xe0 && ec <= 0xe8 => ec - 0xe0,
                 _ => null
             };
 
@@ -94,7 +96,8 @@ namespace IconPlatform.Model
                         ButtonChanged?.Invoke(this, new ButtonEventArgs(oneChannel, button.Value, data[2] == 0x7f));
                     }
                     break;
-                case >= 0xe0 and < 0xe8:
+                // Faders 1-8, then main as "fader 9".
+                case >= 0xe0 and <= 0xe8:
                     FaderMoved?.Invoke(this, new FaderEventArgs(oneChannel, data[1] / 16 + data[2] * 8));
                     break;
                 case 0xb0:
