@@ -116,6 +116,10 @@ namespace XTouchMini.Model
 
             async Task CloseAsync(IMidiPort port)
             {
+                if (port is null)
+                {
+                    return;
+                }
                 try
                 {
                     await port.CloseAsync().ConfigureAwait(false);
