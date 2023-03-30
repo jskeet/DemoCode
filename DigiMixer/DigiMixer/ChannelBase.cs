@@ -17,12 +17,11 @@ public abstract class ChannelBase : INotifyPropertyChanged
 
     public bool IsStereo => RightChannelId is not null;
 
-    protected ChannelBase(Mixer mixer, MonoOrStereoPairChannelId channelIdPair)
+    private protected ChannelBase(Mixer mixer, MonoOrStereoPairChannelId channelIdPair)
     {
         Mixer = mixer;
         ChannelIdPair = channelIdPair;
-        // TODO: Use the right channel as well?
-        FallbackName = LeftOrMonoChannelId.ToString();
+        FallbackName = LeftOrMonoChannelId.ToString(RightChannelId);
     }
 
     /// <summary>

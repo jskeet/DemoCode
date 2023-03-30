@@ -9,7 +9,7 @@ namespace DigiMixer;
 /// </summary>
 public class OutputChannel : ChannelBase, IFader
 {
-    public OutputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair) : base(mixer, channelIdPair)
+    internal OutputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair) : base(mixer, channelIdPair)
     {
     }
 

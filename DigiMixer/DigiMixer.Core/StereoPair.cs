@@ -7,7 +7,6 @@ public sealed class StereoPair
     public bool IsInput { get; }
     public StereoFlags Flags { get; }
 
-    // TODO: Information about how independent the channels are.
     public StereoPair(ChannelId left, ChannelId right, StereoFlags flags)
     {
         if (left == right)

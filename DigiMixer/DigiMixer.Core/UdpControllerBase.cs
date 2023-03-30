@@ -16,7 +16,6 @@ public abstract class UdpControllerBase
 
     protected UdpControllerBase(ILogger logger, string host, int remotePort, int? localPort)
     {
-        // TODO: What about finding an available port? Not sure why we sometimes need that.
         Logger = logger;
         udpClient = localPort is null ? new UdpClient() : new UdpClient(localPort.Value);
         udpClient.Connect(host, remotePort);
@@ -25,7 +24,6 @@ public abstract class UdpControllerBase
 
     protected UdpControllerBase(ILogger logger, int localPort)
     {
-        // TODO: What about finding an available port? Not sure why we sometimes need that.
         Logger = logger;
         udpClient = new UdpClient(localPort);
         cts = new CancellationTokenSource();

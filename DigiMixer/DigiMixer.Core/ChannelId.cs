@@ -45,4 +45,11 @@ public struct ChannelId
     public static bool operator ==(ChannelId left, ChannelId right) => left.Equals(right);
     public static bool operator !=(ChannelId left, ChannelId right) => !left.Equals(right);
     public override string ToString() => $"{(IsInput ? "Input": "Output")} Ch{Value}";
+
+    /// <summary>
+    /// Returns a text representation of a possibly-stereo-pair, assuming this to be the left-or-mono
+    /// channel.
+    /// </summary>
+    public string ToString(ChannelId? right) =>
+        right is null ? ToString() : $"{(IsInput ? "Input" : "Output")} Ch{Value}+{right.Value}";
 }

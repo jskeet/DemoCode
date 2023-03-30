@@ -28,7 +28,7 @@ internal class QuMixerApi : IMixerApi
     private QuMeterClient? meterClient;
     private IPEndPoint? mixerUdpEndPoint;
 
-    private MixerInfo currentMixerInfo = new MixerInfo(null, null, null);
+    private MixerInfo currentMixerInfo = MixerInfo.Empty;
 
     internal QuMixerApi(ILogger logger, string host, int port)
     {
@@ -251,7 +251,7 @@ internal class QuMixerApi : IMixerApi
         // ???? (4 bytes)
         var data = packet.Data;
         string name = Encoding.ASCII.GetString(data.Slice(13, 15));
-        currentMixerInfo = new MixerInfo(currentMixerInfo.Model, name, currentMixerInfo.Version);
+        currentMixerInfo = currentMixerInfo with { Name = name };
         receiver.ReceiveMixerInfo(currentMixerInfo);
     }
 
@@ -262,7 +262,7 @@ internal class QuMixerApi : IMixerApi
         int firmwareMajor = data[3];
         int firmwareMinor = data[2];
         ushort revision = MemoryMarshal.Read<ushort>(data.Slice(4, 2));
-        currentMixerInfo = new MixerInfo("Qu-???", currentMixerInfo.Name, $"{firmwareMajor}.{firmwareMinor} rev {revision}");
+        currentMixerInfo = currentMixerInfo with { Model = "Qu-???", Version = $"{firmwareMajor}.{firmwareMinor} rev {revision}" };
         receiver.ReceiveMixerInfo(currentMixerInfo);
     }
 

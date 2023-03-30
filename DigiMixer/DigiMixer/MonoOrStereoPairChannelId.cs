@@ -2,10 +2,8 @@
 
 namespace DigiMixer;
 
-// TODO: Find a better name than this!
-// TODO: How do we validate the inputs? Possible limitation of records.
-// TODO: Expose this as ChannelBase rather than ChannelId? Would be more useful. (Possibly a separate type?)
-public record MonoOrStereoPairChannelId(
+// TODO: Potentially get rid of this in the future. It's not too bad now it's internal, at least.
+internal record MonoOrStereoPairChannelId(
     ChannelId MonoOrLeftChannelId,
     ChannelId? RightChannelId,
     StereoFlags Flags)

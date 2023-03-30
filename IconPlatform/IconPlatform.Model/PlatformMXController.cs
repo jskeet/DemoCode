@@ -1,13 +1,12 @@
 ﻿using Commons.Music.Midi;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace IconPlatform.Model
 {
-    public class PlatformMXController
+    public class PlatformMXController : IAsyncDisposable
     {
         public EventHandler<ButtonEventArgs> ButtonChanged;
         public EventHandler<FaderEventArgs> FaderMoved;

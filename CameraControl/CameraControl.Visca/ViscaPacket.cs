@@ -69,7 +69,8 @@ namespace CameraControl.Visca
                 index >= length ? 0L : ((long) bytes[start + index]) << shift;
         }
 
-        // TODO: Make this an indexer?
+        // While this could be an indexer, making it a method allows the
+        // GetInt16 method to be accessed in a consistent manner.
         internal byte GetByte(int index)
         {
             Preconditions.CheckRange(index, 0, Length);

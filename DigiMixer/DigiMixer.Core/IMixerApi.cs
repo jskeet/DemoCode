@@ -7,11 +7,12 @@
 /// </summary>
 public interface IMixerApi : IDisposable
 {
-    // TODO: How do we deregister? Should we have another method?
-
     /// <summary>
     /// Registers the given receiver for updates to the state of the mixer.
     /// </summary>
+    /// <remarks>
+    /// There is currently no way of de-registering; so far this has not been required in practice.
+    /// </remarks>
     /// <param name="receiver">The receiver to register.</param>
     void RegisterReceiver(IMixerReceiver receiver);
 

@@ -35,15 +35,14 @@ public static class Rcf
 
         private const string MetersAddress = "/00/00/vmeter";
 
-        private MixerInfo currentInfo = new MixerInfo(null, null, null);
+        private MixerInfo currentInfo = MixerInfo.Empty;
 
-        // TODO: We're only using the address...
-        private static readonly OscMessage[] RequestAllInfoMessages = Enumerable.Range(1, 13)
+        private static readonly string[] RequestAllInfoAddresses = Enumerable.Range(1, 13)
             .Append(22)
-            .Select(i => new OscMessage($"/{i:00}/99/up_{i:000}", 0))
-            .Append(new OscMessage(FirmwareAddress, "0"))
-            .Append(new OscMessage(TargetIdAddress, " "))
-            .Append(new OscMessage(SerialNumberAddress, " "))
+            .Select(i => $"/{i:00}/99/up_{i:000}")
+            .Append(FirmwareAddress)
+            .Append(TargetIdAddress)
+            .Append(SerialNumberAddress)
             .ToArray();
 
         internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort) :
@@ -58,9 +57,9 @@ public static class Rcf
 
         public override async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
         {
-            foreach (var message in RequestAllInfoMessages)
+            foreach (var address in RequestAllInfoAddresses)
             {
-                await Client.SendAsync(new OscMessage(message.Address, 0));
+                await Client.SendAsync(new OscMessage(address, 0));
                 // /01/99/up_01 actually takes a bit longer, but that's okay.
                 // We're not relying on having all the data - we just don't want buffers to get too full.
                 await Task.Delay(20);
@@ -134,22 +133,21 @@ public static class Rcf
 
         protected override void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map)
         {
-            // TODO: Check these make sense later...
             map[FirmwareAddress] = message =>
             {
-                currentInfo = new MixerInfo(currentInfo.Model, currentInfo.Name, (string) message[0]);
+                currentInfo = currentInfo with { Version = (string) message[0] };
                 Receiver.ReceiveMixerInfo(currentInfo);
             };
 
             map[TargetIdAddress] = message =>
             {
-                currentInfo = new MixerInfo((string) message[0], currentInfo.Name, currentInfo.Version);
+                currentInfo = currentInfo with { Model = (string) message[0] };
                 Receiver.ReceiveMixerInfo(currentInfo);
             };
 
             map[SerialNumberAddress] = message =>
             {
-                currentInfo = new MixerInfo(currentInfo.Model, (string) message[0], currentInfo.Version);
+                currentInfo = currentInfo with { Name = (string) message[0] };
                 Receiver.ReceiveMixerInfo(currentInfo);
             };
 

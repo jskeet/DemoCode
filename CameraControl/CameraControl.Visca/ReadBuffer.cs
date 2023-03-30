@@ -15,6 +15,10 @@ namespace CameraControl.Visca
     internal class ReadBuffer
     {
         private int size;
+        // This is larger than we need, given that a single packet is only ever 16 bytes at most,
+        // but it allows us to read multiple packets in a single Stream.ReadAsync call.
+        // We only create a single buffer per client, so the difference between this and allocating
+        // only 16 bytes is trivial.
         private readonly byte[] buffer = new byte[256];
 
         internal void Clear()
@@ -32,7 +36,6 @@ namespace CameraControl.Visca
                 }
                 if (size == buffer.Length)
                 {
-                    // TODO: Should our buffer be smaller?
                     throw new ViscaProtocolException($"Read {size} bytes without a reaching the end of a VISCA packet");
                 }
                 // The cancellation token in ReadAsync isn't always used, apparently - so we also close the stream

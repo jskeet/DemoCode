@@ -1,18 +1,8 @@
 ﻿namespace DigiMixer.Core;
 
-// TODO: Look at what's available for Qu-SB
-public sealed class MixerInfo
+public sealed record MixerInfo(string? Model, string? Name, string? Version)
 {
-    public string? Model { get; }
-    public string? Name { get; }
-    public string? Version { get; }
-
-    public MixerInfo(string? model, string? name, string? version)
-    {
-        Model = model;
-        Name = name;
-        Version = version;
-    }
-
     public override string ToString() => $"{Name} ({Model}: {Version})";
+
+    public static MixerInfo Empty { get; } = new MixerInfo(null, null, null);
 }

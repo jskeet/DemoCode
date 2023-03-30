@@ -9,7 +9,7 @@ public class MixerViewModel : ViewModelBase<Mixer>, IDisposable
 {
     public IReadOnlyList<InputChannelViewModel> InputChannels { get; }
     public IReadOnlyList<OutputChannelViewModel> OutputChannels { get; }
-    public MixerInfo MixerInfo => Model.MixerInfo ?? new MixerInfo("", "", "");
+    public MixerInfo MixerInfo => Model.MixerInfo ?? MixerInfo.Empty;
 
     public string ConnectionStatus => Model.Connected ? "Connected" : "Disconnected";
     private DispatcherTimer meterPeakUpdater;

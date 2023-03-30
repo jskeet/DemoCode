@@ -31,15 +31,14 @@ public class UiHttpMixerApi : IMixerApi
     private Task receivingClientReadTask;
     private readonly DelegatingReceiver receiver = new();
 
-    // We get these separately, so when we've seen both, we respond with "mixer info received".
-    private string? model;
-    private string? firmware;
+    private MixerInfo currentMixerInfo;
 
     public UiHttpMixerApi(ILogger? logger, string host, int port = 80)
     {
         this.logger = logger ?? NullLogger.Instance;
         this.host = host;
         this.port = port;
+        currentMixerInfo = MixerInfo.Empty;
         receiverActionsByAddress = BuildReceiverMap();
         sendingClient = IUiClient.Fake.Instance;
         receivingClient = IUiClient.Fake.Instance;
@@ -165,8 +164,7 @@ public class UiHttpMixerApi : IMixerApi
 
     public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
-        model = null;
-        firmware = null;
+        currentMixerInfo = MixerInfo.Empty;
         // Note: this call *does* need to send a message to receivingClient
         if (receivingClient is not null)
         {
@@ -315,21 +313,14 @@ public class UiHttpMixerApi : IMixerApi
         // We don't know what order we'll get firmware and model in.
         ret[UiAddresses.Model] = (receiver, message) =>
         {
-            model = message!.Value;
-            MaybeReceiveMixerInfo(receiver);
+            currentMixerInfo = currentMixerInfo with { Model = message!.Value };
+            receiver.ReceiveMixerInfo(currentMixerInfo);
         };
         ret[UiAddresses.Firmware] = (receiver, message) =>
         {
-            firmware = message.Value!;
-            MaybeReceiveMixerInfo(receiver);
+            currentMixerInfo = currentMixerInfo with { Version = message!.Value };
+            receiver.ReceiveMixerInfo(currentMixerInfo);
         };
-        void MaybeReceiveMixerInfo(IMixerReceiver receiver)
-        {
-            if (model is not null && firmware is not null)
-            {
-                receiver.ReceiveMixerInfo(new MixerInfo(model, null, firmware));
-            }
-        }
 
         // TODO: Populate this on-demand? Would avoid assumptions about the number of inputs/outputs...
         foreach (var input in inputs)
