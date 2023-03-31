@@ -49,12 +49,15 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
                 Logger.LogTrace("Fetching fader input/output info for {channel} timed out", input);
             }
         }
+        await RequestAdditionalData();
         stopwatch.Stop();
         Logger.LogTrace("Requested all data in {ms}ms", stopwatch.ElapsedMilliseconds);
 
         // In reality we get through all of these in about 50ms, but let's allow for a glitchy connection.
         CancellationToken CreateCancellationToken() => new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
     }
+
+    protected virtual Task RequestAdditionalData() => Task.CompletedTask;
 
     public override TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
 
@@ -71,7 +74,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
         return result is not null;
     }
 
-    protected override sealed void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map)
+    protected override void PopulateReceiverMap(Dictionary<string, Action<OscMessage>> map)
     {
         map[XInfoAddress] = message =>
         {
