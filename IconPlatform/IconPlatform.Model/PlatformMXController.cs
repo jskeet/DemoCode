@@ -169,6 +169,17 @@ namespace IconPlatform.Model
             SetText(0x38, new string(' ', 0x38));
         }
 
+        public void ClearChannelButtons()
+        {
+            for (int channel = 1; channel <= 8; channel++)
+            {
+                SetLight(channel, ButtonType.Sel, false);
+                SetLight(channel, ButtonType.Mute, false);
+                SetLight(channel, ButtonType.Solo, false);
+                SetLight(channel, ButtonType.Record, false);
+            }
+        }
+
         /// <summary>
         /// Sets the text on a Platform D2.
         /// </summary>
