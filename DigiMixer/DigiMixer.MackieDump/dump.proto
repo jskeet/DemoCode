@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "DigiMixer.MackieDump";
+
+import "google/protobuf/timestamp.proto";
+
+message PacketCollection {
+  repeated Packet packets = 1;
+}
+
+message Packet {
+  bool outbound = 1;
+  int32 command = 2;
+  int32 sequence = 3;
+  int32 type = 4;
+  
+  bytes data = 5;
+
+  google.protobuf.Timestamp timestamp = 6;
+}
