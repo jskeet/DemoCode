@@ -18,6 +18,9 @@ public sealed class MackieController : TcpControllerBase
 
     private readonly MessageProcessor<MackiePacket> processor;
 
+    public event EventHandler<MackiePacket>? PacketSent;
+    public event EventHandler<MackiePacket>? PacketReceived;
+
     public MackieController(ILogger logger, string host, int port) : base(logger, host, port)
     {
         outstandingRequests = new OutstandingRequest[256];
@@ -135,6 +138,7 @@ public sealed class MackieController : TcpControllerBase
             Logger.LogTrace("Sending packet: {packet}", packet);
         }
         await Send(data, cancellationToken);
+        PacketSent?.Invoke(this, packet);
     }
 
     private void HandlePacket(MackiePacket packet)
@@ -148,6 +152,7 @@ public sealed class MackieController : TcpControllerBase
             {
                 Logger.LogTrace("Received packet: {packet}", packet);
             }
+            PacketReceived?.Invoke(this, packet);
             switch (packet.Type)
             {
                 case MackiePacketType.Request:

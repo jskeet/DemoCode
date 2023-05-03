@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />
+    <PackageReference Include="Google.Protobuf" Version="3.22.3" />   
   </ItemGroup>
 
 </Project>
