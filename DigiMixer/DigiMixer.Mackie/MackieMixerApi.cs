@@ -46,7 +46,7 @@ public class MackieMixerApi : IMixerApi
         await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
         // Both of these are (I think) needed to get large channel value packets
         await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8], cancellationToken);
-        await controller.SendRequest((MackieCommand) 3, MackiePacketBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.ClientHandshake, MackiePacketBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
         var inputMeters = Enumerable.Range(1, 18).Select(input => (input - 1) * 7 + 0x22);

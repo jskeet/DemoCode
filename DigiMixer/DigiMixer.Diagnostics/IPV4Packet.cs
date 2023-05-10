@@ -14,8 +14,9 @@ public class IPV4Packet
     public ReadOnlySpan<byte> Data => data.AsSpan().Slice(dataOffset, dataLength);
     public IPEndPoint Source { get; }
     public IPEndPoint Dest { get; }
+    public DateTime Timestamp { get; }
 
-    private IPV4Packet(ProtocolType type, IPEndPoint source, IPEndPoint dest, byte[] data, int offset, int length)
+    private IPV4Packet(ProtocolType type, IPEndPoint source, IPEndPoint dest, byte[] data, int offset, int length, DateTime timestamp)
     {
         this.Type = type;
         this.Source = source;
@@ -23,6 +24,7 @@ public class IPV4Packet
         this.data = data;
         this.dataOffset = offset;
         this.dataLength = length;
+        Timestamp = timestamp;
     }
 
     public static IPV4Packet? TryConvert(BlockBase block)
@@ -48,7 +50,7 @@ public class IPV4Packet
         IPAddress destAddress = new IPAddress(dataSpan.Slice(30, 4));
         int sourcePort = ReadUInt16(34);
         int destPort = ReadUInt16(36);
-
+        
         int dataOffset;
         int dataLength;
         if (type == ProtocolType.Udp)
@@ -66,7 +68,10 @@ public class IPV4Packet
         {
             return null;
         }
-        return new IPV4Packet(type, new IPEndPoint(sourceAddress, sourcePort), new IPEndPoint(destAddress, destPort), data, dataOffset, dataLength);
+        return new IPV4Packet(type,
+            new IPEndPoint(sourceAddress, sourcePort),
+            new IPEndPoint(destAddress, destPort),
+            data, dataOffset, dataLength, packet.GetTimestamp());
 
         ushort ReadUInt16(int start) => (ushort) ((data[start] << 8) | data[start + 1]);
     }
