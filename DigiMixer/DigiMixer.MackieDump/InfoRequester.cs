@@ -26,7 +26,14 @@ internal class InfoRequester
 
         foreach (var item in infoItems)
         {
-            await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, item }, cancellationToken);
+            try
+            {
+                await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, item }, cancellationToken);
+            }
+            catch (MackieResponseException)
+            {
+                Console.WriteLine($"Request failed - error response received.");
+            }
         }
 
         Console.WriteLine($"Captured {pc.Packets.Count} packets");

@@ -160,14 +160,16 @@ public sealed class MackieController : TcpControllerBase
                     await SendPacket(packet.CreateResponse(responseBody), cancellationToken).ConfigureAwait(false);
                     break;
                 case MackiePacketType.Response:
-                    var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[packet.Sequence], null);
-                    if (outstandingRequest is null)
                     {
-                        Logger.LogError($"No outstanding request for sequence number: {packet.Sequence}");
-                    }
-                    else
-                    {
-                        outstandingRequest.CompletionSource.TrySetResult(packet);
+                        var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[packet.Sequence], null);
+                        if (outstandingRequest is null)
+                        {
+                            Logger.LogError($"No outstanding request for sequence number: {packet.Sequence}");
+                        }
+                        else
+                        {
+                            outstandingRequest.CompletionSource.TrySetResult(packet);
+                        }
                     }
                     break;
                 case MackiePacketType.Broadcast:
@@ -176,8 +178,28 @@ public sealed class MackieController : TcpControllerBase
                         await handler(packet, cancellationToken).ConfigureAwait(false);
                     }
                     break;
+                case MackiePacketType.Error:
+                    {
+                        var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[packet.Sequence], null);
+                        if (outstandingRequest is null)
+                        {
+                            Logger.LogError($"No outstanding request for sequence number: {packet.Sequence} which received an error response");
+                        }
+                        else
+                        {
+                            outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(packet));
+                        }
+                    }
+                    break;
                 default:
                     Logger.LogError($"Unhandled packet type: {packet.Type}");
+                    {
+                        var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[packet.Sequence], null);
+                        if (outstandingRequest is not null)
+                        {
+                            outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(packet));
+                        }
+                    }
                     break;
             }
         }
