@@ -76,7 +76,7 @@ public abstract class UdpControllerBase
         {
             if (ControllerStatus != ControllerStatus.Disposed)
             {
-                Logger.LogError(e, "TCP reading loop failed");
+                Logger.LogError(e, "UDP reading loop failed");
                 ControllerStatus = ControllerStatus.Faulted;
             }
         }
@@ -98,8 +98,9 @@ public abstract class UdpControllerBase
 
     public void Dispose()
     {
-        cts.Cancel();
         ControllerStatus = ControllerStatus.Disposed;
+        cts.Cancel();
+        udpClient.Dispose();
     }
 
     protected static int FindAvailableUdpPort()

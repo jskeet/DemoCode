@@ -67,11 +67,23 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
         async Task<IMixerApi> CreateAndSubscribeToApi()
         {
             var api = apiFactory();
-            using var cts = new CancellationTokenSource(connectionTiming.ConnectionTimeout);
-            await api.Connect(cts.Token);
-            api.RegisterReceiver(receiver);
-            // TODO: Should this have a cancellation token, as it's part of connection?
-            await api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
+            bool dispose = true;
+            try
+            {
+                using var cts = new CancellationTokenSource(connectionTiming.ConnectionTimeout);
+                await api.Connect(cts.Token);
+                api.RegisterReceiver(receiver);
+                // TODO: Should this have a cancellation token, as it's part of connection?
+                await api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
+                dispose = false;
+            }
+            finally
+            {
+                if (dispose)
+                {
+                    api.Dispose();
+                }
+            }
             return api;
         }
     }
