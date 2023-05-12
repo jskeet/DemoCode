@@ -2,39 +2,38 @@
 
 namespace DigiMixer.Mackie;
 
-internal static class MackieAddresses
+internal class DL16SProfile : IMixerProfile
 {
-    /// <summary>
-    /// The input channel ID for the "return 1" input.
-    /// </summary>
-    internal static ChannelId Return1 { get; } = ChannelId.Input(17);
+    internal static DL16SProfile Instance { get; } = new DL16SProfile();
 
-    /// <summary>
-    /// The input channel ID for the "return 2" input.
-    /// </summary>
-    internal static ChannelId Return2 { get; } = ChannelId.Input(18);
+    private DL16SProfile()
+    {
+    }
 
-    internal static int GetFaderAddress(ChannelId inputId, ChannelId outputId)
+    public int InputChannelCount => 18;
+    public int AuxChannelCount => 6;
+
+    public int GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {
         int inputBase = GetInputOrigin(inputId);
         int offset = outputId.IsMainOutput ? 8 : outputId.Value * 3 + 0x2f;
         return inputBase + offset;
     }
 
-    internal static int GetFaderAddress(ChannelId outputId) =>
+    public int GetFaderAddress(ChannelId outputId) =>
         outputId.IsMainOutput ? 0x09d7 : GetOutputOrigin(outputId) + 1;
 
-    internal static int GetMuteAddress(ChannelId channelId) =>
+    public int GetMuteAddress(ChannelId channelId) =>
         channelId.IsInput ? GetInputOrigin(channelId) + 0x07
         : channelId.IsMainOutput ? 0x09d8
         : GetOutputOrigin(channelId) + 0;
 
-    internal static int GetNameAddress(ChannelId channelId) =>
+    public int GetNameAddress(ChannelId channelId) =>
         channelId.IsInput ? channelId.Value
         : channelId.IsMainOutput ? 0x21
         : channelId.Value + 0x21;
 
-    internal static int GetStereoLinkAddress(ChannelId channelId) =>
+    public int GetStereoLinkAddress(ChannelId channelId) =>
         channelId.IsInput
         ? GetInputOrigin(channelId) + 0x0b
         : GetOutputOrigin(channelId) + 0x04;
