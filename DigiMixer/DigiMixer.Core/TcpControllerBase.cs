@@ -92,7 +92,8 @@ public abstract class TcpControllerBase : IDisposable
 
     public void Dispose()
     {
-        cts.Cancel();
         ControllerStatus = ControllerStatus.Disposed;
+        cts.Cancel();
+        tcpClient.Dispose();
     }
 }
