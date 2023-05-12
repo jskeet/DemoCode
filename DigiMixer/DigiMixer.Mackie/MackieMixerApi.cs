@@ -358,8 +358,9 @@ public class MackieMixerApi : IMixerApi
     private void MapController(MackieController controller)
     {
         controller.MapBroadcastAction(HandleBroadcastPacket);
-        // FIXME: Provide the client mac address
-        controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
+        // TODO: Ideally we'd provide the MAC address instead of zeroes here... but getting the right
+        // address is fiddly at best. Better to provide zeroes than a wrong one.
+        controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0, 0, 0, 0, 0, 0 });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
         controller.MapCommandAction(MackieCommand.ChannelInfoControl, MaybeCompleteChannelInfo);
         controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
