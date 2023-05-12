@@ -1,7 +1,6 @@
 ﻿using PcapngFile;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 
 namespace DigiMixer.Diagnostics;
 
