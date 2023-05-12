@@ -25,12 +25,13 @@ internal class Dumper
                     {
                         int start = body.GetInt32(0);
                         Console.WriteLine();
+                        Console.WriteLine($"  Chunk 1 (type): {body.GetInt32(1):x8}");
                         Console.WriteLine("  Values:");
-                        for (int i = 2; i < body.ChunkCount; i++)
+                        for (int i = 0; i < body.ChunkCount - 2; i++)
                         {
-                            int address = start - 2 + i;
-                            var int32Value = body.GetInt32(i);
-                            var singleValue = body.GetSingle(i);
+                            int address = start + i;
+                            var int32Value = body.GetInt32(i + 2);
+                            var singleValue = body.GetSingle(i + 2);
                             Console.WriteLine($"    {address}: {int32Value} / {singleValue}");
                         }
                         break;
@@ -38,11 +39,13 @@ internal class Dumper
                 case MackieCommand.ChannelNames when body.Length > 0:
                     {
                         int start = packet.Body.GetInt32(0);
+                        int count = (int) (body.GetUInt32(1) >> 16);
                         Console.WriteLine();
+                        Console.WriteLine($"  Chunk 1 (type): {body.GetInt32(1):x8}");
                         Console.WriteLine("  Names:");
                         string allNames = Encoding.ASCII.GetString(packet.Body.InSequentialOrder().Data.Slice(8).ToArray());
                         string[] names = allNames.Split('\0');
-                        for (int i = 0; i < names.Length; i++)
+                        for (int i = 0; i < count; i++)
                         {
                             int address = start + i;
                             Console.WriteLine($"    {address}: {names[i]}");

@@ -235,28 +235,36 @@ public class MackieMixerApi : IMixerApi
             return;
         }
         int start = body.GetInt32(0);
-        for (int i = 2; i < body.ChunkCount; i++)
+        for (int i = 0; i < body.ChunkCount - 2; i++)
         {
-            int address = start - 2 + i;
+            int address = start + i;
 
             if (channelValueActions.TryGetValue(address, out var action))
             {
-                action(body, i);
+                action(body, i + 2);
             }
         }
     }
 
     private void HandleChannelNames(MackiePacket packet)
     {
-        if (packet.Body.Length < 8)
+        var body = packet.Body;
+        if (body.Length < 8)
         {
             return;
         }
-        int start = packet.Body.GetInt32(0);
-        string allNames = Encoding.ASCII.GetString(packet.Body.InSequentialOrder().Data.Slice(8).ToArray());
+        uint chunk1 = body.GetUInt32(1);
+        // TODO: Handle other name types.
+        if ((chunk1 & 0xff00) != 0x0500)
+        {
+            return;
+        }
+        int start = body.GetInt32(0);
+        int count = (int) (chunk1 >> 16);
+        string allNames = Encoding.ASCII.GetString(body.InSequentialOrder().Data.Slice(8).ToArray());
 
         string[] names = allNames.Split('\0');
-        for (int i = 0; i < names.Length; i++)
+        for (int i = 0; i < count; i++)
         {
             int address = start + i;
             if (channelNameActions.TryGetValue(address, out var action))
