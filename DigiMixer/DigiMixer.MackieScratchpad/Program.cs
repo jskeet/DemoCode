@@ -28,7 +28,7 @@ controller.MapCommandAction(MackieCommand.ChannelNames, packet =>
     {
         if (names[index] == 0)
         {
-            string name = Encoding.ASCII.GetString(names.Slice(lastStart, index - lastStart));
+            string name = Encoding.UTF8.GetString(names.Slice(lastStart, index - lastStart));
             Console.WriteLine($"  '{name}'");
             lastStart = index + 1;
             count++;

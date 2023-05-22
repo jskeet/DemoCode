@@ -268,7 +268,7 @@ public class MackieMixerApi : IMixerApi
         }
         int start = body.GetInt32(0);
         int count = (int) (chunk1 >> 16);
-        string allNames = Encoding.ASCII.GetString(body.InSequentialOrder().Data.Slice(8).ToArray());
+        string allNames = Encoding.UTF8.GetString(body.InSequentialOrder().Data.Slice(8).ToArray());
 
         string[] names = allNames.Split('\0');
         for (int i = 0; i < count; i++)

@@ -43,7 +43,7 @@ internal class Dumper
                         Console.WriteLine();
                         Console.WriteLine($"  Chunk 1 (type): {body.GetInt32(1):x8}");
                         Console.WriteLine("  Names:");
-                        string allNames = Encoding.ASCII.GetString(packet.Body.InSequentialOrder().Data.Slice(8).ToArray());
+                        string allNames = Encoding.UTF8.GetString(packet.Body.InSequentialOrder().Data.Slice(8).ToArray());
                         string[] names = allNames.Split('\0');
                         for (int i = 0; i < count; i++)
                         {
