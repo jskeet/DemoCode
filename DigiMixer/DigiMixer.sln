@@ -39,6 +39,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet.Scratchpad"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet.Core", "DigiMixer.UCNet.Core\DigiMixer.UCNet.Core.csproj", "{1F479E07-BBED-4F80-93D4-A55154861E6E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protocols", "Protocols", "{0B03065C-EBBD-446F-9BC4-1D26FD96B439}"
+	ProjectSection(SolutionItems) = preProject
+		Protocols\mackie.md = Protocols\mackie.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
