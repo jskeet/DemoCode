@@ -54,6 +54,7 @@ internal sealed class FullDataPacket
     // TODO: Try to detect this. (Would need a Qu-16 or similar to validate...)
     public int InputCount => 32;
 
+    // TODO: Support more mixes (via dSnake expansion).
     public int MixCount => 7; // Treat 5-6, 7-8, 9-10 as one output each
 
     internal FullDataPacket(QuGeneralPacket packet)
