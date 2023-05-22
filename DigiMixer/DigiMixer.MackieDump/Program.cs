@@ -9,7 +9,7 @@ if (args.Length == 0)
     Console.WriteLine("Dump options: <file>");
     Console.WriteLine("Convert options: <input file> <client address> <mixer address> <output file>");
     Console.WriteLine("Listen options: <input file> <client address> <mixer address> <output file>");
-    Console.WriteLine("Info options: <client address> <mixer address> <output file> <info numbers ...>");
+    Console.WriteLine("Info options: <mixer address> <port - typically 50001> <output file> <info numbers ...>");
     return;
 }
 
@@ -49,7 +49,7 @@ switch (args[0])
     case "info":
         if (args.Length < 4)
         {
-            Console.WriteLine("Info options: <client address> <mixer address> <output file> <info numbers ...>");
+            Console.WriteLine("Info options: <mixer address> <port - typically 50001> <output file> <info numbers ...>");
         }
         await InfoRequester.ExecuteAsync(args[1], int.Parse(args[2]), args[3], args.Skip(4).Select(byte.Parse).ToList());
         break;
