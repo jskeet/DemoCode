@@ -58,8 +58,7 @@ internal class DL32RProfile : IMixerProfile
     public int GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {
         int inputBase = GetInputOrigin(inputId);
-        // FIXME: Don't really know this for non-main, but this looks reasonable given the data. (Channel 1 Aux 1 at 99 = 41 + (1*3) + 55 etc)
-        int offset = outputId.IsMainOutput ? 48 : outputId.Value * 3 + 55;
+        int offset = outputId.IsMainOutput ? 8 : outputId.Value * 3 + 55;
         return inputBase + offset;
     }
 
@@ -76,7 +75,6 @@ internal class DL32RProfile : IMixerProfile
         : channelId.IsMainOutput ? 51
         : channelId.Value + 51;
 
-    // FIXME: We have no idea about this yet.
     public int GetStereoLinkAddress(ChannelId channelId) =>
         channelId.IsInput
         ? GetInputOrigin(channelId) + 0x0b
