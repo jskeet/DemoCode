@@ -90,8 +90,12 @@ public class MackieMixerApi : IMixerApi
         var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackiePacketBody.Empty);
         string? firmwareVersion = GetMixerFirmwareVersion(versionInfo);
 
+        // The way of obtaining the model name varies by model. Skip it for now.
+        string modelName = "TODO";
+        /*
         var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 0x12 }));
         string modelName = GetModelName(modelInfo);
+        */
 
         var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 3 }));
         string mixerName = GetMixerName(generalInfo);

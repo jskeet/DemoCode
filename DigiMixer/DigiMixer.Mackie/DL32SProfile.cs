@@ -12,6 +12,7 @@ internal class DL16SProfile : IMixerProfile
 
     public int InputChannelCount => 18;
     public int AuxChannelCount => 6;
+    public byte ModelNameInfoRequest => 0x12;
 
     public int GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {

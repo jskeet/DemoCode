@@ -19,4 +19,5 @@ internal class NullProfile : IMixerProfile
     public int GetMuteAddress(ChannelId channelId) => -1;
     public int GetNameAddress(ChannelId channelId) => -1;
     public int GetStereoLinkAddress(ChannelId channelId) => -1;
+    public byte ModelNameInfoRequest => 0;
 }

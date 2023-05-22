@@ -13,6 +13,7 @@ internal interface IMixerProfile
 
     int InputChannelCount { get; }
     int AuxChannelCount { get; }
+    byte ModelNameInfoRequest { get; }
 
     internal static IMixerProfile GetProfile(MackiePacket handshakePacket)
     {

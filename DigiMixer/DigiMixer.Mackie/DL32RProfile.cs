@@ -12,6 +12,7 @@ internal class DL32RProfile : IMixerProfile
 
     public int InputChannelCount => 36;
     public int AuxChannelCount => 14;
+    public byte ModelNameInfoRequest => 7;
 
     // Known addresses (decimal):
     // Mute input 1: 48
