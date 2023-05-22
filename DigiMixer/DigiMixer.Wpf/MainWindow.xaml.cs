@@ -36,6 +36,9 @@ public partial class MainWindow : Window
     private void LaunchDL16S(object sender, RoutedEventArgs e) =>
         Launch(() => new MackieMixerApi(CreateLogger("DL16S"), "192.168.1.59"));
 
+    private void LaunchDL32R(object sender, RoutedEventArgs e) =>
+        Launch(() => new MackieMixerApi(CreateLogger("DL32R"), "192.168.0.13"));
+
     private void Launch16R(object sender, RoutedEventArgs e) =>
         Launch(() => StudioLive.CreateMixerApi(CreateLogger("16R"), "192.168.1.61"));
 
