@@ -76,6 +76,8 @@ internal class QuConversions
     public static MeterLevel RawToMeterLevel(ushort raw)
     {
         var db = (raw - 0x8000) / 256.0;
+        // The meters on the Qu-SB go up to 18dB; shift to have a 0dB limit like other mixers.
+        db -= 18.0f;
         return MeterLevel.FromDb(db);
     }
 
