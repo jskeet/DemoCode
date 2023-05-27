@@ -3,6 +3,8 @@ using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Net;
 using System.Text;
 
 namespace DigiMixer.Mackie;
@@ -90,12 +92,8 @@ public class MackieMixerApi : IMixerApi
         var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackiePacketBody.Empty);
         string? firmwareVersion = GetMixerFirmwareVersion(versionInfo);
 
-        // The way of obtaining the model name varies by model. Skip it for now.
-        string modelName = "TODO";
-        /*
-        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 0x12 }));
-        string modelName = GetModelName(modelInfo);
-        */
+        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, mixerProfile.ModelNameInfoRequest }));
+        string modelName = mixerProfile.GetModelName(modelInfo);
 
         var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 3 }));
         string mixerName = GetMixerName(generalInfo);
@@ -121,13 +119,6 @@ public class MackieMixerApi : IMixerApi
                 }
             }
             return firmwareVersion;
-        }
-
-        string GetModelName(MackiePacket packet)
-        {
-            var data = packet.Body.InSequentialOrder().Data;
-            // The use of 16 here is somewhat arbitrary... there's lots we don't understand in this packet.
-            return Encoding.UTF8.GetString(data.Slice(8, 16)).TrimEnd('\0');
         }
 
         string GetMixerName(MackiePacket packet)
@@ -239,13 +230,23 @@ public class MackieMixerApi : IMixerApi
         {
             return;
         }
+        int start = body.GetInt32(0);
+        if (body.ChunkCount < 8)
+        {
+            for (int i = 0; i < body.ChunkCount - 2; i++)
+            {
+                int address = start + i;
+                var int32Value = body.GetInt32(i + 2);
+                var singleValue = body.GetSingle(i + 2);
+                Debug.WriteLine($"    {address}: {int32Value} / {singleValue}");
+            }
+        }
         uint chunk1 = body.GetUInt32(1);
         // TODO: Handle other value types.
         if ((chunk1 & 0xff00) != 0x0500)
         {
             return;
         }
-        int start = body.GetInt32(0);
         for (int i = 0; i < body.ChunkCount - 2; i++)
         {
             int address = start + i;

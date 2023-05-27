@@ -1,4 +1,6 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Mackie.Core;
+using System.Text;
 
 namespace DigiMixer.Mackie;
 
@@ -13,6 +15,9 @@ internal class DL32RProfile : IMixerProfile
     public int InputChannelCount => 36;
     public int AuxChannelCount => 14;
     public byte ModelNameInfoRequest => 7;
+
+    public string GetModelName(MackiePacket modelInfo) =>
+        Encoding.UTF8.GetString(modelInfo.Body.InSequentialOrder().Data.Slice(4)).TrimEnd('\0');
 
     // Known addresses (decimal):
     // Mute input 1: 48

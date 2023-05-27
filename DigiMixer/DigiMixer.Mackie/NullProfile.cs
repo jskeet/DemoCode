@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Mackie.Core;
 
 namespace DigiMixer.Mackie;
 
@@ -20,4 +21,5 @@ internal class NullProfile : IMixerProfile
     public int GetNameAddress(ChannelId channelId) => -1;
     public int GetStereoLinkAddress(ChannelId channelId) => -1;
     public byte ModelNameInfoRequest => 0;
+    public string GetModelName(MackiePacket modelInfo) => "";    
 }

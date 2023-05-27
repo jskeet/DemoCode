@@ -95,7 +95,7 @@ below, with more information about each one in its own section afterwards.
 
 ### Subtype 0x04: version
 
-### Subtype 0x06: 
+### Subtype 0x06: message size control
 
 ### Subtype 0x0e: info
 

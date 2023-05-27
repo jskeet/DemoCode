@@ -1,4 +1,6 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Mackie.Core;
+using System.Text;
 
 namespace DigiMixer.Mackie;
 
@@ -13,6 +15,13 @@ internal class DL16SProfile : IMixerProfile
     public int InputChannelCount => 18;
     public int AuxChannelCount => 6;
     public byte ModelNameInfoRequest => 0x12;
+
+    public string GetModelName(MackiePacket modelInfo)
+    {
+        var data = modelInfo.Body.InSequentialOrder().Data;
+        // The use of 16 here is somewhat arbitrary... there's lots we don't understand in this packet.
+        return Encoding.UTF8.GetString(data.Slice(8, 16)).TrimEnd('\0');
+    }
 
     public int GetFaderAddress(ChannelId inputId, ChannelId outputId)
     {

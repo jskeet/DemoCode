@@ -29,4 +29,10 @@ internal interface IMixerProfile
         }
         return DL16SProfile.Instance;
     }
+
+    /// <summary>
+    /// Retrieves the model name given a packet requested using
+    /// <see cref="ModelNameInfoRequest"/>.
+    /// </summary>
+    string GetModelName(MackiePacket modelInfo);
 }
