@@ -3,8 +3,6 @@ using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Net;
 using System.Text;
 
 namespace DigiMixer.Mackie;
@@ -230,23 +228,13 @@ public class MackieMixerApi : IMixerApi
         {
             return;
         }
-        int start = body.GetInt32(0);
-        if (body.ChunkCount < 8)
-        {
-            for (int i = 0; i < body.ChunkCount - 2; i++)
-            {
-                int address = start + i;
-                var int32Value = body.GetInt32(i + 2);
-                var singleValue = body.GetSingle(i + 2);
-                Debug.WriteLine($"    {address}: {int32Value} / {singleValue}");
-            }
-        }
         uint chunk1 = body.GetUInt32(1);
         // TODO: Handle other value types.
         if ((chunk1 & 0xff00) != 0x0500)
         {
             return;
         }
+        int start = body.GetInt32(0);
         for (int i = 0; i < body.ChunkCount - 2; i++)
         {
             int address = start + i;
