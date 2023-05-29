@@ -84,13 +84,27 @@ internal class QuConversions
     internal static ChannelId? NetworkToChannelId(int channel) => channel switch
     {
         >= 0 and < 32 => ChannelId.Input(channel + 1),
-        >= 39 and <= 45 => ChannelId.Output(channel - 38),
+        // Mono mixes
+        >= 39 and <= 42 => ChannelId.Output(channel - 38),
+        // Stereo mixes (left channel)
+        >= 43 and <= 45 => ChannelId.Output((channel - 43) * 2 + 5),
         46 => ChannelId.MainOutputLeft,
+        // Stereo groups (left channel)
+        >= 47 and <= 50 => GroupChannelId((channel - 47) * 2 + 1),
         _ => null
     };
 
     internal static int ChannelIdToNetwork(ChannelId channel) =>
         channel.IsInput ? channel.Value - 1
         : channel.IsMainOutput ? 46
+        // Group outputs (47-50)
+        : channel.Value >= 21 && channel.Value <= 28 ? (channel.Value - 21) / 2 + 47
+        // Mix outputs
         : channel.Value + 38;
+
+    // Special channel IDs:
+    // Output 21-28: Groups
+    // Each stereo group has a separate channel, but 1-2, 3-4, 5-6, 7-8 are bonded.
+    public static ChannelId GroupChannelId(int group) => ChannelId.Output(group + 20);
+
 }

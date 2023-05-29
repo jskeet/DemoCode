@@ -48,14 +48,13 @@ internal sealed class FullDataPacket
 
     // Channel 2, mix 1 is at 0x2f00
 
-
     private readonly QuGeneralPacket packet;
 
-    // TODO: Try to detect this. (Would need a Qu-16 or similar to validate...)
+    // TODO: Try to detect these. (Would need a Qu-16 or similar to validate...)
     public int InputCount => 32;
-
-    // TODO: Support more mixes (via dSnake expansion).
-    public int MixCount => 7; // Treat 5-6, 7-8, 9-10 as one output each
+    public int MonoMixChannels => 4;
+    public int StereoMixChannels => 6;
+    public int StereoGroupChannels => 8;
 
     internal FullDataPacket(QuGeneralPacket packet)
     {
@@ -64,24 +63,36 @@ internal sealed class FullDataPacket
 
     public string? GetInputName(int channel) => GetName(InputChannelData(channel));
     public string? GetMixName(int mix) => GetName(MixChannelData(mix));
+    public string? GetGroupName(int group) => GetName(GroupChannelData(group));
     public string? GetMainName() => GetName(MainChannelData());
 
     public bool InputMuted(int channel) => Muted(InputChannelData(channel));
     public bool MainMuted() => Muted(MainChannelData());
     public bool MixMuted(int mix) => Muted(MixChannelData(mix));
-
-    public bool InputLinked(int channel) => InputChannelData(channel)[0x90] == 1;
+    public bool GroupMuted(int group) => Muted(GroupChannelData(group));
 
     public FaderLevel InputFaderLevel(int channel) => GetFaderLevel(InputChannelData(channel));
     public FaderLevel InputMixFaderLevel(int channel, int mix)
     {
         int channelOffset = 0x2e60 + (0xa0 * (channel - 1));
-        int offset = channelOffset + mix * 8 - 8;
+        int mixOffset = mix <= MonoMixChannels ? mix : (mix + 1 - MonoMixChannels) / 2 + MonoMixChannels;
+        int offset = channelOffset + mixOffset * 8 - 8;
         return RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(packet.Data.Slice(offset, 2))[0]);
     }
 
-    public FaderLevel MixFaderLevel(int mix) => GetFaderLevel(MixChannelData(mix));
+    public FaderLevel InputGroupFaderLevel(int channel, int group)
+    {
+        int channelOffset = 0x2e60 + (0xa0 * (channel - 1));
+        //byte[] bytes = packet.Data.Slice(channelOffset, 0xa0).ToArray();
+        int groupOffset = (group + 1) / 2; // Map 1-8 to 1-4
+        // Offset by 64 bytes for the regular mixes
+        int offset = channelOffset + (8 * 8) + groupOffset * 8 - 8;
+        return RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(packet.Data.Slice(offset, 2))[0]);
+    }
+
     public FaderLevel MainFaderLevel() => GetFaderLevel(MainChannelData());
+    public FaderLevel MixFaderLevel(int mix) => GetFaderLevel(MixChannelData(mix));
+    public FaderLevel GroupFaderLevel(int group) => GetFaderLevel(GroupChannelData(group));
 
     private FaderLevel GetFaderLevel(ReadOnlySpan<byte> channelData) =>
         RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(channelData.Slice(0x7e, 2))[0]);
@@ -94,8 +105,38 @@ internal sealed class FullDataPacket
     private bool Muted(ReadOnlySpan<byte> channelData) => channelData[0x88] == 1;
 
     private ReadOnlySpan<byte> InputChannelData(int channel) => ChannelData(channel - 1);
-    private ReadOnlySpan<byte> MixChannelData(int mix) => ChannelData(mix + 38);
+    private ReadOnlySpan<byte> MixChannelData(int mix) => mix <= MonoMixChannels ? ChannelData(mix + 38) : ChannelData((mix - 1) / 2 + 41);
+    private ReadOnlySpan<byte> GroupChannelData(int group) => ChannelData((group - 1) / 2 + 47);
     private ReadOnlySpan<byte> MainChannelData() => ChannelData(46);
 
     private ReadOnlySpan<byte> ChannelData(int channel) => packet.Data.Slice(0x30 + 0xc0 * channel, 0xc0);
+
+    internal MixerChannelConfiguration CreateChannelConfiguration()
+    {
+        var inputs = Enumerable.Range(1, InputCount).Select(ChannelId.Input);
+        var outputs = Enumerable.Range(1, MonoMixChannels + StereoMixChannels).Select(ChannelId.Output)
+            .Concat(Enumerable.Range(1, StereoGroupChannels).Select(GroupChannelId))
+            .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
+
+        var stereoPairs = new List<StereoPair>();
+        for (int i = 1; i <= InputCount; i += 2)
+        {
+            if (InputLinked(i))
+            {
+                stereoPairs.Add(new StereoPair(ChannelId.Input(i), ChannelId.Input(i + 1), StereoFlags.FullyIndependent));
+            }
+        }
+        for (int i = 1; i <= StereoMixChannels; i += 2)
+        {
+            stereoPairs.Add(new StereoPair(ChannelId.Output(i + MonoMixChannels), ChannelId.Output(i + MonoMixChannels + 1), StereoFlags.None));
+        }
+        for (int i = 1; i <= StereoGroupChannels; i += 2)
+        {
+            stereoPairs.Add(new StereoPair(GroupChannelId(i), GroupChannelId(i + 1), StereoFlags.None));
+        }
+        stereoPairs.Add(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
+        return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
+
+        bool InputLinked(int channel) => InputChannelData(channel)[0x90] == 1;
+    }
 }
