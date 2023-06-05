@@ -13,17 +13,16 @@ internal class Listener
     internal static async Task ExecuteAsync(string address, int port, string file)
     {
         var cts = new CancellationTokenSource();
-        var task = Listen(address, port, file, cts.Token);
+        var task = Listen(address, port, cts.Token);
         Console.WriteLine("Press return to stop listening");
         Console.ReadLine();
         cts.Cancel();
         var pc = await task;
         using var output = File.Create(file);
         pc.WriteTo(output);
-
     }
 
-    private static async Task<PacketCollection> Listen(string address, int port, string file, CancellationToken token)
+    private static async Task<PacketCollection> Listen(string address, int port, CancellationToken token)
     {
         PacketCollection pc = new PacketCollection();
         var controller = new MackieController(NullLogger.Instance, address, port);
