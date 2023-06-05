@@ -23,4 +23,6 @@ internal record MonoOrStereoPairChannelId(
     /// </summary>
     public ChannelId? RightMuteId =>
         (Flags & StereoFlags.SplitMutes) != 0 ? RightChannelId : null;
+
+    public override string ToString() => MonoOrLeftChannelId.ToString(RightChannelId);
 }

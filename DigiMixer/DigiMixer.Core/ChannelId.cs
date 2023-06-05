@@ -8,7 +8,7 @@ namespace DigiMixer.Core;
 /// <remarks>
 /// Different mixers may have different "special" channel IDs, e.g. for FX or aux.
 /// </remarks>
-public struct ChannelId
+public struct ChannelId : IEquatable<ChannelId>
 {
     public int Value { get; }
     public bool IsInput { get; }

@@ -18,4 +18,6 @@ public class InputChannel : ChannelBase, INotifyPropertyChanged
     /// The input/output mappings for this input channel, each of which has a separate fader level.
     /// </summary>
     public IReadOnlyList<InputOutputMapping> OutputMappings { get; }
+
+    public override string ToString() => ChannelIdPair.ToString();
 }

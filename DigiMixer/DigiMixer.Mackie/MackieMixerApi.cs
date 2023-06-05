@@ -21,7 +21,7 @@ public class MackieMixerApi : IMixerApi
 
     private ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> pendingChannelDataTasks = new();
 
-    private IMixerProfile mixerProfile;
+    private MixerProfile mixerProfile;
 
     private MackieController? controller;
 
@@ -48,17 +48,14 @@ public class MackieMixerApi : IMixerApi
         await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8], cancellationToken);
         var handshake = await controller.SendRequest(MackieCommand.ClientHandshake, MackiePacketBody.Empty, cancellationToken);
 
-        mixerProfile = IMixerProfile.GetProfile(handshake);
+        mixerProfile = MixerProfile.GetProfile(handshake);
         PopulateChannelValueActions();
         PopulateChannelNameActions();
 
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
-        var inputMeters = Enumerable.Range(1, mixerProfile.InputChannelCount).Select(input => (input - 1) * 7 + 0x22);
-        var mainMeters = new int[] { 0xbe, 0xbf };
-        var auxMeters = Enumerable.Range(1, mixerProfile.AuxChannelCount).Select(aux => (aux - 1) * 4 + 0xc6);
-        var meterLayout = inputMeters.Concat(mainMeters).Concat(auxMeters).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
-        //var meterLayout = Enumerable.Range(1, 221).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
+        var meters = mixerProfile.InputChannels.Select(ch => ch.MeterAddress).Concat(mixerProfile.OutputChannels.Select(ch => ch.MeterAddress));
+        var meterLayout = meters.SelectMany(meter => { var array = BitConverter.GetBytes(meter); Array.Reverse(array); return array; });
         await controller.SendRequest(MackieCommand.MeterLayout,
             new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray(),
             cancellationToken);
@@ -69,8 +66,8 @@ public class MackieMixerApi : IMixerApi
 
     public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
     {
-        var inputs = Enumerable.Range(1, mixerProfile.InputChannelCount).Select(ChannelId.Input);
-        var outputs = new[] { ChannelId.MainOutputLeft, ChannelId.MainOutputRight }.Concat(Enumerable.Range(1, 6).Select(ChannelId.Output));
+        var inputs = mixerProfile.InputChannels.Select(ch => ch.Id);
+        var outputs = mixerProfile.OutputChannels.Select(ch => ch.Id);
 
         var pendingTask = PendingChannelDataTask.Start(pendingChannelDataTasks, cancellationToken);
         await RequestChannelData(cancellationToken).ConfigureAwait(false);
@@ -145,8 +142,12 @@ public class MackieMixerApi : IMixerApi
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
         var address = mixerProfile.GetFaderAddress(inputId, outputId);
+        if (address is null)
+        {
+            return;
+        }
         var body = new MackiePacketBodyBuilder(3)
-            .SetInt32(0, address)
+            .SetInt32(0, address.Value)
             .SetInt32(1, 0x010500)
             .SetSingle(2, MackieConversions.FromFaderLevel(level))
             .Build();
@@ -157,8 +158,12 @@ public class MackieMixerApi : IMixerApi
     public async Task SetFaderLevel(ChannelId outputId, FaderLevel level)
     {
         var address = mixerProfile.GetFaderAddress(outputId);
+        if (address is null)
+        {
+            return;
+        }
         var body = new MackiePacketBodyBuilder(3)
-            .SetInt32(0, address)
+            .SetInt32(0, address.Value)
             .SetInt32(1, 0x010500)
             .SetSingle(2, MackieConversions.FromFaderLevel(level))
             .Build();
@@ -169,8 +174,12 @@ public class MackieMixerApi : IMixerApi
     public async Task SetMuted(ChannelId channelId, bool muted)
     {
         var address = mixerProfile.GetMuteAddress(channelId);
+        if (address is null)
+        {
+            return;
+        }
         var body = new MackiePacketBodyBuilder(3)
-            .SetInt32(0, address)
+            .SetInt32(0, address.Value)
             .SetInt32(1, 0x010500)
             .SetInt32(2, muted ? 1 : 0)
             .Build();
@@ -188,34 +197,24 @@ public class MackieMixerApi : IMixerApi
     {
         var body = packet.Body;
 
-        int meterCount = mixerProfile.InputChannelCount + mixerProfile.AuxChannelCount + 2;
+        int meterCount = mixerProfile.InputChannels.Count + mixerProfile.OutputChannels.Count;
 
-        // 2 chunks of header, then the following chunks values:
-        // - Input channels (pre-fader)
-        // - Main L/R (post-fader)
-        // - Aux channels (post-fader)
-        if (body.ChunkCount != meterCount)
+        // 2 chunks of header, then one meter per channel.
+        if (body.ChunkCount != meterCount + 2)
         {
             return;
         }
 
         var levels = new (ChannelId, MeterLevel)[meterCount];
-
         int index = 0;
-        for (int i = 1; i <= mixerProfile.InputChannelCount; i++)
+        foreach (var input in mixerProfile.InputChannels)
         {
-            ChannelId inputId = ChannelId.Input(i);
-            levels[index] = (inputId, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+            levels[index] = (input.Id, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
             index++;
         }
-        levels[index] = (ChannelId.MainOutputLeft, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
-        index++;
-        levels[index] = (ChannelId.MainOutputRight, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
-        index++;
-        for (int i = 1; i <= mixerProfile.AuxChannelCount; i++)
+        foreach (var output in mixerProfile.OutputChannels)
         {
-            ChannelId outputId = ChannelId.Output(i);
-            levels[index] = (outputId, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
+            levels[index] = (output.Id, MackieConversions.ToMeterLevel(body.GetSingle(index + 2)));
             index++;
         }
         receiver.ReceiveMeterLevels(levels);
@@ -238,7 +237,6 @@ public class MackieMixerApi : IMixerApi
         for (int i = 0; i < body.ChunkCount - 2; i++)
         {
             int address = start + i;
-
             if (channelValueActions.TryGetValue(address, out var action))
             {
                 action(body, i + 2);
@@ -277,27 +275,26 @@ public class MackieMixerApi : IMixerApi
     private void PopulateChannelValueActions()
     {
         channelValueActions.Clear();
-        
-        var inputIds = Enumerable.Range(1, mixerProfile.InputChannelCount).Select(ChannelId.Input).ToList();
-        var outputIds = Enumerable.Range(1, mixerProfile.AuxChannelCount).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).ToList();
 
-        foreach (var inputId in inputIds)
+        var inputs = mixerProfile.InputChannels;
+        var outputs = mixerProfile.OutputChannels;
+
+        foreach (var input in inputs)
         {
-            channelValueActions[mixerProfile.GetMuteAddress(inputId)] = (body, chunk) => receiver.ReceiveMuteStatus(inputId, body.GetInt32(chunk) != 0);
-            channelValueActions[mixerProfile.GetStereoLinkAddress(inputId)] = CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(inputId, body.GetInt32(chunk) == 1));
-            foreach (var outputId in outputIds)
+            channelValueActions[input.MuteAddress] = (body, chunk) => receiver.ReceiveMuteStatus(input.Id, body.GetInt32(chunk) != 0);
+            MaybeSet(input.StereoLinkAddress, CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(input.Id, body.GetInt32(chunk) == 1)));
+            foreach (var output in outputs)
             {
-                channelValueActions[mixerProfile.GetFaderAddress(inputId, outputId)] = (body, chunk) =>
-                    receiver.ReceiveFaderLevel(inputId, outputId, MackieConversions.ToFaderLevel(body.GetSingle(chunk)));
+                MaybeSet(input.GetFaderAddress(output),
+                    (body, chunk) => receiver.ReceiveFaderLevel(input.Id, output.Id, MackieConversions.ToFaderLevel(body.GetSingle(chunk))));
             }
         }
 
-        foreach (var outputId in outputIds)
+        foreach (var output in outputs)
         {
-            channelValueActions[mixerProfile.GetMuteAddress(outputId)] = (body, chunk) => receiver.ReceiveMuteStatus(outputId, body.GetInt32(chunk) != 0);
-            channelValueActions[mixerProfile.GetFaderAddress(outputId)] = (body, chunk) =>
-                receiver.ReceiveFaderLevel(outputId, MackieConversions.ToFaderLevel(body.GetSingle(chunk)));
-            channelValueActions[mixerProfile.GetStereoLinkAddress(outputId)] = CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(outputId, body.GetInt32(chunk) == 1));
+            MaybeSet(output.MuteAddress, (body, chunk) => receiver.ReceiveMuteStatus(output.Id, body.GetInt32(chunk) != 0));
+            MaybeSet(output.FaderAddress, (body, chunk) => receiver.ReceiveFaderLevel(output.Id, MackieConversions.ToFaderLevel(body.GetSingle(chunk))));
+            MaybeSet(output.StereoLinkAddress, CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(output.Id, body.GetInt32(chunk) == 1)));
         }
 
         ChannelValueAction CreatePendingDataAction(Action<PendingChannelDataTask, MackiePacketBody, int> action) => (body, chunk) =>
@@ -307,28 +304,42 @@ public class MackieMixerApi : IMixerApi
                 action(pendingDataTask, body, chunk);
             }
         };
+
+        void MaybeSet(int? address, ChannelValueAction action)
+        {
+            if (address is int actualAddress)
+            {
+                channelValueActions[actualAddress] = action;
+            }
+        }
     }
 
     private void PopulateChannelNameActions()
     {
         channelNameActions.Clear();
 
-        var inputIds = Enumerable.Range(1, mixerProfile.InputChannelCount).Select(ChannelId.Input).ToList();
-        var outputIds = Enumerable.Range(1, mixerProfile.AuxChannelCount).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).ToList();
-        var allIds = inputIds.Concat(outputIds);
-        foreach (var id in allIds)
+        foreach (var input in mixerProfile.InputChannels)
         {
-            channelNameActions[mixerProfile.GetNameAddress(id)] = name =>
-            {
-                string? effectiveName = name == "" ? null : name;
-                // TODO: Work out a neater place to put this.
-                if (effectiveName is null && id.IsMainOutput)
-                {
-                    effectiveName = "Main";
-                }
-                receiver.ReceiveChannelName(id, effectiveName);
-            };
+            channelNameActions[input.NameIndex] = name => receiver.ReceiveChannelName(input.Id, EmptyToNull(name));
         }
+
+        foreach (var output in mixerProfile.OutputChannels)
+        {
+            if (output.NameIndex is int nameIndex)
+            {
+                channelNameActions[nameIndex] = name => 
+                {
+                    string? effectiveName = EmptyToNull(name);
+                    if (effectiveName is null && output.Id.IsMainOutput)
+                    {
+                        effectiveName = "Main";
+                    }
+                    receiver.ReceiveChannelName(output.Id, effectiveName);
+                };
+            }
+        }
+
+        string? EmptyToNull(string text) => text == "" ? null : text;
     }
 
     private void MaybeCompleteChannelInfo(MackiePacket packet)
