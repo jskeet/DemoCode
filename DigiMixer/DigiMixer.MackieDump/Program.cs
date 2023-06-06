@@ -74,7 +74,7 @@ switch (args[0])
         await Watcher.ExecuteAsync(args[1], int.Parse(args[2]));
         break;
     default:
-    Console.WriteLine($"Unknown mode: {args[0]}");
+        Console.WriteLine($"Unknown mode: {args[0]}");
         break;
 }
 
