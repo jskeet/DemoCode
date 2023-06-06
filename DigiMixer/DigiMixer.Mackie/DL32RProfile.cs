@@ -31,8 +31,8 @@ internal class DL32RProfile : MixerProfile
     protected override int InputMeterOffset => 0; // FIXME
     protected override int InputMeterSize => 7; // FIXME
 
-    protected override int Return1StartAddress => 1601;
-    protected override int ReturnValuesSize => 88;
+    protected override int Return1StartAddress => 4263; // Verify
+    protected override int ReturnValuesSize => 120;
     protected override int ReturnMuteOffset => 7;
     protected override int ReturnStereoLinkOffset => 11;
     protected override int ReturnMainFaderOffset => 8;
