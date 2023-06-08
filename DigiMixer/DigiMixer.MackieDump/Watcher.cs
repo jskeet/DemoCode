@@ -1,5 +1,4 @@
 ﻿using DigiMixer.Mackie.Core;
-using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DigiMixer.MackieDump;

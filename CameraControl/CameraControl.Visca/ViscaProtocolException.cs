@@ -3,8 +3,6 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CameraControl.Visca
 {

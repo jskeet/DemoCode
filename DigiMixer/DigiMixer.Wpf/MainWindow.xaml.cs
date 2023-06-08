@@ -18,7 +18,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private void LaunchUi24R(object sender, RoutedEventArgs e) =>        
+    private void LaunchUi24R(object sender, RoutedEventArgs e) =>
         Launch(() => new UiHttpMixerApi(CreateLogger("Ui24r"), "192.168.1.57"));
 
     private void LaunchXR18(object sender, RoutedEventArgs e) =>

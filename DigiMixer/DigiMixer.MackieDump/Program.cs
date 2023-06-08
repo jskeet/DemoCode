@@ -1,5 +1,4 @@
 ﻿using DigiMixer.MackieDump;
-using System.Net;
 
 if (args.Length == 0)
 {

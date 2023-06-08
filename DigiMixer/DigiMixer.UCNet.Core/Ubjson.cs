@@ -86,7 +86,7 @@ internal static class Ubjson
                     default:
                         (var value, index) = ReadValue(data, index);
                         WriteValue(value);
-                        break;               
+                        break;
                 }
             }
         }

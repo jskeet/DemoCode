@@ -1,6 +1,5 @@
 ﻿using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
-using System.Text;
 
 var factory = LoggerFactory.Create(builder => builder.AddConsole().AddSystemdConsole(options => { options.UseUtcTimestamp = true; options.TimestampFormat = "yyyy-MM-dd'T'HH:mm:ss.FFFFFF'Z'"; })
     .SetMinimumLevel(LogLevel.Trace));

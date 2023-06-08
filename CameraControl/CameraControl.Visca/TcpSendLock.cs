@@ -32,7 +32,7 @@ namespace CameraControl.Visca
         public Task PostSendDelayAsync(CancellationToken cancellationToken) =>
             postSendDelay is TimeSpan delay
             ? Task.Delay(delay, cancellationToken)
-            : Task.CompletedTask;            
+            : Task.CompletedTask;
 
         public void Release() => semaphore.Release();
     }

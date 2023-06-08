@@ -6,7 +6,6 @@ using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using OscCore;
-using System.Threading;
 
 namespace DigiMixer.Osc;
 

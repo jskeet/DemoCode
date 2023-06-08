@@ -5,8 +5,6 @@
 using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using OscCore;
-using System.Net.Sockets;
-using System.Net;
 
 namespace DigiMixer.Osc;
 

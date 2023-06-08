@@ -142,7 +142,7 @@ public static class StudioLive
                 }
 
                 FaderLevel GetFaderLevel(MeterMessageRow<ushort> row, int index) =>
-                    new FaderLevel(row.GetValue(index) / 64);                    
+                    new FaderLevel(row.GetValue(index) / 64);
             }
 
             void HandleMeterLevels()

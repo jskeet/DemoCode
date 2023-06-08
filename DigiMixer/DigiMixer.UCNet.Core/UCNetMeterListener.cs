@@ -1,7 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
-using System.Net.Sockets;
 
 namespace DigiMixer.UCNet.Core;
 

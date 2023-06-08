@@ -70,7 +70,7 @@ namespace IconPlatform.Model
             {
                 return;
             }
-            
+
             int? zeroChannel = (data[0], data[1]) switch
             {
                 (0x90, var c) => c % 8,
@@ -248,12 +248,12 @@ namespace IconPlatform.Model
         private static byte ButtonToMidi(int zeroChannel, ButtonType type) =>
             type switch
             {
-                ButtonType.Record => (byte)zeroChannel,
-                ButtonType.Solo => (byte)(0x08 + zeroChannel),
-                ButtonType.Mute => (byte)(0x10 + zeroChannel),
-                ButtonType.Sel => (byte)(0x18 + zeroChannel),
-                ButtonType.Knob => (byte)(0x20 + zeroChannel),
-                ButtonType.Fader => (byte)(0x60 + zeroChannel),
+                ButtonType.Record => (byte) zeroChannel,
+                ButtonType.Solo => (byte) (0x08 + zeroChannel),
+                ButtonType.Mute => (byte) (0x10 + zeroChannel),
+                ButtonType.Sel => (byte) (0x18 + zeroChannel),
+                ButtonType.Knob => (byte) (0x20 + zeroChannel),
+                ButtonType.Fader => (byte) (0x60 + zeroChannel),
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown button type")
             };
 

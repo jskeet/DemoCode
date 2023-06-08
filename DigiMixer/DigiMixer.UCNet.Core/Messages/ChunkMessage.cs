@@ -8,7 +8,7 @@ public class ChunkMessage : UCNetMessage
     public uint Offset { get; }
     public uint TotalSize { get; }
 
-    public ChunkMessage(uint totalSize, uint offset,  byte[] data, MessageMode mode) : base(mode)
+    public ChunkMessage(uint totalSize, uint offset, byte[] data, MessageMode mode) : base(mode)
     {
         TotalSize = totalSize;
         Offset = offset;

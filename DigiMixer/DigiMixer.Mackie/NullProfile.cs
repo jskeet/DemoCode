@@ -1,5 +1,4 @@
-﻿using DigiMixer.Core;
-using DigiMixer.Mackie.Core;
+﻿using DigiMixer.Mackie.Core;
 
 namespace DigiMixer.Mackie;
 

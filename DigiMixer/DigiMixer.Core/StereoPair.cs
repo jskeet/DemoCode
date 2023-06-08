@@ -23,5 +23,5 @@ public sealed class StereoPair
         Flags = flags;
     }
 
-    public override string ToString() => $"{(IsInput ? "Input" : "Output")}: {Left.Value}/{Right.Value}";    
+    public override string ToString() => $"{(IsInput ? "Input" : "Output")}: {Left.Value}/{Right.Value}";
 }

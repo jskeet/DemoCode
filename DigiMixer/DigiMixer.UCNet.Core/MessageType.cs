@@ -3,7 +3,7 @@
 public enum MessageType : ushort
 {
     KeepAlive = 'K' | ('A' << 8),
-    UdpMeters = 'U' | ('M' << 8), 
+    UdpMeters = 'U' | ('M' << 8),
     Json = 'J' | ('M' << 8),
     ParameterValue = 'P' | ('V' << 8),
     ParameterString = 'P' | ('S' << 8),

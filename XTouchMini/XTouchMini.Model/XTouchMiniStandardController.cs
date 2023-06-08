@@ -78,7 +78,7 @@ namespace XTouchMini.Model
 
         public void SetActiveLayer(Layer layer) =>
             SendMidiMessage(0xc0, (byte) (layer - 1));
-            
+
         public void SetKnobPosition(int knob, int position) =>
             SendMidiMessage(0xba, (byte) knob, (byte) position);
 

@@ -29,7 +29,7 @@ internal class MeterDisplay
     private static async Task Listen(string address, int port, int meterCount, CancellationToken token)
     {
         var controller = new MackieController(NullLogger.Instance, address, port);
-        
+
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
         controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
@@ -49,7 +49,7 @@ internal class MeterDisplay
         await controller.SendRequest(MackieCommand.BroadcastControl,
             new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 },
             cancellationToken);
-        
+
         while (!token.IsCancellationRequested)
         {
             await Task.Delay(2000);

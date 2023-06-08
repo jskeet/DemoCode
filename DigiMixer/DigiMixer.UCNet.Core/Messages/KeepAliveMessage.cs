@@ -5,7 +5,7 @@ public class KeepAliveMessage : UCNetMessage
     public KeepAliveMessage(MessageMode mode = MessageMode.FileRequest) : base(mode)
     {
     }
-    
+
     protected override int BodyLength => 0;
     public override MessageType Type => MessageType.KeepAlive;
 

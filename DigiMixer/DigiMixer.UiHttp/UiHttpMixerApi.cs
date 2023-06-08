@@ -3,9 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 
 namespace DigiMixer.UiHttp;
 
@@ -64,7 +62,7 @@ public class UiHttpMixerApi : IMixerApi
         receivingClientReadTask = receivingClient.StartReading();
         await CheckConnection(cancellationToken);
     }
-    
+
     public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
     {
         var stereoChannelStatuses = new ConcurrentDictionary<ChannelId, bool>();
@@ -93,8 +91,8 @@ public class UiHttpMixerApi : IMixerApi
             // TODO: Check that we don't have independent faders/mutes
             .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
 
-        return new MixerChannelConfiguration(inputChannelIds, outputChannelIds , stereoPairs);
-        
+        return new MixerChannelConfiguration(inputChannelIds, outputChannelIds, stereoPairs);
+
         void HandleMessage(object? sender, UiMessage message)
         {
             if (message.MessageType != UiMessage.SetDoubleMessageType ||
@@ -127,7 +125,7 @@ public class UiHttpMixerApi : IMixerApi
         stream.Write(preambleBytes, 0, preambleBytes.Length);
         await ReadHttpResponseHeaders();
         return new UiStreamClient(logger, stream);
-        
+
         async Task ReadHttpResponseHeaders()
         {
             Console.WriteLine("Reading HTTP response header");
@@ -255,7 +253,7 @@ public class UiHttpMixerApi : IMixerApi
         int linesIn = rawData[Header.LinesIn];
 
         // Just check that it looks okay...
-        if (rawData.Length != Header.Length + 
+        if (rawData.Length != Header.Length +
             (inputs + media + linesIn) * InputsMediaLinesIn.Length +
             (subgroups + fx) * SubgroupsFx.Length +
             (aux + mains) * AuxMains.Length)
@@ -269,7 +267,7 @@ public class UiHttpMixerApi : IMixerApi
         int index = 0;
 
         int inputsStart = Header.Length;
-        for (int i = 0;  i < inputs; i++)
+        for (int i = 0; i < inputs; i++)
         {
             var rawLevel = rawData[inputsStart + i * InputsMediaLinesIn.Length + InputsMediaLinesIn.Pre];
             var meterLevel = ToMeterLevel(rawLevel);

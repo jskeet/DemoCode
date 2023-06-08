@@ -19,7 +19,7 @@ internal class MackieInputChannel
     private int? Fx1FaderAddress { get; }
 
     internal MackieInputChannel(ChannelId channelId, int meterAddress, int nameIndex,
-        int muteAddress, int? stereoLinkAddress,  int mainFaderAddress, int aux1FaderAddress, int? fx1FaderAddress)
+        int muteAddress, int? stereoLinkAddress, int mainFaderAddress, int aux1FaderAddress, int? fx1FaderAddress)
     {
         Id = channelId;
         MeterAddress = meterAddress;

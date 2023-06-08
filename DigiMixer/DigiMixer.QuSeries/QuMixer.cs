@@ -1,7 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.QuSeries.Core;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -289,7 +288,7 @@ internal class QuMixerApi : IMixerApi
     private void HandleValuePacket(QuValuePacket packet)
     {
         // logger.LogInformation("Received value packet: Client: {client}; Section: {section}; Address: {address}; Value:{value}", packet.ClientId, packet.Section, $"0x{packet.Address:x8}", packet.RawValue);
-        
+
         // Fader and mute
         if (packet.Section == 4 && (packet.Address & 0xff_00_00_00) == 0x07_00_00_00)
         {

@@ -1,7 +1,4 @@
-﻿using DigiMixer;
-using DigiMixer.Osc;
-using DigiMixer.Scratchpad;
-using DigiMixer.UiHttp;
+﻿using DigiMixer.UiHttp;
 using Microsoft.Extensions.Logging;
 
 // Note: it takes about 100 milliseconds to get all the info.

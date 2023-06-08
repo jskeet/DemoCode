@@ -327,7 +327,7 @@ public class MackieMixerApi : IMixerApi
         {
             if (output.NameIndex is int nameIndex)
             {
-                channelNameActions[nameIndex] = name => 
+                channelNameActions[nameIndex] = name =>
                 {
                     string? effectiveName = EmptyToNull(name);
                     if (effectiveName is null && output.Id.IsMainOutput)

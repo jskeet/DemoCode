@@ -1,6 +1,4 @@
-﻿using System.Reflection.PortableExecutable;
-
-namespace DigiMixer.UCNet.Core.Messages;
+﻿namespace DigiMixer.UCNet.Core.Messages;
 
 public class FileDataMessage : UCNetMessage
 {

@@ -15,7 +15,7 @@ public static class UiAddresses
     public static ChannelId PlayerRight { get; } = ChannelId.Input(PlayerRightValue);
 
     internal const string StereoIndex = "stereoIndex";
-    
+
     internal const string AuxPrefix = "a.";
     private const string PlayerLeftPrefix = "p.0";
     private const string PlayerRightPrefix = "p.1";

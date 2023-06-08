@@ -2,8 +2,8 @@
 using DigiMixer.Diagnostics;
 using DigiMixer.Mackie.Core;
 using Google.Protobuf;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 
 namespace DigiMixer.MackieDump;
 

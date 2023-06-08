@@ -49,7 +49,7 @@ namespace CameraControl.Visca
             // On Minrray cameras, connections fail immediately after PowerOff, so we retry here for a bit.
             await RetryWithConstantBackoff(async token => { await PowerOn(token).ConfigureAwait(false); return 0; },
                 attempts: 10, perOperationTimeout: TimeSpan.FromSeconds(1), delay: TimeSpan.FromSeconds(1));
-            
+
             // Keep trying to get the power status until we can actually do so. This can take a few attempts.
             // Note that we don't actually try to validate that the power status is "on".
             var status = await RetryWithConstantBackoff(GetPowerStatus, attempts: 20, perOperationTimeout: TimeSpan.FromSeconds(1), delay: TimeSpan.FromSeconds(2));

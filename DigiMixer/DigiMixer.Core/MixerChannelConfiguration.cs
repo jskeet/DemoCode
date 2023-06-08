@@ -21,7 +21,7 @@ public sealed class MixerChannelConfiguration
     /// The stereo pairings of input or output channels.
     /// </summary>
     public IReadOnlyList<StereoPair> StereoPairs { get; }
-    
+
     public MixerChannelConfiguration(
         IEnumerable<ChannelId> inputChannels,
         IEnumerable<ChannelId> outputChannels,
@@ -30,5 +30,5 @@ public sealed class MixerChannelConfiguration
         InputChannels = inputChannels.ToList().AsReadOnly();
         OutputChannels = outputChannels.ToList().AsReadOnly();
         StereoPairs = stereoPairs.ToList().AsReadOnly();
-    }        
+    }
 }

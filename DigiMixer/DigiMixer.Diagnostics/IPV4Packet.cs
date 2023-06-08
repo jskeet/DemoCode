@@ -49,7 +49,7 @@ public class IPV4Packet
         IPAddress destAddress = new IPAddress(dataSpan.Slice(30, 4));
         int sourcePort = ReadUInt16(34);
         int destPort = ReadUInt16(36);
-        
+
         int dataOffset;
         int dataLength;
         if (type == ProtocolType.Udp)
