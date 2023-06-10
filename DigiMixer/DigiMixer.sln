@@ -44,6 +44,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protocols", "Protocols", "{
 		Protocols\mackie.md = Protocols\mackie.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Ssc", "DigiMixer.Ssc\DigiMixer.Ssc.csproj", "{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Tests", "DigiMixer.Tests\DigiMixer.Tests.csproj", "{2B6225BE-5E46-422B-B365-B5FCA746545D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +126,14 @@ Global
 		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F479E07-BBED-4F80-93D4-A55154861E6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
