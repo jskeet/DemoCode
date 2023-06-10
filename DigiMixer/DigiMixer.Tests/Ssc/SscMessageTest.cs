@@ -21,7 +21,7 @@ public class SscMessageTest
     public void ToJson_NestedAddress()
     {
         var message = new SscMessage("/a/b/c");
-        var json = "{'a': { 'b': {'c': null } } }";
+        var json = """{"a": { "b": {"c": null } } }""";
         AssertJson(json, message.ToJson());
     }
 
@@ -37,14 +37,14 @@ public class SscMessageTest
     public void ToJson_Values()
     {
         var message = new SscMessage(new SscProperty("/a/b1", 1.5), new SscProperty("/a/b2", "test"));
-        var json = "{'a': { 'b1': 1.5, 'b2': 'test' } }";
+        var json = """{"a": { "b1": 1.5, "b2": "test" } }""";
         AssertJson(json, message.ToJson());
     }
 
     [Test]
     public void ParseJson()
     {
-        var message = FromSingleQuotesJson("{'a': { 'b1': 1.5, 'b2': 'test' } }");
+        var message = SscMessage.FromJson("""{"a": { "b1": 1.5, "b2": "test" } }""");
         var expected = new[]
         {
             new SscProperty("/a/b1", 1.5),
@@ -91,13 +91,14 @@ public class SscMessageTest
     public void ParseJson_ObservedErrors()
     {
         // Actual response from a request...
-        var message = FromSingleQuotesJson(@"
+        var message = SscMessage.FromJson("""
         {
-          'osc': {
-            'error':[{'abc':[404,{'desc':'address not found'}], 'mates':{ 'tx1':{ 'battery':{ 'xyz':[404,{ 'desc':'address not found'}],'type':[424,{ 'desc':'failed dependency'}]} } } }]
+          "osc": {
+            "error":[{"abc":[404,{"desc":"address not found"}], "mates":{ "tx1":{ "battery":{ "xyz":[404,{ "desc":"address not found"}],"type":[424,{ "desc":"failed dependency"}]} } } }]
            },
-          'device':{ 'name':'EWDXEM2'}
-        }");
+          "device":{ "name":"EWDXEM2"}
+        }
+        """);
 
         // The error address still shows up as a property; Errors is just a convenience.
         CollectionAssert.Contains(message.Properties, new SscProperty("/device/name", "EWDXEM2"));
@@ -116,12 +117,13 @@ public class SscMessageTest
     public void ParseJson_MultipleTopLevelErrors()
     {
         // We haven't seen an example with the "error" array having multiple elements, but 
-        var message = FromSingleQuotesJson(@"
+        var message = SscMessage.FromJson("""
         {
-          'osc': {
-            'error':[{'abc':[404,{'desc':'address not found'}]}, {'x':{ 'y':[404,{ 'desc':'address not found'}]} }]
+          "osc": {
+            "error":[{"abc":[404,{"desc":"address not found"}]}, {"x":{ "y":[404,{ "desc":"address not found"}]} }]
            }
-        }");
+        }
+        """);
 
         var expected = new[]
         {
@@ -135,12 +137,13 @@ public class SscMessageTest
     public void ParseJson_PartialErrors()
     {
         // We've never seen this, but it could happen... assert reasonable behavior
-        var message = FromSingleQuotesJson(@"
+        var message = SscMessage.FromJson("""
         {
-          'osc': {
-            'error':[{'e1':[404]}, {'e2':[404, {'name':'not a description'}]}, {'e3':[404, 'not an object']}]
+          "osc": {
+            "error":[{"e1":[404]}, {"e2":[404, {"name":"not a description"}]}, {"e3":[404, "not an object"]}]
            }
-        }");
+        }
+        """);
 
         var expected = new[]
         {
@@ -156,12 +159,13 @@ public class SscMessageTest
     {
         // We've never seen this, but it could happen... these errors are so malformed
         // that we ignorem.
-        var message = FromSingleQuotesJson(@"
+        var message = SscMessage.FromJson("""
         {
-          'osc': {
-            'error':[{'e1':['not a code']}, {'e2':'not an array'}, {'e3':[]}]
+          "osc": {
+            "error":[{"e1":["not a code"]}, {"e2":"not an array"}, {"e3":[]}]
            }
-        }");
+        }
+        """);
 
         Assert.That(message.Errors, Is.Empty);
     }
@@ -171,27 +175,22 @@ public class SscMessageTest
     {
         // We've never seen this, but it could happen... these errors are so malformed
         // that we ignorem.
-        var message = FromSingleQuotesJson(@"
+        var message = SscMessage.FromJson("""
         {
-          'osc': {
-            'error':'not an array'
+          "osc": {
+            "error":"not an array"
            }
-        }");
+        }
+        """);
 
         Assert.That(message.Errors, Is.Empty);
     }
 
-    private static SscMessage FromSingleQuotesJson(string json) =>
-        SscMessage.FromJson(SingleQuotesToDouble(json));
-
     private static void AssertJson(string expectedJson, string actualJson)
     {
-        expectedJson = SingleQuotesToDouble(expectedJson);
         JObject expectedObj = JObject.Parse(expectedJson);
         JObject actualObj = JObject.Parse(actualJson);
 
         Assert.That(actualObj.ToString(), Is.EqualTo(expectedObj.ToString()));
     }
-
-    private static string SingleQuotesToDouble(string text) => text.Replace('\'', '"');
 }
