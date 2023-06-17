@@ -22,82 +22,93 @@ internal class UiMessage
     public string? Value { get; }
     public double DoubleValue => double.Parse(Value!, CultureInfo.InvariantCulture);
     public bool BoolValue => Value == "1";
+    // The length of the message, including the terminating \n
+    public int Length { get; }
 
-    private UiMessage(string messageType, string? address, string? value)
+    private UiMessage(string messageType, string? address, string? value, int? length)
     {
+        var actualLength = length ?? ComputeLength(messageType, address, value);
         Address = address;
         MessageType = messageType;
         Value = value;
+        Length = actualLength;
     }
 
-    internal static UiMessage Parse(byte[] buffer, int start, int length)
+    /// <summary>
+    /// Parses a line of data, which should not include the trailing \n
+    /// </summary>
+    internal static UiMessage Parse(ReadOnlySpan<byte> data)
     {
+        int messageLength = data.Length + 1;
         // Formats:
         // type
         // type^address^value
         // type^value
 
-        int end = start + length;
-        int endOfType = FindNextCaret(start);
+        int endOfType = data.IndexOf((byte) '^');
         string type;
         if (endOfType == -1)
         {
-            type = Encoding.ASCII.GetString(buffer, start, end - start);
-            return new UiMessage(type, null, null);
+            type = Encoding.ASCII.GetString(data);
+            return new UiMessage(type, null, null, messageLength);
         }
-        type = Encoding.ASCII.GetString(buffer, start, endOfType - start);
+        type = Encoding.ASCII.GetString(data.Slice(0, endOfType));
+        data = data.Slice(endOfType + 1);
 
-        int startOfAddressOrValue = endOfType + 1;
-        int endOfAddressOrValue = FindNextCaret(startOfAddressOrValue);
+        int endOfAddressOrValue = data.IndexOf((byte) '^');
         if (endOfAddressOrValue == -1)
         {
-            string valueWithoutAddress = Encoding.ASCII.GetString(buffer, startOfAddressOrValue, end - startOfAddressOrValue);
-            return new UiMessage(type, null, valueWithoutAddress);
+            string valueWithoutAddress = Encoding.ASCII.GetString(data);
+            return new UiMessage(type, null, valueWithoutAddress, messageLength);
         }
-        string address = Encoding.ASCII.GetString(buffer, startOfAddressOrValue, endOfAddressOrValue - startOfAddressOrValue);
-        int startOfValue = endOfAddressOrValue + 1;
-        string value = Encoding.ASCII.GetString(buffer, startOfValue, end - startOfValue);
-        return new UiMessage(type, address, value);
-
-        int FindNextCaret(int current)
-        {
-            for (int i = current; i < end; i++)
-            {
-                if (buffer[i] == '^')
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
+        string address = Encoding.ASCII.GetString(data.Slice(0, endOfAddressOrValue));
+        data = data.Slice(endOfAddressOrValue + 1);
+        string value = Encoding.ASCII.GetString(data);
+        return new UiMessage(type, address, value, messageLength);
     }
 
-    internal static UiMessage AliveMessage { get; } = new UiMessage(AliveType, null, null);
-    internal static UiMessage InitMessage { get; } = new UiMessage(InitType, null, null);
+    internal static UiMessage AliveMessage { get; } = new UiMessage(AliveType, null, null, null);
+    internal static UiMessage InitMessage { get; } = new UiMessage(InitType, null, null, null);
 
     internal static UiMessage CreateSetMessage(string address, bool value) =>
-        new UiMessage(SetDoubleMessageType, address, value ? "1" : "0");
+        new UiMessage(SetDoubleMessageType, address, value ? "1" : "0", null);
 
     internal static UiMessage CreateSetMessage(string address, double value) =>
-        new UiMessage(SetDoubleMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture));
+        new UiMessage(SetDoubleMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture), null);
 
-    internal int WriteTo(byte[] buffer)
+    internal byte[] ToByteArray()
     {
-        Encoding.ASCII.GetBytes(MessageType, 0, MessageType.Length, buffer, 0);
-        int length = MessageType.Length;
+        var array = new byte[Length];
+        Encoding.ASCII.GetBytes(MessageType, 0, MessageType.Length, array, 0);
+        int index = MessageType.Length;
         if (Address is string address)
         {
-            buffer[length++] = (byte) '^';
-            Encoding.ASCII.GetBytes(address, 0, address.Length, buffer, length);
-            length += address.Length;
+            array[index++] = (byte) '^';
+            Encoding.ASCII.GetBytes(address, 0, address.Length, array, index);
+            index += address.Length;
         }
         if (Value is string value)
         {
-            buffer[length++] = (byte) '^';
-            Encoding.ASCII.GetBytes(value, 0, value.Length, buffer, length);
-            length += value.Length;
+            array[index++] = (byte) '^';
+            Encoding.ASCII.GetBytes(value, 0, value.Length, array, index);
+            index += value.Length;
         }
-        buffer[length++] = (byte) '\n';
+        array[index++] = (byte) '\n';
+        return array;
+    }
+
+    private static int ComputeLength(string messageType, string? address, string? value)
+    {
+        int length = messageType.Length;
+        if (address is not null)
+        {
+            length += address.Length + 1;
+        }
+        if (value is not null)
+        {
+            length += value.Length + 1;
+        }
+        length++; // Trailing \n
         return length;
     }
 

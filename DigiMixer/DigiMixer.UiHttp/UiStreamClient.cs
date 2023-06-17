@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DigiMixer.Core;
+using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.UiHttp;
 internal sealed class UiStreamClient : IUiClient
@@ -8,7 +9,6 @@ internal sealed class UiStreamClient : IUiClient
     private readonly ILogger logger;
     private readonly Stream stream;
     private readonly CancellationTokenSource cts;
-    private byte[] writeBuffer;
 
     public event EventHandler<UiMessage>? MessageReceived;
 
@@ -17,8 +17,6 @@ internal sealed class UiStreamClient : IUiClient
         this.logger = logger;
         this.stream = stream;
         cts = new CancellationTokenSource();
-        // TODO: Check what the actual maximum buffer size is that we need.
-        writeBuffer = new byte[256];
     }
 
     public async Task Send(UiMessage message, CancellationToken cancellationToken)
@@ -27,75 +25,48 @@ internal sealed class UiStreamClient : IUiClient
         {
             logger.LogTrace("Sending message: {message}", message);
         }
-        int messageSize = message.WriteTo(writeBuffer);
+        var buffer = message.ToByteArray();
         // TODO: Can we handle overlapping calls?
-        await stream.WriteAsync(writeBuffer, 0, messageSize, cancellationToken);
+        await stream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
     }
 
     public async Task StartReading()
     {
         byte[] buffer = new byte[8192];
-        int bufferPosition = 0;
+        var messageProcessor = new MessageProcessor<UiMessage>(ParseMessage, message => message.Length, ProcessMessage, MaxBufferSize);
 
         try
         {
             while (!cts.IsCancellationRequested)
             {
-                // TODO: Generalize QuPacketBuffer and reuse.
-                int bytesRead = await stream.ReadAsync(buffer, bufferPosition, buffer.Length - bufferPosition, cts.Token);
-                int newBufferPosition = bufferPosition + bytesRead;
-                int messageStart = 0;
-                // Check if we've reached the end of one or more messages.
-                for (int i = bufferPosition; i < newBufferPosition; i++)
+                int bytesRead = await stream.ReadAsync(buffer, cts.Token);
+                if (bytesRead == 0)
                 {
-                    if (buffer[i] == '\n')
-                    {
-                        // Only parse the message if we have a message handler.
-                        if (MessageReceived is EventHandler<UiMessage> handler)
-                        {
-                            var message = UiMessage.Parse(buffer, messageStart, i - messageStart);
-                            if (logger.IsEnabled(LogLevel.Trace))
-                            {
-                                logger.LogTrace("Processing message: {message}", message);
-                            }
-
-                            handler.Invoke(this, message);
-                        }
-                        messageStart = i + 1;
-                    }
+                    throw new InvalidOperationException("Unexpected TCP stream termination");
                 }
-
-                // If we've got to the end, just start writing over the buffer from the start.
-                if (messageStart == newBufferPosition)
-                {
-                    bufferPosition = 0;
-                }
-                // If we haven't found a message yet, we can keep writing without any copying.
-                else if (messageStart == 0)
-                {
-                    bufferPosition = newBufferPosition;
-                }
-                else if (messageStart != 0)
-                {
-                    int remainingLength = newBufferPosition - messageStart;
-                    Buffer.BlockCopy(buffer, messageStart, buffer, 0, remainingLength);
-                    bufferPosition = remainingLength;
-                }
-                if (bufferPosition == buffer.Length)
-                {
-                    var newBufferSize = buffer.Length * 2;
-                    if (newBufferSize > MaxBufferSize)
-                    {
-                        throw new InvalidDataException("Mixer sent too much data without a newline");
-                    }
-                    Array.Resize(ref buffer, newBufferSize);
-                }
+                messageProcessor.Process(buffer.AsSpan().Slice(0, bytesRead));
             }
         }
         catch when (cts.IsCancellationRequested)
         {
             // Swallow any errors due to disposal.
         }
+    }
+
+    private UiMessage? ParseMessage(ReadOnlySpan<byte> data)
+    {
+        var endOfLine = data.IndexOf((byte) '\n');
+        return endOfLine == -1 ? null : UiMessage.Parse(data.Slice(0, endOfLine));
+    }
+
+    private void ProcessMessage(UiMessage message)
+    {
+        if (logger.IsEnabled(LogLevel.Trace))
+        {
+            logger.LogTrace("Processing message: {message}", message);
+        }
+
+        MessageReceived?.Invoke(this, message);
     }
 
     public void Dispose()
