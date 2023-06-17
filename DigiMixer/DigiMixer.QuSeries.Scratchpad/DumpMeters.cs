@@ -20,14 +20,14 @@ internal class DumpMeters
         api.Dispose();
     }
 
-    static void LogMeter(QuGeneralPacket packet)
+    static void LogMeter(QuGeneralMessage message)
     {
-        if (!packet.HasNonZeroData())
+        if (!message.HasNonZeroData())
         {
             return;
         }
-        Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} Packet: Type={packet.Type}, Length={packet.Data.Length}");
-        var lines = Hex.ConvertAndSplit(packet.Data, 20);
+        Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} Message: Type={message.Type}, Length={message.Data.Length}");
+        var lines = Hex.ConvertAndSplit(message.Data, 20);
         foreach (var line in lines)
         {
             Console.WriteLine(line);

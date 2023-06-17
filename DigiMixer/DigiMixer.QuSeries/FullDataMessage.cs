@@ -11,7 +11,7 @@ using static QuConversions;
 /// A wrapper around the "full data" response, providing access to semantic aspects
 /// of the response.
 /// </summary>
-internal sealed class FullDataPacket
+internal sealed class FullDataMessage
 {
 
     // Layout:
@@ -48,7 +48,7 @@ internal sealed class FullDataPacket
 
     // Channel 2, mix 1 is at 0x2f00
 
-    private readonly QuGeneralPacket packet;
+    private readonly QuGeneralMessage message;
 
     // TODO: Try to detect these. (Would need a Qu-16 or similar to validate...)
     public int InputCount => 32;
@@ -56,9 +56,9 @@ internal sealed class FullDataPacket
     public int StereoMixChannels => 6;
     public int StereoGroupChannels => 8;
 
-    internal FullDataPacket(QuGeneralPacket packet)
+    internal FullDataMessage(QuGeneralMessage message)
     {
-        this.packet = packet;
+        this.message = message;
     }
 
     public string? GetInputName(int channel) => GetName(InputChannelData(channel));
@@ -77,17 +77,17 @@ internal sealed class FullDataPacket
         int channelOffset = 0x2e60 + (0xa0 * (channel - 1));
         int mixOffset = mix <= MonoMixChannels ? mix : (mix + 1 - MonoMixChannels) / 2 + MonoMixChannels;
         int offset = channelOffset + mixOffset * 8 - 8;
-        return RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(packet.Data.Slice(offset, 2))[0]);
+        return RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(message.Data.Slice(offset, 2))[0]);
     }
 
     public FaderLevel InputGroupFaderLevel(int channel, int group)
     {
         int channelOffset = 0x2e60 + (0xa0 * (channel - 1));
-        //byte[] bytes = packet.Data.Slice(channelOffset, 0xa0).ToArray();
+        // byte[] bytes = message.Data.Slice(channelOffset, 0xa0).ToArray();
         int groupOffset = (group + 1) / 2; // Map 1-8 to 1-4
         // Offset by 64 bytes for the regular mixes
         int offset = channelOffset + (8 * 8) + groupOffset * 8 - 8;
-        return RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(packet.Data.Slice(offset, 2))[0]);
+        return RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(message.Data.Slice(offset, 2))[0]);
     }
 
     public FaderLevel MainFaderLevel() => GetFaderLevel(MainChannelData());
@@ -109,7 +109,7 @@ internal sealed class FullDataPacket
     private ReadOnlySpan<byte> GroupChannelData(int group) => ChannelData((group - 1) / 2 + 47);
     private ReadOnlySpan<byte> MainChannelData() => ChannelData(46);
 
-    private ReadOnlySpan<byte> ChannelData(int channel) => packet.Data.Slice(0x30 + 0xc0 * channel, 0xc0);
+    private ReadOnlySpan<byte> ChannelData(int channel) => message.Data.Slice(0x30 + 0xc0 * channel, 0xc0);
 
     internal MixerChannelConfiguration CreateChannelConfiguration()
     {

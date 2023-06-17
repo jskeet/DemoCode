@@ -1,9 +1,9 @@
 ﻿namespace DigiMixer.QuSeries.Core;
 
 /// <summary>
-/// A general-purpose packet from/to a Qu mixer, with a type and arbitrary-length data.
+/// A general-purpose message from/to a Qu mixer, with a type and arbitrary-length data.
 /// </summary>
-public class QuGeneralPacket : QuControlPacket
+public class QuGeneralMessage : QuControlMessage
 {
     public byte Type { get; }
     private readonly byte[] data;
@@ -11,7 +11,7 @@ public class QuGeneralPacket : QuControlPacket
 
     public override int Length => data.Length + 4;
 
-    internal QuGeneralPacket(byte type, byte[] data)
+    internal QuGeneralMessage(byte type, byte[] data)
     {
         Type = type;
         this.data = data;
@@ -19,13 +19,13 @@ public class QuGeneralPacket : QuControlPacket
 
     public override byte[] ToByteArray()
     {
-        var packet = new byte[Length];
-        packet[0] = 0x7f;
-        packet[1] = Type;
-        packet[2] = (byte) (data.Length & 0xff);
-        packet[3] = (byte) (data.Length >> 8);
-        data.CopyTo(packet.AsSpan().Slice(4));
-        return packet;
+        var message = new byte[Length];
+        message[0] = 0x7f;
+        message[1] = Type;
+        message[2] = (byte) (data.Length & 0xff);
+        message[3] = (byte) (data.Length >> 8);
+        data.CopyTo(message.AsSpan().Slice(4));
+        return message;
     }
 
     private const int FullDataLength = 10;

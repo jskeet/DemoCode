@@ -1,24 +1,24 @@
 ﻿namespace DigiMixer.QuSeries.Core;
 
 /// <summary>
-/// A packet sent to or from a Qu mixer over TCP.
+/// A message sent to or from a Qu mixer over TCP.
 /// </summary>
-public abstract class QuControlPacket
+public abstract class QuControlMessage
 {
     /// <summary>
-    /// The total packet length on the wire.
+    /// The total message length on the wire.
     /// </summary>
     public abstract int Length { get; }
 
-    public static QuControlPacket Create(byte type, byte[] data) => new QuGeneralPacket(type, data);
+    public static QuControlMessage Create(byte type, byte[] data) => new QuGeneralMessage(type, data);
 
-    public static QuControlPacket? TryParse(ReadOnlySpan<byte> data)
+    public static QuControlMessage? TryParse(ReadOnlySpan<byte> data)
     {
         if (data.Length < 4)
         {
             return null;
         }
-        // Variable length packet
+        // Variable length message
         if (data[0] == 0x7f)
         {
             byte type = data[1];
@@ -27,16 +27,16 @@ public abstract class QuControlPacket
             {
                 return null;
             }
-            return new QuGeneralPacket(type, data.Slice(4, dataLength).ToArray());
+            return new QuGeneralMessage(type, data.Slice(4, dataLength).ToArray());
         }
-        // Fixed length packet
+        // Fixed length message
         else if (data[0] == 0xf7)
         {
             if (data.Length < 9)
             {
                 return null;
             }
-            return new QuValuePacket(data.Slice(1, 8).ToArray());
+            return new QuValueMessage(data.Slice(1, 8).ToArray());
         }
         else
         {

@@ -28,15 +28,15 @@ class DecodeWireshark
 
         Console.WriteLine($"Control packets: {controlPackets.Count}");
 
-        var clientProcessor = new MessageProcessor<QuControlPacket>(
-            QuControlPacket.TryParse,
-            packet => packet.Length,
-            quPacket => LogPacket("Mixer->Client", quPacket),
+        var clientProcessor = new MessageProcessor<QuControlMessage>(
+            QuControlMessage.TryParse,
+            message => message.Length,
+            quMessage => LogMessage("Mixer->Client", quMessage),
             65540);
-        var mixerProcessor = new MessageProcessor<QuControlPacket>(
-            QuControlPacket.TryParse,
-            packet => packet.Length,
-            quPacket => LogPacket("Client->Mixer", quPacket),
+        var mixerProcessor = new MessageProcessor<QuControlMessage>(
+            QuControlMessage.TryParse,
+            message => message.Length,
+            quMessage => LogMessage("Client->Mixer", quMessage),
             65540);
 
         foreach (var packet in controlPackets)
@@ -46,7 +46,7 @@ class DecodeWireshark
             processor.Process(packet.Data);
         }
 
-        void LogPacket(string description, QuControlPacket packet) => Console.Write(packet);
+        void LogMessage(string description, QuControlMessage message) => Console.Write(message);
 
         bool ClientMixerPacket(IPV4Packet packet) =>
             (packet.Source.Address.Equals(clientAddr) || packet.Source.Address.Equals(mixerAddr)) &&

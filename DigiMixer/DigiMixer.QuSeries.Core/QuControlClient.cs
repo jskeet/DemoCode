@@ -5,34 +5,34 @@ namespace DigiMixer.QuSeries.Core;
 
 public sealed class QuControlClient : TcpControllerBase
 {
-    public event EventHandler<QuControlPacket>? PacketReceived;
+    public event EventHandler<QuControlMessage>? MessageReceived;
 
-    private MessageProcessor<QuControlPacket> processor;
+    private MessageProcessor<QuControlMessage> processor;
 
     public QuControlClient(ILogger logger, string host, int port) : base(logger, host, port)
     {
-        processor = new MessageProcessor<QuControlPacket>(
-            QuControlPacket.TryParse,
-            packet => packet.Length,
-            ProcessPacket,
+        processor = new MessageProcessor<QuControlMessage>(
+            QuControlMessage.TryParse,
+            message => message.Length,
+            ProcessMessage,
             65540);
     }
 
-    public async Task SendAsync(QuControlPacket packet, CancellationToken cancellationToken)
+    public async Task SendAsync(QuControlMessage message, CancellationToken cancellationToken)
     {
-        var data = packet.ToByteArray();
+        var data = message.ToByteArray();
         if (Logger.IsEnabled(LogLevel.Trace))
         {
-            Logger.LogTrace("Sending packet: {packet}", packet);
+            Logger.LogTrace("Sending message: {message}", message);
         }
         await Send(data, cancellationToken);
     }
 
     protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
 
-    private void ProcessPacket(QuControlPacket packet)
+    private void ProcessMessage(QuControlMessage message)
     {
-        Logger.LogTrace("Received packet: {packet}", packet);
-        PacketReceived?.Invoke(this, packet);
+        Logger.LogTrace("Received message: {message}", message);
+        MessageReceived?.Invoke(this, message);
     }
 }

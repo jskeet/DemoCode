@@ -25,81 +25,81 @@ internal class ConnectClient
         tcpClient.Connect(address, 51326);
 
         int? mixerUdpPort = null;
-        var action = new Action<QuControlPacket>(LogPacket) + new Action<QuControlPacket>(AssignUdpPort);
+        var action = new Action<QuControlMessage>(LogMessage) + new Action<QuControlMessage>(AssignUdpPort);
 
         // We send keepalive messages via UDP.
         var udpLoop = StartUdpLoop();
         var loop = StartLoop(action);
         var stream = tcpClient.GetStream();
 
-        //var packet1 = QuPacket.Create(type: 0, new byte[] { (byte) (port & 0xff), (byte) (port >> 8) });
-        //packet1.WriteTo(stream);
+        //var message1 = QuMessage.Create(type: 0, new byte[] { (byte) (port & 0xff), (byte) (port >> 8) });
+        //message1.WriteTo(stream);
 
         //await Task.Delay(100);
-        //var packet2 = QuPacket.Create(type: 4, Decode("00 01"));
-        //packet2.WriteTo(stream);
+        //var message2 = QuMessage.Create(type: 4, Decode("00 01"));
+        //message2.WriteTo(stream);
 
 
-        var introPackets = new[]
+        var introMessages = new[]
         {
-            QuControlPacket.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) }),
+            QuControlMessage.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) }),
             // This is required in order to get notifications from other clients.
-            QuControlPacket.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f")),
-            //QuPacket.Create(type: 4, Decode("14 00 00 00  ff 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
-            //QuPacket.Create(type: 4, Decode("15 00 00 00  fa c1 23 06 04 00 00 28", "d1 04 1c 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
+            QuControlMessage.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f")),
+            //QuMessage.Create(type: 4, Decode("14 00 00 00  ff 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
+            //QuMessage.Create(type: 4, Decode("15 00 00 00  fa c1 23 06 04 00 00 28", "d1 04 1c 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
             /*
-            QuPacket.Create(type: 4, Decode("0d 00")),
-            QuPacket.Create(type: 4, Decode("06 00")),
-            QuPacket.Create(type: 4, Decode("0c 00")),
-            QuPacket.Create(type: 4, Decode("0b 00")),
-            QuPacket.Create(type: 4, Decode("08 00")),
+            QuMessage.Create(type: 4, Decode("0d 00")),
+            QuMessage.Create(type: 4, Decode("06 00")),
+            QuMessage.Create(type: 4, Decode("0c 00")),
+            QuMessage.Create(type: 4, Decode("0b 00")),
+            QuMessage.Create(type: 4, Decode("08 00")),
             // This requests full data (~25K)
-            QuPacket.Create(type: 4, Decode("02 00")),
+            QuMessage.Create(type: 4, Decode("02 00")),
             // Type 2 response to this, just 01 00
-            QuPacket.Create(type: 4, Decode("01 00 00 00  09 0e 64 90")),
+            QuMessage.Create(type: 4, Decode("01 00 00 00  09 0e 64 90")),
             // No response to this
-            QuPacket.Create(type: 4, Decode("0f 00")),
-            QuPacket.Create(type: 4, Decode("07 00")),*/
-            //QuPacket.Create(type: 4, Decode("02 00")),
-            QuControlPacket.Create(type: 4, Decode("02 00")),
+            QuMessage.Create(type: 4, Decode("0f 00")),
+            QuMessage.Create(type: 4, Decode("07 00")),*/
+            //QuMessage.Create(type: 4, Decode("02 00")),
+            QuControlMessage.Create(type: 4, Decode("02 00")),
         };
 
-        foreach (var packet in introPackets)
+        foreach (var message in introMessages)
         {
-            stream.Write(packet.ToByteArray());
+            stream.Write(message.ToByteArray());
             await Task.Delay(100);
         }
 
         /*
         
-        var p1 = QuPacket.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f"));
-        var p2 = QuPacket.Create(type: 4, Decode("14 00 00 00  ff 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00"));
-        var p3 = QuPacket.Create(type: 4, Decode("15 00 00 00  fa c1 23 06 04 00 00 28", "d1 04 1c 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00"));
+        var p1 = QuMessage.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f"));
+        var p2 = QuMessage.Create(type: 4, Decode("14 00 00 00  ff 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00"));
+        var p3 = QuMessage.Create(type: 4, Decode("15 00 00 00  fa c1 23 06 04 00 00 28", "d1 04 1c 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00"));
 
         p1.WriteTo(stream);
         p2.WriteTo(stream);
         p3.WriteTo(stream);
         
         //await Task.Delay(1000);
-        var packet3 = QuPacket.Create(type: 4, Decode("0d 00"));
-        packet3.WriteTo(stream);
+        var message3 = QuMessage.Create(type: 4, Decode("0d 00"));
+        message3.WriteTo(stream);
 
-        var packet4 = QuPacket.Create(type: 4, Decode("08 00"));
-        packet4.WriteTo(stream);
+        var message4 = QuMessage.Create(type: 4, Decode("08 00"));
+        message4.WriteTo(stream);
 
         //await Task.Delay(200);
-        var packet5 = QuPacket.Create(type: 4, Decode("02 00"));
-        packet5.WriteTo(stream);
+        var message5 = QuMessage.Create(type: 4, Decode("02 00"));
+        message5.WriteTo(stream);
         */
 
         await Task.Delay(1000);
         finished = true;
 
-        async Task StartLoop(Action<QuControlPacket> action)
+        async Task StartLoop(Action<QuControlMessage> action)
         {
-            var packetBuffer = new MessageProcessor<QuControlPacket>(
-                QuControlPacket.TryParse,
-                packet => packet.Length,
+            var messageBuffer = new MessageProcessor<QuControlMessage>(
+                QuControlMessage.TryParse,
+                message => message.Length,
                 action,
                 100_000);
             byte[] buffer = new byte[1024];
@@ -112,7 +112,7 @@ internal class ConnectClient
                     Console.WriteLine($"Receiving stream broken at {DateTime.UtcNow}");
                     return;
                 }
-                packetBuffer.Process(buffer.AsSpan().Slice(0, bytesRead));
+                messageBuffer.Process(buffer.AsSpan().Slice(0, bytesRead));
             }
         }
 
@@ -140,9 +140,9 @@ internal class ConnectClient
             }
         }
 
-        void AssignUdpPort(QuControlPacket packet)
+        void AssignUdpPort(QuControlMessage message)
         {
-            if (packet is not QuGeneralPacket { Type: 0 } qgp ||
+            if (message is not QuGeneralMessage { Type: 0 } qgp ||
                 qgp.Data.Length != 2)
             {
                 return;
@@ -152,7 +152,7 @@ internal class ConnectClient
         }
     }
 
-    static void LogPacket(QuControlPacket packet) => Console.WriteLine($"Received: {packet}");
+    static void LogMessage(QuControlMessage message) => Console.WriteLine($"Received: {message}");
 
     private static byte[] Decode(params string[] hexData)
     {

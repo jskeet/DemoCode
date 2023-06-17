@@ -10,7 +10,7 @@ public class QuMeterClient : UdpControllerBase, IDisposable
     private static readonly byte[] KeepAlive = new byte[] { 0x7f, 0x25, 0, 0 };
 
     public int LocalUdpPort { get; }
-    public event EventHandler<QuGeneralPacket>? PacketReceived;
+    public event EventHandler<QuGeneralMessage>? MessageReceived;
 
     private QuMeterClient(ILogger logger, int localUdpPort) : base(logger, localUdpPort)
     {
@@ -25,21 +25,21 @@ public class QuMeterClient : UdpControllerBase, IDisposable
     {
         if (Logger.IsEnabled(LogLevel.Trace))
         {
-            Logger.LogTrace("Sending keep-alive packet");
+            Logger.LogTrace("Sending keep-alive message");
         }
         await Send(KeepAlive, mixerUdpEndPoint, cancellationToken);
     }
 
     protected override void ProcessData(ReadOnlySpan<byte> data)
     {
-        if (QuControlPacket.TryParse(data) is not QuGeneralPacket packet)
+        if (QuControlMessage.TryParse(data) is not QuGeneralMessage message)
         {
             return;
         }
-        if (Logger.IsEnabled(LogLevel.Trace) && packet.HasNonZeroData())
+        if (Logger.IsEnabled(LogLevel.Trace) && message.HasNonZeroData())
         {
-            Logger.LogTrace("Received packet: {packet}", packet);
+            Logger.LogTrace("Received message: {message}", message);
         }
-        PacketReceived?.Invoke(this, packet);
+        MessageReceived?.Invoke(this, message);
     }
 }
