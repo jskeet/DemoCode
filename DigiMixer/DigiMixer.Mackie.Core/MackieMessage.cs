@@ -2,19 +2,19 @@
 
 namespace DigiMixer.Mackie.Core;
 
-public sealed class MackiePacket
+public sealed class MackieMessage
 {
     private static readonly byte[] emptyBody = new byte[0];
     private const byte Header0 = 0xab;
 
     public MackieCommand Command { get; }
-    public MackiePacketType Type { get; }
+    public MackieMessageType Type { get; }
     public byte Sequence { get; }
 
     public int Length => Body.Length == 0 ? 8 : Body.Length + 12;
-    public MackiePacketBody Body { get; }
+    public MackieMessageBody Body { get; }
 
-    public MackiePacket(byte sequence, MackiePacketType type, MackieCommand command, MackiePacketBody body)
+    public MackieMessage(byte sequence, MackieMessageType type, MackieCommand command, MackieMessageBody body)
     {
         Sequence = sequence;
         Type = type;
@@ -22,7 +22,7 @@ public sealed class MackiePacket
         Body = body;
     }
 
-    public static MackiePacket? TryParse(ReadOnlySpan<byte> data)
+    public static MackieMessage? TryParse(ReadOnlySpan<byte> data)
     {
         if (data.Length < 8 || data[0] != Header0)
         {
@@ -30,7 +30,7 @@ public sealed class MackiePacket
         }
         byte seq = data[1];
         int chunkCount = (data[2] << 8) + data[3];
-        MackiePacketType type = (MackiePacketType) data[4];
+        MackieMessageType type = (MackieMessageType) data[4];
         MackieCommand command = (MackieCommand) data[5];
 
         // If we have any chunks, then there's the 8 byte header, the 4 byte chunks, then a 4 byte checksum.
@@ -39,56 +39,56 @@ public sealed class MackiePacket
             return null;
         }
         // Note: we don't validate the checksum in the final 4 bytes...
-        var body = chunkCount == 0 ? MackiePacketBody.Empty : new MackiePacketBody(data.Slice(8, chunkCount * 4));
-        return new MackiePacket(seq, type, command, body);
+        var body = chunkCount == 0 ? MackieMessageBody.Empty : new MackieMessageBody(data.Slice(8, chunkCount * 4));
+        return new MackieMessage(seq, type, command, body);
     }
 
     /// <summary>
-    /// Creates a response packet responding to this packet, which must be a request packet.
+    /// Creates a response message responding to this message, which must be a request message.
     /// </summary>
-    internal MackiePacket CreateResponse(MackiePacketBody body)
+    internal MackieMessage CreateResponse(MackieMessageBody body)
     {
-        if (Type != MackiePacketType.Request)
+        if (Type != MackieMessageType.Request)
         {
-            throw new InvalidOperationException($"{nameof(CreateResponse)} can only be called on request packets");
+            throw new InvalidOperationException($"{nameof(CreateResponse)} can only be called on request message");
         }
-        return new MackiePacket(Sequence, MackiePacketType.Response, Command, body);
+        return new MackieMessage(Sequence, MackieMessageType.Response, Command, body);
     }
 
     internal byte[] ToByteArray()
     {
         var body = Body.InNetworkOrder();
 
-        byte[] packet = new byte[Length];
-        packet[0] = Header0;
-        packet[1] = Sequence;
-        packet[2] = (byte) (Body.ChunkCount >> 8);
-        packet[3] = (byte) (Body.ChunkCount >> 0);
-        packet[4] = (byte) Type;
-        packet[5] = (byte) Command;
+        byte[] message = new byte[Length];
+        message[0] = Header0;
+        message[1] = Sequence;
+        message[2] = (byte) (Body.ChunkCount >> 8);
+        message[3] = (byte) (Body.ChunkCount >> 0);
+        message[4] = (byte) Type;
+        message[5] = (byte) Command;
 
         ushort headerChecksum = 0xffff;
         for (int i = 0; i < 6; i++)
         {
-            headerChecksum -= packet[i];
+            headerChecksum -= message[i];
         }
-        packet[6] = (byte) (headerChecksum >> 8);
-        packet[7] = (byte) (headerChecksum >> 0);
+        message[6] = (byte) (headerChecksum >> 8);
+        message[7] = (byte) (headerChecksum >> 0);
 
         if (body.Length != 0)
         {
-            body.Data.CopyTo(packet.AsSpan().Slice(8));
+            body.Data.CopyTo(message.AsSpan().Slice(8));
             uint bodyChecksum = 0xffff_ffff;
             for (int i = 0; i < Body.Length; i++)
             {
                 bodyChecksum -= Body.Data[i];
             }
-            packet[body.Length + 8] = (byte) (bodyChecksum >> 24);
-            packet[body.Length + 9] = (byte) (bodyChecksum >> 16);
-            packet[body.Length + 10] = (byte) (bodyChecksum >> 8);
-            packet[body.Length + 11] = (byte) (bodyChecksum >> 0);
+            message[body.Length + 8] = (byte) (bodyChecksum >> 24);
+            message[body.Length + 9] = (byte) (bodyChecksum >> 16);
+            message[body.Length + 10] = (byte) (bodyChecksum >> 8);
+            message[body.Length + 11] = (byte) (bodyChecksum >> 0);
         }
-        return packet;
+        return message;
     }
 
     // TODO: Include the hex of the body?

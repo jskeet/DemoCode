@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace DigiMixer.MackieDump;
 
 /// <summary>
-/// Connects to the mixer but sends minimal packets - just keep-alives - listening
-/// (and saving) incoming packets until the user hits return.
+/// Connects to the mixer but sends minimal messages - just keep-alives - listening
+/// (and saving) incoming messages until the user hits return.
 /// </summary>
 internal class Listener
 {
@@ -22,54 +22,54 @@ internal class Listener
         pc.WriteTo(output);
     }
 
-    private static async Task<PacketCollection> Listen(string address, int port, CancellationToken token)
+    private static async Task<MessageCollection> Listen(string address, int port, CancellationToken token)
     {
-        PacketCollection pc = new PacketCollection();
+        MessageCollection mc = new MessageCollection();
         var controller = new MackieController(NullLogger.Instance, address, port);
-        controller.PacketSent += (sender, packet) => RecordPacket(packet, true);
-        controller.PacketReceived += (sender, packet) => RecordPacket(packet, false);
+        controller.MessageSent += (sender, message) => RecordMessage(message, true);
+        controller.MessageReceived += (sender, message) => RecordMessage(message, false);
 
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
         await controller.Connect(default);
         controller.Start();
 
-        // Send initial packets to say "we're here and want to be notified of changes"
+        // Send initial messages to say "we're here and want to be notified of changes"
         CancellationToken cancellationToken = default;
-        await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
-        await controller.SendRequest(MackieCommand.ClientHandshake, MackiePacketBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
         while (!token.IsCancellationRequested)
         {
             await Task.Delay(2000);
-            await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
+            await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         }
 
         controller.Dispose();
 
-        Console.WriteLine($"Captured {pc.Packets.Count} packets");
-        return pc;
+        Console.WriteLine($"Captured {mc.Messages.Count} messages");
+        return mc;
 
-        void RecordPacket(MackiePacket packet, bool outbound)
+        void RecordMessage(MackieMessage message, bool outbound)
         {
-            pc.Packets.Add(Packet.FromMackiePacket(packet, outbound, null));
+            mc.Messages.Add(Message.FromMackieMessage(message, outbound, null));
             // Immediate uninterpreted display, truncated after 16 bytes of data.
             var padding = outbound ? "" : "    ";
-            if (packet.Body.Data.Length == 0)
+            if (message.Body.Data.Length == 0)
             {
-                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.ffffff} {padding} {packet.Sequence} {packet.Type} {packet.Command} (empty)");
+                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.ffffff} {padding} {message.Sequence} {message.Type} {message.Command} (empty)");
             }
             else
             {
-                var dataLength = $"({packet.Body.Data.Length} bytes)";
-                var data = BitConverter.ToString(packet.Body.Data.ToArray()).Replace("-", " ");
+                var dataLength = $"({message.Body.Data.Length} bytes)";
+                var data = BitConverter.ToString(message.Body.Data.ToArray()).Replace("-", " ");
                 if (data.Length > 47)
                 {
                     data = data.Substring(0, 47) + "...";
                 }
-                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.ffffff} {padding} {packet.Sequence} {packet.Type} {packet.Command}: {dataLength}: {data}");
+                Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.ffffff} {padding} {message.Sequence} {message.Type} {message.Command}: {dataLength}: {data}");
             }
         }
     }

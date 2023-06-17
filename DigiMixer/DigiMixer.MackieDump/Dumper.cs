@@ -8,18 +8,18 @@ internal class Dumper
     internal static void Execute(string file)
     {
         using var input = File.OpenRead(file);
-        var pc = PacketCollection.Parser.ParseFrom(input);
+        var mc = MessageCollection.Parser.ParseFrom(input);
 
         // TODO: More interpretation
-        foreach (var protoPacket in pc.Packets)
+        foreach (var protoMessage in mc.Messages)
         {
-            var timestamp = protoPacket.Timestamp.ToDateTimeOffset();
-            var padding = protoPacket.Outbound ? "" : "    ";
-            var packet = new MackiePacket((byte) protoPacket.Sequence, (MackiePacketType) protoPacket.Type, (MackieCommand) protoPacket.Command, new MackiePacketBody(protoPacket.Data.Span));
-            var body = packet.Body;
+            var timestamp = protoMessage.Timestamp.ToDateTimeOffset();
+            var padding = protoMessage.Outbound ? "" : "    ";
+            var message = new MackieMessage((byte) protoMessage.Sequence, (MackieMessageType) protoMessage.Type, (MackieCommand) protoMessage.Command, new MackieMessageBody(protoMessage.Data.Span));
+            var body = message.Body;
 
-            Console.Write($"{timestamp:HH:mm:ss.ffffff} {padding} {packet.Sequence} {packet.Type} {packet.Command}");
-            switch (packet.Command)
+            Console.Write($"{timestamp:HH:mm:ss.ffffff} {padding} {message.Sequence} {message.Type} {message.Command}");
+            switch (message.Command)
             {
                 case MackieCommand.ChannelValues when body.Length >= 8 && (body.GetInt32(1) & 0xff00) == 0x500:
                     {
@@ -38,12 +38,12 @@ internal class Dumper
                     }
                 case MackieCommand.ChannelNames when body.Length > 0:
                     {
-                        int start = packet.Body.GetInt32(0);
+                        int start = message.Body.GetInt32(0);
                         int count = (int) (body.GetUInt32(1) >> 16);
                         Console.WriteLine();
                         Console.WriteLine($"  Chunk 1 (type): {body.GetInt32(1):x8}");
                         Console.WriteLine("  Names:");
-                        string allNames = Encoding.UTF8.GetString(packet.Body.InSequentialOrder().Data.Slice(8).ToArray());
+                        string allNames = Encoding.UTF8.GetString(message.Body.InSequentialOrder().Data.Slice(8).ToArray());
                         string[] names = allNames.Split('\0');
                         for (int i = 0; i < count; i++)
                         {

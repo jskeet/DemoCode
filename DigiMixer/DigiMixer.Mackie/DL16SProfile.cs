@@ -77,10 +77,10 @@ internal class DL16SProfile : MixerProfile
     protected override int MainRightMeterAddress => 191; // Post
     protected override int MainNameIndex => 33;
 
-    internal override string GetModelName(MackiePacket modelInfo)
+    internal override string GetModelName(MackieMessage modelInfo)
     {
         var data = modelInfo.Body.InSequentialOrder().Data;
-        // The use of 16 here is somewhat arbitrary... there's lots we don't understand in this packet.
+        // The use of 16 here is somewhat arbitrary... there's lots we don't understand in this message.
         return Encoding.UTF8.GetString(data.Slice(8, 16)).TrimEnd('\0');
     }
 }

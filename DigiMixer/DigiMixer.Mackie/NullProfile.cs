@@ -76,5 +76,5 @@ internal class NullProfile : MixerProfile
     {
     }
 
-    internal override string GetModelName(MackiePacket modelInfo) => "";
+    internal override string GetModelName(MackieMessage modelInfo) => "";
 }

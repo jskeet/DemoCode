@@ -9,9 +9,7 @@ therefore my own, and may not be ideal.
 All communication occurs on a single client-initiated TCP connection. The
 default port that the mixer listens on is 50001.
 
-Both the client and the mixer can send *messages* (currently called packets
-in the code; a wholesale renaming from packet to message is probably overdue
-across the whole codebase).
+Both the client and the mixer can send *messages*.
 
 All numeric values are represented in big-endian order (e.g. a 16-bit value is
 represented by the most significant 8 bits followed by the least significant

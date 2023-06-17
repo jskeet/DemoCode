@@ -1,15 +1,15 @@
 ﻿namespace DigiMixer.Mackie.Core;
 
-public sealed class MackiePacketBodyBuilder
+public sealed class MackieMessageBodyBuilder
 {
     private byte[] data;
 
-    public MackiePacketBodyBuilder(int chunks)
+    public MackieMessageBodyBuilder(int chunks)
     {
         data = new byte[chunks * 4];
     }
 
-    public MackiePacketBodyBuilder SetUInt32(int chunk, uint value)
+    public MackieMessageBodyBuilder SetUInt32(int chunk, uint value)
     {
         int offset = chunk * 4;
         data[offset] = (byte) (value >> 24);
@@ -19,11 +19,11 @@ public sealed class MackiePacketBodyBuilder
         return this;
     }
 
-    public MackiePacketBodyBuilder SetSingle(int chunk, float value) =>
+    public MackieMessageBodyBuilder SetSingle(int chunk, float value) =>
         SetInt32(chunk, BitConverter.SingleToInt32Bits(value));
 
-    public MackiePacketBodyBuilder SetInt32(int chunk, int value) =>
+    public MackieMessageBodyBuilder SetInt32(int chunk, int value) =>
         SetUInt32(chunk, (uint) value);
 
-    public MackiePacketBody Build() => new MackiePacketBody(data);
+    public MackieMessageBody Build() => new MackieMessageBody(data);
 }

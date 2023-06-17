@@ -3,21 +3,21 @@
 namespace DigiMixer.Mackie.Core;
 
 /// <summary>
-/// The body of a Mackie protocol packet.
+/// The body of a Mackie protocol message.
 /// </summary>
-public sealed class MackiePacketBody
+public sealed class MackieMessageBody
 {
     /// <summary>
-    /// An empty packet body.
+    /// An empty message body.
     /// </summary>
-    public static MackiePacketBody Empty { get; } = new MackiePacketBody(new byte[0]);
+    public static MackieMessageBody Empty { get; } = new MackieMessageBody(new byte[0]);
 
     /// <summary>
-    /// Just a clear way of expressing a lack of packet body, for
-    /// <see cref="MackieController.MapCommand(MackieCommand, Func{MackiePacket, MackiePacketBody?})"/>
+    /// Just a clear way of expressing a lack of message body, for
+    /// <see cref="MackieController.MapCommand(MackieCommand, Func{MackieMessage, MackieMessageBody?})"/>
     /// methods.
     /// </summary>
-    public static MackiePacketBody? Null { get; } = null;
+    public static MackieMessageBody? Null { get; } = null;
 
     private byte[] data;
     public ReadOnlySpan<byte> Data => data.AsSpan();
@@ -31,19 +31,19 @@ public sealed class MackiePacketBody
     public bool IsNetworkOrder { get; }
 
     /// <summary>
-    /// Returns this packet body in network order, i.e. ready for <see cref="Data"/> to be
-    /// included in a packet.
+    /// Returns this message body in network order, i.e. ready for <see cref="Data"/> to be
+    /// included in a message.
     /// </summary>
     /// <returns></returns>
-    public MackiePacketBody InNetworkOrder() => IsNetworkOrder ? this : Reverse();
+    public MackieMessageBody InNetworkOrder() => IsNetworkOrder ? this : Reverse();
 
     /// <summary>
-    /// Returns this packet body in host order, i.e. ready to be read byte-by-byte sequentially.
+    /// Returns this message body in host order, i.e. ready to be read byte-by-byte sequentially.
     /// (This is primarily important for reading strings.)
     /// </summary>
-    public MackiePacketBody InSequentialOrder() => !IsNetworkOrder ? this : Reverse();
+    public MackieMessageBody InSequentialOrder() => !IsNetworkOrder ? this : Reverse();
 
-    private MackiePacketBody Reverse()
+    private MackieMessageBody Reverse()
     {
         byte[] newData = new byte[data.Length];
         for (int i = 0; i < data.Length; i += 4)
@@ -53,20 +53,20 @@ public sealed class MackiePacketBody
             newData[i + 2] = data[i + 1];
             newData[i + 3] = data[i];
         }
-        return new MackiePacketBody(newData, !IsNetworkOrder);
+        return new MackieMessageBody(newData, !IsNetworkOrder);
     }
 
     // Note: this constructor does *not* clone the data, or validate its length.
-    private MackiePacketBody(byte[] data, bool isNetworkOrder)
+    private MackieMessageBody(byte[] data, bool isNetworkOrder)
     {
         this.data = data;
         IsNetworkOrder = isNetworkOrder;
     }
     /// <summary>
-    /// Creates a packet with the given data, assumed to be in network order.
+    /// Creates a message body with the given data, assumed to be in network order.
     /// The data is cloned on construction.
     /// </summary>
-    public MackiePacketBody(byte[] data) : this(data.ToArray(), true)
+    public MackieMessageBody(byte[] data) : this(data.ToArray(), true)
     {
         if (data.Length % 4 != 0)
         {
@@ -75,10 +75,10 @@ public sealed class MackiePacketBody
     }
 
     /// <summary>
-    /// Creates a packet with the given data, assumed to be in network order.
+    /// Creates a message body with the given data, assumed to be in network order.
     /// The data is cloned on construction.
     /// </summary>
-    public MackiePacketBody(ReadOnlySpan<byte> data) : this(data.ToArray())
+    public MackieMessageBody(ReadOnlySpan<byte> data) : this(data.ToArray())
     {
     }
 

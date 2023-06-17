@@ -4,11 +4,11 @@ option csharp_namespace = "DigiMixer.MackieDump";
 
 import "google/protobuf/timestamp.proto";
 
-message PacketCollection {
-  repeated Packet packets = 1;
+message MessageCollection {
+  repeated Message messages = 1;
 }
 
-message Packet {
+message Message {
   bool outbound = 1;
   int32 command = 2;
   int32 sequence = 3;

@@ -32,15 +32,15 @@ internal class MeterDisplay
 
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
-        controller.MapBroadcastAction(HandleBroadcastPacket);
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+        controller.MapBroadcastAction(HandleBroadcastMessage);
         await controller.Connect(default);
         controller.Start();
 
-        // Send initial packets to say "we're here and want to be notified of changes"
+        // Send initial messages to say "we're here and want to be notified of changes"
         CancellationToken cancellationToken = default;
-        await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
-        await controller.SendRequest(MackieCommand.ClientHandshake, MackiePacketBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
         var layout = Enumerable.Range(1, meterCount).Select(BitConverter.GetBytes).SelectMany(array => array.Reverse()).ToArray();
@@ -53,14 +53,14 @@ internal class MeterDisplay
         while (!token.IsCancellationRequested)
         {
             await Task.Delay(2000);
-            await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
+            await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         }
 
         controller.Dispose();
 
-        void HandleBroadcastPacket(MackiePacket packet)
+        void HandleBroadcastMessage(MackieMessage message)
         {
-            var body = packet.Body;
+            var body = message.Body;
 
             var values = new float[body.ChunkCount - 2];
             for (int i = 0; i < values.Length; i++)

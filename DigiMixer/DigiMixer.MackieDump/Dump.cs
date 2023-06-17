@@ -25,32 +25,32 @@ namespace DigiMixer.MackieDump {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpkdW1wLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnByb3Rv",
-            "IiwKEFBhY2tldENvbGxlY3Rpb24SGAoHcGFja2V0cxgBIAMoCzIHLlBhY2tl",
-            "dCKIAQoGUGFja2V0EhAKCG91dGJvdW5kGAEgASgIEg8KB2NvbW1hbmQYAiAB",
-            "KAUSEAoIc2VxdWVuY2UYAyABKAUSDAoEdHlwZRgEIAEoBRIMCgRkYXRhGAUg",
-            "ASgMEi0KCXRpbWVzdGFtcBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
-            "c3RhbXBCDaoCCk1hY2tpZUR1bXBiBnByb3RvMw=="));
+            "Ii8KEU1lc3NhZ2VDb2xsZWN0aW9uEhoKCG1lc3NhZ2VzGAEgAygLMgguTWVz",
+            "c2FnZSKJAQoHTWVzc2FnZRIQCghvdXRib3VuZBgBIAEoCBIPCgdjb21tYW5k",
+            "GAIgASgFEhAKCHNlcXVlbmNlGAMgASgFEgwKBHR5cGUYBCABKAUSDAoEZGF0",
+            "YRgFIAEoDBItCgl0aW1lc3RhbXAYBiABKAsyGi5nb29nbGUucHJvdG9idWYu",
+            "VGltZXN0YW1wQheqAhREaWdpTWl4ZXIuTWFja2llRHVtcGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.MackieDump.PacketCollection), global::DigiMixer.MackieDump.PacketCollection.Parser, new[]{ "Packets" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.MackieDump.Packet), global::DigiMixer.MackieDump.Packet.Parser, new[]{ "Outbound", "Command", "Sequence", "Type", "Data", "Timestamp" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.MackieDump.MessageCollection), global::DigiMixer.MackieDump.MessageCollection.Parser, new[]{ "Messages" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.MackieDump.Message), global::DigiMixer.MackieDump.Message.Parser, new[]{ "Outbound", "Command", "Sequence", "Type", "Data", "Timestamp" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
-  public sealed partial class PacketCollection : pb::IMessage<PacketCollection>
+  public sealed partial class MessageCollection : pb::IMessage<MessageCollection>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<PacketCollection> _parser = new pb::MessageParser<PacketCollection>(() => new PacketCollection());
+    private static readonly pb::MessageParser<MessageCollection> _parser = new pb::MessageParser<MessageCollection>(() => new MessageCollection());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<PacketCollection> Parser { get { return _parser; } }
+    public static pb::MessageParser<MessageCollection> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -66,7 +66,7 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public PacketCollection() {
+    public MessageCollection() {
       OnConstruction();
     }
 
@@ -74,44 +74,44 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public PacketCollection(PacketCollection other) : this() {
-      packets_ = other.packets_.Clone();
+    public MessageCollection(MessageCollection other) : this() {
+      messages_ = other.messages_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public PacketCollection Clone() {
-      return new PacketCollection(this);
+    public MessageCollection Clone() {
+      return new MessageCollection(this);
     }
 
-    /// <summary>Field number for the "packets" field.</summary>
-    public const int PacketsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::DigiMixer.MackieDump.Packet> _repeated_packets_codec
-        = pb::FieldCodec.ForMessage(10, global::DigiMixer.MackieDump.Packet.Parser);
-    private readonly pbc::RepeatedField<global::DigiMixer.MackieDump.Packet> packets_ = new pbc::RepeatedField<global::DigiMixer.MackieDump.Packet>();
+    /// <summary>Field number for the "messages" field.</summary>
+    public const int MessagesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::DigiMixer.MackieDump.Message> _repeated_messages_codec
+        = pb::FieldCodec.ForMessage(10, global::DigiMixer.MackieDump.Message.Parser);
+    private readonly pbc::RepeatedField<global::DigiMixer.MackieDump.Message> messages_ = new pbc::RepeatedField<global::DigiMixer.MackieDump.Message>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::DigiMixer.MackieDump.Packet> Packets {
-      get { return packets_; }
+    public pbc::RepeatedField<global::DigiMixer.MackieDump.Message> Messages {
+      get { return messages_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as PacketCollection);
+      return Equals(other as MessageCollection);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(PacketCollection other) {
+    public bool Equals(MessageCollection other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if(!packets_.Equals(other.packets_)) return false;
+      if(!messages_.Equals(other.messages_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -119,7 +119,7 @@ namespace DigiMixer.MackieDump {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      hash ^= packets_.GetHashCode();
+      hash ^= messages_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -138,7 +138,7 @@ namespace DigiMixer.MackieDump {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      packets_.WriteTo(output, _repeated_packets_codec);
+      messages_.WriteTo(output, _repeated_messages_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -149,7 +149,7 @@ namespace DigiMixer.MackieDump {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      packets_.WriteTo(ref output, _repeated_packets_codec);
+      messages_.WriteTo(ref output, _repeated_messages_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -160,7 +160,7 @@ namespace DigiMixer.MackieDump {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      size += packets_.CalculateSize(_repeated_packets_codec);
+      size += messages_.CalculateSize(_repeated_messages_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -169,11 +169,11 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(PacketCollection other) {
+    public void MergeFrom(MessageCollection other) {
       if (other == null) {
         return;
       }
-      packets_.Add(other.packets_);
+      messages_.Add(other.messages_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -190,7 +190,7 @@ namespace DigiMixer.MackieDump {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            packets_.AddEntriesFrom(input, _repeated_packets_codec);
+            messages_.AddEntriesFrom(input, _repeated_messages_codec);
             break;
           }
         }
@@ -209,7 +209,7 @@ namespace DigiMixer.MackieDump {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            packets_.AddEntriesFrom(ref input, _repeated_packets_codec);
+            messages_.AddEntriesFrom(ref input, _repeated_messages_codec);
             break;
           }
         }
@@ -219,16 +219,16 @@ namespace DigiMixer.MackieDump {
 
   }
 
-  public sealed partial class Packet : pb::IMessage<Packet>
+  public sealed partial class Message : pb::IMessage<Message>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Packet> _parser = new pb::MessageParser<Packet>(() => new Packet());
+    private static readonly pb::MessageParser<Message> _parser = new pb::MessageParser<Message>(() => new Message());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Packet> Parser { get { return _parser; } }
+    public static pb::MessageParser<Message> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -244,7 +244,7 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Packet() {
+    public Message() {
       OnConstruction();
     }
 
@@ -252,7 +252,7 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Packet(Packet other) : this() {
+    public Message(Message other) : this() {
       outbound_ = other.outbound_;
       command_ = other.command_;
       sequence_ = other.sequence_;
@@ -264,8 +264,8 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Packet Clone() {
-      return new Packet(this);
+    public Message Clone() {
+      return new Message(this);
     }
 
     /// <summary>Field number for the "outbound" field.</summary>
@@ -343,12 +343,12 @@ namespace DigiMixer.MackieDump {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Packet);
+      return Equals(other as Message);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Packet other) {
+    public bool Equals(Message other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -486,7 +486,7 @@ namespace DigiMixer.MackieDump {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Packet other) {
+    public void MergeFrom(Message other) {
       if (other == null) {
         return;
       }

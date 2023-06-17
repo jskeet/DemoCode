@@ -8,7 +8,7 @@ using System.Net.Sockets;
 namespace DigiMixer.MackieDump;
 
 /// <summary>
-/// Converts from pcapng to packet proto
+/// Converts from pcapng to message proto
 /// </summary>
 internal class Converter
 {
@@ -21,17 +21,17 @@ internal class Converter
 
         // This is updated before Process is called; it's the timestamp of the latest packet.
         DateTime currentTimestamp = new DateTime(2000, 1, 1, 0, 0, 0);
-        var pc = new PacketCollection();
+        var mc = new MessageCollection();
 
-        var outboundProcessor = new MessageProcessor<MackiePacket>(
-            MackiePacket.TryParse,
-            packet => packet.Length,
-            packet => ConvertAndStorePacket(packet, true),
+        var outboundProcessor = new MessageProcessor<MackieMessage>(
+            MackieMessage.TryParse,
+            message => message.Length,
+            message => ConvertAndStoreMessage(message, true),
             65540);
-        var inboundProcessor = new MessageProcessor<MackiePacket>(
-            MackiePacket.TryParse,
-            packet => packet.Length,
-            packet => ConvertAndStorePacket(packet, false),
+        var inboundProcessor = new MessageProcessor<MackieMessage>(
+            MackieMessage.TryParse,
+            message => message.Length,
+            message => ConvertAndStoreMessage(message, false),
             65540);
         foreach (var packet in packets)
         {
@@ -50,15 +50,15 @@ internal class Converter
             }
         }
 
-        Console.WriteLine($"Captured {pc.Packets.Count} packets");
+        Console.WriteLine($"Captured {mc.Messages.Count} messages");
 
         using var output = File.Create(outputFile);
-        pc.WriteTo(output);
+        mc.WriteTo(output);
 
-        void ConvertAndStorePacket(MackiePacket mackiePacket, bool outbound)
+        void ConvertAndStoreMessage(MackieMessage mackieMessage, bool outbound)
         {
-            var packet = Packet.FromMackiePacket(mackiePacket, outbound, new DateTimeOffset(currentTimestamp, TimeSpan.Zero));
-            pc.Packets.Add(packet);
+            var message = Message.FromMackieMessage(mackieMessage, outbound, new DateTimeOffset(currentTimestamp, TimeSpan.Zero));
+            mc.Messages.Add(message);
         }
     }
 }

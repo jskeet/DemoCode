@@ -21,15 +21,15 @@ internal abstract class MixerProfile
         outputChannels = new Lazy<IReadOnlyList<MackieOutputChannel>>(GetOutputChannels, LazyThreadSafetyMode.PublicationOnly);
     }
 
-    internal static MixerProfile GetProfile(MackiePacket handshakePacket)
+    internal static MixerProfile GetProfile(MackieMessage handshakeMessage)
     {
-        if (handshakePacket.Body.Length != 16)
+        if (handshakeMessage.Body.Length != 16)
         {
             return DL16SProfile.Instance;
         }
 
         // TODO: Work out whether this is the right way to detect a DL32R.
-        if (handshakePacket.Body.Data[15] == 3)
+        if (handshakeMessage.Body.Data[15] == 3)
         {
             return DL32RProfile.Instance;
         }
@@ -37,10 +37,10 @@ internal abstract class MixerProfile
     }
 
     /// <summary>
-    /// Retrieves the model name given a packet requested using
+    /// Retrieves the model name given a message requested using
     /// <see cref="ModelNameInfoRequest"/>.
     /// </summary>
-    internal abstract string GetModelName(MackiePacket modelInfo);
+    internal abstract string GetModelName(MackieMessage modelInfo);
 
     private IReadOnlyList<MackieInputChannel> GetInputChannels()
     {
@@ -171,7 +171,7 @@ internal abstract class MixerProfile
     /// </summary>
     protected abstract int InputFx1FaderOffset { get; }
     /// <summary>
-    /// The index of input channel 1 in the names packet.
+    /// The index of input channel 1 in the names message.
     /// </summary>
     protected abstract int Input1NameIndex { get; }
     /// <summary>

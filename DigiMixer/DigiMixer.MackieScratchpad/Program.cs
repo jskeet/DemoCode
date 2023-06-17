@@ -10,16 +10,16 @@ var controller = new MackieController(logger, "192.168.1.59", 50001);
 // TODO: Check the request for GeneralInfo? Not sure what else we could return.
 controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
 controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
-controller.MapCommandAction(MackieCommand.ChannelValues, packet =>
+controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+controller.MapCommandAction(MackieCommand.ChannelValues, message =>
 {
-    Console.WriteLine($"Got channel info: {packet.Body.Data.Length} bytes; {BitConverter.ToString(packet.Body.Data.Slice(0, 8).ToArray())}");
+    Console.WriteLine($"Got channel info: {message.Body.Data.Length} bytes; {BitConverter.ToString(message.Body.Data.Slice(0, 8).ToArray())}");
 });
-controller.MapCommandAction(MackieCommand.ChannelNames, packet =>
+controller.MapCommandAction(MackieCommand.ChannelNames, message =>
 {
     Console.WriteLine("Received channel names");
     /*
-    var body = packet.Body.InSequentialOrder();
+    var body = message.Body.InSequentialOrder();
     var names = body.Data.Slice(8);
     int lastStart = 0;
     int count = 0;
@@ -37,7 +37,7 @@ controller.MapCommandAction(MackieCommand.ChannelNames, packet =>
     Console.WriteLine($"Names received: {count}");*/
 });
 
-controller.MapBroadcastAction(packet =>
+controller.MapBroadcastAction(message =>
 {
     Console.WriteLine("Received broadcast");
 });
@@ -46,9 +46,9 @@ controller.MapBroadcastAction(packet =>
 await controller.Connect(default);
 controller.Start();
 
-await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty);
+await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty);
 await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8]);
-await controller.SendRequest((MackieCommand) 3, MackiePacketBody.Empty);
+await controller.SendRequest((MackieCommand) 3, MackieMessageBody.Empty);
 // We don't use this info, but without sending it, we don't get any broadcasts.
 await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 });
 await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 3 });
@@ -56,7 +56,7 @@ await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 4 
 await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 0x12 });
 //await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[] { 0, 0, 0, 6 });
 
-await controller.SendRequest(MackieCommand.ChannelValues, new MackiePacketBodyBuilder(2).SetInt32(0, 1).SetInt32(1, 0x0500 | (100 << 16)).Build());
+await controller.SendRequest(MackieCommand.ChannelValues, new MackieMessageBodyBuilder(2).SetInt32(0, 1).SetInt32(1, 0x0500 | (100 << 16)).Build());
 
 //var meterLayout = Enumerable.Range(1, 221).SelectMany(i => new byte[] { 0, 0, 0, (byte) i });
 //await controller.SendRequest(MackieCommand.MeterLayout, new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray());
@@ -68,7 +68,7 @@ for (int i = 0; i < 5; i++)
 {
     // MasterFader sends a keep-alive every 2.5 seconds.
     await Task.Delay(2500);
-    await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty);
+    await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty);
 }
 
 

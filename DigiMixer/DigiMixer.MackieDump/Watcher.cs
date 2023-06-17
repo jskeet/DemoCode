@@ -20,29 +20,29 @@ internal class Watcher
 
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
-        controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
         await controller.Connect(default);
         controller.Start();
 
-        // Send initial packets to say "we're here and want to be notified of changes"
+        // Send initial messages to say "we're here and want to be notified of changes"
         CancellationToken cancellationToken = default;
-        await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
-        await controller.SendRequest(MackieCommand.ClientHandshake, MackiePacketBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
+        await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
         while (!token.IsCancellationRequested)
         {
             await Task.Delay(2000);
-            await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
+            await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         }
 
         controller.Dispose();
 
-        void HandleChannelValues(MackiePacket packet)
+        void HandleChannelValues(MackieMessage message)
         {
-            var body = packet.Body;
+            var body = message.Body;
             if (body.Length < 8)
             {
                 return;
@@ -53,7 +53,7 @@ internal class Watcher
             {
                 return;
             }
-            // Don't display huge "all values" packet.
+            // Don't display huge "all values" messages.
             if (body.ChunkCount > 5)
             {
                 return;

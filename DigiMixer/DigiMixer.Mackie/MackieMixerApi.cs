@@ -9,7 +9,7 @@ namespace DigiMixer.Mackie;
 
 public class MackieMixerApi : IMixerApi
 {
-    private delegate void ChannelValueAction(MackiePacketBody body, int chunk);
+    private delegate void ChannelValueAction(MackieMessageBody body, int chunk);
 
     private readonly DelegatingReceiver receiver = new();
     private readonly ILogger logger;
@@ -43,10 +43,10 @@ public class MackieMixerApi : IMixerApi
         controller.Start();
 
         // Initialization handshake
-        await controller.SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
-        // Both of these are (I think) needed to get large channel value packets
+        await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
+        // Both of these are (I think) needed to get large channel value messages
         await controller.SendRequest(MackieCommand.ChannelInfoControl, new byte[8], cancellationToken);
-        var handshake = await controller.SendRequest(MackieCommand.ClientHandshake, MackiePacketBody.Empty, cancellationToken);
+        var handshake = await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
 
         mixerProfile = MixerProfile.GetProfile(handshake);
         PopulateChannelValueActions();
@@ -84,25 +84,25 @@ public class MackieMixerApi : IMixerApi
 
     public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
-        var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackiePacketBody.Empty);
+        var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackieMessageBody.Empty);
         string? firmwareVersion = GetMixerFirmwareVersion(versionInfo);
 
-        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, mixerProfile.ModelNameInfoRequest }));
+        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, mixerProfile.ModelNameInfoRequest }));
         string modelName = mixerProfile.GetModelName(modelInfo);
 
-        var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackiePacketBody(new byte[] { 0, 0, 0, 3 }));
+        var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, 3 }));
         string mixerName = GetMixerName(generalInfo);
 
         receiver?.ReceiveMixerInfo(new MixerInfo(modelName, mixerName, firmwareVersion));
 
         await RequestChannelData().ConfigureAwait(false);
 
-        string? GetMixerFirmwareVersion(MackiePacket packet)
+        string? GetMixerFirmwareVersion(MackieMessage message)
         {
-            var body = packet.Body;
+            var body = message.Body;
 
             string? firmwareVersion = null;
-            // Firmware packets have an initial chunk with the XML and Mandolin version together, then
+            // Firmware messages have an initial chunk with the XML and Mandolin version together, then
             // key/value pairs of chunks. The mixer firmware version has a key of 2.
             for (int chunk = 1; chunk < body.ChunkCount - 1; chunk += 2)
             {
@@ -116,26 +116,26 @@ public class MackieMixerApi : IMixerApi
             return firmwareVersion;
         }
 
-        string GetMixerName(MackiePacket packet)
+        string GetMixerName(MackieMessage message)
         {
-            var data = packet.Body.InSequentialOrder().Data;
+            var data = message.Body.InSequentialOrder().Data;
             return Encoding.UTF8.GetString(data.Slice(4)).TrimEnd('\0');
         }
     }
 
     private async Task RequestChannelData(CancellationToken cancellationToken = default) =>
-        await SendRequest(MackieCommand.ChannelInfoControl, new MackiePacketBody(new byte[] { 0, 0, 0, 6 }), cancellationToken).ConfigureAwait(false);
+        await SendRequest(MackieCommand.ChannelInfoControl, new MackieMessageBody(new byte[] { 0, 0, 0, 6 }), cancellationToken).ConfigureAwait(false);
 
     // TODO: Check this.
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
 
     public async Task SendKeepAlive() =>
-        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty).ConfigureAwait(false);
+        await SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty).ConfigureAwait(false);
 
     public async Task<bool> CheckConnection(CancellationToken cancellationToken)
     {
         // TODO: Check if there's anything else better for this.
-        await SendRequest(MackieCommand.KeepAlive, MackiePacketBody.Empty, cancellationToken);
+        await SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         return true;
     }
 
@@ -146,7 +146,7 @@ public class MackieMixerApi : IMixerApi
         {
             return;
         }
-        var body = new MackiePacketBodyBuilder(3)
+        var body = new MackieMessageBodyBuilder(3)
             .SetInt32(0, address.Value)
             .SetInt32(1, 0x010500)
             .SetSingle(2, MackieConversions.FromFaderLevel(level))
@@ -162,7 +162,7 @@ public class MackieMixerApi : IMixerApi
         {
             return;
         }
-        var body = new MackiePacketBodyBuilder(3)
+        var body = new MackieMessageBodyBuilder(3)
             .SetInt32(0, address.Value)
             .SetInt32(1, 0x010500)
             .SetSingle(2, MackieConversions.FromFaderLevel(level))
@@ -178,7 +178,7 @@ public class MackieMixerApi : IMixerApi
         {
             return;
         }
-        var body = new MackiePacketBodyBuilder(3)
+        var body = new MackieMessageBodyBuilder(3)
             .SetInt32(0, address.Value)
             .SetInt32(1, 0x010500)
             .SetInt32(2, muted ? 1 : 0)
@@ -193,9 +193,9 @@ public class MackieMixerApi : IMixerApi
         controller = null;
     }
 
-    private void HandleBroadcastPacket(MackiePacket packet)
+    private void HandleBroadcastMessage(MackieMessage message)
     {
-        var body = packet.Body;
+        var body = message.Body;
 
         int meterCount = mixerProfile.InputChannels.Count + mixerProfile.OutputChannels.Count;
 
@@ -220,9 +220,9 @@ public class MackieMixerApi : IMixerApi
         receiver.ReceiveMeterLevels(levels);
     }
 
-    private void HandleChannelValues(MackiePacket packet)
+    private void HandleChannelValues(MackieMessage message)
     {
-        var body = packet.Body;
+        var body = message.Body;
         if (body.Length < 8)
         {
             return;
@@ -244,9 +244,9 @@ public class MackieMixerApi : IMixerApi
         }
     }
 
-    private void HandleChannelNames(MackiePacket packet)
+    private void HandleChannelNames(MackieMessage message)
     {
-        var body = packet.Body;
+        var body = message.Body;
         if (body.Length < 8)
         {
             return;
@@ -297,7 +297,7 @@ public class MackieMixerApi : IMixerApi
             MaybeSet(output.StereoLinkAddress, CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(output.Id, body.GetInt32(chunk) == 1)));
         }
 
-        ChannelValueAction CreatePendingDataAction(Action<PendingChannelDataTask, MackiePacketBody, int> action) => (body, chunk) =>
+        ChannelValueAction CreatePendingDataAction(Action<PendingChannelDataTask, MackieMessageBody, int> action) => (body, chunk) =>
         {
             foreach (var pendingDataTask in pendingChannelDataTasks.Keys)
             {
@@ -342,9 +342,9 @@ public class MackieMixerApi : IMixerApi
         string? EmptyToNull(string text) => text == "" ? null : text;
     }
 
-    private void MaybeCompleteChannelInfo(MackiePacket packet)
+    private void MaybeCompleteChannelInfo(MackieMessage message)
     {
-        var body = packet.Body;
+        var body = message.Body;
         if (body.Length < 1)
         {
             return;
@@ -361,20 +361,20 @@ public class MackieMixerApi : IMixerApi
 
     private void MapController(MackieController controller)
     {
-        controller.MapBroadcastAction(HandleBroadcastPacket);
+        controller.MapBroadcastAction(HandleBroadcastMessage);
         // TODO: Ideally we'd provide the MAC address instead of zeroes here... but getting the right
         // address is fiddly at best. Better to provide zeroes than a wrong one.
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0, 0, 0, 0, 0, 0 });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
         controller.MapCommandAction(MackieCommand.ChannelInfoControl, MaybeCompleteChannelInfo);
-        controller.MapCommand(MackieCommand.ChannelInfoControl, packet => new MackiePacketBody(packet.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
         controller.MapCommandAction(MackieCommand.ChannelNames, HandleChannelNames);
     }
 
-    public async Task<MackiePacket> SendRequest(MackieCommand command, MackiePacketBody body, CancellationToken cancellationToken = default) =>
+    public async Task<MackieMessage> SendRequest(MackieCommand command, MackieMessageBody body, CancellationToken cancellationToken = default) =>
         controller is null
-            ? new MackiePacket(1, MackiePacketType.Response, command, MackiePacketBody.Empty)
+            ? new MackieMessage(1, MackieMessageType.Response, command, MackieMessageBody.Empty)
             : await controller.SendRequest(command, body, cancellationToken).ConfigureAwait(false);
 
     /// <summary>

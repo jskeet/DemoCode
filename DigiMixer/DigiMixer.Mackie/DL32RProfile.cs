@@ -77,7 +77,7 @@ internal class DL32RProfile : MixerProfile
     protected override int MainRightMeterAddress => 191; // Post
     protected override int MainNameIndex => 51; // Bit of a guess, but consistent. Matrix names before main name?
 
-    internal override string GetModelName(MackiePacket modelInfo) =>
+    internal override string GetModelName(MackieMessage modelInfo) =>
         Encoding.UTF8.GetString(modelInfo.Body.InSequentialOrder().Data.Slice(4)).TrimEnd('\0');
 
     // Known addresses (decimal):
