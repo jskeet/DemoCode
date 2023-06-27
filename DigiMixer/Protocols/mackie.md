@@ -193,10 +193,76 @@ The only currently-known type is 0x05, used for channel names.
 
 - 1-16 = Inputs
 - 17-18 = Return 1-2
-- 19-22 = FX1-4 (Out)
-- 23-26 = FX1-4 (In)
-- 27-32 = Sub1-6
+- 19-22 = FX 1-4 (Out)
+- 23-26 = FX 1-4 (In)
+- 27-32 = Sub 1-6
 - 33 = Main LR
-- 34-39 = Aux1-6
-- 40-45 = VCA1-6
+- 34-39 = Aux 1-6
+- 40-45 = VCA 1-6
 
+#### DL32R channel names
+
+- 1-32 = Inputs
+- 33-36 = Return 1-4
+- 37-40 = FX 1-4 (Out)
+- 41-44 = FX 1-4 (In)
+- 45-50 = Sub 1-6
+- 51 = Main LR
+- 52-65 = Aux 1-14
+- 66-71 = VCA 1-6
+- 72-83 = ?
+- 84-89 = Matrix 1-6
+
+### Meter broadcast
+
+#### DL16S Meter layout
+
+- 1-33 = ?
+- 34-40 = Input 1 (use first value)
+- 41-47 = Input 2
+- ...
+- 139-145 = Input 16
+- 146-149 = Return 1 (pre-trim, post-trim, 3=post-compressor, 4=final value? - use post-trim)
+- 150-153 = Return 2
+- 154-157 = FX Input 1-4
+- 158-165 = FX Output 1-4 (two bytes each, left then right)
+- 166-169 = Sub 1
+- 170-173 = Sub 2
+- ...
+- 186-189 = Sub 6
+- 190 = Main L Post
+- 191 = Main R Post
+- 192/196 = Main L Pre
+- 193/197 = Main R Pre
+- 198-201 = Aux 1 (use first value; post/pre/?/?)
+- 202-205 = Aux 2
+- ...
+- 218-221 = Aux 6
+
+#### DL32R Meter layout
+
+- 1-33 = ?
+- 34-40 = Input 1 (use first value)
+- 41-47 = Input 2
+- ...
+- 251-257 = Input 32
+- 258-261 = Return 1 (pre-trim, post-trim, 3=post-compressor, 4=final value? - use post-trim)
+- 262-265 = Return 2
+- 266-269 = Return 3
+- 270-273 = Return 4
+- 274-277 = FX Input 1-4
+- 278-285 = FX Output 1-4 (two bytes each, left then right)
+- 286-289 = Sub 1
+- 290-293 = Sub 2
+- ...
+- 306-309 = Sub 6
+- 310 = Main L Post
+- 311 = Main R Post
+- 312 = Main L Pre
+- 313 = Main R Pre
+- 314-317 = ?
+- 318-321 = Aux 1
+- 322-325 = Aux 2
+- 326-329 = Aux 3
+- ...
+- 371-374 = Aux 14
