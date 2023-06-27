@@ -4,6 +4,7 @@ namespace DigiMixer.Wpf;
 
 public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
 {
+    // TODO: Expand this to have enough inputs for a DL32R
     private static readonly Brush[] faderBackgrounds =
     {
         Brushes.PowderBlue,
@@ -31,7 +32,7 @@ public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
     public InputChannelViewModel(InputChannel input) : base(input, "id", null)
     {
         Faders = input.OutputMappings
-            .Select((mapping, index) => new FaderViewModel(mapping, mapping.OutputChannel, faderBackgrounds[index]))
+            .Select((mapping, index) => new FaderViewModel(mapping, mapping.OutputChannel, faderBackgrounds[index % faderBackgrounds.Length]))
             .ToList()
             .AsReadOnly();
     }
