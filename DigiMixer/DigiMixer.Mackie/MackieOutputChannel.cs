@@ -29,22 +29,4 @@ internal class MackieOutputChannel
         FaderAddress = faderAddress;
         NameIndex = nameIndex;
     }
-
-    /*
-
-    internal static MackieOutputChannel MainLeft(int meterIndex, int channelStartAddress, int muteOffset, int faderOffset, int nameIndex) =>
-        new MackieOutputChannel(OutputGroup.Main, 1, ChannelId.MainOutputLeft, meterIndex, channelStartAddress, muteOffset, faderOffset, nameIndex);
-
-    /// <summary>
-    /// The main right channel, which can't be controlled or named independently from the main left channel.
-    /// </summary>
-    internal static MackieOutputChannel MainRight(int meterIndex) =>
-        new MackieOutputChannel(OutputGroup.Main, 2, ChannelId.MainOutputRight, meterIndex, null, null, null, null);
-
-    internal static MackieOutputChannel Fx(int index, int meterIndex, int channelStartAddress, int muteOffset, int faderOffset, int nameIndex) =>
-        new MackieOutputChannel(OutputGroup.Fx, index, ChannelId.Output(index + 50), meterIndex, channelStartAddress, muteOffset, faderOffset, nameIndex);
-
-    internal static MackieOutputChannel Aux(int index, int meterIndex, int channelStartAddress, int muteOffset, int faderOffset, int nameIndex) =>
-        new MackieOutputChannel(OutputGroup.Aux, index, ChannelId.Output(index), meterIndex, channelStartAddress, muteOffset, faderOffset, nameIndex);*/
-
 }
