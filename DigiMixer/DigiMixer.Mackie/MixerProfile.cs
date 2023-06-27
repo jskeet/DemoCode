@@ -5,6 +5,9 @@ namespace DigiMixer.Mackie;
 
 internal abstract class MixerProfile
 {
+    private const int ReturnChannelOffset = 50;
+    private const int FxChannelOffset = 70;
+
     private readonly Lazy<IReadOnlyList<MackieInputChannel>> inputChannels;
     private readonly Lazy<IReadOnlyList<MackieOutputChannel>> outputChannels;
 
@@ -75,7 +78,7 @@ internal abstract class MixerProfile
             var aux1FaderAddress = startAddress + ReturnAux1FaderOffset;
             var fx1FaderAddress = startAddress + ReturnFx1FaderOffset;
             var nameIndex = Return1NameIndex + zeroIndex;
-            return new MackieInputChannel(ChannelId.Input(index + 50), meterAddress, nameIndex, muteAddress, stereoLinkAddress, mainFaderAddress, aux1FaderAddress, fx1FaderAddress);
+            return new MackieInputChannel(ChannelId.Input(index + ReturnChannelOffset), meterAddress, nameIndex, muteAddress, stereoLinkAddress, mainFaderAddress, aux1FaderAddress, fx1FaderAddress);
         }
 
         MackieInputChannel Fx(int index)
@@ -88,7 +91,7 @@ internal abstract class MixerProfile
             var aux1FaderAddress = startAddress + FxInputAux1FaderOffset;
             var nameIndex = FxInput1NameIndex + zeroIndex;
             // FX inputs are never stereo linked, and don't feed into FX outputs (so don't have faders for that).
-            return new MackieInputChannel(ChannelId.Input(index + 70), meterAddress, nameIndex, muteAddress, null, mainFaderAddress, aux1FaderAddress, null);
+            return new MackieInputChannel(ChannelId.Input(index + FxChannelOffset), meterAddress, nameIndex, muteAddress, null, mainFaderAddress, aux1FaderAddress, null);
         }
     }
 
@@ -120,7 +123,7 @@ internal abstract class MixerProfile
             var faderAddress = FxOutput1StartAddress + zeroIndex * FxOutputValuesSize + FxOutputFaderOffset;
             var nameIndex = FxOutput1NameIndex + zeroIndex;
             // FX outputs are never stereo linked.
-            return new MackieOutputChannel(OutputGroup.Fx, index, ChannelId.Output(index + 70), meterAddress, muteAddress, null, faderAddress, nameIndex);
+            return new MackieOutputChannel(OutputGroup.Fx, index, ChannelId.Output(index + FxChannelOffset), meterAddress, muteAddress, null, faderAddress, nameIndex);
         }
     }
 
