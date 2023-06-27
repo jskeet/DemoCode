@@ -29,7 +29,8 @@ internal abstract class MixerProfile
         }
 
         // TODO: Work out whether this is the right way to detect a DL32R.
-        if (handshakeMessage.Body.Data[15] == 3)
+        // First two bytes for DL16S are 10 09; first two bytes for DL32R are 10 05.
+        if (handshakeMessage.Body.Data[1] == 5)
         {
             return DL32RProfile.Instance;
         }
