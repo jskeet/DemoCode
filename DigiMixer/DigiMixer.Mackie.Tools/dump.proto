@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "DigiMixer.MackieDump";
+option csharp_namespace = "DigiMixer.Mackie.Tools";
 
 import "google/protobuf/timestamp.proto";
 

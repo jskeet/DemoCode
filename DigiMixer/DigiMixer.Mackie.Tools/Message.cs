@@ -1,7 +1,7 @@
 ﻿using DigiMixer.Mackie.Core;
 using Google.Protobuf;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
 
 public partial class Message
 {

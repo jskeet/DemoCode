@@ -1,4 +1,4 @@
-﻿using DigiMixer.MackieDump;
+﻿using DigiMixer.Mackie.Tools;
 
 if (args.Length == 0)
 {

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Text;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
 
 internal class MeterDisplay
 {

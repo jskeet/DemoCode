@@ -1,7 +1,7 @@
 ﻿using DigiMixer.Mackie.Core;
 using System.Text;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
 
 internal class Dumper
 {

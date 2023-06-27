@@ -2,7 +2,7 @@
 using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
 
 /// <summary>
 /// Connects to the mixer but sends minimal messages - just keep-alives - listening

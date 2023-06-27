@@ -5,7 +5,7 @@ using Google.Protobuf;
 using System.Net;
 using System.Net.Sockets;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
 
 /// <summary>
 /// Converts from pcapng to message proto

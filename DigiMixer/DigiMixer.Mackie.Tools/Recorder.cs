@@ -2,7 +2,7 @@
 using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
 
 internal class Recorder
 {

@@ -1,7 +1,8 @@
 ﻿using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DigiMixer.MackieDump;
+namespace DigiMixer.Mackie.Tools;
+
 internal class Watcher
 {
     internal static async Task ExecuteAsync(string address, int port)

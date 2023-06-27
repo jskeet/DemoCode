@@ -17,11 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Core", "DigiMixer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.RcfProxy", "DigiMixer.RcfProxy\DigiMixer.RcfProxy.csproj", "{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.MackieScratchpad", "DigiMixer.MackieScratchpad\DigiMixer.MackieScratchpad.csproj", "{5C86E7F7-3382-49F4-8639-FE4326D9A43B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Mackie", "DigiMixer.Mackie\DigiMixer.Mackie.csproj", "{5CBA7394-B2E3-414E-9B55-0F2D7A7266D9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.MackieDump", "DigiMixer.MackieDump\DigiMixer.MackieDump.csproj", "{7129AE6D-A217-4FE6-B589-6156D7FA4132}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Mackie.Core", "DigiMixer.Mackie.Core\DigiMixer.Mackie.Core.csproj", "{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}"
 EndProject
@@ -44,9 +40,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protocols", "Protocols", "{
 		Protocols\mackie.md = Protocols\mackie.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Ssc", "DigiMixer.Ssc\DigiMixer.Ssc.csproj", "{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Ssc", "DigiMixer.Ssc\DigiMixer.Ssc.csproj", "{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Tests", "DigiMixer.Tests\DigiMixer.Tests.csproj", "{2B6225BE-5E46-422B-B365-B5FCA746545D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Tests", "DigiMixer.Tests\DigiMixer.Tests.csproj", "{2B6225BE-5E46-422B-B365-B5FCA746545D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.Mackie.Tools", "DigiMixer.Mackie.Tools\DigiMixer.Mackie.Tools.csproj", "{92FF4EA6-D626-41CD-B950-A153A32B7ABD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,18 +80,10 @@ Global
 		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A8F9D0B-A96C-4BE1-882D-42CA18D4D140}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C86E7F7-3382-49F4-8639-FE4326D9A43B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C86E7F7-3382-49F4-8639-FE4326D9A43B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C86E7F7-3382-49F4-8639-FE4326D9A43B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C86E7F7-3382-49F4-8639-FE4326D9A43B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5CBA7394-B2E3-414E-9B55-0F2D7A7266D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5CBA7394-B2E3-414E-9B55-0F2D7A7266D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CBA7394-B2E3-414E-9B55-0F2D7A7266D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CBA7394-B2E3-414E-9B55-0F2D7A7266D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7129AE6D-A217-4FE6-B589-6156D7FA4132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7129AE6D-A217-4FE6-B589-6156D7FA4132}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7129AE6D-A217-4FE6-B589-6156D7FA4132}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7129AE6D-A217-4FE6-B589-6156D7FA4132}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2BDFCA9-6CE9-42C5-87F8-B2BDBABE115C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -134,6 +124,10 @@ Global
 		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B6225BE-5E46-422B-B365-B5FCA746545D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92FF4EA6-D626-41CD-B950-A153A32B7ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92FF4EA6-D626-41CD-B950-A153A32B7ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92FF4EA6-D626-41CD-B950-A153A32B7ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92FF4EA6-D626-41CD-B950-A153A32B7ABD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

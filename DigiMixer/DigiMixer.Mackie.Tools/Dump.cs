@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace DigiMixer.MackieDump {
+namespace DigiMixer.Mackie.Tools {
 
   /// <summary>Holder for reflection information generated from dump.proto</summary>
   public static partial class DumpReflection {
@@ -29,12 +29,12 @@ namespace DigiMixer.MackieDump {
             "c2FnZSKJAQoHTWVzc2FnZRIQCghvdXRib3VuZBgBIAEoCBIPCgdjb21tYW5k",
             "GAIgASgFEhAKCHNlcXVlbmNlGAMgASgFEgwKBHR5cGUYBCABKAUSDAoEZGF0",
             "YRgFIAEoDBItCgl0aW1lc3RhbXAYBiABKAsyGi5nb29nbGUucHJvdG9idWYu",
-            "VGltZXN0YW1wQheqAhREaWdpTWl4ZXIuTWFja2llRHVtcGIGcHJvdG8z"));
+            "VGltZXN0YW1wQhmqAhZEaWdpTWl4ZXIuTWFja2llLlRvb2xzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.MackieDump.MessageCollection), global::DigiMixer.MackieDump.MessageCollection.Parser, new[]{ "Messages" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.MackieDump.Message), global::DigiMixer.MackieDump.Message.Parser, new[]{ "Outbound", "Command", "Sequence", "Type", "Data", "Timestamp" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.Mackie.Tools.MessageCollection), global::DigiMixer.Mackie.Tools.MessageCollection.Parser, new[]{ "Messages" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DigiMixer.Mackie.Tools.Message), global::DigiMixer.Mackie.Tools.Message.Parser, new[]{ "Outbound", "Command", "Sequence", "Type", "Data", "Timestamp" }, null, null, null, null)
           }));
     }
     #endregion
@@ -55,7 +55,7 @@ namespace DigiMixer.MackieDump {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::DigiMixer.MackieDump.DumpReflection.Descriptor.MessageTypes[0]; }
+      get { return global::DigiMixer.Mackie.Tools.DumpReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -87,12 +87,12 @@ namespace DigiMixer.MackieDump {
 
     /// <summary>Field number for the "messages" field.</summary>
     public const int MessagesFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::DigiMixer.MackieDump.Message> _repeated_messages_codec
-        = pb::FieldCodec.ForMessage(10, global::DigiMixer.MackieDump.Message.Parser);
-    private readonly pbc::RepeatedField<global::DigiMixer.MackieDump.Message> messages_ = new pbc::RepeatedField<global::DigiMixer.MackieDump.Message>();
+    private static readonly pb::FieldCodec<global::DigiMixer.Mackie.Tools.Message> _repeated_messages_codec
+        = pb::FieldCodec.ForMessage(10, global::DigiMixer.Mackie.Tools.Message.Parser);
+    private readonly pbc::RepeatedField<global::DigiMixer.Mackie.Tools.Message> messages_ = new pbc::RepeatedField<global::DigiMixer.Mackie.Tools.Message>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::DigiMixer.MackieDump.Message> Messages {
+    public pbc::RepeatedField<global::DigiMixer.Mackie.Tools.Message> Messages {
       get { return messages_; }
     }
 
@@ -233,7 +233,7 @@ namespace DigiMixer.MackieDump {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::DigiMixer.MackieDump.DumpReflection.Descriptor.MessageTypes[1]; }
+      get { return global::DigiMixer.Mackie.Tools.DumpReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
