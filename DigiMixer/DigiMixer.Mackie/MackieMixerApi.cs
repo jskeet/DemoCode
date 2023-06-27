@@ -282,7 +282,13 @@ public class MackieMixerApi : IMixerApi
         foreach (var input in inputs)
         {
             channelValueActions[input.MuteAddress] = (body, chunk) => receiver.ReceiveMuteStatus(input.Id, body.GetInt32(chunk) != 0);
-            MaybeSet(input.StereoLinkAddress, CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(input.Id, body.GetInt32(chunk) == 1)));
+            // On the DL32R, if a pair of return channels is stereo-linked, *both* channels have a value of 1
+            // at their stereo link address. For all other channels, only the left channel reports a value of 1.
+            // For simplicity, just ignore all right input channels.
+            if ((input.Id.Value & 1) == 1)
+            {
+                MaybeSet(input.StereoLinkAddress, CreatePendingDataAction((pendingTask, body, chunk) => pendingTask.SetStereoLink(input.Id, body.GetInt32(chunk) == 1)));
+            }
             foreach (var output in outputs)
             {
                 MaybeSet(input.GetFaderAddress(output),
