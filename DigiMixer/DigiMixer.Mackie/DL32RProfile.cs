@@ -26,9 +26,9 @@ internal class DL32RProfile : MixerProfile
     protected override int InputAux1FaderOffset => 58;
     protected override int InputFx1FaderOffset => 100;
     protected override int Input1NameIndex => 1;
-    protected override int Input1MeterAddress => 34; // FIXME
-    protected override int InputMeterOffset => 0; // FIXME
-    protected override int InputMeterSize => 7; // FIXME
+    protected override int Input1MeterAddress => 34;
+    protected override int InputMeterOffset => 0;
+    protected override int InputMeterSize => 7;
 
     protected override int Return1StartAddress => 4265;
     protected override int ReturnValuesSize => 120;
@@ -37,8 +37,8 @@ internal class DL32RProfile : MixerProfile
     protected override int ReturnMainFaderOffset => 8;
     protected override int ReturnAux1FaderOffset => 46;
     protected override int ReturnFx1FaderOffset => 88;
-    protected override int Return1NameIndex => 33; // Verified
-    protected override int Return1MeterAddress => 146;
+    protected override int Return1NameIndex => 33;
+    protected override int Return1MeterAddress => 258;
     protected override int ReturnMeterOffset => 1;
     protected override int ReturnMeterSize => 4;
 
@@ -53,7 +53,7 @@ internal class DL32RProfile : MixerProfile
     protected override int FxInputMainFaderOffset => 3;
     protected override int FxInputAux1FaderOffset => 32;
     protected override int FxInput1NameIndex => 41;
-    protected override int FxInput1MeterAddress => 154;
+    protected override int FxInput1MeterAddress => 274;
     protected override int FxInputMeterOffset => 0;
     protected override int FxInputMeterSize => 1;
 
@@ -63,7 +63,7 @@ internal class DL32RProfile : MixerProfile
     protected override int AuxStereoLinkOffset => 7;
     protected override int AuxFaderOffset => 4;
     protected override int Aux1NameIndex => 52;
-    protected override int Aux1MeterAddress => 198;
+    protected override int Aux1MeterAddress => 318;
     protected override int AuxMeterOffset => 0;
     protected override int AuxMeterSize => 4;
 
@@ -72,15 +72,15 @@ internal class DL32RProfile : MixerProfile
     protected override int FxOutputMuteOffset => 2;
     protected override int FxOutputFaderOffset => 3;
     protected override int FxOutput1NameIndex => 37;
-    protected override int FxOutput1MeterAddress => 158;
+    protected override int FxOutput1MeterAddress => 278;
     protected override int FxOutputMeterOffset => 0; // Left
     protected override int FxOutputMeterSize => 2;
 
     protected override int MainMuteAddress => 5996;
     protected override int MainFaderAddress => 5995;
-    protected override int MainLeftMeterAddress => 190; // FIXME: Post
-    protected override int MainRightMeterAddress => 191; // FIXME: Post
-    protected override int MainNameIndex => 51; // Bit of a guess, but consistent. Matrix names before main name?
+    protected override int MainLeftMeterAddress => 310;
+    protected override int MainRightMeterAddress => 311;
+    protected override int MainNameIndex => 51;
 
     internal override string GetModelName(MackieMessage modelInfo) =>
         Encoding.UTF8.GetString(modelInfo.Body.InSequentialOrder().Data.Slice(4)).TrimEnd('\0');
