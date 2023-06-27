@@ -99,8 +99,104 @@ below, with more information about each one in its own section afterwards.
 
 ### Subtype 0x13: channel values
 
+Each value within the mixer (e.g. "main mute button for input channel 5")
+has an address. A channel values message can be used to either set a value,
+or report existing values. The message starts by specifying the first address
+represented in the message, followed by the number of values (and a type flag).
+Each value is expressed in a single chunk.
+
+Chunk 0: Start value (i.e. the address of the first name in the message)
+Chunk 1: Count:16|Type:8|Unknown:8
+
+The only currently-known "type" is 5, for normal channel values. Other types
+may be used for aspects such as Dante in DL32R.
+
+#### DL16S address layout
+
+The overall layout of the DL16S address space is:
+
+- 1-1600: Inputs 1-32, 100 bytes each
+- 1601-1776: Returns 1-2, 88 bytes each
+- 1777-1824: FX 1-4 (outputs), 12 bytes each
+- 1825-1948: FX 1-4 (parameters), 31 bytes each
+- 1949-2212: FX 1-4 (inputs), 66 bytes each
+- 2213-2518: Subgroups 1-6, 51 bytes each
+- 2519-2605: LR, 87 bytes
+- 2606-3145: Aux 1-6, 90 bytes each
+- 3146-3205: VCA 1-6, 10 bytes each
+- 3206-3215: Output mapping
+- 3216-3231: USB mapping
+
+Each of these blocks is described in more detail below,
+using the addresses for the first block of each type:
+
+**Input channels**
+
+Example for channel 1:
+
+- 1: Input A (1000=mic pre 1)
+- 2: Input B (2000=USB1)
+- 3: Source A/B
+- 4: Trim
+- 5: Icon/image
+- 6: Color
+- 7: Polarity
+- 8: Mute
+- 9: LR fader
+- 10: Balance (panning)
+- 11: Main on/off
+- 12: Stereo link
+- 13: Gain
+- 14: 48v
+- 15: HPF on/off
+- 16: HPF freq
+- 18: Gate modern/vintage
+- 19: Gate on/off
+- 20-24: Gate parameters
+- 25: Comp modern/vintage
+- 26: Comp on/off
+- 27-32: Comp parameters
+- 33: EQ modern/vintage
+- 34: EQ on/off
+- 35-38: EQ band 4 parameters
+- 40-42: EQ band 3 parameters
+- 44-46: EQ band 2 parameters
+- 47-50: EQ band 1 parameters
+- 51-53: Aux1 fader, non-LR mute, (?)
+- 54-56: Aux2 fader, non-LR mute, (?)
+- 57-59: Aux3 fader, non-LR mute, (?)
+- 60-62: Aux4 fader, non-LR mute, (?)
+- 63-65: Aux5 fader, non-LR mute, (?)
+- 66-68: Aux6 fader, non-LR mute, (?)
+- 69-70: FX1 fader, non-LR mute
+- 71-72: FX2 fader, non-LR mute
+- 73-74: FX3 fader, non-LR mute
+- 75-76: FX4 fader, non-LR mute
+- 77-82: Mute group 1-6 inclusion
+- 83-88: View A-F inclusion
+- 89-94: Sub1-6 inclusion
+- 95-100: VCA1-6 inclusion
+
+
 ### Subtype 0x15: meter layout
 
 ### Subtype 0x16: meter control
 
 ### Subtype 0x18: channel names
+
+Chunk 0: Start value (i.e. the number of the first name in the message)
+Chunk 1: Count:16|Type:8|Unknown:8
+
+The only currently-known type is 0x05, used for channel names.
+
+#### DL16S channel names
+
+- 1-16 = Inputs
+- 17-18 = Return 1-2
+- 19-22 = FX1-4 (Out)
+- 23-26 = FX1-4 (In)
+- 27-32 = Sub1-6
+- 33 = Main LR
+- 34-39 = Aux1-6
+- 40-45 = VCA1-6
+

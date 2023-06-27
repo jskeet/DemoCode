@@ -34,7 +34,8 @@ internal class Recorder
 
         // From MackieMixerApi.RequestAllData
         var versionInfo = await controller.SendRequest(MackieCommand.FirmwareInfo, MackieMessageBody.Empty);
-        var modelInfo = await controller.SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, 0x12 }));
+        // Sending a DL16S model-info request to a DL32R crashes it.
+        // var modelInfo = await controller.SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, 0x12 }));
         var generalInfo = await controller.SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, 3 }));
 
         // Give some time to receive the remaining data
