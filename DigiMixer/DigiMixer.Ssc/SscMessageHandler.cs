@@ -20,6 +20,18 @@ public sealed class SscMessageHandler
     /// </summary>
     public SscMessage RequestMessage { get; }
 
+    /// <summary>
+    /// Calls <see cref="HandleMessage(SscMessage)"/> if the request message has an ID,
+    /// and the response message has an ID matching it.
+    /// </summary>
+    public void MaybeHandleMessage(SscMessage message)
+    {
+        if (message.Id is not null || message.Id == RequestMessage.Id)
+        {
+            HandleMessage(message);
+        }
+    }
+
     public void HandleMessage(SscMessage message)
     {
         foreach (var property in message.Properties)
