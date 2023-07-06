@@ -50,6 +50,6 @@ public record SscProperty(string Address, object? Value)
             }
             current[segments.Last()] = error.ToArray();
         }
-        return new SscProperty(SscAddresses.Error, new JArray(obj));
+        return new SscProperty(SscAddresses.Osc.Error, new JArray(obj));
     }
 }

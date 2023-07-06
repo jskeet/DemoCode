@@ -74,10 +74,10 @@ public sealed class SscMessage
         // this is slightly fiddly as if the parameter is null but there's a non-string-valued property,
         // we can't use the optimization even though Id is still correct.
 
-        var propertiesWithoutId = Properties.Where(p => p.Address != SscAddresses.Xid);
+        var propertiesWithoutId = Properties.Where(p => p.Address != SscAddresses.Osc.Xid);
         var newProperties = id is null
             ? propertiesWithoutId
-            : propertiesWithoutId.Append(new SscProperty(SscAddresses.Xid, id));
+            : propertiesWithoutId.Append(new SscProperty(SscAddresses.Osc.Xid, id));
         return new SscMessage(newProperties, clone: true, addressValidationParameterName: null);
     }
 
@@ -85,7 +85,7 @@ public sealed class SscMessage
     {
         Properties = clone ? properties.ToList().AsReadOnly() : (IReadOnlyList<SscProperty>) properties;
         Errors = DeriveErrors().ToList().AsReadOnly();
-        Id = Properties.FirstOrDefault(prop => prop.Address == SscAddresses.Xid)?.Value as string;
+        Id = Properties.FirstOrDefault(prop => prop.Address == SscAddresses.Osc.Xid)?.Value as string;
 
         if (addressValidationParameterName is not null)
         {
@@ -170,7 +170,7 @@ public sealed class SscMessage
     /// </summary>
     private IEnumerable<SscError> DeriveErrors()
     {
-        var errorsProperty = Properties.FirstOrDefault(p => p.Address == SscAddresses.Error);
+        var errorsProperty = Properties.FirstOrDefault(p => p.Address == SscAddresses.Osc.Error);
         if (errorsProperty is null || errorsProperty.Value is not JArray array)
         {
             yield break;
