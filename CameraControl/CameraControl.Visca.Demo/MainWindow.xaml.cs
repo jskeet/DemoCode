@@ -30,7 +30,7 @@ namespace CameraControl.Visca.Demo
 
         private void Connect(object sender, RoutedEventArgs e)
         {
-            controller = ViscaController.ForTcp(ipAddress.Text, 5678);
+            controller = ViscaController.ForTcp(ipAddress.Text, 5678, ViscaMessageFormat.Raw);
         }
 
         private void StopContinuousPanTilt(object sender, MouseButtonEventArgs e) => SetPanTiltSpeed(0, 0);

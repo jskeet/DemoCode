@@ -39,7 +39,7 @@ var goSemaphore = new Semaphore(0, taskCount);
 DateTime testEnd = DateTime.UtcNow + testDuration;
 
 // If we're going to use the same controller for all tasks, create it now.
-var singletonController = singleController ? ViscaController.ForTcp(host, port, commandTimeout) : null;
+var singletonController = singleController ? ViscaController.ForTcp(host, port, ViscaMessageFormat.Raw, commandTimeout) : null;
 // Start the tasks
 var tasks = readySemaphores.Select(readySemaphore => RunTestAsync(readySemaphore)).ToList();
 
@@ -74,7 +74,7 @@ async Task<(int, int, int, int)> RunTestAsync(Semaphore readySemaphore)
     int errorResponses = 0;
     int protocolErrors = 0;
     int cancellations = 0;
-    var controller = singletonController ?? ViscaController.ForTcp(host, port, commandTimeout);
+    var controller = singletonController ?? ViscaController.ForTcp(host, port, ViscaMessageFormat.Raw, commandTimeout);
     while (DateTime.UtcNow < testEnd)
     {
         try
