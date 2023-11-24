@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraControl.Visca", "Came
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraControl.Visca.Demo", "CameraControl.Visca.Demo\CameraControl.Visca.Demo.csproj", "{0709071F-CC4F-41C7-A787-1419181DACB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraControl.Visca.StressTest", "CameraControl.Visca.StressTest\CameraControl.Visca.StressTest.csproj", "{00A7BB89-7F87-4B96-81D5-084C926688C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraControl.Visca.StressTest", "CameraControl.Visca.StressTest\CameraControl.Visca.StressTest.csproj", "{00A7BB89-7F87-4B96-81D5-084C926688C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraControl.Sandbox", "CameraControl.Sandbox\CameraControl.Sandbox.csproj", "{3E4770BC-4785-4DDC-861B-06EB99967D90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,18 @@ Global
 		{00A7BB89-7F87-4B96-81D5-084C926688C8}.Release|x64.Build.0 = Release|Any CPU
 		{00A7BB89-7F87-4B96-81D5-084C926688C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{00A7BB89-7F87-4B96-81D5-084C926688C8}.Release|x86.Build.0 = Release|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Debug|x64.Build.0 = Debug|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Debug|x86.Build.0 = Debug|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Release|x64.ActiveCfg = Release|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Release|x64.Build.0 = Release|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E4770BC-4785-4DDC-861B-06EB99967D90}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
