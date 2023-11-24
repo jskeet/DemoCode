@@ -1,15 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <!-- WebEye targets .NET 4.x. It would probably work with netcoreapp3.1 or net5.0, but let's keep it simple for now. -->
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <NoWarn>NU1701</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="WebEye.StreamControl.Wpf" Version="1.0.3" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CameraControl.Visca\CameraControl.Visca.csproj" />

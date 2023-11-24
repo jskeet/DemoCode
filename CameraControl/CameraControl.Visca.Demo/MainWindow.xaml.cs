@@ -31,14 +31,6 @@ namespace CameraControl.Visca.Demo
         private void Connect(object sender, RoutedEventArgs e)
         {
             controller = ViscaController.ForTcp(ipAddress.Text, 5678);
-            var rtspStream = WebEye.Stream.FromUri(
-                uri: new Uri(rtspUrl.Text),
-                connectionTimeout: TimeSpan.FromSeconds(10),
-                streamTimeout: TimeSpan.FromSeconds(10),
-                transport: WebEye.RtspTransport.Undefined,
-                flags: WebEye.RtspFlags.PreferTcp);
-            rtspStream.Start();
-            cameraStream.Stream = rtspStream;
         }
 
         private void StopContinuousPanTilt(object sender, MouseButtonEventArgs e) => SetPanTiltSpeed(0, 0);
