@@ -6,6 +6,9 @@ using System.Net;
 
 namespace DigiMixer.CqSeries.Tools;
 
+/// <summary>
+/// Starts a client (in a fairly minimal way) and keeps it alive, reporting messages other than the regular ones.
+/// </summary>
 public class StartClient : Tool
 {
     // Assume the address...
@@ -57,8 +60,6 @@ public class StartClient : Tool
             {
                 await meterClient.SendKeepAliveAsync(target, default);
             }
-            await Task.Delay(500);
-            await controlClient.SendAsync(new CqAllDataRequestMessage(), default);
         }
 
         //controlClient.Dispose();
