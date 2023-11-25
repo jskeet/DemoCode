@@ -43,7 +43,7 @@ public abstract class CqMessage
         {
             VariableLengthPrefix => TryParseVariableLength(data),
             FixedLengthPrefix => TryParseFixedLength(data),
-            _ => throw new ArgumentException($"Invalid data: first byte is {data[0]:x2}")
+            _ => throw new ArgumentException($"Invalid data: first byte is 0x{data[0]:x2}")
         };
     }
 
@@ -68,7 +68,7 @@ public abstract class CqMessage
         {
             return null;
         }
-        if (data[1] == 0x12 || data[1] == 0x13)
+        if ((data[1] == 0x12 && data[3] == 0x23) || (data[1] == 0x13 && data[3] == 0x16))
         {
             if (data.Length < 9)
             {
