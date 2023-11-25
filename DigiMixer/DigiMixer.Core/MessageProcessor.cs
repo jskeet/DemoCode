@@ -11,7 +11,11 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
     private readonly Func<TMessage, int> messageLengthExtractor;
     private readonly Action<TMessage> messageAction;
     private readonly byte[] buffer;
-    private int currentLength;
+
+    /// <summary>
+    /// The amount of unprocessed data left in the buffer.
+    /// </summary>
+    public int UnprocessedLength { get; private set; }
 
     public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Action<TMessage> messageAction, int bufferSize = 65540)
     {
@@ -33,24 +37,24 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
     public void Process(ReadOnlySpan<byte> data)
     {
         var span = buffer.AsSpan();
-        data.CopyTo(span.Slice(currentLength));
-        currentLength += data.Length;
+        data.CopyTo(span.Slice(UnprocessedLength));
+        UnprocessedLength += data.Length;
         int start = 0;
-        while (messageParser(span.Slice(start, currentLength - start)) is TMessage message)
+        while (messageParser(span.Slice(start, UnprocessedLength - start)) is TMessage message)
         {
             messageAction(message);
             start += messageLengthExtractor(message);
         }
         // If we've consumed the whole buffer, reset to the start. (No copying required.)
-        if (start == currentLength)
+        if (start == UnprocessedLength)
         {
-            currentLength = 0;
+            UnprocessedLength = 0;
         }
         // Otherwise, copy whatever's left.
         else
         {
-            Buffer.BlockCopy(buffer, start, buffer, 0, currentLength - start);
-            currentLength -= start;
+            Buffer.BlockCopy(buffer, start, buffer, 0, UnprocessedLength - start);
+            UnprocessedLength -= start;
         }
     }
 }
