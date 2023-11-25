@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using DigiMixer.Core;
+using System.Globalization;
+using System.Text;
 
 namespace DigiMixer.Diagnostics;
 
@@ -30,5 +32,45 @@ public class Hex
             lines[i] = builder.ToString();
         }
         return lines;
+    }
+
+    /// <summary>
+    /// Parses a line from a hex dump, expecting a format as per a Wireshark
+    /// "follow stream" hex dump.
+    /// </summary>
+    public static HexDumpLine ParseHexDumpLine(string line)
+    {
+        var direction = Direction.Outbound;
+        if (line.StartsWith("    "))
+        {
+            direction = Direction.Inbound;
+            line = line[4..];
+        }
+        ulong offset = Convert.ToUInt64(line[0..8], 16);
+        var dataText = line[10..];
+        int end = dataText.IndexOf("   ");
+        dataText = dataText[0..end].Replace(" ", "");
+        byte[] data = new byte[dataText.Length / 2];
+        for (int i = 0; i < data.Length; i++)
+        {
+            data[i] = Convert.ToByte(dataText[(i * 2)..(i * 2 + 2)], 16);
+        }
+        return new HexDumpLine(direction, offset, data);
+    }
+
+    public record HexDumpLine(Direction Direction, ulong Offset, byte[] Data)
+    {
+        public override string ToString() =>
+            $"{Direction:8}: {Offset:x8}: {Formatting.ToHex(Data)}";
+    }
+
+    /// <summary>
+    /// We don't really know for any given dump whether the indented or
+    /// non-indented traffic is the mixer to client or vice versa. We'll
+    /// call non-indented "outbound" and indented "inbound".
+    /// </summary>
+    public enum Direction
+    {
+        Outbound, Inbound
     }
 }
