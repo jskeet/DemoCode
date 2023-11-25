@@ -70,6 +70,7 @@ internal abstract class ViscaClientBase : IViscaClient
             await SendMessageAsync(request, cancellationToken).ConfigureAwait(false);
             while (true)
             {
+                // TODO: Check the sequence number, if we're using encapsulated mode?
                 ViscaMessage response = await ReceiveMessageAsync(cancellationToken).ConfigureAwait(false);
                 var responsePayload = response.Payload;
                 Logger?.LogTrace("Received VISCA packet: {packet}", response);

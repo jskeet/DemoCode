@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CameraControl.Visca\CameraControl.Visca.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
