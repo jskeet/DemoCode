@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DigiMixer.Core\DigiMixer.Core.csproj" />
     <ProjectReference Include="..\DigiMixer.Mackie.Core\DigiMixer.Mackie.Core.csproj" />
   </ItemGroup>
 
