@@ -85,8 +85,8 @@ public abstract class CqMessage
         CqMessageType.Handshake => new CqHandshakeMessage(format, data),
         CqMessageType.Regular => new CqRegularMessage(format, data),
         CqMessageType.KeepAlive => new CqKeepAliveMessage(format, data),
-        CqMessageType.AllDataRequest => new CqAllDataRequestMessage(format, data),
-        CqMessageType.AllDataResponse => new CqAllDataResponseMessage(format, data),
+        CqMessageType.FullDataRequest => new CqFullDataRequestMessage(format, data),
+        CqMessageType.FullDataResponse => new CqFullDataResponseMessage(format, data),
         _ => new CqUnknownMessage(format, type, data)
     };
 
