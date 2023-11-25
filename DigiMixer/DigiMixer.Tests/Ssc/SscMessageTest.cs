@@ -56,7 +56,7 @@ public class SscMessageTest
     [Test]
     public void WithId_NullId()
     {
-        var original = new SscMessage(new SscProperty("/a/b/c", 10), new SscProperty(SscAddresses.Xid, "id"));
+        var original = new SscMessage(new SscProperty("/a/b/c", 10), new SscProperty(SscAddresses.Osc.Xid, "id"));
         Assert.That(original.Id, Is.EqualTo("id"));
         var noId = original.WithId(null);
         Assert.Null(noId.Id);
@@ -76,13 +76,13 @@ public class SscMessageTest
     [Test]
     public void WithId_NonNullId()
     {
-        var original = new SscMessage(new SscProperty("/a/b/c", 10), new SscProperty(SscAddresses.Xid, "id1"));
+        var original = new SscMessage(new SscProperty("/a/b/c", 10), new SscProperty(SscAddresses.Osc.Xid, "id1"));
         Assert.That(original.Id, Is.EqualTo("id1"));
         var withId = original.WithId("id2");
         var expected = new[]
         {
             new SscProperty("/a/b/c", 10),
-            new SscProperty(SscAddresses.Xid, "id2")
+            new SscProperty(SscAddresses.Osc.Xid, "id2")
         };
         CollectionAssert.AreEquivalent(expected, withId.Properties);
     }
@@ -102,7 +102,7 @@ public class SscMessageTest
 
         // The error address still shows up as a property; Errors is just a convenience.
         CollectionAssert.Contains(message.Properties, new SscProperty("/device/name", "EWDXEM2"));
-        Assert.NotNull(message.GetProperty(SscAddresses.Error));
+        Assert.NotNull(message.GetProperty(SscAddresses.Osc.Error));
 
         var expected = new[]
         {
