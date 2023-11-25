@@ -6,11 +6,11 @@ namespace DigiMixer.UCNet.Core;
 
 public class UCNetMeterListener : UdpControllerBase, IDisposable
 {
-    public int LocalPort { get; }
+    public ushort LocalPort { get; }
 
     public event EventHandler<Meter16Message>? MessageReceived;
 
-    public UCNetMeterListener(ILogger logger, int port) : base(logger, port)
+    public UCNetMeterListener(ILogger logger, ushort port) : base(logger, port)
     {
         LocalPort = port;
     }

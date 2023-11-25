@@ -26,11 +26,11 @@ internal static class QuMessages
     internal static QuControlMessage InitialHandshakeRequest(int localUdpPort) =>
         QuControlMessage.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) });
 
-    internal static bool IsInitialHandshakeResponse(QuControlMessage message, out int mixerUdpPort)
+    internal static bool IsInitialHandshakeResponse(QuControlMessage message, out ushort mixerUdpPort)
     {
         if (message is QuGeneralMessage { Type: 0 } response && response.Data.Length == 2)
         {
-            mixerUdpPort = response.Data[0] + (response.Data[1] << 8);
+            mixerUdpPort = (ushort) (response.Data[0] + (response.Data[1] << 8));
             return true;
         }
         else

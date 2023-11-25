@@ -103,13 +103,13 @@ public abstract class UdpControllerBase
         udpClient.Dispose();
     }
 
-    protected static int FindAvailableUdpPort()
+    protected static ushort FindAvailableUdpPort()
     {
         // TODO: Check that we really need this. Using port 0 doesn't prompt Windows for
         // appropriate rights, which are needed to actually receive packets - we
         // need a specific port for that.
         using var temporaryClient = new UdpClient();
         temporaryClient.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
-        return ((IPEndPoint) temporaryClient.Client.LocalEndPoint!).Port;
+        return checked ((ushort) ((IPEndPoint) temporaryClient.Client.LocalEndPoint!).Port);
     }
 }

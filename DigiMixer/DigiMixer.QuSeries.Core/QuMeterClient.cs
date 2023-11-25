@@ -9,10 +9,10 @@ public class QuMeterClient : UdpControllerBase, IDisposable
     // TODO: Check this is correct for all clients.
     private static readonly byte[] KeepAlive = new byte[] { 0x7f, 0x25, 0, 0 };
 
-    public int LocalUdpPort { get; }
+    public ushort LocalUdpPort { get; }
     public event EventHandler<QuGeneralMessage>? MessageReceived;
 
-    private QuMeterClient(ILogger logger, int localUdpPort) : base(logger, localUdpPort)
+    private QuMeterClient(ILogger logger, ushort localUdpPort) : base(logger, localUdpPort)
     {
         LocalUdpPort = localUdpPort;
     }
