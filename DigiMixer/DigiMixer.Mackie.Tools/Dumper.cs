@@ -1,4 +1,5 @@
-﻿using DigiMixer.Mackie.Core;
+﻿using DigiMixer.Core;
+using DigiMixer.Mackie.Core;
 using System.Text;
 
 namespace DigiMixer.Mackie.Tools;
@@ -53,7 +54,7 @@ internal class Dumper
                         break;
                     }
                 default:
-                    var data = BitConverter.ToString(body.Data.ToArray()).Replace("-", " ");
+                    var data = Formatting.ToHex(body.Data).Replace("-", " ");
                     Console.WriteLine($": {data}");
                     break;
             }

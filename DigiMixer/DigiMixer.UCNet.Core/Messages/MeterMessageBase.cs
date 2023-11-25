@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.UCNet.Core.Messages;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.UCNet.Core.Messages;
 
 public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
 {
@@ -37,5 +39,5 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
         span.Slice(rowMappingStart + 1).WriteBytes(rowMappingData);
     }
 
-    public override string ToString() => $"{Type}: Type={MeterType}: Rows: {RowCount}; Data length={Data.Length}: {BitConverter.ToString(data)}";
+    public override string ToString() => $"{Type}: Type={MeterType}: Rows: {RowCount}; Data length={Data.Length}: {Formatting.ToHex(data)}";
 }

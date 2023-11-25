@@ -1,4 +1,5 @@
-﻿using DigiMixer.Mackie.Core;
+﻿using DigiMixer.Core;
+using DigiMixer.Mackie.Core;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -64,7 +65,7 @@ internal class Listener
             else
             {
                 var dataLength = $"({message.Body.Data.Length} bytes)";
-                var data = BitConverter.ToString(message.Body.Data.ToArray()).Replace("-", " ");
+                var data = Formatting.ToHex(message.Body.Data);
                 if (data.Length > 47)
                 {
                     data = data.Substring(0, 47) + "...";

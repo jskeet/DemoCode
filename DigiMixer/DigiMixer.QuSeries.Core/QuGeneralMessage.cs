@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.QuSeries.Core;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.QuSeries.Core;
 
 /// <summary>
 /// A general-purpose message from/to a Qu mixer, with a type and arbitrary-length data.
@@ -32,7 +34,7 @@ public class QuGeneralMessage : QuControlMessage
     public override string ToString()
     {
         var hexSpan = Data.Length <= FullDataLength ? Data : Data.Slice(0, FullDataLength);
-        string dataDescription = BitConverter.ToString(hexSpan.ToArray()) + (Data.Length <= FullDataLength ? "" : $"... ({Data.Length} bytes)");
+        string dataDescription = Formatting.ToHex(hexSpan) + (Data.Length <= FullDataLength ? "" : $"... ({Data.Length} bytes)");
         return $"General: {Type}: {dataDescription}";
     }
 
