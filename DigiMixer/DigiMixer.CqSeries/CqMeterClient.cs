@@ -1,8 +1,9 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
-namespace DigiMixer.CqSeries.Core;
+namespace DigiMixer.CqSeries;
 
 public class CqMeterClient : UdpControllerBase, IDisposable
 {

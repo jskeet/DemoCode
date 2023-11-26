@@ -51,7 +51,7 @@ public class FullDataDiffer : Tool
 
         await Task.Delay(100);
 
-        await controlClient.SendAsync(new CqUnknownMessage(CqMessageFormat.VariableLength, CqMessageType.Type1, []), default);
+        await controlClient.SendAsync(new CqUnknownMessage(CqMessageFormat.VariableLength, CqMessageType.VersionRequest, []), default);
         await Task.Delay(100);
         await controlClient.SendAsync(new CqUnknownMessage(CqMessageFormat.VariableLength, CqMessageType.Type12, [0x02, 0x00]), default);
 

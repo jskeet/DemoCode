@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Text;
 
 namespace DigiMixer.CqSeries.Core;
 
@@ -32,6 +32,16 @@ public abstract class CqMessage
     };
 
     internal ushort GetUInt16(int index) => (ushort) (Data[index] | (Data[index + 1] << 8));
+
+    internal string? GetString(int offset, int maxLength)
+    {
+        int length = Data.Slice(offset, maxLength).IndexOf((byte) 0);
+        if (length == -1)
+        {
+            length = maxLength;
+        }
+        return length == 0 ? null : Encoding.ASCII.GetString(Data.Slice(offset, length));
+    }
 
     public static CqMessage? TryParse(ReadOnlySpan<byte> data)
     {

@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.CqSeries;
 using DigiMixer.Mackie;
 using DigiMixer.Osc;
 using DigiMixer.QuSeries;
@@ -44,6 +45,9 @@ public partial class MainWindow : Window
 
     private void LaunchQuSB(object sender, RoutedEventArgs e) =>
         Launch(() => QuMixer.CreateMixerApi(CreateLogger("Qu-SB"), "192.168.1.60"));
+
+    private void LaunchCQ20B(object sender, RoutedEventArgs e) =>
+        Launch(() => CqMixer.CreateMixerApi(CreateLogger("CQ20B"), "192.168.1.85"));
 
     private void Launch(Func<IMixerApi> apiFactory)
     {

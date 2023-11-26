@@ -1,7 +1,8 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
 
-namespace DigiMixer.CqSeries.Core;
+namespace DigiMixer.CqSeries;
 
 public sealed class CqControlClient : TcpControllerBase
 {
