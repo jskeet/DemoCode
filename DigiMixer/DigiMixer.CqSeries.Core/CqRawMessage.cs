@@ -1,22 +1,24 @@
-﻿using System.Text;
+﻿namespace DigiMixer.CqSeries.Core;
 
-namespace DigiMixer.CqSeries.Core;
-
-public abstract class CqMessage
+/// <summary>
+/// A raw, uninterpreted CQ message.
+/// </summary>
+public sealed class CqRawMessage
 {
     private const byte VariableLengthPrefix = 0x7f;
     private const byte FixedLengthPrefix = 0xf7;
 
     public CqMessageFormat Format { get; }
-    public abstract CqMessageType Type { get; }
+    public CqMessageType Type { get; }
 
     private ReadOnlyMemory<byte> data;
 
     public ReadOnlySpan<byte> Data => data.Span;
 
-    protected CqMessage(CqMessageFormat format, byte[] data)
+    public CqRawMessage(CqMessageFormat format, CqMessageType type, byte[] data)
     {
         Format = format;
+        Type = type;
         this.data = data ?? throw new ArgumentNullException(nameof(data));
     }
     
@@ -31,19 +33,7 @@ public abstract class CqMessage
         _ => throw new InvalidOperationException()
     };
 
-    internal ushort GetUInt16(int index) => (ushort) (Data[index] | (Data[index + 1] << 8));
-
-    internal string? GetString(int offset, int maxLength)
-    {
-        int length = Data.Slice(offset, maxLength).IndexOf((byte) 0);
-        if (length == -1)
-        {
-            length = maxLength;
-        }
-        return length == 0 ? null : Encoding.ASCII.GetString(Data.Slice(offset, length));
-    }
-
-    public static CqMessage? TryParse(ReadOnlySpan<byte> data)
+    public static CqRawMessage? TryParse(ReadOnlySpan<byte> data)
     {
         if (data.Length == 0)
         {
@@ -57,7 +47,7 @@ public abstract class CqMessage
         };
     }
 
-    private static CqMessage? TryParseVariableLength(ReadOnlySpan<byte> data)
+    private static CqRawMessage? TryParseVariableLength(ReadOnlySpan<byte> data)
     {
         if (data.Length < 6)
         {
@@ -69,10 +59,10 @@ public abstract class CqMessage
         {
             return null;
         }
-        return CreateMessage(CqMessageFormat.VariableLength, type, data[6..(dataLength + 6)].ToArray());
+        return new CqRawMessage(CqMessageFormat.VariableLength, type, data[6..(dataLength + 6)].ToArray());
     }
 
-    private static CqMessage? TryParseFixedLength(ReadOnlySpan<byte> data)
+    private static CqRawMessage? TryParseFixedLength(ReadOnlySpan<byte> data)
     {
         if (data.Length < 8)
         {
@@ -84,21 +74,11 @@ public abstract class CqMessage
             {
                 return null;
             }
-            return CreateMessage(CqMessageFormat.FixedLength9, CqMessageType.Regular, data[1..9].ToArray());
+            return new CqRawMessage(CqMessageFormat.FixedLength9, CqMessageType.Regular, data[1..9].ToArray());
         }
         
-        return CreateMessage(CqMessageFormat.FixedLength8, CqMessageType.Regular, data[1..8].ToArray());
+        return new CqRawMessage(CqMessageFormat.FixedLength8, CqMessageType.Regular, data[1..8].ToArray());
     }
-
-    private static CqMessage CreateMessage(CqMessageFormat format, CqMessageType type, byte[] data) => type switch
-    {
-        CqMessageType.Handshake => new CqHandshakeMessage(format, data),
-        CqMessageType.Regular => new CqRegularMessage(format, data),
-        CqMessageType.KeepAlive => new CqKeepAliveMessage(format, data),
-        CqMessageType.FullDataRequest => new CqFullDataRequestMessage(format, data),
-        CqMessageType.FullDataResponse => new CqFullDataResponseMessage(format, data),
-        _ => new CqUnknownMessage(format, type, data)
-    };
 
     public byte[] ToByteArray()
     {

@@ -1,7 +1,4 @@
 ﻿using DigiMixer.Core;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
 
 namespace DigiMixer.CqSeries.Core;
 
@@ -17,7 +14,6 @@ namespace DigiMixer.CqSeries.Core;
 // TODO: Non-CQ20B modelling...
 
 
-// Note: The fact that this is in Core is a bit odd. Maybe the specific messages should be in the top-level.
 public class CqFullDataResponseMessage : CqMessage
 {
     private static readonly ChannelId UsbLeft = ChannelId.Input(21);
@@ -25,39 +21,32 @@ public class CqFullDataResponseMessage : CqMessage
     private static readonly ChannelId BluetoothLeft = ChannelId.Input(23);
     private static readonly ChannelId BluetoothRight = ChannelId.Input(24);
 
-    public override CqMessageType Type => CqMessageType.FullDataResponse;
-
-    public CqFullDataResponseMessage(byte[] data) : base(CqMessageFormat.VariableLength, data)
+    public CqFullDataResponseMessage(byte[] data) : base(CqMessageFormat.VariableLength, CqMessageType.FullDataResponse, data)
     {
     }
 
-    internal CqFullDataResponseMessage(CqMessageFormat format, byte[] data) : base(format, data)
+    internal CqFullDataResponseMessage(CqRawMessage message) : base(message)
     {
     }
 
     public string? GetChannelName(ChannelId channelId)
     {
-        if (channelId == UsbLeft || channelId == UsbRight)
+        return channelId switch
         {
-            return "USB";
-        }
-        if (channelId == BluetoothLeft || channelId == BluetoothRight)
-        {
-            return "BT";
-        }
-        if (channelId.IsMainOutput)
-        {
-            return "Main";
-        }
-        int offset = channelId switch
+            { IsInput: true, Value: 21 or 22 } => "USB",
+            { IsInput: true, Value: 23 or 24 } => "BT",
+            { IsMainOutput: true } => "Main",
+            _ => GetString(GetOffset(), 6)
+        };
+
+        int GetOffset () => channelId switch
         {
             { IsInput: true, Value: int ch } when ch < 17 => 0x0180 + (ch - 1) * 0x118,
-            { IsInput: true, Value: 17 or 18 } => 0x0180 + 16 * 0x118,
-            { IsInput: true, Value: 19 or 20 } => 0x0180 + 16 * 0x118,
+            { IsInput: true, Value: 17 or 18 } => 0x1bc0,
+            { IsInput: true, Value: 19 or 20 } => 0x1df0,
             { IsOutput: true, Value: int ch } when ch < 7 => 0x3600 + (ch - 1) * 0x118,
             _ => throw new ArgumentException($"Cannot get name for channel {channelId}")
         };
-        return GetString(offset, 6);
     }
 
     public bool IsMuted(ChannelId channelId)

@@ -3,7 +3,6 @@ using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Threading.Channels;
 
 namespace DigiMixer.CqSeries;
 
@@ -52,9 +51,8 @@ internal class CqMixerApi : IMixerApi
         controlClient.Start();
 
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
-        await controlClient.SendAsync(new CqHandshakeMessage(meterClient.LocalUdpPort), linkedCts.Token);
-        // TODO: Wait until we've had a reply?
-        // TODO: Type 12 and 13?
+        await controlClient.SendAsync(new CqUdpHandshakeMessage(meterClient.LocalUdpPort), linkedCts.Token);
+        await RequestData(new CqClientInitRequestMessage(), CqMessageType.ClientInitResponse, cancellationToken);
     }
 
     public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
@@ -80,7 +78,7 @@ internal class CqMixerApi : IMixerApi
         {
             return false;
         }
-        await RequestData(new CqVersionRequestMessage(), CqMessageType.VersionRequest, cancellationToken);
+        await RequestData(new CqVersionRequestMessage(), CqMessageType.VersionResponse, cancellationToken);
         return true;
     }
 
@@ -115,8 +113,7 @@ internal class CqMixerApi : IMixerApi
 
         ushort rawLevel = CqConversions.FaderLevelToRaw(level);
 
-        var message = new CqRegularMessage(CqMessageFormat.FixedLength8, 6, 6, 14,
-            [mappedInputId, mappedOutputId, (byte) (rawLevel & 0xff), (byte) (rawLevel >> 8)]);
+        var message = new CqRegularMessage(CqRegularMessage.SetFaderXyz, mappedInputId, mappedOutputId, rawLevel);
 
         await SendMessage(message);
     }
@@ -131,8 +128,7 @@ internal class CqMixerApi : IMixerApi
         };
         ushort rawLevel = CqConversions.FaderLevelToRaw(level);
 
-        var message = new CqRegularMessage(CqMessageFormat.FixedLength8, 6, 6, 14,
-            [mappedOutputId, 0x10, (byte) (rawLevel & 0xff), (byte) (rawLevel >> 8)]);
+        var message = new CqRegularMessage(CqRegularMessage.SetFaderXyz, mappedOutputId, 0x10, rawLevel);
         await SendMessage(message);
     }
 
@@ -150,7 +146,7 @@ internal class CqMixerApi : IMixerApi
             _ => throw new InvalidOperationException($"Unable to set mute for {channelId}")
         };
 
-        var message = new CqRegularMessage(CqMessageFormat.FixedLength8, 6, 6, 12, [mappedId, 0, (byte) (muted ? 1 : 0), 0]);
+        var message = new CqRegularMessage(CqRegularMessage.SetMuteXyz, mappedId, 0, (ushort) (muted ? 1 : 0));
         await SendMessage(message);
     }
 
@@ -190,7 +186,7 @@ internal class CqMixerApi : IMixerApi
 
         switch (message)
         {
-            case CqHandshakeMessage handshake:
+            case CqUdpHandshakeMessage handshake:
                 mixerUdpEndPoint = new IPEndPoint(IPAddress.Parse(host), handshake.UdpPort);
                 break;
             case CqVersionResponseMessage versionResponse:
@@ -239,11 +235,8 @@ internal class CqMixerApi : IMixerApi
     private void HandleVersionResponse(CqVersionResponseMessage message)
     {
         // Note: the model is probably encoded in the first two bytes, but that's hard to check...
-        var data = message.Data;
-        int firmwareMajor = data[3];
-        int firmwareMinor = data[2];
-        ushort revision = MemoryMarshal.Read<ushort>(data.Slice(4, 2));
-        currentMixerInfo = currentMixerInfo with { Model = "Qu-???", Version = $"{firmwareMajor}.{firmwareMinor} rev {revision}" };
+        // TODO: fetch the name  (send "f7 1a 1a 0d 00 00 00 00")
+        currentMixerInfo = currentMixerInfo with { Model = "Cq-???", Version = message.Version };
         receiver.ReceiveMixerInfo(currentMixerInfo);
     }
 

@@ -33,7 +33,7 @@ public sealed class CqControlClient : TcpControllerBase
 
     private void ProcessMessage(CqMessage message)
     {
-        Logger.LogTrace("Received message: {message}", message);
+        Logger.LogTrace("Received control message: {message}", message);
         MessageReceived?.Invoke(this, message);
     }
 }

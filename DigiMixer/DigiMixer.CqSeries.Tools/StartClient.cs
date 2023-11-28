@@ -26,7 +26,7 @@ public class StartClient : Tool
         IPEndPoint? mixerUdpEndpoint = null;
         controlClient.MessageReceived += (sender, message) =>
         {
-            if (message is CqHandshakeMessage handshake)
+            if (message is CqUdpHandshakeMessage handshake)
             {
                 mixerUdpEndpoint = new IPEndPoint(IPAddress.Parse(Address), handshake.UdpPort);
             }
@@ -43,14 +43,14 @@ public class StartClient : Tool
         await controlClient.Connect(default);
         controlClient.Start();
 
-        var handshake = new CqHandshakeMessage(meterClient.LocalUdpPort);
+        var handshake = new CqUdpHandshakeMessage(meterClient.LocalUdpPort);
         await controlClient.SendAsync(handshake, default);
 
         await Task.Delay(100);
 
-        await controlClient.SendAsync(new CqUnknownMessage(CqMessageFormat.VariableLength, CqMessageType.VersionRequest, []), default);
+        await controlClient.SendAsync(new CqVersionRequestMessage(), default);
         await Task.Delay(100);
-        await controlClient.SendAsync(new CqUnknownMessage(CqMessageFormat.VariableLength, CqMessageType.Type12, [0x02, 0x00]), default);
+        await controlClient.SendAsync(new CqUnknownMessage(new(CqMessageFormat.VariableLength, CqMessageType.ClientInitRequest, [0x02, 0x00])), default);
 
 
         while (true)

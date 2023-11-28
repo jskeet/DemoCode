@@ -38,7 +38,7 @@ public class CqMeterClient : UdpControllerBase, IDisposable
         }
         if (Logger.IsEnabled(LogLevel.Trace))
         {
-            Logger.LogTrace("Received message: {message}", message);
+            Logger.LogTrace("Received meter message: {message}", message);
         }
         MessageReceived?.Invoke(this, message);
     }
