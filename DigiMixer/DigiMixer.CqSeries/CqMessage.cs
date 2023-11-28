@@ -8,17 +8,16 @@ namespace DigiMixer.CqSeries;
 /// </summary>
 public abstract class CqMessage
 {
-    private readonly CqRawMessage rawMessage;
+    public CqRawMessage RawMessage { get; }
 
-    public ReadOnlySpan<byte> Data => rawMessage.Data;
-    public CqMessageType Type => rawMessage.Type;
-    public int Length => rawMessage.Length;
+    public ReadOnlySpan<byte> Data => RawMessage.Data;
+    public CqMessageType Type => RawMessage.Type;
 
     public override string ToString() => $"Type={Type}; Length={Data.Length}";
 
     protected CqMessage(CqRawMessage rawMessage)
     {
-        this.rawMessage = rawMessage;
+        RawMessage = rawMessage;
     }
 
     protected CqMessage(CqMessageFormat format, CqMessageType type, byte[] data) : this(new CqRawMessage(format, type, data))
@@ -36,12 +35,6 @@ public abstract class CqMessage
         }
         return length == 0 ? null : Encoding.ASCII.GetString(Data.Slice(offset, length));
     }
-
-    public byte[] ToByteArray() => rawMessage.ToByteArray();
-    public static CqMessage? TryParse(ReadOnlySpan<byte> data) =>
-        CqRawMessage.TryParse(data) is CqRawMessage rawMessage
-            ? FromRawMessage(rawMessage)
-            : null;
 
     public static CqMessage FromRawMessage(CqRawMessage rawMessage) => rawMessage.Type switch
     {

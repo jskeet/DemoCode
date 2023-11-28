@@ -14,6 +14,7 @@ public class CqMixer
 
 internal class CqMixerApi : IMixerApi
 {
+    private static readonly CqKeepAliveMessage KeepAliveMessage = new CqKeepAliveMessage();
     private static IEnumerable<ChannelId> InputChannels { get; } = Enumerable.Range(1, 24).Select(ChannelId.Input).ToList();
     private static IEnumerable<ChannelId> OutputChannels { get; } = Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight).ToList();
 
@@ -51,7 +52,7 @@ internal class CqMixerApi : IMixerApi
         controlClient.Start();
 
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
-        await controlClient.SendAsync(new CqUdpHandshakeMessage(meterClient.LocalUdpPort), linkedCts.Token);
+        await SendMessage(new CqUdpHandshakeMessage(meterClient.LocalUdpPort), linkedCts.Token);
         await RequestData(new CqClientInitRequestMessage(), CqMessageType.ClientInitResponse, cancellationToken);
     }
 
@@ -89,7 +90,7 @@ internal class CqMixerApi : IMixerApi
     {
         if (meterClient is not null && cts is not null && mixerUdpEndPoint is not null)
         {
-            await meterClient.SendKeepAliveAsync(mixerUdpEndPoint, cts.Token);
+            await meterClient.SendAsync(KeepAliveMessage.RawMessage, mixerUdpEndPoint, cts.Token);
         }
     }
 
@@ -159,20 +160,23 @@ internal class CqMixerApi : IMixerApi
         // TODO: thread safety...
         var listener = new MessageListener(message => message.Type == expectedResponseType, cancellationToken);
         temporaryListeners.AddLast(listener);
-        await controlClient.SendAsync(requestMessage, cts.Token);
+        await controlClient.SendAsync(requestMessage.RawMessage, cts.Token);
         return await listener.Task;
     }
 
-    private async Task SendMessage(CqMessage message)
+    private Task SendMessage(CqMessage message) => SendMessage(message, cts?.Token ?? default);
+
+    private async Task SendMessage(CqMessage message, CancellationToken token)
     {
         if (controlClient is not null)
         {
-            await controlClient.SendAsync(message, cts?.Token ?? default);
+            await controlClient.SendAsync(message.RawMessage, token);
         }
     }
 
-    private void HandleControlMessage(object? sender, CqMessage message)
+    private void HandleControlMessage(object? sender, CqRawMessage rawMessage)
     {
+        var message = CqMessage.FromRawMessage(rawMessage);
         var node = temporaryListeners.First;
         while (node is not null)
         {
@@ -205,8 +209,8 @@ internal class CqMixerApi : IMixerApi
     {
     }
 
-    private void HandleMeterMessage(object? sender, CqMessage message)
-    {
+    private void HandleMeterMessage(object? sender, CqRawMessage message)
+    {        
         /* TODO */
     }
 

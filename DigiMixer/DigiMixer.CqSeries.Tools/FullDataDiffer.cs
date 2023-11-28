@@ -28,8 +28,9 @@ public class FullDataDiffer : Tool
         byte[]? currentSnapshot = null;
 
         IPEndPoint? mixerUdpEndpoint = null;
-        controlClient.MessageReceived += (sender, message) =>
+        controlClient.MessageReceived += (sender, rawMessage) =>
         {
+            var message = CqMessage.FromRawMessage(rawMessage);
             if (message is CqUdpHandshakeMessage handshake)
             {
                 mixerUdpEndpoint = new IPEndPoint(IPAddress.Parse(Address), handshake.UdpPort);
@@ -47,22 +48,22 @@ public class FullDataDiffer : Tool
         controlClient.Start();
 
         var handshake = new CqUdpHandshakeMessage(meterClient.LocalUdpPort);
-        await controlClient.SendAsync(handshake, default);
+        await SendAsync(handshake);
 
         await Task.Delay(100);
 
-        await controlClient.SendAsync(new CqVersionRequestMessage(), default);
+        await SendAsync(new CqVersionRequestMessage());
         await Task.Delay(100);
-        await controlClient.SendAsync(new CqUnknownMessage(new(CqMessageFormat.VariableLength, CqMessageType.ClientInitRequest, [0x02, 0x00])), default);
+        await SendAsync(new CqUnknownMessage(new(CqMessageFormat.VariableLength, CqMessageType.ClientInitRequest, [0x02, 0x00])));
 
         while (true)
         {
             await Task.Delay(1000);
             if (mixerUdpEndpoint is IPEndPoint target)
             {
-                await meterClient.SendKeepAliveAsync(target, default);
+                await meterClient.SendAsync(new CqKeepAliveMessage().RawMessage, target, default);
             }
-            await controlClient.SendAsync(new CqFullDataRequestMessage(), default);
+            await SendAsync(new CqFullDataRequestMessage());
         }
 
         void DiffSnapshot(byte[] newSnapshot)
@@ -115,5 +116,7 @@ public class FullDataDiffer : Tool
                 Console.WriteLine($"{padding}Difference at {offset:x4}: {Formatting.ToHex(currentData)} => {Formatting.ToHex(newData)}");
             }
         }
+
+        async Task SendAsync(CqMessage message) => await controlClient.SendAsync(message.RawMessage, default);
     }
 }

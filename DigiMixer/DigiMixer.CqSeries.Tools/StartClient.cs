@@ -24,8 +24,9 @@ public class StartClient : Tool
         var controlClient = new CqControlClient(NullLogger.Instance/*loggingFactory.CreateLogger("Control")*/, Address, Port);
 
         IPEndPoint? mixerUdpEndpoint = null;
-        controlClient.MessageReceived += (sender, message) =>
+        controlClient.MessageReceived += (sender, rawMessage) =>
         {
+            var message = CqMessage.FromRawMessage(rawMessage);
             if (message is CqUdpHandshakeMessage handshake)
             {
                 mixerUdpEndpoint = new IPEndPoint(IPAddress.Parse(Address), handshake.UdpPort);
@@ -44,13 +45,13 @@ public class StartClient : Tool
         controlClient.Start();
 
         var handshake = new CqUdpHandshakeMessage(meterClient.LocalUdpPort);
-        await controlClient.SendAsync(handshake, default);
+        await SendAsync(handshake);
 
         await Task.Delay(100);
 
-        await controlClient.SendAsync(new CqVersionRequestMessage(), default);
+        await SendAsync(new CqVersionRequestMessage());
         await Task.Delay(100);
-        await controlClient.SendAsync(new CqUnknownMessage(new(CqMessageFormat.VariableLength, CqMessageType.ClientInitRequest, [0x02, 0x00])), default);
+        await SendAsync(new CqUnknownMessage(new(CqMessageFormat.VariableLength, CqMessageType.ClientInitRequest, [0x02, 0x00])));
 
 
         while (true)
@@ -58,8 +59,10 @@ public class StartClient : Tool
             await Task.Delay(3000);
             if (mixerUdpEndpoint is IPEndPoint target)
             {
-                await meterClient.SendKeepAliveAsync(target, default);
+                await meterClient.SendAsync(new CqKeepAliveMessage().RawMessage, target, default);
             }
         }
+
+        async Task SendAsync(CqMessage message) => await controlClient.SendAsync(message.RawMessage, default);
     }
 }

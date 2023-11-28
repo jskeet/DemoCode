@@ -7,10 +7,8 @@ namespace DigiMixer.CqSeries;
 
 public class CqMeterClient : UdpControllerBase, IDisposable
 {
-    private static readonly byte[] KeepAlive = new CqKeepAliveMessage().ToByteArray();
-
     public ushort LocalUdpPort { get; }
-    public event EventHandler<CqMessage>? MessageReceived;
+    public event EventHandler<CqRawMessage>? MessageReceived;
 
     private CqMeterClient(ILogger logger, ushort localUdpPort) : base(logger, localUdpPort)
     {
@@ -21,18 +19,18 @@ public class CqMeterClient : UdpControllerBase, IDisposable
     {
     }
 
-    public async Task SendKeepAliveAsync(IPEndPoint mixerUdpEndPoint, CancellationToken cancellationToken)
+    public async Task SendAsync(CqRawMessage message, IPEndPoint mixerUdpEndPoint, CancellationToken cancellationToken)
     {
         if (Logger.IsEnabled(LogLevel.Trace))
         {
             Logger.LogTrace("Sending keep-alive message");
         }
-        await Send(KeepAlive, mixerUdpEndPoint, cancellationToken);
+        await Send(message.ToByteArray(), mixerUdpEndPoint, cancellationToken);
     }
 
     protected override void ProcessData(ReadOnlySpan<byte> data)
     {
-        if (CqMessage.TryParse(data) is not CqMessage message)
+        if (CqRawMessage.TryParse(data) is not CqRawMessage message)
         {
             return;
         }
