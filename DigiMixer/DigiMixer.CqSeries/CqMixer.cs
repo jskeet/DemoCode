@@ -96,21 +96,8 @@ internal class CqMixerApi : IMixerApi
 
     public async Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
     {
-        byte mappedInputId = inputId.Value switch
-        {
-            int ch when ch < 17 => (byte) (ch - 1),
-            17 or 18 => 0x18,
-            19 or 20 => 0x1A,
-            21 or 22 => 0x1C,
-            23 or 24 => 0x1E,
-            _ => throw new InvalidOperationException($"Unable to set fader level for {inputId}")
-        };
-        byte mappedOutputId = outputId switch
-        {
-            { Value: int ch } when ch < 7 => (byte) (0x7 + ch),
-            { IsMainOutput: true } => 0x10,
-            _ => throw new InvalidOperationException($"Unable to set fader level for {outputId}")
-        };
+        byte mappedInputId = CqChannels.ChannelIdToNetwork(inputId);
+        byte mappedOutputId = CqChannels.OutputChannelIdToNetwork(outputId);
 
         ushort rawLevel = CqConversions.FaderLevelToRaw(level);
 
@@ -119,34 +106,13 @@ internal class CqMixerApi : IMixerApi
         await SendMessage(message);
     }
 
-    public async Task SetFaderLevel(ChannelId outputId, FaderLevel level)
-    {
-        byte mappedOutputId = outputId switch
-        {
-            { Value: int ch } when ch < 7 => (byte) (0x2f + ch),
-            { IsMainOutput: true } => 0x38,
-            _ => throw new InvalidOperationException($"Unable to set fader level for {outputId}")
-        };
-        ushort rawLevel = CqConversions.FaderLevelToRaw(level);
-
-        var message = new CqRegularMessage(CqRegularMessage.SetFaderXyz, mappedOutputId, 0x10, rawLevel);
-        await SendMessage(message);
-    }
+    // It's odd to pass the output ID in here as an input ID, but that's how faders for output channels work.
+    public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
+        SetFaderLevel(outputId, ChannelId.MainOutputLeft, level);
 
     public async Task SetMuted(ChannelId channelId, bool muted)
     {
-        byte mappedId = channelId switch
-        {
-            { IsInput: true, Value: int ch } when ch < 17 => (byte) (ch - 1),
-            { IsInput: true, Value: 17 or 18 } => 0x18,
-            { IsInput: true, Value: 19 or 20 } => 0x1A,
-            { IsInput: true, Value: 21 or 22 } => 0x1C,
-            { IsInput: true, Value: 23 or 24 } => 0x1E,
-            { IsOutput: true, Value: int ch } when ch < 7 => (byte) (0x2f + ch),
-            { IsMainOutput: true } => 0x38,
-            _ => throw new InvalidOperationException($"Unable to set mute for {channelId}")
-        };
-
+        byte mappedId = CqChannels.ChannelIdToNetwork(channelId);
         var message = new CqRegularMessage(CqRegularMessage.SetMuteXyz, mappedId, 0, (ushort) (muted ? 1 : 0));
         await SendMessage(message);
     }
