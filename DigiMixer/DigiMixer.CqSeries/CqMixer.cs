@@ -2,7 +2,6 @@
 using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Runtime.InteropServices;
 
 namespace DigiMixer.CqSeries;
 
@@ -173,6 +172,39 @@ internal class CqMixerApi : IMixerApi
 
     private void HandleRegularMessage(CqRegularMessage message)
     {
+        // Annoyingly, we can't make the tuples constants to switch against them.
+        // We could use a ulong instead, but that's annoying.
+        switch (message.XYZ)
+        {
+            case var xyz when xyz == CqRegularMessage.SetMuteXyz:
+                HandleMute();
+                break;
+            case var xyz when xyz == CqRegularMessage.SetFaderXyz:
+                HandleFader();
+                break;
+        }
+
+        void HandleMute()
+        {
+            var channelId = CqChannels.NetworkToChannelId(message.Data[3]);
+            var isMuted = message.GetUInt16(5) == 1;
+            receiver.ReceiveMuteStatus(channelId, isMuted);
+        }
+
+        void HandleFader()
+        {
+            var inputOrOutputId = CqChannels.NetworkToChannelId(message.Data[3]);
+            var outputId = CqChannels.NetworkToOutputChannelId(message.Data[4]);
+            var level = CqConversions.RawToFaderLevel(message.GetUInt16(5));
+            if (inputOrOutputId.IsOutput)
+            {
+                receiver.ReceiveFaderLevel(inputOrOutputId, level);
+            }
+            else
+            {
+                receiver.ReceiveFaderLevel(inputOrOutputId, outputId, level);
+            }
+        }
     }
 
     private void HandleMeterMessage(object? sender, CqRawMessage message)

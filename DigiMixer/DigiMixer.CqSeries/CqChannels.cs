@@ -71,4 +71,14 @@ internal static class CqChannels
         { IsMainOutput: true } => 0x10,
         _ => throw new ArgumentException($"Can't map channel {channel}")
     };
+
+    /// <summary>
+    /// Inverse of <see cref="OutputChannelIdToNetwork(ChannelId)"/>.
+    /// </summary>
+    public static ChannelId NetworkToOutputChannelId(byte channel) => channel switch
+    {
+        >= 8 and < MonoOutputCount + 8 => ChannelId.Output(channel - 7),
+        0x10 => ChannelId.MainOutputLeft,
+        _ => throw new ArgumentException($"Can't map channel {channel}")
+    };
 }
