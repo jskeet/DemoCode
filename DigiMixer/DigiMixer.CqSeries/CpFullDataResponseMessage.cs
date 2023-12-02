@@ -107,13 +107,9 @@ public class CqFullDataResponseMessage : CqMessage
 
     public MixerChannelConfiguration ToMixerChannelConfiguration()
     {
-        var inputs = CqChannels.AllInputs
-            .Where(id => GetChannelName(id) is not null);
-        var outputs = CqChannels.AllOutputs
-            .Where(id => GetChannelName(id) is not null);
         var stereoLinks = CqChannels.LeftInputs.Concat(CqChannels.LeftOutputs)
             .Where(IsStereoLinked)
             .Select(left => StereoPair.FromLeft(left, StereoFlags.None));
-        return new MixerChannelConfiguration(inputs, outputs, stereoLinks);
+        return new MixerChannelConfiguration(CqChannels.AllInputs, CqChannels.AllOutputs, stereoLinks);
     }
 }
