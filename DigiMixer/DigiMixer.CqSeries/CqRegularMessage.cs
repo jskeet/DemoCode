@@ -6,6 +6,8 @@ public class CqRegularMessage : CqMessage
 {
     public static (byte X, byte Y, byte Z) SetFaderXyz => (6, 6, 14);
     public static (byte X, byte Y, byte Z) SetMuteXyz => (6, 6, 12);
+    public static (byte X, byte Y, byte Z) UnitInfoRequestXyz => (0x1a, 0x1a, 0x0d);
+    public static (byte X, byte Y, byte Z) UnitInfoResponseXyz => (0x1a, 0x1a, 0x0e);
 
     public byte X => Data[0];
     public byte Y => Data[1];

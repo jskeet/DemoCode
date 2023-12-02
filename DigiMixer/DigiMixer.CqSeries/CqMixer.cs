@@ -67,6 +67,8 @@ internal class CqMixerApi : IMixerApi
     {
         await SendMessage(new CqVersionRequestMessage());
         await SendMessage(new CqFullDataRequestMessage());
+        await SendMessage(new CqRegularMessage(CqRegularMessage.UnitInfoRequestXyz, 0, 0, 0));
+
         // TODO: Unit name request
     }
 
@@ -182,6 +184,9 @@ internal class CqMixerApi : IMixerApi
             case var xyz when xyz == CqRegularMessage.SetFaderXyz:
                 HandleFader();
                 break;
+            case var xyz when xyz == CqRegularMessage.UnitInfoResponseXyz:
+                HandleUnitInfoResponse();
+                break;
         }
 
         void HandleMute()
@@ -204,6 +209,14 @@ internal class CqMixerApi : IMixerApi
             {
                 receiver.ReceiveFaderLevel(inputOrOutputId, outputId, level);
             }
+        }
+
+        void HandleUnitInfoResponse()
+        {
+            var model = message.GetString(27, 16);
+            var name = message.GetString(43, 16);
+            currentMixerInfo = currentMixerInfo with { Name = name, Model = model };
+            receiver.ReceiveMixerInfo(currentMixerInfo);
         }
     }
 
@@ -236,9 +249,7 @@ internal class CqMixerApi : IMixerApi
 
     private void HandleVersionResponse(CqVersionResponseMessage message)
     {
-        // Note: the model is probably encoded in the first two bytes, but that's hard to check...
-        // TODO: fetch the name  (send "f7 1a 1a 0d 00 00 00 00")
-        currentMixerInfo = currentMixerInfo with { Model = "Cq-???", Version = message.Version };
+        currentMixerInfo = currentMixerInfo with { Version = message.Version };
         receiver.ReceiveMixerInfo(currentMixerInfo);
     }
 
