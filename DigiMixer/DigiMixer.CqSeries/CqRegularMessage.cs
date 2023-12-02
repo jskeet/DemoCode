@@ -8,6 +8,7 @@ public class CqRegularMessage : CqMessage
     public static (byte X, byte Y, byte Z) SetMuteXyz => (6, 6, 12);
     public static (byte X, byte Y, byte Z) UnitInfoRequestXyz => (0x1a, 0x1a, 0x0d);
     public static (byte X, byte Y, byte Z) UnitInfoResponseXyz => (0x1a, 0x1a, 0x0e);
+    public static (byte X, byte Y, byte Z) SetNameXyz => (35, 0, 10);
 
     public byte X => Data[0];
     public byte Y => Data[1];
@@ -36,7 +37,7 @@ public class CqRegularMessage : CqMessage
     {
     }
 
-    public override string ToString() => Data.Length > 9
+    public override string ToString() => Data.Length > 16
         ? $"Type={Type}; X={X}; Y={Y}; Z={Z}; TotalDataLength={Data.Length}"
         : $"Type={Type}; X={X}; Y={Y}; Z={Z}; OtherData={Formatting.ToHex(Data.Slice(3))}";
 }

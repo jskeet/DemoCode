@@ -187,6 +187,9 @@ internal class CqMixerApi : IMixerApi
             case var xyz when xyz == CqRegularMessage.UnitInfoResponseXyz:
                 HandleUnitInfoResponse();
                 break;
+            case var xyz when xyz == CqRegularMessage.SetNameXyz:
+                HandleName();
+                break;
         }
 
         void HandleMute()
@@ -217,6 +220,13 @@ internal class CqMixerApi : IMixerApi
             var name = message.GetString(43, 16);
             currentMixerInfo = currentMixerInfo with { Name = name, Model = model };
             receiver.ReceiveMixerInfo(currentMixerInfo);
+        }
+
+        void HandleName()
+        {
+            var channelId = CqChannels.NetworkToChannelId(message.Data[4]);
+            var name = message.GetString(7, 6);
+            receiver.ReceiveChannelName(channelId, name);
         }
     }
 
