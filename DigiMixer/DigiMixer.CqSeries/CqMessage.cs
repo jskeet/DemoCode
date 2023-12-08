@@ -47,6 +47,8 @@ public abstract class CqMessage
         CqMessageType.ClientInitResponse => new CqClientInitResponseMessage(rawMessage),
         CqMessageType.FullDataRequest => new CqFullDataRequestMessage(rawMessage),
         CqMessageType.FullDataResponse => new CqFullDataResponseMessage(rawMessage),
+        CqMessageType.InputMeters => new CqInputMetersMessage(rawMessage),
+        CqMessageType.OutputMeters => new CqOutputMetersMessage(rawMessage),
         _ => new CqUnknownMessage(rawMessage)
     };
 }

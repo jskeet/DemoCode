@@ -14,7 +14,7 @@ public class Hex
     /// </summary>
     /// <param name="data">The data to format.</param>
     /// <param name="lineLength">The line length, in bytes</param>
-    public static string[] ConvertAndSplit(ReadOnlySpan<byte> data, int lineLength)
+    public static string[] ConvertAndSplit(ReadOnlySpan<byte> data, int lineLength, int? extraSpaceAt = null)
     {
         var lines = new string[(data.Length + lineLength - 1) / lineLength];
         for (int i = 0; i < lines.Length; i++)
@@ -24,9 +24,13 @@ public class Hex
             var builder = new StringBuilder();
             builder.Append(offset.ToString("x4"));
             builder.Append("  ");
-            foreach (var b in slice)
+            for (int index = 0; index < slice.Length; index++)
             {
-                builder.Append(b.ToString("x2"));
+                if (extraSpaceAt == index)
+                {
+                    builder.Append(' ');
+                }
+                builder.Append(slice[index].ToString("x2"));
                 builder.Append(' ');
             }
             lines[i] = builder.ToString();

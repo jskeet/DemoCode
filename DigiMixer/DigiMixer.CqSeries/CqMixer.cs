@@ -2,6 +2,8 @@
 using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Threading.Channels;
 
 namespace DigiMixer.CqSeries;
 
@@ -230,9 +232,31 @@ internal class CqMixerApi : IMixerApi
         }
     }
 
-    private void HandleMeterMessage(object? sender, CqRawMessage message)
-    {        
-        /* TODO */
+    private void HandleMeterMessage(object? sender, CqRawMessage rawMessage)
+    {
+        var message = CqMessage.FromRawMessage(rawMessage);
+        if (message is CqInputMetersMessage inputMeters)
+        {
+            var channelMeterPairs = new (ChannelId, MeterLevel)[16];
+            for (int i = 0; i < 16; i++)
+            {
+                var channel = ChannelId.Input(i + 1);
+                channelMeterPairs[i] = (channel, inputMeters.GetLevelPostComp(i));
+            }
+            receiver.ReceiveMeterLevels(channelMeterPairs);
+        }
+        else if (message is CqOutputMetersMessage outputMeters)
+        {
+            var channelMeterPairs = new (ChannelId, MeterLevel)[8];
+            for (int i = 0; i < 6; i++)
+            {
+                var channel = ChannelId.Output(i + 1);
+                channelMeterPairs[i] = (channel, outputMeters.GetLevelPostLimiter(i));
+            }
+            channelMeterPairs[6] = (ChannelId.MainOutputLeft, outputMeters.GetLevelPostLimiter(6));
+            channelMeterPairs[7] = (ChannelId.MainOutputRight, outputMeters.GetLevelPostLimiter(7));
+            receiver.ReceiveMeterLevels(channelMeterPairs);
+        }
     }
 
     private void HandleFullDataResponse(CqFullDataResponseMessage message)
