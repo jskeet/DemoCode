@@ -2,11 +2,12 @@
 using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Threading.Channels;
 
 namespace DigiMixer.CqSeries;
 
+/// <summary>
+/// Mixer for Allen and Heath CQ series (currently tested with CQ20B).
+/// </summary>
 public class CqMixer
 {
     public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 51326) =>

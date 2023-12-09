@@ -2,8 +2,6 @@
 
 namespace DigiMixer.CqSeries.Core;
 
-// TODO: This really shouldn't be in Core...
-
 public class CqConversions
 {
     public static FaderLevel RawToFaderLevel(ushort raw)

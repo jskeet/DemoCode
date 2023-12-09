@@ -1,7 +1,7 @@
 ﻿namespace DigiMixer.CqSeries.Core;
 
 /// <summary>
-/// A raw, uninterpreted CQ message.
+/// A raw, uninterpreted (other than format and type) CQ message.
 /// </summary>
 public sealed class CqRawMessage
 {
