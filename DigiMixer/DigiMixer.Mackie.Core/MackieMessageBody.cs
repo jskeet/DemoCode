@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DigiMixer.Core;
+using System.Text;
 
 namespace DigiMixer.Mackie.Core;
 
@@ -89,13 +90,8 @@ public sealed class MackieMessageBody
     /// </summary>
     public uint GetUInt32(int chunk)
     {
-        uint raw = BitConverter.ToUInt32(data, chunk * 4);
-        return !IsNetworkOrder
-            ? raw
-            : (raw >> 24 & 0xff) << 0 |
-              (raw >> 16 & 0xff) << 8 |
-              (raw >> 8 & 0xff) << 16 |
-              (raw >> 0 & 0xff) << 24;
+        var slice = data.AsSpan().Slice(chunk * 4);
+        return IsNetworkOrder ? BigEndian.ReadUInt32(slice) : LittleEndian.ReadUInt32(slice);
     }
 
     /// <summary>

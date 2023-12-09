@@ -1,4 +1,5 @@
-﻿using DigiMixer.QuSeries.Core;
+﻿using DigiMixer.Core;
+using DigiMixer.QuSeries.Core;
 
 namespace DigiMixer.QuSeries;
 
@@ -30,7 +31,7 @@ internal static class QuMessages
     {
         if (message is QuGeneralMessage { Type: 0 } response && response.Data.Length == 2)
         {
-            mixerUdpPort = (ushort) (response.Data[0] + (response.Data[1] << 8));
+            mixerUdpPort = LittleEndian.ReadUInt16(response.Data);
             return true;
         }
         else

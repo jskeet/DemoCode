@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DigiMixer.Core;
+using System.Text;
 
 namespace DigiMixer.Mackie.Core;
 
@@ -29,7 +30,7 @@ public sealed class MackieMessage
             return null;
         }
         byte seq = data[1];
-        int chunkCount = (data[2] << 8) + data[3];
+        int chunkCount = BigEndian.ReadInt16(data.Slice(2));
         MackieMessageType type = (MackieMessageType) data[4];
         MackieCommand command = (MackieCommand) data[5];
 
@@ -60,10 +61,10 @@ public sealed class MackieMessage
         var body = Body.InNetworkOrder();
 
         byte[] message = new byte[Length];
+        var span = message.AsSpan();
         message[0] = Header0;
         message[1] = Sequence;
-        message[2] = (byte) (Body.ChunkCount >> 8);
-        message[3] = (byte) (Body.ChunkCount >> 0);
+        BigEndian.WriteInt16(span.Slice(2), (short) Body.ChunkCount);
         message[4] = (byte) Type;
         message[5] = (byte) Command;
 
@@ -72,8 +73,7 @@ public sealed class MackieMessage
         {
             headerChecksum -= message[i];
         }
-        message[6] = (byte) (headerChecksum >> 8);
-        message[7] = (byte) (headerChecksum >> 0);
+        BigEndian.WriteUInt16(span.Slice(6), headerChecksum);
 
         if (body.Length != 0)
         {
@@ -83,10 +83,7 @@ public sealed class MackieMessage
             {
                 bodyChecksum -= Body.Data[i];
             }
-            message[body.Length + 8] = (byte) (bodyChecksum >> 24);
-            message[body.Length + 9] = (byte) (bodyChecksum >> 16);
-            message[body.Length + 10] = (byte) (bodyChecksum >> 8);
-            message[body.Length + 11] = (byte) (bodyChecksum >> 0);
+            BigEndian.WriteUInt32(span.Slice(body.Length + 8), bodyChecksum);
         }
         return message;
     }

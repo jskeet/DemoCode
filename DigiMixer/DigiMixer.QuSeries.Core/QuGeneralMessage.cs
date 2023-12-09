@@ -24,8 +24,7 @@ public class QuGeneralMessage : QuControlMessage
         var message = new byte[Length];
         message[0] = 0x7f;
         message[1] = Type;
-        message[2] = (byte) (data.Length & 0xff);
-        message[3] = (byte) (data.Length >> 8);
+        LittleEndian.WriteUInt16(message.AsSpan().Slice(2), (ushort) data.Length);
         data.CopyTo(message.AsSpan().Slice(4));
         return message;
     }

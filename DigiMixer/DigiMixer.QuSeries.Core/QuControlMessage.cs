@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.QuSeries.Core;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.QuSeries.Core;
 
 /// <summary>
 /// A message sent to or from a Qu mixer over TCP.
@@ -22,7 +24,7 @@ public abstract class QuControlMessage
         if (data[0] == 0x7f)
         {
             byte type = data[1];
-            int dataLength = data[2] | data[3] << 8;
+            int dataLength = LittleEndian.ReadInt16(data.Slice(2));
             if (data.Length < dataLength + 4)
             {
                 return null;

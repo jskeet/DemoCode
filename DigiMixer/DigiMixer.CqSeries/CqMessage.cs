@@ -1,4 +1,5 @@
-﻿using DigiMixer.CqSeries.Core;
+﻿using DigiMixer.Core;
+using DigiMixer.CqSeries.Core;
 using System.Text;
 
 namespace DigiMixer.CqSeries;
@@ -24,7 +25,7 @@ public abstract class CqMessage
     {
     }
 
-    internal ushort GetUInt16(int index) => (ushort) (Data[index] | (Data[index + 1] << 8));
+    internal ushort GetUInt16(int index) => LittleEndian.ReadUInt16(Data.Slice(index));
 
     internal string? GetString(int offset, int maxLength)
     {

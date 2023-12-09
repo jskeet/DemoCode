@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.CqSeries.Core;
 
 /// <summary>
 /// A raw, uninterpreted (other than format and type) CQ message.
@@ -54,7 +56,7 @@ public sealed class CqRawMessage
             return null;
         }
         CqMessageType type = (CqMessageType) data[1];
-        int dataLength = BitConverter.ToInt32(data[2..6]);
+        int dataLength = LittleEndian.ReadInt32(data[2..6]);
         if (data.Length < dataLength + 6)
         {
             return null;
@@ -88,7 +90,7 @@ public sealed class CqRawMessage
             case CqMessageFormat.VariableLength:
                 ret[0] = VariableLengthPrefix;
                 ret[1] = (byte) Type;
-                BitConverter.TryWriteBytes(ret.AsSpan().Slice(2, 4), Data.Length);
+                LittleEndian.WriteInt32(ret.AsSpan().Slice(2, 4), Data.Length);
                 data.CopyTo(ret.AsMemory().Slice(6));
                 break;
             case CqMessageFormat.FixedLength8:

@@ -1,4 +1,5 @@
-﻿using DigiMixer.DmSeries.Core;
+﻿using DigiMixer.Core;
+using DigiMixer.DmSeries.Core;
 using System.Text;
 
 namespace DigiMixer.DmSeries;
@@ -59,7 +60,7 @@ public sealed class DmMproMessage : DmMessage
         internal void WriteTo(Span<byte> buffer)
         {
             buffer[0] = 0x11;
-            DmRawMessage.WriteInt32(buffer.Slice(1), Data.Length);
+            BigEndian.WriteInt32(buffer.Slice(1), Data.Length);
             Data.CopyTo(buffer.Slice(5));
         }
 
@@ -73,7 +74,7 @@ public sealed class DmMproMessage : DmMessage
             {
                 throw new ArgumentException("Buffer wasn't long enough to include data length");
             }
-            var dataLength = DmRawMessage.ReadInt32(buffer.Slice(1));
+            var dataLength = BigEndian.ReadInt32(buffer.Slice(1));
             if (buffer.Length < 5 + dataLength)
             {
                 throw new ArgumentException("Buffer wasn't long enough to include data");
@@ -93,7 +94,7 @@ public sealed class DmMproMessage : DmMessage
             Span<byte> data = array;
             value.CopyTo(data);
             data[value.Length] = 0x31;
-            DmRawMessage.WriteInt32(data.Slice(value.Length + 1), text.Length + 1);
+            BigEndian.WriteInt32(data.Slice(value.Length + 1), text.Length + 1);
             Encoding.ASCII.GetBytes(text, data.Slice(value.Length + 5));
             return new Chunk(array);
         }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using DigiMixer.Core;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DigiMixer.DmSeries.Core;
@@ -27,7 +28,7 @@ public class DmRawMessage
         {
             return null;
         }
-        int bodyLength = ReadInt32(data[4..8]);
+        int bodyLength = BigEndian.ReadInt32(data[4..8]);
         if (data.Length < bodyLength + 8)
         {
             return null;
@@ -41,31 +42,9 @@ public class DmRawMessage
         var ret = new byte[Length];
         var span = ret.AsSpan();
         Encoding.ASCII.GetBytes(Type, ret);
-        WriteInt32(span.Slice(4), Data.Length);
+        BigEndian.WriteInt32(span.Slice(4), Data.Length);
         Data.CopyTo(span.Slice(8));
         return ret;
-    }
-
-    // TODO: Centralize all our bit conversions, and make them robust in the face of
-    // different endianness. This is getting silly.
-    public static int ReadInt32(ReadOnlySpan<byte> buffer)
-    {
-        Span<byte> reversed = stackalloc byte[4];
-        for (int i = 0; i < 4; i++)
-        {
-            reversed[i] = buffer[3 - i];
-        }
-        return MemoryMarshal.Read<int>(reversed);
-    }
-
-    public static void WriteInt32(Span<byte> buffer, int value)
-    {
-        Span<byte> reversed = stackalloc byte[4];
-        MemoryMarshal.Write(reversed, ref value);
-        for (int i = 0; i < 4; i++)
-        {
-            buffer[i] = reversed[3 - i];
-        }
     }
 
     public override string ToString() => $"{Type}: {Data.Length} bytes";

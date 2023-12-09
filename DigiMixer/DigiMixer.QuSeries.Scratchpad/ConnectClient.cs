@@ -147,7 +147,7 @@ internal class ConnectClient
             {
                 return;
             }
-            mixerUdpPort = qgp.Data[0] + (qgp.Data[1] << 8);
+            mixerUdpPort = LittleEndian.ReadUInt16(qgp.Data);
             Console.WriteLine($"Mixer UDP port: {mixerUdpPort}");
         }
     }

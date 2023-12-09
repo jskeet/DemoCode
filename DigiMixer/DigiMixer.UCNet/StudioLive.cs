@@ -363,24 +363,23 @@ public static class StudioLive
             return true;
         }
 
-        public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level)
-        {
-            float linear = ((float) level.Value) / FaderLevel.MaxValue;
-            uint integer = BitConverter.SingleToUInt32Bits(linear);
-            var address = Addresses.GetFaderAddress(inputId, outputId);
-            return SendMessage(new ParameterValueMessage(address, 0, integer));
-        }
+        public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
+            SetFaderLevelImpl(Addresses.GetFaderAddress(inputId, outputId), level);
 
-        public Task SetFaderLevel(ChannelId outputId, FaderLevel level)
+        public Task SetFaderLevel(ChannelId outputId, FaderLevel level) =>
+            SetFaderLevelImpl(Addresses.GetFaderAddress(outputId), level);
+
+        private Task SetFaderLevelImpl(string address, FaderLevel level)
         {
             float linear = ((float) level.Value) / FaderLevel.MaxValue;
+            // TODO: Try to remove BitConverter.
             uint integer = BitConverter.SingleToUInt32Bits(linear);
-            var address = Addresses.GetFaderAddress(outputId);
             return SendMessage(new ParameterValueMessage(address, 0, integer));
         }
 
         public Task SetMuted(ChannelId channelId, bool muted)
         {
+            // TODO: Get rid of this... just use the right uint.
             uint value = muted ? BitConverter.SingleToUInt32Bits(1.0f) : 0;
             var address = Addresses.GetMuteAddress(channelId);
             return SendMessage(new ParameterValueMessage(address, 0, value));
