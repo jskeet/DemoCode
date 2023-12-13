@@ -1,26 +1,25 @@
 ﻿using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 
 namespace DigiMixer.DmSeries.Core;
 
 public class DmClient : TcpControllerBase
 {
-    public event EventHandler<DmRawMessage>? MessageReceived;
+    public event EventHandler<DmMessage>? MessageReceived;
 
-    private MessageProcessor<DmRawMessage> processor;
+    private MessageProcessor<DmMessage> processor;
 
     public DmClient(ILogger logger, string host, int port) : base(logger, host, port)
     {
-        processor = new MessageProcessor<DmRawMessage>(
-            DmRawMessage.TryParse,
+        processor = new MessageProcessor<DmMessage>(
+            DmMessage.TryParse,
             message => message.Length,
             ProcessMessage,
             // TODO: See how big messages really are
             1024 * 1024);
     }
 
-    public async Task SendAsync(DmRawMessage message, CancellationToken cancellationToken)
+    public async Task SendAsync(DmMessage message, CancellationToken cancellationToken)
     {
         var data = message.ToByteArray();
         if (Logger.IsEnabled(LogLevel.Trace))
@@ -32,10 +31,9 @@ public class DmClient : TcpControllerBase
 
     protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
 
-    private void ProcessMessage(DmRawMessage message)
+    private void ProcessMessage(DmMessage message)
     {
         Logger.LogTrace("Received message: {message}", message);
         MessageReceived?.Invoke(this, message);
     }
 }
-

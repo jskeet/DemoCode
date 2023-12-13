@@ -17,6 +17,11 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
     /// </summary>
     public int UnprocessedLength { get; private set; }
 
+    /// <summary>
+    /// The total number of messages processed.
+    /// </summary>
+    public long MessagesProcessed { get; private set; }
+
     public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Action<TMessage> messageAction, int bufferSize = 65540)
     {
         this.messageParser = messageParser;
@@ -42,6 +47,7 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
         int start = 0;
         while (messageParser(span.Slice(start, UnprocessedLength - start)) is TMessage message)
         {
+            MessagesProcessed++;
             messageAction(message);
             start += messageLengthExtractor(message);
         }
