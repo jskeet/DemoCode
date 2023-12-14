@@ -24,13 +24,13 @@ public static class LittleEndian
         MemoryMarshal.Read<ushort>(source);
 
     public static void WriteUInt16(Span<byte> destination, ushort value) =>
-        MemoryMarshal.Write(destination, ref value);
+        MemoryMarshal.Write(destination, in value);
 
     public static uint ReadUInt32(ReadOnlySpan<byte> source) =>
         MemoryMarshal.Read<uint>(source);
 
     public static void WriteUInt32(Span<byte> destination, uint value) =>
-        MemoryMarshal.Write(destination, ref value);
+        MemoryMarshal.Write(destination, in value);
 
     public static short ReadInt16(ReadOnlySpan<byte> source) =>
         unchecked((short) ReadUInt16(source));

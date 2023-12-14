@@ -32,7 +32,7 @@ public static class BigEndian
     public static void WriteUInt16(Span<byte> destination, ushort value)
     {
         Span<byte> reversed = stackalloc byte[2];
-        MemoryMarshal.Write(reversed, ref value);
+        MemoryMarshal.Write(reversed, in value);
         destination[0] = reversed[1];
         destination[1] = reversed[0];
     }
@@ -50,7 +50,7 @@ public static class BigEndian
     public static void WriteUInt32(Span<byte> destination, uint value)
     {
         Span<byte> reversed = stackalloc byte[4];
-        MemoryMarshal.Write(reversed, ref value);
+        MemoryMarshal.Write(reversed, in value);
         destination[0] = reversed[3];
         destination[1] = reversed[2];
         destination[2] = reversed[1];
