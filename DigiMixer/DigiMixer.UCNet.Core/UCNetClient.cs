@@ -3,19 +3,13 @@ using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.UCNet.Core;
 
-public class UCNetClient : TcpControllerBase
+public class UCNetClient : TcpMessageProcessingControllerBase<UCNetMessage>
 {
     public event EventHandler<UCNetMessage>? MessageReceived;
 
-    private readonly MessageProcessor<UCNetMessage> processor;
-
-    public UCNetClient(ILogger logger, string host, int port) : base(logger, host, port)
+    public UCNetClient(ILogger logger, string host, int port) :
+        base(logger, host, port, UCNetMessage.TryParse, message => message.Length)
     {
-        processor = new MessageProcessor<UCNetMessage>(
-            UCNetMessage.TryParse,
-            message => message.Length,
-            message => MessageReceived?.Invoke(this, message),
-            65542);
     }
 
     public async Task Send(UCNetMessage message, CancellationToken cancellationToken)
@@ -28,5 +22,6 @@ public class UCNetClient : TcpControllerBase
         await Send(data, cancellationToken);
     }
 
-    protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
+    protected override void ProcessMessage(UCNetMessage message) =>
+        MessageReceived?.Invoke(this, message);
 }

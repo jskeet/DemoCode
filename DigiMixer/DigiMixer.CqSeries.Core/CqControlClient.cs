@@ -3,19 +3,12 @@ using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.CqSeries.Core;
 
-public sealed class CqControlClient : TcpControllerBase
+public sealed class CqControlClient : TcpMessageProcessingControllerBase<CqRawMessage>
 {
     public event EventHandler<CqRawMessage>? MessageReceived;
 
-    private MessageProcessor<CqRawMessage> processor;
-
-    public CqControlClient(ILogger logger, string host, int port) : base(logger, host, port)
+    public CqControlClient(ILogger logger, string host, int port) : base(logger, host, port, CqRawMessage.TryParse, message => message.Length, 65540)
     {
-        processor = new MessageProcessor<CqRawMessage>(
-            CqRawMessage.TryParse,
-            message => message.Length,
-            ProcessMessage,
-            65540);
     }
 
     public async Task SendAsync(CqRawMessage message, CancellationToken cancellationToken)
@@ -27,9 +20,7 @@ public sealed class CqControlClient : TcpControllerBase
         await Send(message.ToByteArray(), cancellationToken);
     }
 
-    protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
-
-    private void ProcessMessage(CqRawMessage message)
+    protected override void ProcessMessage(CqRawMessage message)
     {
         Logger.LogTrace("Received control message: {message}", message);
         MessageReceived?.Invoke(this, message);

@@ -7,7 +7,7 @@ namespace DigiMixer.Mackie.Core;
 /// <summary>
 /// Controller to handle the protocol for a Mackie DL-series mixer.
 /// </summary>
-public sealed class MackieController : TcpControllerBase
+public sealed class MackieController : TcpMessageProcessingControllerBase<MackieMessage>
 {
     private int nextSeq = 0;
     private readonly OutstandingRequest?[] outstandingRequests;
@@ -16,21 +16,14 @@ public sealed class MackieController : TcpControllerBase
     private readonly List<Func<MackieMessage, CancellationToken, Task<MackieMessageBody?>>> requestHandlers;
     private readonly List<Func<MackieMessage, CancellationToken, Task>> broadcastHandlers;
 
-    private readonly MessageProcessor<MackieMessage> processor;
-
     public event EventHandler<MackieMessage>? MessageSent;
     public event EventHandler<MackieMessage>? MessageReceived;
 
-    public MackieController(ILogger logger, string host, int port) : base(logger, host, port)
+    public MackieController(ILogger logger, string host, int port) : base(logger, host, port, MackieMessage.TryParse, message => message.Length)
     {
         outstandingRequests = new OutstandingRequest[256];
         requestHandlers = new();
         broadcastHandlers = new();
-        processor = new MessageProcessor<MackieMessage>(
-            MackieMessage.TryParse,
-            message => message.Length,
-            HandleMessage,
-            65536);
     }
 
     // Note: all the MapCommand implementations just add a general purpose handler.
@@ -141,7 +134,7 @@ public sealed class MackieController : TcpControllerBase
         MessageSent?.Invoke(this, message);
     }
 
-    private void HandleMessage(MackieMessage message)
+    protected override void ProcessMessage(MackieMessage message)
     {
         HandleMessageReceived(message, CancellationToken)
             .ContinueWith(t => Logger.LogError(t.Exception, "Error processing message"), TaskContinuationOptions.NotOnRanToCompletion);
@@ -217,8 +210,6 @@ public sealed class MackieController : TcpControllerBase
             return MackieMessageBody.Empty;
         }
     }
-
-    protected override void ProcessData(ReadOnlySpan<byte> data) => processor.Process(data);
 
     private void CheckState(ControllerStatus expectedStatus, [CallerMemberName] string caller = "")
     {
