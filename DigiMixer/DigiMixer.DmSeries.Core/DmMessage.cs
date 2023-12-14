@@ -40,6 +40,10 @@ public class DmMessage
         {
             return null;
         }
+        if (bodyLength < 0)
+        {
+            throw new InvalidDataException($"Negative body length: {bodyLength}");
+        }
         var type = Encoding.ASCII.GetString(data[0..4]).Trim('\0');
         var body = data.Slice(8, bodyLength);
         if (body[0] != (byte) DmSegmentFormat.Binary)

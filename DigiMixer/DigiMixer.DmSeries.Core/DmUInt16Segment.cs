@@ -5,7 +5,7 @@ namespace DigiMixer.DmSeries.Core;
 
 public sealed class DmUInt16Segment : DmSegment
 {
-    public override DmSegmentFormat Format => DmSegmentFormat.Int32;
+    public override DmSegmentFormat Format => DmSegmentFormat.UInt16;
 
     public override int Length => 5 + Values.Count * 2;
 

@@ -24,7 +24,7 @@ public sealed class DmTextSegment : DmSegment
         buffer[0] = (byte) Format;
         BigEndian.WriteInt32(buffer.Slice(1), Text.Length + 1);
         Encoding.ASCII.GetBytes(Text, buffer.Slice(5));
-        buffer[6 + Text.Length] = 0;
+        buffer[5 + Text.Length] = 0;
     }
 
     public static DmTextSegment Parse(ReadOnlySpan<byte> buffer)

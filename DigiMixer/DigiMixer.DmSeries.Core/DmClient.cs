@@ -5,11 +5,12 @@ namespace DigiMixer.DmSeries.Core;
 
 public class DmClient : TcpMessageProcessingControllerBase<DmMessage>
 {
-    public event EventHandler<DmMessage>? MessageReceived;
+    private readonly Func<DmMessage, CancellationToken, Task> handler;
 
-    public DmClient(ILogger logger, string host, int port) :
+    public DmClient(ILogger logger, string host, int port, Func<DmMessage, CancellationToken, Task> handler) :
         base(logger, host, port, DmMessage.TryParse, message => message.Length, bufferSize: 1024 * 1024)
     {
+        this.handler = handler;
     }
 
     public async Task SendAsync(DmMessage message, CancellationToken cancellationToken)
@@ -22,10 +23,9 @@ public class DmClient : TcpMessageProcessingControllerBase<DmMessage>
         await Send(data, cancellationToken);
     }
 
-    protected override Task ProcessMessage(DmMessage message, CancellationToken cancellationToken)
+    protected override async Task ProcessMessage(DmMessage message, CancellationToken cancellationToken)
     {
         Logger.LogTrace("Received message: {message}", message);
-        MessageReceived?.Invoke(this, message);
-        return Task.CompletedTask;
+        await handler(message, cancellationToken);
     }
 }
