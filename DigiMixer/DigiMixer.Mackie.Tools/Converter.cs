@@ -12,7 +12,7 @@ namespace DigiMixer.Mackie.Tools;
 /// </summary>
 internal class Converter
 {
-    internal static void Execute(string inputFile, string clientAddress, string mixerAddress, string outputFile)
+    internal static async Task Execute(string inputFile, string clientAddress, string mixerAddress, string outputFile)
     {
         IPAddress clientAddr = IPAddress.Parse(clientAddress);
         IPAddress mixerAddr = IPAddress.Parse(mixerAddress);
@@ -42,11 +42,11 @@ internal class Converter
             currentTimestamp = packet.Timestamp;
             if (packet.Source.Address.Equals(clientAddr) && packet.Dest.Address.Equals(mixerAddr))
             {
-                outboundProcessor.Process(packet.Data);
+                await outboundProcessor.Process(packet.Data, default);
             }
             else if (packet.Source.Address.Equals(mixerAddr) && packet.Dest.Address.Equals(clientAddr))
             {
-                inboundProcessor.Process(packet.Data);
+                await inboundProcessor.Process(packet.Data, default);
             }
         }
 

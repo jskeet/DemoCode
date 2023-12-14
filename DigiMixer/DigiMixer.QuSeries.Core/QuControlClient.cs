@@ -21,9 +21,10 @@ public sealed class QuControlClient : TcpMessageProcessingControllerBase<QuContr
         await Send(data, cancellationToken);
     }
 
-    protected override void ProcessMessage(QuControlMessage message)
+    protected override Task ProcessMessage(QuControlMessage message, CancellationToken cancellationToken)
     {
         Logger.LogTrace("Received message: {message}", message);
         MessageReceived?.Invoke(this, message);
+        return Task.CompletedTask;
     }
 }

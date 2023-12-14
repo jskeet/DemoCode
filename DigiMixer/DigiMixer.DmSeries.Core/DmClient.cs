@@ -22,9 +22,10 @@ public class DmClient : TcpMessageProcessingControllerBase<DmMessage>
         await Send(data, cancellationToken);
     }
 
-    protected override void ProcessMessage(DmMessage message)
+    protected override Task ProcessMessage(DmMessage message, CancellationToken cancellationToken)
     {
         Logger.LogTrace("Received message: {message}", message);
         MessageReceived?.Invoke(this, message);
+        return Task.CompletedTask;
     }
 }

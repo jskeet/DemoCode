@@ -20,9 +20,10 @@ public sealed class CqControlClient : TcpMessageProcessingControllerBase<CqRawMe
         await Send(message.ToByteArray(), cancellationToken);
     }
 
-    protected override void ProcessMessage(CqRawMessage message)
+    protected override Task ProcessMessage(CqRawMessage message, CancellationToken cancellationToken)
     {
         Logger.LogTrace("Received control message: {message}", message);
         MessageReceived?.Invoke(this, message);
+        return Task.CompletedTask;
     }
 }

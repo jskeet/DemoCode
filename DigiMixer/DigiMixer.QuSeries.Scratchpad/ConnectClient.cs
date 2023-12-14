@@ -100,19 +100,19 @@ internal class ConnectClient
             var messageBuffer = new MessageProcessor<QuControlMessage>(
                 QuControlMessage.TryParse,
                 message => message.Length,
-                action,
+                (message, _) => { action(message); return Task.CompletedTask; },
                 100_000);
-            byte[] buffer = new byte[1024];
+            Memory<byte> buffer = new byte[1024];
             Console.WriteLine($"Starting reading at {DateTime.UtcNow}");
             while (!finished)
             {
-                var bytesRead = await tcpClient.GetStream().ReadAsync(buffer, 0, 1024);
+                var bytesRead = await tcpClient.GetStream().ReadAsync(buffer, default);
                 if (bytesRead == 0)
                 {
                     Console.WriteLine($"Receiving stream broken at {DateTime.UtcNow}");
                     return;
                 }
-                messageBuffer.Process(buffer.AsSpan().Slice(0, bytesRead));
+                await messageBuffer.Process(buffer.Slice(0, bytesRead), default);
             }
         }
 

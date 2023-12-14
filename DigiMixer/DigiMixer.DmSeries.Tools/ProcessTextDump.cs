@@ -6,7 +6,7 @@ namespace DigiMixer.DmSeries.Tools;
 
 public class ProcessTextDump(string FileName, string Mode) : Tool
 {
-    public override Task<int> Execute()
+    public override async Task<int> Execute()
     {
         Action<DmMessage, string> processingAction = Mode switch
         {
@@ -23,7 +23,7 @@ public class ProcessTextDump(string FileName, string Mode) : Tool
         {
             var hexDumpLine = Hex.ParseHexDumpLine(line);
             var processor = hexDumpLine.Direction == Hex.Direction.Outbound ? outboundProcessor : inboundProcessor;
-            processor.Process(hexDumpLine.Data);
+            await processor.Process(hexDumpLine.Data, default);
         }
         Console.WriteLine($"Processed outbound messages: {outboundProcessor.MessagesProcessed}");
         Console.WriteLine($"Processed inbound messages: {inboundProcessor.MessagesProcessed}");
@@ -31,6 +31,6 @@ public class ProcessTextDump(string FileName, string Mode) : Tool
         Console.WriteLine($"Unprocessed outbound data: {outboundProcessor.UnprocessedLength}");
         Console.WriteLine($"Unprocessed inbound data: {inboundProcessor.UnprocessedLength}");
 
-        return Task.FromResult(0);
+        return 0;
     }
 }

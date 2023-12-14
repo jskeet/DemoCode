@@ -134,67 +134,61 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
         MessageSent?.Invoke(this, message);
     }
 
-    protected override void ProcessMessage(MackieMessage message)
+    protected override async Task ProcessMessage(MackieMessage message, CancellationToken cancellationToken)
     {
-        HandleMessageReceived(message, CancellationToken)
-            .ContinueWith(t => Logger.LogError(t.Exception, "Error processing message"), TaskContinuationOptions.NotOnRanToCompletion);
-
-        async Task HandleMessageReceived(MackieMessage message, CancellationToken cancellationToken)
+        if (Logger.IsEnabled(LogLevel.Trace))
         {
-            if (Logger.IsEnabled(LogLevel.Trace))
-            {
-                Logger.LogTrace("Received message: {message}", message);
-            }
-            MessageReceived?.Invoke(this, message);
-            switch (message.Type)
-            {
-                case MackieMessageType.Request:
-                    var responseBody = await GetResponseBody(message, cancellationToken);
-                    await SendMessage(message.CreateResponse(responseBody), cancellationToken).ConfigureAwait(false);
-                    break;
-                case MackieMessageType.Response:
+            Logger.LogTrace("Received message: {message}", message);
+        }
+        MessageReceived?.Invoke(this, message);
+        switch (message.Type)
+        {
+            case MackieMessageType.Request:
+                var responseBody = await GetResponseBody(message, cancellationToken);
+                await SendMessage(message.CreateResponse(responseBody), cancellationToken).ConfigureAwait(false);
+                break;
+            case MackieMessageType.Response:
+                {
+                    var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
+                    if (outstandingRequest is null)
                     {
-                        var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
-                        if (outstandingRequest is null)
-                        {
-                            Logger.LogError($"No outstanding request for sequence number: {message.Sequence}");
-                        }
-                        else
-                        {
-                            outstandingRequest.CompletionSource.TrySetResult(message);
-                        }
+                        Logger.LogError($"No outstanding request for sequence number: {message.Sequence}");
                     }
-                    break;
-                case MackieMessageType.Broadcast:
-                    foreach (var handler in broadcastHandlers)
+                    else
                     {
-                        await handler(message, cancellationToken).ConfigureAwait(false);
+                        outstandingRequest.CompletionSource.TrySetResult(message);
                     }
-                    break;
-                case MackieMessageType.Error:
+                }
+                break;
+            case MackieMessageType.Broadcast:
+                foreach (var handler in broadcastHandlers)
+                {
+                    await handler(message, cancellationToken).ConfigureAwait(false);
+                }
+                break;
+            case MackieMessageType.Error:
+                {
+                    var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
+                    if (outstandingRequest is null)
                     {
-                        var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
-                        if (outstandingRequest is null)
-                        {
-                            Logger.LogError($"No outstanding request for sequence number: {message.Sequence} which received an error response");
-                        }
-                        else
-                        {
-                            outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(message));
-                        }
+                        Logger.LogError($"No outstanding request for sequence number: {message.Sequence} which received an error response");
                     }
-                    break;
-                default:
-                    Logger.LogError($"Unhandled message type: {message.Type}");
+                    else
                     {
-                        var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
-                        if (outstandingRequest is not null)
-                        {
-                            outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(message));
-                        }
+                        outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(message));
                     }
-                    break;
-            }
+                }
+                break;
+            default:
+                Logger.LogError($"Unhandled message type: {message.Type}");
+                {
+                    var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
+                    if (outstandingRequest is not null)
+                    {
+                        outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(message));
+                    }
+                }
+                break;
         }
 
         async Task<MackieMessageBody> GetResponseBody(MackieMessage request, CancellationToken cancellationToken)

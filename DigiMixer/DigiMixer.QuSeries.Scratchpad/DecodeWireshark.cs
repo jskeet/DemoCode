@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 class DecodeWireshark
 {
-    static void Main()
+    static async Task Main()
     {
         var file = @"c:\users\skeet\Downloads\Wireshark\test1.pcapng";
 
@@ -43,7 +43,7 @@ class DecodeWireshark
         {
             var processor = packet.Dest.Address.Equals(clientAddr)
                 ? clientProcessor : mixerProcessor;
-            processor.Process(packet.Data);
+            await processor.Process(packet.Data, default);
         }
 
         void LogMessage(string description, QuControlMessage message) => Console.Write(message);

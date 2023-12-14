@@ -16,11 +16,12 @@ public abstract class TcpMessageProcessingControllerBase<TMessage> : TcpControll
         messageProcessor = new MessageProcessor<TMessage>(messageParser, messageLengthExtractor, ProcessMessage, bufferSize);
     }
 
-    protected override void ProcessData(ReadOnlySpan<byte> data) => messageProcessor.Process(data);
+    protected override Task ProcessData(ReadOnlyMemory<byte> data, CancellationToken cancellationToken) =>
+        messageProcessor.Process(data, cancellationToken);
 
     /// <summary>
     /// Processes a single received message. This is overridden in derived classes.
     /// </summary>
     /// <param name="message">The message received.</param>
-    protected abstract void ProcessMessage(TMessage message);
+    protected abstract Task ProcessMessage(TMessage message, CancellationToken cancellationToken);
 }

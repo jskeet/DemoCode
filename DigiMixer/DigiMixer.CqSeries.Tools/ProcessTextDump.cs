@@ -6,7 +6,7 @@ namespace DigiMixer.CqSeries.Tools;
 
 public class ProcessTextDump(string FileName) : Tool
 {
-    public override Task<int> Execute()
+    public override async Task<int> Execute()
     {
         var inboundProcessor = new MessageProcessor<CqRawMessage>(CqRawMessage.TryParse, m => m.Length, m => Display("<=", m));
         var outboundProcessor = new MessageProcessor<CqRawMessage>(CqRawMessage.TryParse, m => m.Length, m => Display("=>", m));
@@ -16,13 +16,13 @@ public class ProcessTextDump(string FileName) : Tool
         {
             var hexDumpLine = Hex.ParseHexDumpLine(line);
             var processor = hexDumpLine.Direction == Hex.Direction.Outbound ? outboundProcessor : inboundProcessor;
-            processor.Process(hexDumpLine.Data);
+            await processor.Process(hexDumpLine.Data, default);
         }
 
         Console.WriteLine($"Unprocessed outbound data: {outboundProcessor.UnprocessedLength}");
         Console.WriteLine($"Unprocessed inbound data: {inboundProcessor.UnprocessedLength}");
 
-        return Task.FromResult(0);
+        return 0;
     }
 
     private static void Display(string direction, CqRawMessage message)

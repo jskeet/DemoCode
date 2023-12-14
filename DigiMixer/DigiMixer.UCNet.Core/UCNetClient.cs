@@ -22,6 +22,9 @@ public class UCNetClient : TcpMessageProcessingControllerBase<UCNetMessage>
         await Send(data, cancellationToken);
     }
 
-    protected override void ProcessMessage(UCNetMessage message) =>
+    protected override Task ProcessMessage(UCNetMessage message, CancellationToken cancellationToken)
+    {
         MessageReceived?.Invoke(this, message);
+        return Task.CompletedTask;
+    }
 }

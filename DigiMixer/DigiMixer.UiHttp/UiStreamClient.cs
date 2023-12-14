@@ -32,7 +32,7 @@ internal sealed class UiStreamClient : IUiClient
 
     public async Task StartReading()
     {
-        byte[] buffer = new byte[8192];
+        Memory<byte> buffer = new byte[8192];
         var messageProcessor = new MessageProcessor<UiMessage>(ParseMessage, message => message.Length, ProcessMessage, MaxBufferSize);
 
         try
@@ -44,7 +44,7 @@ internal sealed class UiStreamClient : IUiClient
                 {
                     throw new InvalidOperationException("Unexpected TCP stream termination");
                 }
-                messageProcessor.Process(buffer.AsSpan().Slice(0, bytesRead));
+                await messageProcessor.Process(buffer.Slice(0, bytesRead), cts.Token);
             }
         }
         catch when (cts.IsCancellationRequested)
@@ -59,7 +59,7 @@ internal sealed class UiStreamClient : IUiClient
         return endOfLine == -1 ? null : UiMessage.Parse(data.Slice(0, endOfLine));
     }
 
-    private void ProcessMessage(UiMessage message)
+    private Task ProcessMessage(UiMessage message, CancellationToken cancellationToken)
     {
         if (logger.IsEnabled(LogLevel.Trace))
         {
@@ -67,6 +67,7 @@ internal sealed class UiStreamClient : IUiClient
         }
 
         MessageReceived?.Invoke(this, message);
+        return Task.CompletedTask;
     }
 
     public void Dispose()

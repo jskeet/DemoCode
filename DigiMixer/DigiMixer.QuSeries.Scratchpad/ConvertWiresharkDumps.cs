@@ -34,7 +34,7 @@ class ConvertWiresharkDumps
             if (packet.Type == ProtocolType.Tcp && packet.Source.Address.Equals(mixerAddr) &&
                 (packet.Dest.Address.Equals(clientAddr1) || packet.Dest.Address.Equals(clientAddr2)))
             {
-                processor.Process(packet.Data);
+                processor.Process(packet.Data, default).Wait();
             }
         }
 

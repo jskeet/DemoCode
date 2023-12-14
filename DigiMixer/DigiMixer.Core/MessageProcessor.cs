@@ -9,8 +9,8 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
 
     private readonly Parser messageParser;
     private readonly Func<TMessage, int> messageLengthExtractor;
-    private readonly Action<TMessage> messageAction;
-    private readonly byte[] buffer;
+    private readonly Func<TMessage, CancellationToken, Task> messageAction;
+    private readonly Memory<byte> buffer;
 
     /// <summary>
     /// The amount of unprocessed data left in the buffer.
@@ -22,12 +22,17 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
     /// </summary>
     public long MessagesProcessed { get; private set; }
 
-    public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Action<TMessage> messageAction, int bufferSize = 65540)
+    public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Func<TMessage, CancellationToken, Task> messageAction, int bufferSize = 65540)
     {
         this.messageParser = messageParser;
         this.messageLengthExtractor = messageLengthExtractor;
         this.messageAction = messageAction;
         buffer = new byte[bufferSize];
+    }
+
+    public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Action<TMessage> messageAction, int bufferSize = 65540)
+        : this(messageParser, messageLengthExtractor, (message, cancellationToken) => { messageAction(message); return Task.CompletedTask; }, bufferSize)
+    {
     }
 
     /// <summary>
@@ -39,16 +44,15 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
     /// This is currently synchronous, which seems to be "okay"; we could potentially change it to be asynchronous
     /// later.
     /// </remarks>
-    public void Process(ReadOnlySpan<byte> data)
+    public async Task Process(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
     {
-        var span = buffer.AsSpan();
-        data.CopyTo(span.Slice(UnprocessedLength));
+        data.CopyTo(buffer.Slice(UnprocessedLength));
         UnprocessedLength += data.Length;
         int start = 0;
-        while (messageParser(span.Slice(start, UnprocessedLength - start)) is TMessage message)
+        while (messageParser(buffer.Slice(start, UnprocessedLength - start).Span) is TMessage message)
         {
             MessagesProcessed++;
-            messageAction(message);
+            await messageAction(message, cancellationToken);
             start += messageLengthExtractor(message);
         }
         // If we've consumed the whole buffer, reset to the start. (No copying required.)
@@ -59,7 +63,7 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
         // Otherwise, copy whatever's left.
         else
         {
-            Buffer.BlockCopy(buffer, start, buffer, 0, UnprocessedLength - start);
+            buffer.Slice(start, UnprocessedLength - start).CopyTo(buffer);
             UnprocessedLength -= start;
         }
     }

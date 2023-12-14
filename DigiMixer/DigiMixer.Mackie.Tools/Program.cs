@@ -38,7 +38,7 @@ switch (args[0])
             Console.WriteLine("Convert options: <input file> <client address> <mixer address> <output file>");
             return;
         }
-        Converter.Execute(args[1], args[2], args[3], args[4]);
+        await Converter.Execute(args[1], args[2], args[3], args[4]);
         break;
     case "listen":
         if (args.Length != 4)

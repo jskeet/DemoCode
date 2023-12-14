@@ -67,7 +67,7 @@ public abstract class TcpControllerBase : IDisposable
         try
         {
             var stream = tcpClient.GetStream();
-            byte[] buffer = new byte[32768];
+            Memory<byte> buffer = new byte[32768];
             while (!cts.IsCancellationRequested)
             {
                 var bytesRead = await stream.ReadAsync(buffer, CancellationToken);
@@ -75,7 +75,7 @@ public abstract class TcpControllerBase : IDisposable
                 {
                     throw new InvalidOperationException("Unexpected TCP stream termination");
                 }
-                ProcessData(buffer.AsSpan().Slice(0, bytesRead));
+                await ProcessData(buffer.Slice(0, bytesRead), CancellationToken);
             }
         }
         catch (Exception e)
@@ -88,7 +88,7 @@ public abstract class TcpControllerBase : IDisposable
         }
     }
 
-    protected abstract void ProcessData(ReadOnlySpan<byte> data);
+    protected abstract Task ProcessData(ReadOnlyMemory<byte> data, CancellationToken cancellationToken);
 
     public void Dispose()
     {

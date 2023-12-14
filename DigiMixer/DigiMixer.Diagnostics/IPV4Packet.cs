@@ -11,7 +11,7 @@ public class IPV4Packet
     private readonly int dataOffset;
     private readonly int dataLength;
     public ProtocolType Type { get; }
-    public ReadOnlySpan<byte> Data => data.AsSpan().Slice(dataOffset, dataLength);
+    public ReadOnlyMemory<byte> Data => data.AsMemory().Slice(dataOffset, dataLength);
     public IPEndPoint Source { get; }
     public IPEndPoint Dest { get; }
     public DateTime Timestamp { get; }
