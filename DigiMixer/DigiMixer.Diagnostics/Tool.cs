@@ -24,7 +24,20 @@ public abstract class Tool
             DisplayTools(tools);
             return 1;
         }
-        var tool = (Tool) Activator.CreateInstance(toolType, args.Skip(1).ToArray())!;
+        var ctor = toolType.GetConstructors(BindingFlags.Instance | BindingFlags.Public)
+            .Where(ctor => ctor.GetParameters().Length == args.Length - 1)
+            .FirstOrDefault();
+        if (ctor is null)
+        {
+            Console.WriteLine($"Tool '{args[0]}' has no constructor of that length. Constructors:");
+            foreach (var candidate in toolType.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
+            {
+                var parameters = candidate.GetParameters();
+                Console.WriteLine($"Length {parameters.Length}: {string.Join(", ", parameters.Select(p => p.Name))}");
+            }
+            return 1;
+        }
+        var tool = (Tool) ctor.Invoke(args.Skip(1).ToArray());
         return await tool.Execute();
     }
 
