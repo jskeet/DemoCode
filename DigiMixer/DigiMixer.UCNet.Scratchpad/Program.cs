@@ -16,17 +16,17 @@ client.MessageReceived += (sender, message) => logger.LogInformation("Received {
 await client.Connect(default);
 client.Start();
 
-await client.Send(new UdpMetersMessage(listener.LocalPort), default);
+await client.SendAsync(new UdpMetersMessage(listener.LocalPort), default);
 var subscribe = JsonMessage.FromObject(new SubscribeBody(), MessageMode.ClientRequest);
-await client.Send(subscribe, default);
+await client.SendAsync(subscribe, default);
 var presets = new FileRequestMessage("Listpresets/channel", 1000);
-await client.Send(presets, default);
+await client.SendAsync(presets, default);
 
 
 while (true)
 {
     await Task.Delay(2000);
-    await client.Send(new KeepAliveMessage(), default);
+    await client.SendAsync(new KeepAliveMessage(), default);
 }
 
 /*

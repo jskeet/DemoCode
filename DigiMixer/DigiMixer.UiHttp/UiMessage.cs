@@ -1,9 +1,10 @@
-﻿using System.Globalization;
+﻿using DigiMixer.Core;
+using System.Globalization;
 using System.Text;
 
 namespace DigiMixer.UiHttp;
 
-internal class UiMessage
+public class UiMessage : IMixerMessage<UiMessage>
 {
     internal const string SetDoubleMessageType = "SETD";
     internal const string SetStringMessageType = "SETS";
@@ -35,10 +36,17 @@ internal class UiMessage
     }
 
     /// <summary>
-    /// Parses a line of data, which should not include the trailing \n
+    /// Parses a line of data, which may include the trailing '\n'.
     /// </summary>
-    internal static UiMessage Parse(ReadOnlySpan<byte> data)
+    public static UiMessage? TryParse(ReadOnlySpan<byte> data)
     {
+        var endOfLine = data.IndexOf((byte) '\n');
+        if (endOfLine == -1)
+        {
+            return null;
+        }
+        data = data.Slice(0, endOfLine);
+
         int messageLength = data.Length + 1;
         // Formats:
         // type
@@ -76,27 +84,6 @@ internal class UiMessage
     internal static UiMessage CreateSetMessage(string address, double value) =>
         new UiMessage(SetDoubleMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture), null);
 
-    internal byte[] ToByteArray()
-    {
-        var array = new byte[Length];
-        Encoding.ASCII.GetBytes(MessageType, 0, MessageType.Length, array, 0);
-        int index = MessageType.Length;
-        if (Address is string address)
-        {
-            array[index++] = (byte) '^';
-            Encoding.ASCII.GetBytes(address, 0, address.Length, array, index);
-            index += address.Length;
-        }
-        if (Value is string value)
-        {
-            array[index++] = (byte) '^';
-            Encoding.ASCII.GetBytes(value, 0, value.Length, array, index);
-            index += value.Length;
-        }
-        array[index++] = (byte) '\n';
-        return array;
-    }
-
     private static int ComputeLength(string messageType, string? address, string? value)
     {
         int length = messageType.Length;
@@ -116,4 +103,23 @@ internal class UiMessage
         Address is null && Value is null ? MessageType
         : Address is null ? $"{MessageType}^{Value}"
         : $"{MessageType}^{Address}^{Value}";
+
+    public void CopyTo(Span<byte> buffer)
+    {
+        Encoding.ASCII.GetBytes(MessageType, buffer);
+        buffer = buffer.Slice(MessageType.Length);
+        if (Address is string address)
+        {
+            buffer[0] = (byte) '^';
+            Encoding.ASCII.GetBytes(address, buffer.Slice(1));
+            buffer = buffer.Slice(1 + address.Length);
+        }
+        if (Value is string value)
+        {
+            buffer[0] = (byte) '^';
+            Encoding.ASCII.GetBytes(value, buffer.Slice(1));
+            buffer = buffer.Slice(1 + value.Length);
+        }
+        buffer[0] = (byte) '\n';
+    }
 }

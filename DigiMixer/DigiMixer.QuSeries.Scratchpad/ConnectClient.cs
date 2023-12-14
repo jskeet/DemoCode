@@ -66,7 +66,9 @@ internal class ConnectClient
 
         foreach (var message in introMessages)
         {
-            stream.Write(message.ToByteArray());
+            var memory = new byte[message.Length];
+            message.CopyTo(memory);
+            stream.Write(memory);
             await Task.Delay(100);
         }
 
@@ -98,8 +100,6 @@ internal class ConnectClient
         async Task StartLoop(Action<QuControlMessage> action)
         {
             var messageBuffer = new MessageProcessor<QuControlMessage>(
-                QuControlMessage.TryParse,
-                message => message.Length,
                 (message, _) => { action(message); return Task.CompletedTask; },
                 100_000);
             Memory<byte> buffer = new byte[1024];

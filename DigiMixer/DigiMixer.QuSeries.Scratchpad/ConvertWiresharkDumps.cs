@@ -22,8 +22,6 @@ class ConvertWiresharkDumps
         var dump = WiresharkDump.Load(file);
         var packets = dump.IPV4Packets.ToList();
         var processor = new MessageProcessor<QuControlMessage>(
-            QuControlMessage.TryParse,
-            message => message.Length,
             MaybeSaveConverted,
             65540);
         var clientAddr1 = IPAddress.Parse("192.168.1.140");

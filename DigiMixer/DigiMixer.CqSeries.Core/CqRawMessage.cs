@@ -5,7 +5,7 @@ namespace DigiMixer.CqSeries.Core;
 /// <summary>
 /// A raw, uninterpreted (other than format and type) CQ message.
 /// </summary>
-public sealed class CqRawMessage
+public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
 {
     private const byte VariableLengthPrefix = 0x7f;
     private const byte FixedLengthPrefix = 0xf7;
@@ -82,27 +82,26 @@ public sealed class CqRawMessage
         return new CqRawMessage(CqMessageFormat.FixedLength8, CqMessageType.Regular, data[1..8].ToArray());
     }
 
-    public byte[] ToByteArray()
+    public override string ToString() => $"Type={Type}; Length={Data.Length}";
+
+    public void CopyTo(Span<byte> buffer)
     {
-        byte[] ret = new byte[Length];
         switch (Format)
         {
             case CqMessageFormat.VariableLength:
-                ret[0] = VariableLengthPrefix;
-                ret[1] = (byte) Type;
-                LittleEndian.WriteInt32(ret.AsSpan().Slice(2, 4), Data.Length);
-                data.CopyTo(ret.AsMemory().Slice(6));
+                buffer[0] = VariableLengthPrefix;
+                buffer[1] = (byte) Type;
+                LittleEndian.WriteInt32(buffer.Slice(2, 4), Data.Length);
+                data.Span.CopyTo(buffer.Slice(6));
                 break;
             case CqMessageFormat.FixedLength8:
             case CqMessageFormat.FixedLength9:
-                ret[0] = FixedLengthPrefix;
-                data.CopyTo(ret.AsMemory().Slice(1));
+                buffer[0] = FixedLengthPrefix;
+                data.Span.CopyTo(buffer.Slice(1));
                 break;
             default:
                 throw new InvalidOperationException();
         }
-        return ret;
-    }
 
-    public override string ToString() => $"Type={Type}; Length={Data.Length}";
+    }
 }

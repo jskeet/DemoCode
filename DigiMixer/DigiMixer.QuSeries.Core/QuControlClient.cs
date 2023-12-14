@@ -7,18 +7,8 @@ public sealed class QuControlClient : TcpMessageProcessingControllerBase<QuContr
 {
     public event EventHandler<QuControlMessage>? MessageReceived;
 
-    public QuControlClient(ILogger logger, string host, int port) : base(logger, host, port, QuControlMessage.TryParse, message => message.Length)
+    public QuControlClient(ILogger logger, string host, int port) : base(logger, host, port)
     {
-    }
-
-    public async Task SendAsync(QuControlMessage message, CancellationToken cancellationToken)
-    {
-        var data = message.ToByteArray();
-        if (Logger.IsEnabled(LogLevel.Trace))
-        {
-            Logger.LogTrace("Sending message: {message}", message);
-        }
-        await Send(data, cancellationToken);
     }
 
     protected override Task ProcessMessage(QuControlMessage message, CancellationToken cancellationToken)

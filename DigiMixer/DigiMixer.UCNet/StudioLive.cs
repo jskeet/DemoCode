@@ -287,7 +287,7 @@ public static class StudioLive
             try
             {
                 localClient.MessageReceived += LocalHandleMessage;
-                await localClient.Send(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }), methodCts.Token);
+                await localClient.SendAsync(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }), methodCts.Token);
                 return await tcs.Task.WaitAsync(methodCts.Token);
             }
             finally
@@ -390,7 +390,7 @@ public static class StudioLive
             if (client is not null)
             {
                 using var chained = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts?.Token ?? default);
-                await client.Send(message, chained.Token);
+                await client.SendAsync(message, chained.Token);
             }
         }
 

@@ -29,13 +29,9 @@ class DecodeWireshark
         Console.WriteLine($"Control packets: {controlPackets.Count}");
 
         var clientProcessor = new MessageProcessor<QuControlMessage>(
-            QuControlMessage.TryParse,
-            message => message.Length,
             quMessage => LogMessage("Mixer->Client", quMessage),
             65540);
         var mixerProcessor = new MessageProcessor<QuControlMessage>(
-            QuControlMessage.TryParse,
-            message => message.Length,
             quMessage => LogMessage("Client->Mixer", quMessage),
             65540);
 

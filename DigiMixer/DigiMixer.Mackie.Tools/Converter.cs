@@ -24,13 +24,9 @@ internal class Converter
         var mc = new MessageCollection();
 
         var outboundProcessor = new MessageProcessor<MackieMessage>(
-            MackieMessage.TryParse,
-            message => message.Length,
             message => ConvertAndStoreMessage(message, true),
             65540);
         var inboundProcessor = new MessageProcessor<MackieMessage>(
-            MackieMessage.TryParse,
-            message => message.Length,
             message => ConvertAndStoreMessage(message, false),
             65540);
         foreach (var packet in packets)

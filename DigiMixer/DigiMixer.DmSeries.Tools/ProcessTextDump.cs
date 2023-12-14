@@ -15,8 +15,8 @@ public class ProcessTextDump(string FileName, string Mode) : Tool
             _ => throw new ArgumentException($"Invalid mode: '{Mode}'; must be 'full' or 'brief'")
         };
 
-        var inboundProcessor = new MessageProcessor<DmMessage>(DmMessage.TryParse, m => m.Length, m => processingAction(m, "<="));
-        var outboundProcessor = new MessageProcessor<DmMessage>(DmMessage.TryParse, m => m.Length, m => processingAction(m, "=>"));
+        var inboundProcessor = new MessageProcessor<DmMessage>(m => processingAction(m, "<="));
+        var outboundProcessor = new MessageProcessor<DmMessage>(m => processingAction(m, "=>"));
 
         using var reader = File.OpenText(FileName);
         while (reader.ReadLine() is string line)

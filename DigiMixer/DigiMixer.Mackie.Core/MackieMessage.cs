@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DigiMixer.Mackie.Core;
 
-public sealed class MackieMessage
+public sealed class MackieMessage : IMixerMessage<MackieMessage>
 {
     private static readonly byte[] emptyBody = new byte[0];
     private const byte Header0 = 0xab;
@@ -56,36 +56,32 @@ public sealed class MackieMessage
         return new MackieMessage(Sequence, MackieMessageType.Response, Command, body);
     }
 
-    internal byte[] ToByteArray()
+    public void CopyTo(Span<byte> buffer)
     {
         var body = Body.InNetworkOrder();
-
-        byte[] message = new byte[Length];
-        var span = message.AsSpan();
-        message[0] = Header0;
-        message[1] = Sequence;
-        BigEndian.WriteInt16(span.Slice(2), (short) Body.ChunkCount);
-        message[4] = (byte) Type;
-        message[5] = (byte) Command;
+        buffer[0] = Header0;
+        buffer[1] = Sequence;
+        BigEndian.WriteInt16(buffer.Slice(2), (short) Body.ChunkCount);
+        buffer[4] = (byte) Type;
+        buffer[5] = (byte) Command;
 
         ushort headerChecksum = 0xffff;
         for (int i = 0; i < 6; i++)
         {
-            headerChecksum -= message[i];
+            headerChecksum -= buffer[i];
         }
-        BigEndian.WriteUInt16(span.Slice(6), headerChecksum);
+        BigEndian.WriteUInt16(buffer.Slice(6), headerChecksum);
 
         if (body.Length != 0)
         {
-            body.Data.CopyTo(message.AsSpan().Slice(8));
+            body.Data.CopyTo(buffer.Slice(8));
             uint bodyChecksum = 0xffff_ffff;
             for (int i = 0; i < Body.Length; i++)
             {
                 bodyChecksum -= Body.Data[i];
             }
-            BigEndian.WriteUInt32(span.Slice(body.Length + 8), bodyChecksum);
+            BigEndian.WriteUInt32(buffer.Slice(body.Length + 8), bodyChecksum);
         }
-        return message;
     }
 
     // TODO: Include the hex of the body?

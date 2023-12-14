@@ -1,10 +1,11 @@
 ﻿using DigiMixer.Core;
+using System;
 using System.Collections.Immutable;
 using System.Text;
 
 namespace DigiMixer.DmSeries.Core;
 
-public class DmMessage
+public class DmMessage : IMixerMessage<DmMessage>
 {
     public string Type { get; }
 
@@ -76,22 +77,20 @@ public class DmMessage
         return new DmMessage(type, flags, segments.ToImmutableList());
     }
 
-    internal ReadOnlyMemory<byte> ToByteArray()
+    public void CopyTo(Span<byte> buffer)
     {
-        var ret = new byte[Length];
-        var span = ret.AsSpan();
-        Encoding.ASCII.GetBytes(Type, ret);
-        BigEndian.WriteInt32(span.Slice(4), ret.Length - 8);
-        span[8] = (byte) DmSegmentFormat.Binary;
-        BigEndian.WriteInt32(span.Slice(9), ret.Length - 13);
-        BigEndian.WriteUInt32(span.Slice(13), Flags);
-        span = span.Slice(17);
+        // Note: we assume the span is right-sized to Length.
+        Encoding.ASCII.GetBytes(Type, buffer);
+        BigEndian.WriteInt32(buffer.Slice(4), buffer.Length - 8);
+        buffer[8] = (byte) DmSegmentFormat.Binary;
+        BigEndian.WriteInt32(buffer.Slice(9), buffer.Length - 13);
+        BigEndian.WriteUInt32(buffer.Slice(13), Flags);
+        buffer = buffer.Slice(17);
         foreach (var segment in Segments)
         {
-            segment.WriteTo(span);
-            span = span.Slice(segment.Length);
+            segment.WriteTo(buffer);
+            buffer = buffer.Slice(segment.Length);
         }
-        return ret;
     }
 
     public override string ToString() => $"{Type.PadRight(4)}: Flags={Flags:x8}; Segments={Segments.Count}";

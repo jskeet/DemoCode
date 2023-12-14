@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using DigiMixer.Core;
+using System.Runtime.InteropServices;
 
 namespace DigiMixer.QuSeries.Core;
 
@@ -26,17 +27,14 @@ public class QuValueMessage : QuControlMessage
 
     public override int Length => 9;
 
-    public override byte[] ToByteArray()
+    public override void CopyTo(Span<byte> buffer)
     {
-        var message = new byte[Length];
-        message[0] = 0xf7;
-        message[1] = ClientId;
-        message[2] = Section;
-        var span = message.AsSpan();
+        buffer[0] = 0xf7;
+        buffer[1] = ClientId;
+        buffer[2] = Section;
         // Note offsets of 3 and 7 rather than 2 and 6, as the message includes the fixed-length indicator.
-        MemoryMarshal.Cast<byte, int>(span.Slice(3))[0] = Address;
-        MemoryMarshal.Cast<byte, ushort>(span.Slice(7))[0] = RawValue;
-        return message;
+        LittleEndian.WriteInt32(buffer.Slice(3), Address);
+        LittleEndian.WriteUInt16(buffer.Slice(7), RawValue);
     }
 
     public override string ToString() =>

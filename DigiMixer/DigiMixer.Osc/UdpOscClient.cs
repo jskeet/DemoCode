@@ -26,9 +26,11 @@ internal sealed class UdpOscClient : UdpControllerBase, IOscClient
         {
             Logger.LogTrace("Sending OSC message: {message}", message.ToLogFormat());
         }
-        var data = packet.ToByteArray();
+        // TODO: Use an array pool
+        var buffer = new byte[packet.SizeInBytes];
+        packet.Write(buffer, 0);
         // TODO: Cancellation token parameter?
-        return Send(data, default);
+        return Send(buffer, default);
     }
 
     protected override void ProcessData(ReadOnlySpan<byte> data) =>

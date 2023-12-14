@@ -1,4 +1,5 @@
-﻿using DigiMixer.UCNet.Core.Messages;
+﻿using DigiMixer.Core;
+using DigiMixer.UCNet.Core.Messages;
 
 namespace DigiMixer.UCNet.Core;
 
@@ -10,7 +11,7 @@ namespace DigiMixer.UCNet.Core;
 //   - Mode (4 bytes)
 // - Body
 
-public abstract class UCNetMessage
+public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
 {
     private static readonly byte[] MagicNumber = { 0x55, 0x43, 0x00, 0x01 };
 
@@ -30,16 +31,13 @@ public abstract class UCNetMessage
         Mode = mode;
     }
 
-    internal byte[] ToByteArray()
+    public void CopyTo(Span<byte> buffer)
     {
-        byte[] array = new byte[Length];
-        var span = array.AsSpan();
-        span.WriteBytes(MagicNumber);
-        span.Slice(4).WriteUInt16((ushort) (BodyLength + 6));
-        span.Slice(6).WriteUInt16((ushort) Type);
-        span.Slice(8).WriteUInt32((uint) Mode);
-        WriteBody(span.Slice(12));
-        return array;
+        buffer.WriteBytes(MagicNumber);
+        buffer.Slice(4).WriteUInt16((ushort) (BodyLength + 6));
+        buffer.Slice(6).WriteUInt16((ushort) Type);
+        buffer.Slice(8).WriteUInt32((uint) Mode);
+        WriteBody(buffer.Slice(12));
     }
 
     protected abstract void WriteBody(Span<byte> span);
@@ -87,7 +85,7 @@ public abstract class UCNetMessage
 
     }
 
-    internal static UCNetMessage? TryParse(ReadOnlySpan<byte> span)
+    public static UCNetMessage? TryParse(ReadOnlySpan<byte> span)
     {
         if (span.Length < 6)
         {

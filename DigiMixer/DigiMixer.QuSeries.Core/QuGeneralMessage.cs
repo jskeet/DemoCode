@@ -19,14 +19,12 @@ public class QuGeneralMessage : QuControlMessage
         this.data = data;
     }
 
-    public override byte[] ToByteArray()
+    public override void CopyTo(Span<byte> buffer)
     {
-        var message = new byte[Length];
-        message[0] = 0x7f;
-        message[1] = Type;
-        LittleEndian.WriteUInt16(message.AsSpan().Slice(2), (ushort) data.Length);
-        data.CopyTo(message.AsSpan().Slice(4));
-        return message;
+        buffer[0] = 0x7f;
+        buffer[1] = Type;
+        LittleEndian.WriteUInt16(buffer.Slice(2), (ushort) data.Length);
+        data.CopyTo(buffer.Slice(4));
     }
 
     private const int FullDataLength = 10;

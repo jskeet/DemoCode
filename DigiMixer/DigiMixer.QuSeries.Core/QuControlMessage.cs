@@ -5,7 +5,7 @@ namespace DigiMixer.QuSeries.Core;
 /// <summary>
 /// A message sent to or from a Qu mixer over TCP.
 /// </summary>
-public abstract class QuControlMessage
+public abstract class QuControlMessage : IMixerMessage<QuControlMessage>
 {
     /// <summary>
     /// The total message length on the wire.
@@ -46,5 +46,5 @@ public abstract class QuControlMessage
         }
     }
 
-    public abstract byte[] ToByteArray();
+    public abstract void CopyTo(Span<byte> buffer);
 }

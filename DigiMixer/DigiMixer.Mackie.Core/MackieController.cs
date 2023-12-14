@@ -19,7 +19,7 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
     public event EventHandler<MackieMessage>? MessageSent;
     public event EventHandler<MackieMessage>? MessageReceived;
 
-    public MackieController(ILogger logger, string host, int port) : base(logger, host, port, MackieMessage.TryParse, message => message.Length)
+    public MackieController(ILogger logger, string host, int port) : base(logger, host, port)
     {
         outstandingRequests = new OutstandingRequest[256];
         requestHandlers = new();
@@ -125,12 +125,7 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
 
     private async Task SendMessage(MackieMessage message, CancellationToken cancellationToken)
     {
-        var data = message.ToByteArray();
-        if (Logger.IsEnabled(LogLevel.Trace))
-        {
-            Logger.LogTrace("Sending message: {message}", message);
-        }
-        await Send(data, cancellationToken);
+        await SendAsync(message, cancellationToken);
         MessageSent?.Invoke(this, message);
     }
 

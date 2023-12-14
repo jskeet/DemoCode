@@ -3,12 +3,8 @@
 /// <summary>
 /// Message processor with internal buffer, used to handle incoming TCP streams.
 /// </summary>
-public sealed class MessageProcessor<TMessage> where TMessage : class
+public sealed class MessageProcessor<TMessage> where TMessage : class, IMixerMessage<TMessage>
 {
-    public delegate TMessage? Parser(ReadOnlySpan<byte> data);
-
-    private readonly Parser messageParser;
-    private readonly Func<TMessage, int> messageLengthExtractor;
     private readonly Func<TMessage, CancellationToken, Task> messageAction;
     private readonly Memory<byte> buffer;
 
@@ -22,16 +18,14 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
     /// </summary>
     public long MessagesProcessed { get; private set; }
 
-    public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Func<TMessage, CancellationToken, Task> messageAction, int bufferSize = 65540)
+    public MessageProcessor(Func<TMessage, CancellationToken, Task> messageAction, int bufferSize = 65540)
     {
-        this.messageParser = messageParser;
-        this.messageLengthExtractor = messageLengthExtractor;
         this.messageAction = messageAction;
         buffer = new byte[bufferSize];
     }
 
-    public MessageProcessor(Parser messageParser, Func<TMessage, int> messageLengthExtractor, Action<TMessage> messageAction, int bufferSize = 65540)
-        : this(messageParser, messageLengthExtractor, (message, cancellationToken) => { messageAction(message); return Task.CompletedTask; }, bufferSize)
+    public MessageProcessor(Action<TMessage> messageAction, int bufferSize = 65540)
+        : this((message, cancellationToken) => { messageAction(message); return Task.CompletedTask; }, bufferSize)
     {
     }
 
@@ -49,11 +43,11 @@ public sealed class MessageProcessor<TMessage> where TMessage : class
         data.CopyTo(buffer.Slice(UnprocessedLength));
         UnprocessedLength += data.Length;
         int start = 0;
-        while (messageParser(buffer.Slice(start, UnprocessedLength - start).Span) is TMessage message)
+        while (TMessage.TryParse(buffer.Slice(start, UnprocessedLength - start).Span) is TMessage message)
         {
             MessagesProcessed++;
             await messageAction(message, cancellationToken);
-            start += messageLengthExtractor(message);
+            start += message.Length;
         }
         // If we've consumed the whole buffer, reset to the start. (No copying required.)
         if (start == UnprocessedLength)

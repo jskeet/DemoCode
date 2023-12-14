@@ -25,7 +25,9 @@ public class CqMeterClient : UdpControllerBase, IDisposable
         {
             Logger.LogTrace("Sending keep-alive message");
         }
-        await Send(message.ToByteArray(), mixerUdpEndPoint, cancellationToken);
+        var buffer = new byte[message.Length];
+        message.CopyTo(buffer.AsSpan());
+        await Send(buffer, mixerUdpEndPoint, cancellationToken);
     }
 
     protected override void ProcessData(ReadOnlySpan<byte> data)

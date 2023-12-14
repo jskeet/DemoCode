@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.UiHttp;
+
 internal sealed class UiStreamClient : IUiClient
 {
     private const int MaxBufferSize = 256 * 1024; // This really should be enough.
@@ -25,15 +26,16 @@ internal sealed class UiStreamClient : IUiClient
         {
             logger.LogTrace("Sending message: {message}", message);
         }
-        var buffer = message.ToByteArray();
-        // TODO: Can we handle overlapping calls?
-        await stream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
+        // TODO: Use an array pool
+        var buffer = new byte[message.Length];
+        message.CopyTo(buffer.AsSpan());
+        await stream.WriteAsync(buffer, cancellationToken);
     }
 
     public async Task StartReading()
     {
         Memory<byte> buffer = new byte[8192];
-        var messageProcessor = new MessageProcessor<UiMessage>(ParseMessage, message => message.Length, ProcessMessage, MaxBufferSize);
+        var messageProcessor = new MessageProcessor<UiMessage>(ProcessMessage, MaxBufferSize);
 
         try
         {
@@ -51,12 +53,6 @@ internal sealed class UiStreamClient : IUiClient
         {
             // Swallow any errors due to disposal.
         }
-    }
-
-    private UiMessage? ParseMessage(ReadOnlySpan<byte> data)
-    {
-        var endOfLine = data.IndexOf((byte) '\n');
-        return endOfLine == -1 ? null : UiMessage.Parse(data.Slice(0, endOfLine));
     }
 
     private Task ProcessMessage(UiMessage message, CancellationToken cancellationToken)

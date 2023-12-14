@@ -8,8 +8,8 @@ public class ProcessTextDump(string FileName) : Tool
 {
     public override async Task<int> Execute()
     {
-        var inboundProcessor = new MessageProcessor<CqRawMessage>(CqRawMessage.TryParse, m => m.Length, m => Display("<=", m));
-        var outboundProcessor = new MessageProcessor<CqRawMessage>(CqRawMessage.TryParse, m => m.Length, m => Display("=>", m));
+        var inboundProcessor = new MessageProcessor<CqRawMessage>(m => Display("<=", m));
+        var outboundProcessor = new MessageProcessor<CqRawMessage>(m => Display("=>", m));
 
         using var reader = File.OpenText(FileName);
         while (reader.ReadLine() is string line)
