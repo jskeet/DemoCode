@@ -5,9 +5,9 @@ using DigiMixer.QuSeries.Core;
 using System.Net;
 using System.Net.Sockets;
 
-class DecodeWireshark
+public class DecodeWireshark : Tool
 {
-    static async Task Main()
+    public override async Task<int> Execute()
     {
         var file = @"c:\users\skeet\Downloads\Wireshark\test1.pcapng";
 
@@ -41,6 +41,7 @@ class DecodeWireshark
                 ? clientProcessor : mixerProcessor;
             await processor.Process(packet.Data, default);
         }
+        return 0;
 
         void LogMessage(string description, QuControlMessage message) => Console.Write(message);
 

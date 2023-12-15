@@ -1,14 +1,15 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Diagnostics;
 using DigiMixer.Mackie.Core;
 using System.Text;
 
 namespace DigiMixer.Mackie.Tools;
 
-internal class Dumper
+public class Dumper(string File) : Tool
 {
-    internal static void Execute(string file)
+    public override Task<int> Execute()
     {
-        using var input = File.OpenRead(file);
+        using var input = System.IO.File.OpenRead(File);
         var mc = MessageCollection.Parser.ParseFrom(input);
 
         // TODO: More interpretation
@@ -59,5 +60,6 @@ internal class Dumper
                     break;
             }
         }
+        return Task.FromResult(0);
     }
 }

@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JonSkeet.DemoUtil" Version="1.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DigiMixer.Diagnostics\DigiMixer.Diagnostics.csproj" />
     <ProjectReference Include="..\DigiMixer.QuSeries\DigiMixer.QuSeries.csproj" />
   </ItemGroup>

@@ -1,16 +1,17 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Diagnostics;
 using DigiMixer.Mackie.Core;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DigiMixer.Mackie.Tools;
 
-internal class Recorder
+public class Recorder(string Address, string Port, string File) : Tool
 {
-    internal static async Task ExecuteAsync(string address, int port, string file)
+    public override async Task<int> Execute()
     {
         MessageCollection mc = new MessageCollection();
-        var controller = new MackieController(NullLogger.Instance, address, port);
+        var controller = new MackieController(NullLogger.Instance, Address, int.Parse(Port));
         controller.MessageSent += (sender, message) => RecordMessage(message, true);
         controller.MessageReceived += (sender, message) => RecordMessage(message, false);
 
@@ -46,7 +47,7 @@ internal class Recorder
 
         Console.WriteLine($"Captured {mc.Messages.Count} messages");
 
-        using var output = File.Create(file);
+        using var output = System.IO.File.Create(File);
         mc.WriteTo(output);
 
         void RecordMessage(MackieMessage message, bool outbound)
@@ -69,5 +70,6 @@ internal class Recorder
                 Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.ffffff} {padding} {message.Sequence} {message.Type} {message.Command}: {dataLength}: {data}");
             }
         }
+        return 0;
     }
 }

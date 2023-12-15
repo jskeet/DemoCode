@@ -1,13 +1,14 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Diagnostics;
 using DigiMixer.QuSeries.Core;
 using System.Net;
 using System.Net.Sockets;
 
 namespace DigiMixer.QuSeries.Scratchpad;
 
-internal class ConnectClient
+public class ConnectClient : Tool
 {
-    static async Task Main()
+    public override async Task<int> Execute()
     {
         var address = IPAddress.Parse("192.168.1.60");
         var udpClient = new UdpClient();
@@ -96,6 +97,7 @@ internal class ConnectClient
 
         await Task.Delay(1000);
         finished = true;
+        return 0;
 
         async Task StartLoop(Action<QuControlMessage> action)
         {

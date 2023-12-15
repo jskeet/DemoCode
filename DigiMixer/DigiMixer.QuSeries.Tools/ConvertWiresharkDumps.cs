@@ -6,15 +6,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-class ConvertWiresharkDumps
+public class ConvertWiresharkDumps : Tool
 {
-    static void Main()
+    public override Task<int> Execute()
     {
         var directory = @"C:\Users\skeet\OneDrive\Documents\Qu-SB dumps";
         foreach (var file in Directory.GetFiles(directory, "*.pcapng"))
         {
             ConvertFile(file);
         }
+        return Task.FromResult(0);
     }
 
     static void ConvertFile(string file)

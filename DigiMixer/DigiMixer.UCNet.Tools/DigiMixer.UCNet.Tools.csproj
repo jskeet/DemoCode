@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -12,9 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DigiMixer.Osc\DigiMixer.Osc.csproj" />
-    <ProjectReference Include="..\DigiMixer.UiHttp\DigiMixer.UiHttp.csproj" />
-    <ProjectReference Include="..\DigiMixer\DigiMixer.csproj" />
+    <ProjectReference Include="..\DigiMixer.Diagnostics\DigiMixer.Diagnostics.csproj" />
+    <ProjectReference Include="..\DigiMixer.UCNet.Core\DigiMixer.UCNet.Core.csproj" />
   </ItemGroup>
 
 </Project>

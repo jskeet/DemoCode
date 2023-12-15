@@ -1,17 +1,18 @@
-﻿using DigiMixer.Mackie.Core;
+﻿using DigiMixer.Diagnostics;
+using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Text;
 
 namespace DigiMixer.Mackie.Tools;
 
-internal class MeterDisplay
+public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
 {
     private static Meters? latestMeters;
 
-    internal static async Task ExecuteAsync(string address, int port, int meterCount)
+    public override async Task<int> Execute()
     {
         var cts = new CancellationTokenSource();
-        var task = Listen(address, port, meterCount, cts.Token);
+        var task = Listen(Address, int.Parse(Port), int.Parse(MeterCount), cts.Token);
         Console.WriteLine("Press return to display the latest meters, or enter \"stop\" and press return to quit.");
         while (true)
         {
@@ -24,6 +25,7 @@ internal class MeterDisplay
         }
         cts.Cancel();
         await task;
+        return 0;
     }
 
     private static async Task Listen(string address, int port, int meterCount, CancellationToken token)

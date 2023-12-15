@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Osc", "DigiMixer.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UiHttp", "DigiMixer.UiHttp\DigiMixer.UiHttp.csproj", "{CB42BF97-A6FB-43E3-A22D-5346C9A8892B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Scratchpad", "DigiMixer.Scratchpad\DigiMixer.Scratchpad.csproj", "{FCDD2037-8A0D-48A2-9931-608A06856883}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Wpf", "DigiMixer.Wpf\DigiMixer.Wpf.csproj", "{9C8B189F-0658-4B14-9A31-BBC58CD2B223}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Core", "DigiMixer.Core\DigiMixer.Core.csproj", "{2EBEB007-4969-4D92-B8D1-E6BEE2DBFD68}"
@@ -25,13 +23,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Diagnostics", "Di
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries", "DigiMixer.QuSeries\DigiMixer.QuSeries.csproj", "{94FECD12-299A-478A-BD36-D3CB052EAEE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries.Scratchpad", "DigiMixer.QuSeries.Scratchpad\DigiMixer.QuSeries.Scratchpad.csproj", "{B70280C0-272F-4F85-8D81-F2238AD1193F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries.Tools", "DigiMixer.QuSeries.Tools\DigiMixer.QuSeries.Tools.csproj", "{B70280C0-272F-4F85-8D81-F2238AD1193F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.QuSeries.Core", "DigiMixer.QuSeries.Core\DigiMixer.QuSeries.Core.csproj", "{8A99DC16-0CC6-4711-92D5-D6759C7C8744}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet", "DigiMixer.UCNet\DigiMixer.UCNet.csproj", "{36493FCE-C777-413F-B3BC-1E6C25D177EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet.Scratchpad", "DigiMixer.UCNet.Scratchpad\DigiMixer.UCNet.Scratchpad.csproj", "{369161C0-8D09-441B-8027-6642C6E60008}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet.Tools", "DigiMixer.UCNet.Tools\DigiMixer.UCNet.Tools.csproj", "{369161C0-8D09-441B-8027-6642C6E60008}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.UCNet.Core", "DigiMixer.UCNet.Core\DigiMixer.UCNet.Core.csproj", "{1F479E07-BBED-4F80-93D4-A55154861E6E}"
 EndProject
@@ -52,11 +50,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.CqSeries", "DigiM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.CqSeries.Tools", "DigiMixer.CqSeries.Tools\DigiMixer.CqSeries.Tools.csproj", "{718C7332-061F-4E64-B93F-BFE8DDDB3797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.DmSeries.Core", "DigiMixer.DmSeries.Core\DigiMixer.DmSeries.Core.csproj", "{AA0CFF1C-5EFC-4B96-B850-7E227BE10504}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.DmSeries.Core", "DigiMixer.DmSeries.Core\DigiMixer.DmSeries.Core.csproj", "{AA0CFF1C-5EFC-4B96-B850-7E227BE10504}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.DmSeries", "DigiMixer.DmSeries\DigiMixer.DmSeries.csproj", "{907940D4-C253-4D33-B98C-538EA8C368E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.DmSeries", "DigiMixer.DmSeries\DigiMixer.DmSeries.csproj", "{907940D4-C253-4D33-B98C-538EA8C368E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.DmSeries.Tools", "DigiMixer.DmSeries.Tools\DigiMixer.DmSeries.Tools.csproj", "{9E447C1B-FBDE-4BBE-92A8-278FA45B38B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.DmSeries.Tools", "DigiMixer.DmSeries.Tools\DigiMixer.DmSeries.Tools.csproj", "{9E447C1B-FBDE-4BBE-92A8-278FA45B38B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,10 +74,6 @@ Global
 		{CB42BF97-A6FB-43E3-A22D-5346C9A8892B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB42BF97-A6FB-43E3-A22D-5346C9A8892B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB42BF97-A6FB-43E3-A22D-5346C9A8892B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCDD2037-8A0D-48A2-9931-608A06856883}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCDD2037-8A0D-48A2-9931-608A06856883}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCDD2037-8A0D-48A2-9931-608A06856883}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCDD2037-8A0D-48A2-9931-608A06856883}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9C8B189F-0658-4B14-9A31-BBC58CD2B223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C8B189F-0658-4B14-9A31-BBC58CD2B223}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C8B189F-0658-4B14-9A31-BBC58CD2B223}.Release|Any CPU.ActiveCfg = Release|Any CPU

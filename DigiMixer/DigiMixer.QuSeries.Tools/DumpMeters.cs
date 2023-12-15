@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DigiMixer.QuSeries.Scratchpad;
 
-internal class DumpMeters
+public class DumpMeters : Tool
 {
-    static async void Main()
+    public override async Task<int> Execute()
     {
         var logger = NullLogger.Instance;
         var api = new QuMixerApi(logger, "192.168.1.60", 51326);
@@ -18,6 +18,7 @@ internal class DumpMeters
         await api.SendKeepAlive();
         await Task.Delay(1000);
         api.Dispose();
+        return 0;
     }
 
     static void LogMeter(QuGeneralMessage message)

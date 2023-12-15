@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.Diagnostics;
 using DigiMixer.Mackie.Core;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -9,18 +10,19 @@ namespace DigiMixer.Mackie.Tools;
 /// Connects to the mixer but sends minimal messages - just keep-alives - listening
 /// (and saving) incoming messages until the user hits return.
 /// </summary>
-internal class Listener
+public class Listener(string Address, string Port, string File) : Tool
 {
-    internal static async Task ExecuteAsync(string address, int port, string file)
+    public override async Task<int> Execute()
     {
         var cts = new CancellationTokenSource();
-        var task = Listen(address, port, cts.Token);
+        var task = Listen(Address, int.Parse(Port), cts.Token);
         Console.WriteLine("Press return to stop listening");
         Console.ReadLine();
         cts.Cancel();
         var pc = await task;
-        using var output = File.Create(file);
+        using var output = System.IO.File.Create(File);
         pc.WriteTo(output);
+        return 0;
     }
 
     private static async Task<MessageCollection> Listen(string address, int port, CancellationToken token)

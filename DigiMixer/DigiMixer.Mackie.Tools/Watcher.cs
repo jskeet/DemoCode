@@ -1,18 +1,20 @@
-﻿using DigiMixer.Mackie.Core;
+﻿using DigiMixer.Diagnostics;
+using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DigiMixer.Mackie.Tools;
 
-internal class Watcher
+public class Watcher(string Address, string Port) : Tool
 {
-    internal static async Task ExecuteAsync(string address, int port)
+    public override async Task<int> Execute()
     {
         var cts = new CancellationTokenSource();
-        var task = Listen(address, port, cts.Token);
+        var task = Listen(Address, int.Parse(Port), cts.Token);
         Console.WriteLine("Press return to stop listening");
         Console.ReadLine();
         cts.Cancel();
         await task;
+        return 0;
     }
 
     private static async Task Listen(string address, int port, CancellationToken token)
