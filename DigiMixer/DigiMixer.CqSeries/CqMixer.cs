@@ -295,6 +295,7 @@ internal class CqMixerApi : IMixerApi
         meterClient?.Dispose();
         meterClient = null;
         mixerUdpEndPoint = null;
+        temporaryListeners.Clear();
     }
 
     private class MessageListener : IDisposable

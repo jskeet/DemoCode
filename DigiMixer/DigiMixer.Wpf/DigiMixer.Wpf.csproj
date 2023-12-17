@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DigiMixer.DmSeries\DigiMixer.DmSeries.csproj" />
     <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />
     <ProjectReference Include="..\DigiMixer.Osc\DigiMixer.Osc.csproj" />
     <ProjectReference Include="..\DigiMixer.CqSeries\DigiMixer.CqSeries.csproj" />

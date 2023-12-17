@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Diagnostics;
 using DigiMixer.DmSeries.Core;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Threading;
 
 namespace DigiMixer.DmSeries.Tools;
 
@@ -17,16 +18,8 @@ public class WatchMixerMessages : Tool
         await client.Connect(default);
         client.Start();
 
-        var propertySegment = new DmTextSegment("Property");
-
-        var message1 = new DmMessage("MPRO", 0x01010102, [propertySegment, new DmBinarySegment([0x80])]);
-        await Send(message1);
-
-
-        await Send(new DmMessage("MMIX", 0x01010102, [new DmTextSegment("Mixing"), new DmBinarySegment([0x80])]));
-
-        await Task.Delay(1000);
-        await Send(DmMessages.MeterRequest);
+        // Request live updates for MMIX data.
+        await Send(new DmMessage("MMIX", 0x01041000, []));
 
         while (true)
         {
@@ -34,27 +27,23 @@ public class WatchMixerMessages : Tool
             await Task.Delay(1000);
         }
 
-        async Task HandleMessage(DmMessage message, CancellationToken cancellationToken)
+        Task HandleMessage(DmMessage message, CancellationToken cancellationToken)
         {
             // Don't log keepalive messages
-            if (message.Type == "EEVT" && message.Segments is [_, _, DmTextSegment { Text: "KeepAlive" }, _])
+            if (DmMessages.IsKeepAlive(message))
             {
-                return;
+                return Task.CompletedTask;
             }
             message.DisplayStructure("<=");
-            if (message.Flags == 0x01100104 && message.Segments is [DmBinarySegment seg1, DmTextSegment seg2, DmBinarySegment seg3, DmBinarySegment seg4] &&
-                seg1.Data is [0x00] && seg3.Data.Length == 16 && seg4.Data.Length == 16)
-            {
-                var response = new DmMessage(message.Type, 0x01100104, [seg1, seg2, seg4, new DmBinarySegment(new byte[16])]);
-                await Send(response);
-
-                await Send(new DmMessage(message.Type, 0x01040100, []));
-                await Send(new DmMessage(message.Type, 0x01041000, []));
-            }
+            return Task.CompletedTask;
         }
 
         async Task Send(DmMessage message)
         {
+            if (!DmMessages.IsKeepAlive(message))
+            {
+                message.DisplayStructure(">=");
+            }
             await client.SendAsync(message, default);
         }
     }

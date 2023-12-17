@@ -41,11 +41,11 @@ internal static class DmMessageExtensions
                 case DmTextSegment text:
                     return $"Text: '{text.Text}'";
                 case DmInt32Segment int32:
-                    return $"Int32[*{int32.Values.Count}]: {string.Join(" ", int32.Values.Select(v => $"0x{v:x4}"))} / {string.Join(" ", int32.Values)}";
+                    return $"Int32[*{int32.Values.Count}]: {string.Join(" ", int32.Values.Select(v => $"0x{v:x8}"))} / {string.Join(" ", int32.Values)}";
                 case DmUInt32Segment uint32:
-                    return $"UInt32[*{uint32.Values.Count}]: {string.Join(" ", uint32.Values.Select(v => v.ToString("x4")))}";
+                    return $"UInt32[*{uint32.Values.Count}]: {string.Join(" ", uint32.Values.Select(v => v.ToString("x8")))}";
                 case DmUInt16Segment uint16:
-                    return $"UInt16[*{uint16.Values.Count}]: {string.Join(" ", uint16.Values.Select(v => v.ToString("x2")))}";
+                    return $"UInt16[*{uint16.Values.Count}]: {string.Join(" ", uint16.Values.Select(v => v.ToString("x4")))}";
                 default:
                     throw new InvalidOperationException("Unknown segment type");
             }
