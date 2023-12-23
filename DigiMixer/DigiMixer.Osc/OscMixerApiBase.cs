@@ -54,7 +54,7 @@ internal abstract class OscMixerApiBase : IMixerApi
     public abstract Task SendKeepAlive();
     public abstract Task<bool> CheckConnection(CancellationToken cancellationToken);
     public abstract TimeSpan KeepAliveInterval { get; }
-    public IFaderScale FaderScale => DefaultFaderScale.Instance;
+    public IFaderScale FaderScale { get; } = new XSeriesFaderScale();
     protected abstract string GetFaderAddress(ChannelId inputId, ChannelId outputId);
     protected abstract string GetFaderAddress(ChannelId outputId);
     protected abstract string GetMuteAddress(ChannelId channelId);
@@ -109,9 +109,9 @@ internal abstract class OscMixerApiBase : IMixerApi
         action(message);
     }
 
-    private static float FromFaderLevel(FaderLevel level) => level.Value / (float) FaderLevel.MaxValue;
+    private float FromFaderLevel(FaderLevel level) => level.Value / (float) FaderScale.MaxValue;
 
-    private static FaderLevel ToFaderLevel(float value) => new FaderLevel((int) (value * FaderLevel.MaxValue));
+    private FaderLevel ToFaderLevel(float value) => new FaderLevel((int) (value * FaderScale.MaxValue));
 
     private Dictionary<string, Action<OscMessage>> BuildReceiverMap()
     {
