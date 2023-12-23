@@ -128,7 +128,7 @@ public class MackieMixerApi : IMixerApi
 
     // TODO: Check this.
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
-    public IFaderScale FaderScale => DefaultFaderScale.Instance;
+    public IFaderScale FaderScale => MackieConversions.FaderScale;
 
     public async Task SendKeepAlive() =>
         await SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty).ConfigureAwait(false);
