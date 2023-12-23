@@ -87,6 +87,7 @@ internal class QuMixerApi : IMixerApi
 
     // TODO: Check this.
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
+    public IFaderScale FaderScale => DefaultFaderScale.Instance;
 
     public async Task SendKeepAlive()
     {

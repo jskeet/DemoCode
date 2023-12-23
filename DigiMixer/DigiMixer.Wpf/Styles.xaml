@@ -8,8 +8,6 @@
     <Brush x:Key="ChannelBorderUnmuted">LightGreen</Brush>
     
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
-    <local:VolumeConverter x:Key="VolumeConverter" />
-    <local:VolumeConverter x:Key="VolumeConverterWithSuffix" Suffix="dB" />
     <utils:BooleanToBrushConverter x:Key="ChannelBorderConverter" TrueBrush="{StaticResource ChannelBorderMuted}" FalseBrush="{StaticResource ChannelBorderUnmuted}" />
     <utils:ConfigurableBooleanToVisibilityConverter x:Key="MeterVisibilityConverter" FalseVisibility="Hidden"/>
     <utils:ConfigurableBooleanToVisibilityConverter x:Key="FaderVisibilityConverter" FalseVisibility="Collapsed"/>

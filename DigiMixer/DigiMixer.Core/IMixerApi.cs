@@ -72,4 +72,9 @@ public interface IMixerApi : IDisposable
     /// The interval at which keep-alive messages should be sent.
     /// </summary>
     TimeSpan KeepAliveInterval { get; }
+
+    /// <summary>
+    /// The fader scale used for this mixer.
+    /// </summary>
+    IFaderScale FaderScale { get; }
 }

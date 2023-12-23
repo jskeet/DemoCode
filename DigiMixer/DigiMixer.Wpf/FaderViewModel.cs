@@ -45,6 +45,8 @@ public class FaderViewModel : ViewModelBase<IFader>
 
     public Brush Background { get; }
 
+    public int MaxFaderLevel => Model.Scale.MaxValue; 
+
     public int FaderLevel
     {
         get => Model.FaderLevel.Value;
@@ -56,12 +58,15 @@ public class FaderViewModel : ViewModelBase<IFader>
     /// </summary>
     public string FaderLevelPercentage => $"{FaderLevel * 100 / Core.FaderLevel.MaxValue}%";
 
+    public double FaderLevelDb => Model.Scale.ConvertToDb(FaderLevel);
+
     protected override void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(IFader.FaderLevel))
         {
             RaisePropertyChanged(nameof(FaderLevel));
             RaisePropertyChanged(nameof(FaderLevelPercentage));
+            RaisePropertyChanged(nameof(FaderLevelDb));
         }
     }
 }

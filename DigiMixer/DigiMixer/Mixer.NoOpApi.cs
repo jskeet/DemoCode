@@ -34,6 +34,7 @@ public partial class Mixer
         // Note that this should be reasonably short so that the Mixer sends a keepalive
         // soon after reconnecting.
         public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(1);
+        public IFaderScale FaderScale => DefaultFaderScale.Instance;
 
         public Task SendKeepAlive() => Task.CompletedTask;
 

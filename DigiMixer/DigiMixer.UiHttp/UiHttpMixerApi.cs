@@ -171,6 +171,7 @@ public class UiHttpMixerApi : IMixerApi
     }
 
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
+    public IFaderScale FaderScale => DefaultFaderScale.Instance;
 
     public Task SendKeepAlive() => SendKeepAlive(default);
 

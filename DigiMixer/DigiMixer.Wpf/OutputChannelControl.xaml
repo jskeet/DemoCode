@@ -34,7 +34,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding DisplayName}" TextWrapping="Wrap" Width="70"/>
         <Slider Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="3,0,3,0"
-                Orientation="Vertical" Minimum="0" Maximum="{x:Static local:FaderViewModel.FaderLevelScaleDouble}"
+                Orientation="Vertical" Minimum="0" Maximum="{Binding Fader.MaxFaderLevel}"
                 Height="100" Value="{Binding Fader.FaderLevel}" ToolTip="{Binding Fader.FaderLevelPercentage}" />
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
 
@@ -49,7 +49,7 @@
             </Grid>
 
         </StackPanel>
-        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Fader.FaderLevel, Converter={StaticResource VolumeConverterWithSuffix}}" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Fader.FaderLevelDb, StringFormat={}{0:0.0}}" />
         <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox IsChecked="{Binding Muted}">Muted</CheckBox>
         </StackPanel>

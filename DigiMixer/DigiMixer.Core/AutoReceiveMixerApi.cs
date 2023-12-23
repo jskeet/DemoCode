@@ -18,6 +18,7 @@ public class AutoReceiveMixerApi : IMixerApi
     }
 
     public TimeSpan KeepAliveInterval => target.KeepAliveInterval;
+    public IFaderScale FaderScale => target.FaderScale;
 
     public Task<bool> CheckConnection(CancellationToken cancellationToken) =>
         target.CheckConnection(cancellationToken);

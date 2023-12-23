@@ -21,6 +21,7 @@ public class InputOutputMapping : IFader
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+    public IFaderScale Scale => mixer.FaderScale;
 
     private FaderLevel faderLevel;
     public FaderLevel FaderLevel

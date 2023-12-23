@@ -344,6 +344,7 @@ public static class StudioLive
 
         // TODO: Check this.
         public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
+        public IFaderScale FaderScale => DefaultFaderScale.Instance;
 
         public Task SendKeepAlive() => SendMessage(new KeepAliveMessage());
 

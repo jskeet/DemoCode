@@ -54,6 +54,7 @@ internal abstract class OscMixerApiBase : IMixerApi
     public abstract Task SendKeepAlive();
     public abstract Task<bool> CheckConnection(CancellationToken cancellationToken);
     public abstract TimeSpan KeepAliveInterval { get; }
+    public IFaderScale FaderScale => DefaultFaderScale.Instance;
     protected abstract string GetFaderAddress(ChannelId inputId, ChannelId outputId);
     protected abstract string GetFaderAddress(ChannelId outputId);
     protected abstract string GetMuteAddress(ChannelId channelId);

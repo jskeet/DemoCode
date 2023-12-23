@@ -39,11 +39,14 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
         private set => this.SetProperty(PropertyChanged, ref mixerInfo, value);
     }
 
+    public IFaderScale FaderScale { get; }
+
     private Mixer(ILogger logger, Func<IMixerApi> apiFactory, IMixerApi initialApi, MixerChannelConfiguration config, ConnectionTiming connectionTiming)
     {
         this.logger = logger;
         this.connectionTiming = connectionTiming;
         api = initialApi;
+        FaderScale = api.FaderScale;
 
         ChannelConfiguration = config;
         Connected = true;

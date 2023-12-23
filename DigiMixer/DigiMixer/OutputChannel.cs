@@ -27,4 +27,6 @@ public class OutputChannel : ChannelBase, IFader
             Mixer.SetFaderLevel(right, level);
         }
     }
+
+    public IFaderScale Scale => Mixer.FaderScale;
 }

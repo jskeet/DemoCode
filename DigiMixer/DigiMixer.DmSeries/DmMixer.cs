@@ -38,6 +38,7 @@ internal class DmMixerApi : IMixerApi
     }
 
     public TimeSpan KeepAliveInterval { get; } = TimeSpan.FromSeconds(1);
+    public IFaderScale FaderScale => DefaultFaderScale.Instance;
 
     public Task<bool> CheckConnection(CancellationToken cancellationToken)
     {
