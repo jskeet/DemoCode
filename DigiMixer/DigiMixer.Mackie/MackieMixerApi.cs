@@ -54,14 +54,15 @@ public class MackieMixerApi : IMixerApi
 
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
-        var meters = mixerProfile.InputChannels.Select(ch => ch.MeterAddress).Concat(mixerProfile.OutputChannels.Select(ch => ch.MeterAddress));
-        var meterLayout = meters.SelectMany(meter => { var array = BitConverter.GetBytes(meter); Array.Reverse(array); return array; });
-        await controller.SendRequest(MackieCommand.MeterLayout,
-            new byte[] { 0, 0, 0, 1 }.Concat(meterLayout).ToArray(),
-            cancellationToken);
-        await controller.SendRequest(MackieCommand.BroadcastControl,
-            new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 },
-            cancellationToken);
+        var meterAddresses = mixerProfile.InputChannels.Select(ch => ch.MeterAddress).Concat(mixerProfile.OutputChannels.Select(ch => ch.MeterAddress)).ToList();
+        var meterLayout = new byte[meterAddresses.Count * 4 + 4];
+        meterLayout[3] = 1;
+        for (int i = 0; i < meterAddresses.Count; i++)
+        {
+            BigEndian.WriteInt32(meterLayout.AsSpan().Slice(i * 4 + 4), meterAddresses[i]);
+        }
+        await controller.SendRequest(MackieCommand.MeterLayout, meterLayout, cancellationToken);
+        await controller.SendRequest(MackieCommand.BroadcastControl, [0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01], cancellationToken);
     }
 
     public async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)

@@ -33,10 +33,11 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
 
     public void CopyTo(Span<byte> buffer)
     {
-        buffer.WriteBytes(MagicNumber);
-        buffer.Slice(4).WriteUInt16((ushort) (BodyLength + 6));
-        buffer.Slice(6).WriteUInt16((ushort) Type);
-        buffer.Slice(8).WriteUInt32((uint) Mode);
+        MagicNumber.CopyTo(buffer);
+
+        LittleEndian.WriteUInt16(buffer.Slice(4), (ushort) (BodyLength + 6));
+        LittleEndian.WriteUInt16(buffer.Slice(6), (ushort) Type);
+        LittleEndian.WriteUInt32(buffer.Slice(8), (uint) Mode);
         WriteBody(buffer.Slice(12));
     }
 
@@ -62,8 +63,8 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
         // Skip port (bytes 4 and 5)
         var length = span.Length - 6;
 
-        var type = (MessageType) span.Slice(6).ReadUInt16();
-        var mode = (MessageMode) span.Slice(8).ReadUInt32();
+        var type = (MessageType) LittleEndian.ReadUInt16(span.Slice(6));
+        var mode = (MessageMode) LittleEndian.ReadUInt32(span.Slice(8));
         var body = span[12..(length + 6)];
         return type switch
         {
@@ -98,13 +99,13 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
                 throw new InvalidDataException($"Header byte {i} is incorrect: expected {MagicNumber[i]:x2}; was {span[i]:x2}");
             }
         }
-        var length = span.Slice(4).ReadUInt16();
+        var length = LittleEndian.ReadUInt16(span.Slice(4));
         if (length > span.Length - 6)
         {
             return null;
         }
-        var type = (MessageType) span.Slice(6).ReadUInt16();
-        var mode = (MessageMode) span.Slice(8).ReadUInt32();
+        var type = (MessageType) LittleEndian.ReadUInt16(span.Slice(6));
+        var mode = (MessageMode) LittleEndian.ReadUInt32(span.Slice(8));
         var body = span[12..(length + 6)];
         return type switch
         {

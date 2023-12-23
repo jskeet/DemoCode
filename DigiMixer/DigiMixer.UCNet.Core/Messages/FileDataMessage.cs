@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.UCNet.Core.Messages;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.UCNet.Core.Messages;
 
 public class FileDataMessage : UCNetMessage
 {
@@ -28,12 +30,12 @@ public class FileDataMessage : UCNetMessage
 
     internal static FileDataMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        ushort id = body.ReadUInt16();
-        ushort offset = body.Slice(2).ReadUInt16();
-        ushort unknown1 = body.Slice(4).ReadUInt16();
-        ushort totalSize = body.Slice(6).ReadUInt16();
-        uint unknown2 = body.Slice(8).ReadUInt32();
-        ushort chunkSize = body.Slice(12).ReadUInt16();
+        ushort id = LittleEndian.ReadUInt16(body);
+        ushort offset = LittleEndian.ReadUInt16(body.Slice(2));
+        ushort unknown1 = LittleEndian.ReadUInt16(body.Slice(4));
+        ushort totalSize = LittleEndian.ReadUInt16(body.Slice(6));
+        uint unknown2 = LittleEndian.ReadUInt32(body.Slice(8));
+        ushort chunkSize = LittleEndian.ReadUInt16(body.Slice(12));
 
         if (body.Length != chunkSize + 14)
         {

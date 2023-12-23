@@ -3,6 +3,7 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System.Runtime.InteropServices;
 
 namespace DigiMixer.UCNet;
 
@@ -60,7 +61,7 @@ public static class StudioLive
             return map;
 
             FaderLevel MessageToFaderLevel(ParameterValueMessage message) =>
-                ToFaderLevel(BitConverter.UInt32BitsToSingle(message.Value ?? 0));
+                ToFaderLevel(message.SingleValue ?? 0f);
         }
 
         public async Task Connect(CancellationToken cancellationToken)
@@ -373,16 +374,13 @@ public static class StudioLive
         private Task SetFaderLevelImpl(string address, FaderLevel level)
         {
             float linear = ((float) level.Value) / FaderLevel.MaxValue;
-            // TODO: Try to remove BitConverter.
-            uint integer = BitConverter.SingleToUInt32Bits(linear);
-            return SendMessage(new ParameterValueMessage(address, 0, integer));
+            return SendMessage(new ParameterValueMessage(address, 0, linear));
         }
 
         public Task SetMuted(ChannelId channelId, bool muted)
         {
-            // TODO: Get rid of this... just use the right uint.
-            uint value = muted ? BitConverter.SingleToUInt32Bits(1.0f) : 0;
             var address = Addresses.GetMuteAddress(channelId);
+            float value = muted ? 1.0f : 0f;
             return SendMessage(new ParameterValueMessage(address, 0, value));
         }
 

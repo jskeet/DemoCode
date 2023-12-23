@@ -1,4 +1,7 @@
-﻿namespace DigiMixer.UCNet.Core.Messages;
+﻿using DigiMixer.Core;
+using System.Text;
+
+namespace DigiMixer.UCNet.Core.Messages;
 
 public class Meter8Message : MeterMessageBase<byte>
 {
@@ -14,8 +17,8 @@ public class Meter8Message : MeterMessageBase<byte>
 
     internal static Meter8Message FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        string type = body.Slice(0, 4).ReadString();
-        int dataCount = body.Slice(6, 2).ReadUInt16();
+        string type = Encoding.UTF8.GetString(body.Slice(0, 4));
+        int dataCount = LittleEndian.ReadUInt16(body.Slice(6));
         var data = body.Slice(8, dataCount);
         int rowCount = body.Slice(8 + data.Length)[0];
         var rowMappingData = body.Slice(8 + data.Length + 1, rowCount * 6);

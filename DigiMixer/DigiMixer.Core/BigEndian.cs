@@ -23,9 +23,7 @@ public static class BigEndian
 
     public static ushort ReadUInt16(ReadOnlySpan<byte> source)
     {
-        Span<byte> reversed = stackalloc byte[2];
-        reversed[0] = source[1];
-        reversed[1] = source[0];
+        Span<byte> reversed = [source[1], source[0]];
         return MemoryMarshal.Read<ushort>(reversed);
     }
 
@@ -39,11 +37,7 @@ public static class BigEndian
 
     public static uint ReadUInt32(ReadOnlySpan<byte> source)
     {
-        Span<byte> reversed = stackalloc byte[4];
-        reversed[0] = source[3];
-        reversed[1] = source[2];
-        reversed[2] = source[1];
-        reversed[3] = source[0];
+        Span<byte> reversed = [source[3], source[2], source[1], source[0]];
         return MemoryMarshal.Read<uint>(reversed);
     }
 
@@ -68,4 +62,20 @@ public static class BigEndian
 
     public static void WriteInt32(Span<byte> destination, int value) =>
         WriteUInt32(destination, unchecked((uint) value));
+
+    public static float ReadSingle(ReadOnlySpan<byte> source)
+    {
+        Span<byte> reversed = [source[3], source[2], source[1], source[0]];
+        return MemoryMarshal.Read<float>(reversed);
+    }
+
+    public static void WriteSingle(Span<byte> destination, float value)
+    {
+        Span<byte> reversed = stackalloc byte[4];
+        MemoryMarshal.Write(reversed, in value);
+        destination[0] = reversed[3];
+        destination[1] = reversed[2];
+        destination[2] = reversed[1];
+        destination[3] = reversed[0];
+    }
 }

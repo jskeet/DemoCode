@@ -19,8 +19,8 @@ public class ParameterStringMessage : UCNetMessage
 
     protected override void WriteBody(Span<byte> span)
     {
-        int keyLength = span.WriteString(Key);
-        span.Slice(keyLength + 3).WriteString(Value);
+        int keyLength = Encoding.UTF8.GetBytes(Key, span);
+        Encoding.UTF8.GetBytes(Value, span.Slice(keyLength + 3));
     }
 
     public static ParameterStringMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
@@ -30,8 +30,8 @@ public class ParameterStringMessage : UCNetMessage
         {
             throw new ArgumentException("End of key not found in parameter value message .");
         }
-        string key = body[..endOfKey].ReadString();
-        string value = body[(endOfKey + 3)..].ReadString();
+        string key = Encoding.UTF8.GetString(body[..endOfKey]);
+        string value = Encoding.UTF8.GetString(body[(endOfKey + 3)..]);
         return new ParameterStringMessage(key, value, mode);
     }
     public override string ToString() => $"ParameterString: {Key}={Value}";

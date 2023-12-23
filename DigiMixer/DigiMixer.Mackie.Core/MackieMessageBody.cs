@@ -106,7 +106,11 @@ public sealed class MackieMessageBody
     /// The order of the body representation is taken into account when converting
     /// from the binary data.
     /// </summary>
-    public float GetSingle(int chunk) => BitConverter.Int32BitsToSingle(GetInt32(chunk));
+    public float GetSingle(int chunk)
+    {
+        var slice = data.AsSpan().Slice(chunk * 4);
+        return IsNetworkOrder ? BigEndian.ReadSingle(slice) : LittleEndian.ReadSingle(slice);
+    }
 
     public override string ToString()
     {

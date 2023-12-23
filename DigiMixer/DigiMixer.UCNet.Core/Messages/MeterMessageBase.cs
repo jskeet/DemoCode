@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
@@ -14,7 +15,7 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
     public int RowCount => rowMappingData.Length / 6;
     public IEnumerable<MeterMessageRow<ushort>> Rows =>
         Enumerable.Range(0, RowCount)
-            .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => Data.Slice(x * 2).ReadUInt16()));
+            .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => LittleEndian.ReadUInt16(Data.Slice(x * 2))));
 
     protected MeterMessageBase(string meterType, byte[] data, byte[] rowMappingData, MessageMode mode) : base(mode)
     {
@@ -30,13 +31,13 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
 
     protected override void WriteBody(Span<byte> span)
     {
-        int typeLength = span.WriteString(MeterType);
+        int typeLength = Encoding.UTF8.GetBytes(MeterType, span);
         int dataStart = typeLength + 2;
-        span.Slice(dataStart).WriteUInt16((ushort) (data.Length / ValueSize));
-        span.Slice(dataStart + 2).WriteBytes(data);
+        LittleEndian.WriteUInt16(span.Slice(dataStart), (ushort) (data.Length / ValueSize));
+        data.CopyTo(span.Slice(dataStart + 2));
         int rowMappingStart = dataStart + 2 + data.Length;
         span[rowMappingStart] = (byte) RowCount;
-        span.Slice(rowMappingStart + 1).WriteBytes(rowMappingData);
+        rowMappingData.CopyTo(span.Slice(rowMappingStart + 1));
     }
 
     public override string ToString() => $"{Type}: Type={MeterType}: Rows: {RowCount}; Data length={Data.Length}: {Formatting.ToHex(data)}";

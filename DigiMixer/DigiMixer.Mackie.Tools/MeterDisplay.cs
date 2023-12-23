@@ -1,4 +1,5 @@
-﻿using DigiMixer.Diagnostics;
+﻿using DigiMixer.Core;
+using DigiMixer.Diagnostics;
 using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Text;
@@ -45,8 +46,13 @@ public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
         await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
 
-        var layout = Enumerable.Range(1, meterCount).Select(BitConverter.GetBytes).SelectMany(array => array.Reverse()).ToArray();
-        layout = new byte[] { 0, 0, 0, 1 }.Concat(layout).ToArray();
+        var layout = new byte[(meterCount + 1)* 4];
+        layout[3] = 1;
+        for (int i = 1; i <= meterCount; i++)
+        {
+            BigEndian.WriteInt32(layout.AsSpan().Slice(i * 4, 4), i);
+        }
+
         await controller.SendRequest(MackieCommand.MeterLayout, layout, cancellationToken);
         await controller.SendRequest(MackieCommand.BroadcastControl,
             new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 },

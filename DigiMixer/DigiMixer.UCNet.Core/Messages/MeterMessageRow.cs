@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.UCNet.Core.Messages;
+﻿using DigiMixer.Core;
+
+namespace DigiMixer.UCNet.Core.Messages;
 
 public class MeterMessageRow<T>
 {
@@ -25,7 +27,7 @@ public class MeterMessageRow<T>
         var rowSpan = ((ReadOnlySpan<byte>) rowData).Slice(rowNumber * 6, 6);
         Source = (MeterSource) rowSpan[0];
         Stage = (MeterStage) rowSpan[1];
-        Offset = rowSpan.Slice(2).ReadUInt16();
-        Count = rowSpan.Slice(4).ReadUInt16();
+        Offset = LittleEndian.ReadUInt16(rowSpan.Slice(2));
+        Count = LittleEndian.ReadUInt16(rowSpan.Slice(4));
     }
 }

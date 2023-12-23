@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DigiMixer.Core;
+using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
@@ -9,11 +10,37 @@ public class ParameterValueMessage : UCNetMessage
     public ushort Group { get; }
     public uint? Value { get; }
 
+    public float? SingleValue
+    {
+        get
+        {
+            if (Value is not uint value)
+            {
+                return null;
+            }
+            Span<byte> bytes = stackalloc byte[4];
+            LittleEndian.WriteUInt32(bytes, value);
+            return LittleEndian.ReadSingle(bytes);
+        }
+    }
+
     public ParameterValueMessage(string key, ushort group, uint? value, MessageMode mode = MessageMode.FileRequest) : base(mode)
     {
         Key = key;
         Group = group;
         Value = value;
+    }
+
+    public ParameterValueMessage(string key, ushort group, float? value, MessageMode mode = MessageMode.FileRequest) : base(mode)
+    {
+        Key = key;
+        Group = group;
+        if (value is float v)
+        {
+            Span<byte> bytes = stackalloc byte[4];
+            LittleEndian.WriteSingle(bytes, v);
+            Value = LittleEndian.ReadUInt32(bytes);
+        }
     }
 
     protected override int BodyLength => Encoding.UTF8.GetByteCount(Key) + 1 + 2 + (Value is null ? 0 : 4);
@@ -22,11 +49,11 @@ public class ParameterValueMessage : UCNetMessage
 
     protected override void WriteBody(Span<byte> span)
     {
-        int textLength = span.WriteString(Key);
-        span.Slice(textLength + 1).WriteUInt16(Group);
+        int textLength = Encoding.UTF8.GetBytes(Key, span);
+        LittleEndian.WriteUInt16(span.Slice(textLength + 1), Group);
         if (Value is uint value)
         {
-            span.Slice(textLength + 3).WriteUInt32(value);
+            LittleEndian.WriteUInt32(span.Slice(textLength + 3), value);
         }
     }
 
@@ -38,8 +65,8 @@ public class ParameterValueMessage : UCNetMessage
             throw new ArgumentException("End of key not found in parameter value message.");
         }
         string key = Encoding.UTF8.GetString(body[..endOfKey]);
-        ushort group = body.Slice(endOfKey + 1, 2).ReadUInt16();
-        uint? value = body.Length == endOfKey + 7 ? body.Slice(endOfKey + 3, 4).ReadUInt32() : null;
+        ushort group = LittleEndian.ReadUInt16(body.Slice(endOfKey + 1, 2));
+        uint? value = body.Length == endOfKey + 7 ? LittleEndian.ReadUInt32(body.Slice(endOfKey + 3, 4)) : null;
         return new ParameterValueMessage(key, group, value, mode);
     }
 

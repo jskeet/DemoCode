@@ -43,4 +43,10 @@ public static class LittleEndian
 
     public static void WriteInt32(Span<byte> destination, int value) =>
         WriteUInt32(destination, unchecked((uint) value));
+
+    public static float ReadSingle(ReadOnlySpan<byte> destination) =>
+        MemoryMarshal.Read<float>(destination);
+
+    public static void WriteSingle(Span<byte> destination, float value) =>
+        MemoryMarshal.Write(destination, value);
 }

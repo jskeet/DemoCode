@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DigiMixer.Core;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
@@ -20,8 +21,8 @@ public class JsonMessage : UCNetMessage
 
     protected override void WriteBody(Span<byte> buffer)
     {
-        buffer.WriteInt32(byteCount);
-        buffer.Slice(4).WriteString(json);
+        LittleEndian.WriteInt32(buffer, byteCount);
+        Encoding.UTF8.GetBytes(json, buffer.Slice(4));
     }
 
     public static JsonMessage FromJson(string json, MessageMode mode = MessageMode.FileRequest) =>
@@ -32,12 +33,12 @@ public class JsonMessage : UCNetMessage
 
     internal static JsonMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        int length = body.ReadInt32();
+        int length = LittleEndian.ReadInt32(body);
         if (length != body.Length - 4)
         {
             throw new ArgumentException($"Message starts claiming JSON data length {length} but is {body.Length - 4}");
         }
-        return FromJson(body.Slice(4).ReadString(), mode);
+        return FromJson(Encoding.UTF8.GetString(body.Slice(4)), mode);
     }
 
     public override string ToString() => $"JSON: {json}";

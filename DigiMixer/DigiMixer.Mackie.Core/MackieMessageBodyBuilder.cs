@@ -17,9 +17,11 @@ public sealed class MackieMessageBodyBuilder
         return this;
     }
 
-    // TODO: Support 
-    public MackieMessageBodyBuilder SetSingle(int chunk, float value) =>
-        SetInt32(chunk, BitConverter.SingleToInt32Bits(value));
+    public MackieMessageBodyBuilder SetSingle(int chunk, float value)
+    {
+        BigEndian.WriteSingle(data.AsSpan().Slice(chunk * 4), value);
+        return this;
+    }
 
     public MackieMessageBodyBuilder SetInt32(int chunk, int value) =>
         SetUInt32(chunk, (uint) value);

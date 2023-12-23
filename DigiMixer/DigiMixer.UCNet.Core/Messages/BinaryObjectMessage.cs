@@ -14,7 +14,7 @@ public class BinaryObjectMessage : UCNetMessage
     protected override int BodyLength => data.Length;
 
     protected override void WriteBody(Span<byte> span) =>
-        span.WriteBytes(data);
+        data.CopyTo(span);
 
     internal static BinaryObjectMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body) =>
         new BinaryObjectMessage(body.ToArray(), mode);
