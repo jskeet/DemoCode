@@ -34,23 +34,10 @@ public partial class Mixer
         // Note that this should be reasonably short so that the Mixer sends a keepalive
         // soon after reconnecting.
         public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(1);
-        public IFaderScale FaderScale => NoOpFaderScale.Instance;
+        public IFaderScale FaderScale { get; } = new LinearFaderScale((1, -100.0), (1000, 10.0));
 
         public Task SendKeepAlive() => Task.CompletedTask;
 
         public Task<bool> CheckConnection(CancellationToken cancellationToken) => Task.FromResult(true);
-    }
-
-    private class NoOpFaderScale : IFaderScale
-    {
-        internal static IFaderScale Instance { get; } = new NoOpFaderScale();
-
-        private NoOpFaderScale()
-        {
-        }
-
-        public int MaxValue => 1024;
-
-        public double ConvertToDb(int level) => 0d;
     }
 }

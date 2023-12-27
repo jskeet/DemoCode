@@ -54,7 +54,11 @@ internal abstract class OscMixerApiBase : IMixerApi
     public abstract Task SendKeepAlive();
     public abstract Task<bool> CheckConnection(CancellationToken cancellationToken);
     public abstract TimeSpan KeepAliveInterval { get; }
-    public IFaderScale FaderScale { get; } = new XSeriesFaderScale();
+
+    // The mapping of 0-1023 is somewhat arbitrary here, but it's close to what's shown in Patrick‐Gilles Maillot's X32 OSC reference guide (which uses a scale of 1-1024).
+    // The protocol values are floating point values from 0.0 to 1.0. These are scaled automatically by the code here, so the
+    // integer range *can* be extended arbitrarily (although it won't change the granularity used by the mixer of course).
+    public IFaderScale FaderScale { get; } = new LinearFaderScale((1, -89.5), (64, -60.0), (256, -30.0), (512, -10), (1023, 10.0));
     protected abstract string GetFaderAddress(ChannelId inputId, ChannelId outputId);
     protected abstract string GetFaderAddress(ChannelId outputId);
     protected abstract string GetMuteAddress(ChannelId channelId);

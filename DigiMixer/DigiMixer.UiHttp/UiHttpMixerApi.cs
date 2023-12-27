@@ -128,7 +128,6 @@ public class UiHttpMixerApi : IMixerApi
 
         async Task ReadHttpResponseHeaders()
         {
-            Console.WriteLine("Reading HTTP response header");
             // Read a single byte at a time to avoid causing problems for the UiStreamClient.
             byte[] buffer = new byte[1];
             byte[] doubleLineBreak = { 0x0d, 0x0a, 0x0d, 0x0a };
@@ -171,7 +170,38 @@ public class UiHttpMixerApi : IMixerApi
     }
 
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
-    public IFaderScale FaderScale => DefaultFaderScale.Instance;
+
+    // The values are floating point values in the range 0-1 inclusive.
+    // Observed values with web interface dB reading::
+    // 0.003179903013 = -91dB
+    // 0.01271961205  = -77dB
+    // 0.05405835122  = -60dB
+    // 0.1112966055   = -50dB
+    // 0.1812544717   = -40dB
+    // 0.2607520471   = -30dB
+    // 0.3656888465   = -20dB
+    // 0.4420065188   = -15.1dB
+    // 0.5278639002   = -10dB
+    // 0.6328006996   = -5dB
+    // 0.7631767231   = 0dB
+    // 0.8935527466   = 5dB
+    // 1.0            = 10dB
+    // The values below are just a reflection of the above, on a [0, 100_000] range, with an extra value for the "notionally minimal" value.
+    public IFaderScale FaderScale { get; } = new LinearFaderScale(
+        (1, -92.0),
+        (318, -91.0),
+        (1272, -77.0),
+        (5406, -60.0),
+        (11130, -50.0),
+        (18125, -40.0),
+        (26075, -30.0),
+        (36569, -20.0),
+        (44201, -15.1),
+        (52786, -10.0),
+        (63280, -5.0),
+        (76318, 0.0),
+        (89355, 5.0),
+        (100_000, 10.0));
 
     public Task SendKeepAlive() => SendKeepAlive(default);
 
@@ -346,9 +376,9 @@ public class UiHttpMixerApi : IMixerApi
         return ret;
     }
 
-    private static double FromFaderLevel(FaderLevel level) => level.Value / (float) FaderLevel.MaxValue;
+    private double FromFaderLevel(FaderLevel level) => level.Value / (float) FaderScale.MaxValue;
 
-    private static FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderLevel.MaxValue));
+    private FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderScale.MaxValue));
 
     public void Dispose()
     {

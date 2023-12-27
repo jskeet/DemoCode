@@ -7,9 +7,6 @@ namespace DigiMixer.Wpf;
 
 public class FaderViewModel : ViewModelBase<IFader>
 {
-    // For binding purposes.
-    public static double FaderLevelScaleDouble { get; } = Core.FaderLevel.MaxValue;
-
     private readonly OutputChannel outputChannel;
 
     internal FaderViewModel(IFader model, OutputChannel outputChannel, Brush background) : base(model)
@@ -56,7 +53,7 @@ public class FaderViewModel : ViewModelBase<IFader>
     /// <summary>
     /// The level of the fader, as a percentage.
     /// </summary>
-    public string FaderLevelPercentage => $"{FaderLevel * 100 / Core.FaderLevel.MaxValue}%";
+    public string FaderLevelPercentage => $"{FaderLevel * 100 / MaxFaderLevel}%";
 
     public double FaderLevelDb => Model.Scale.ConvertToDb(FaderLevel);
 

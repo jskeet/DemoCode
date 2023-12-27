@@ -3,7 +3,6 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using System.Runtime.InteropServices;
 
 namespace DigiMixer.UCNet;
 
@@ -143,7 +142,7 @@ public static class StudioLive
                 }
 
                 FaderLevel GetFaderLevel(MeterMessageRow<ushort> row, int index) =>
-                    new FaderLevel(row.GetValue(index) / 64);
+                    new FaderLevel(row.GetValue(index));
             }
 
             void HandleMeterLevels()
@@ -263,7 +262,7 @@ public static class StudioLive
             }
         }
 
-        private static FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * 1024));
+        private FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderScale.MaxValue));
 
         private void HandleParameterValue(ParameterValueMessage parameterValue)
         {
@@ -345,7 +344,14 @@ public static class StudioLive
 
         // TODO: Check this.
         public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
-        public IFaderScale FaderScale => DefaultFaderScale.Instance;
+
+        // The fader scale for the 16R (and, presumably, the other mixers in the series) is linear in the protocol, represented
+        // as a floating point value for most of the protocol, but an unsigned 16-bit integer (0-65535) as meter values. Negative
+        // infinity is never actually shown in the Universal Control user interface (it's reported as -84)
+        // but in DigiMixer terms it's reasonable to call that negative infinity.
+        // The values shown below are observed via the Universal Control rather than based on documentation. We use a scale up to 65535
+        // so that it maps directly to the meter values.
+        public IFaderScale FaderScale { get; } = new LinearFaderScale((1, -84.0), (70, -77.9), (2942, -50.9), (6085, -39.9), (14198, -30.0), (21752, -20.0), (30634, -10.0), (48190, 0.0), (65535, 10.0));
 
         public Task SendKeepAlive() => SendMessage(new KeepAliveMessage());
 
@@ -373,7 +379,7 @@ public static class StudioLive
 
         private Task SetFaderLevelImpl(string address, FaderLevel level)
         {
-            float linear = ((float) level.Value) / FaderLevel.MaxValue;
+            float linear = ((float) level.Value) / FaderScale.MaxValue;
             return SendMessage(new ParameterValueMessage(address, 0, linear));
         }
 
