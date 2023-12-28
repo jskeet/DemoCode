@@ -65,7 +65,7 @@ internal sealed class UdpViscaClient : ViscaClientBase
             Reconnect();
         }
         message.WriteTo(writeBuffer);
-        
+
         await client!.SendAsync(new ReadOnlyMemory<byte>(writeBuffer, 0, message.Length), cancellationToken);
     }
 }
