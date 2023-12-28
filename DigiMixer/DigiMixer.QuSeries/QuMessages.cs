@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.QuSeries.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.QuSeries;
 
@@ -31,7 +32,7 @@ internal static class QuMessages
     {
         if (message is QuGeneralMessage { Type: 0 } response && response.Data.Length == 2)
         {
-            mixerUdpPort = LittleEndian.ReadUInt16(response.Data);
+            mixerUdpPort = BinaryPrimitives.ReadUInt16LittleEndian(response.Data);
             return true;
         }
         else

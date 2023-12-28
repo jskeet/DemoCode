@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.DmSeries.Core;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.DmSeries;
@@ -36,7 +37,7 @@ internal sealed class FullChannelDataMessage
             { IsMainOutput: true } => 0x17b,
             { Value: int ch } => (ch - 1) * 5 + 0x143
         };
-        var raw = LittleEndian.ReadInt16(data.Data.Slice(inputStart + faderOffset, 2));
+        var raw = BinaryPrimitives.ReadInt16LittleEndian(data.Data.Slice(inputStart + faderOffset, 2));
         return DmConversions.RawToFaderLevel(raw);
     }
 
@@ -49,7 +50,7 @@ internal sealed class FullChannelDataMessage
             { IsMainOutput: true } => 0x13c,
             _ => 0x13e
         };
-        var raw = LittleEndian.ReadInt16(data.Data.Slice(outputStart + faderOffset, 2));
+        var raw = BinaryPrimitives.ReadInt16LittleEndian(data.Data.Slice(outputStart + faderOffset, 2));
         return DmConversions.RawToFaderLevel(raw);
     }
 

@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
@@ -25,13 +26,13 @@ public class FileRequestMessage : UCNetMessage
 
     protected override void WriteBody(Span<byte> span)
     {
-        LittleEndian.WriteUInt16(span, requestId);
+        BinaryPrimitives.WriteUInt16LittleEndian(span, requestId);
         Encoding.UTF8.GetBytes(path, span.Slice(2));
     }
 
     internal static FileRequestMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        var requestId = LittleEndian.ReadUInt16(body);
+        var requestId = BinaryPrimitives.ReadUInt16LittleEndian(body);
         var textSpan = body[2..^2];
         return new FileRequestMessage(Encoding.UTF8.GetString(textSpan), requestId, mode);
     }

@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.CqSeries.Core;
 
@@ -56,7 +57,7 @@ public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
             return null;
         }
         CqMessageType type = (CqMessageType) data[1];
-        int dataLength = LittleEndian.ReadInt32(data[2..6]);
+        int dataLength = BinaryPrimitives.ReadInt32LittleEndian(data[2..6]);
         if (data.Length < dataLength + 6)
         {
             return null;
@@ -91,7 +92,7 @@ public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
             case CqMessageFormat.VariableLength:
                 buffer[0] = VariableLengthPrefix;
                 buffer[1] = (byte) Type;
-                LittleEndian.WriteInt32(buffer.Slice(2, 4), Data.Length);
+                BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(2, 4), Data.Length);
                 data.Span.CopyTo(buffer.Slice(6));
                 break;
             case CqMessageFormat.FixedLength8:

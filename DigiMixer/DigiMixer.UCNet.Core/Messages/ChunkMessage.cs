@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
@@ -28,9 +29,9 @@ public class ChunkMessage : UCNetMessage
 
     internal static ChunkMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        uint offset = LittleEndian.ReadUInt32(body);
-        uint totalSize = LittleEndian.ReadUInt32(body.Slice(4));
-        uint chunkSize = LittleEndian.ReadUInt32(body.Slice(8));
+        uint offset = BinaryPrimitives.ReadUInt32LittleEndian(body);
+        uint totalSize = BinaryPrimitives.ReadUInt32LittleEndian(body.Slice(4));
+        uint chunkSize = BinaryPrimitives.ReadUInt32LittleEndian(body.Slice(8));
         if (chunkSize + 12 != body.Length)
         {
             throw new InvalidDataException($"Invalid Chunk message: chunk data size claimed to be {chunkSize} but message body is {body.Length} bytes (with 12 byte chunk header)");

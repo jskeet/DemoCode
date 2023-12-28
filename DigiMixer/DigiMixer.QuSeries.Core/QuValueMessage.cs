@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
 namespace DigiMixer.QuSeries.Core;
@@ -33,8 +34,8 @@ public class QuValueMessage : QuControlMessage
         buffer[1] = ClientId;
         buffer[2] = Section;
         // Note offsets of 3 and 7 rather than 2 and 6, as the message includes the fixed-length indicator.
-        LittleEndian.WriteInt32(buffer.Slice(3), Address);
-        LittleEndian.WriteUInt16(buffer.Slice(7), RawValue);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(3), Address);
+        BinaryPrimitives.WriteUInt16LittleEndian(buffer.Slice(7), RawValue);
     }
 
     public override string ToString() =>

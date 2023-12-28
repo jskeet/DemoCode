@@ -5,6 +5,7 @@
 using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using OscCore;
+using System.Buffers.Binary;
 
 namespace DigiMixer.Osc;
 
@@ -122,7 +123,7 @@ public static class X32
 
         private static MeterLevel ToMeterLevel(byte[] blob, int index)
         {
-            float raw = LittleEndian.ReadSingle(blob.AsSpan().Slice(index * 4 + 4));
+            float raw = BinaryPrimitives.ReadSingleLittleEndian(blob.AsSpan().Slice(index * 4 + 4));
             var db = raw == 0 ? double.NegativeInfinity : 20 * Math.Log10(raw);
             return MeterLevel.FromDb(db);
         }

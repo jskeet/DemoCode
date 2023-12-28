@@ -2,6 +2,7 @@
 using DigiMixer.Diagnostics;
 using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.Mackie.Tools;
@@ -50,7 +51,7 @@ public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
         layout[3] = 1;
         for (int i = 1; i <= meterCount; i++)
         {
-            BigEndian.WriteInt32(layout.AsSpan().Slice(i * 4, 4), i);
+            BinaryPrimitives.WriteInt32BigEndian(layout.AsSpan().Slice(i * 4, 4), i);
         }
 
         await controller.SendRequest(MackieCommand.MeterLayout, layout, cancellationToken);

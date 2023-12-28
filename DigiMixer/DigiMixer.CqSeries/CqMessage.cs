@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.CqSeries.Core;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.CqSeries;
@@ -25,7 +26,7 @@ public abstract class CqMessage
     {
     }
 
-    internal ushort GetUInt16(int index) => LittleEndian.ReadUInt16(Data.Slice(index));
+    internal ushort GetUInt16(int index) => BinaryPrimitives.ReadUInt16LittleEndian(Data.Slice(index));
 
     internal string? GetString(int offset, int maxLength)
     {

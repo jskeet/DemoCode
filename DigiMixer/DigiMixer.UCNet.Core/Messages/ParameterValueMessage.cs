@@ -1,4 +1,6 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
@@ -18,9 +20,10 @@ public class ParameterValueMessage : UCNetMessage
             {
                 return null;
             }
+            // It's possible that using MemoryMarshal could simplify this a little.
             Span<byte> bytes = stackalloc byte[4];
-            LittleEndian.WriteUInt32(bytes, value);
-            return LittleEndian.ReadSingle(bytes);
+            BinaryPrimitives.WriteUInt32LittleEndian(bytes, value);
+            return BinaryPrimitives.ReadSingleLittleEndian(bytes);
         }
     }
 
@@ -38,8 +41,8 @@ public class ParameterValueMessage : UCNetMessage
         if (value is float v)
         {
             Span<byte> bytes = stackalloc byte[4];
-            LittleEndian.WriteSingle(bytes, v);
-            Value = LittleEndian.ReadUInt32(bytes);
+            BinaryPrimitives.WriteSingleLittleEndian(bytes, v);
+            Value = BinaryPrimitives.ReadUInt32LittleEndian(bytes);
         }
     }
 
@@ -50,10 +53,10 @@ public class ParameterValueMessage : UCNetMessage
     protected override void WriteBody(Span<byte> span)
     {
         int textLength = Encoding.UTF8.GetBytes(Key, span);
-        LittleEndian.WriteUInt16(span.Slice(textLength + 1), Group);
+        BinaryPrimitives.WriteUInt16LittleEndian(span.Slice(textLength + 1), Group);
         if (Value is uint value)
         {
-            LittleEndian.WriteUInt32(span.Slice(textLength + 3), value);
+            BinaryPrimitives.WriteUInt32LittleEndian(span.Slice(textLength + 3), value);
         }
     }
 
@@ -65,8 +68,8 @@ public class ParameterValueMessage : UCNetMessage
             throw new ArgumentException("End of key not found in parameter value message.");
         }
         string key = Encoding.UTF8.GetString(body[..endOfKey]);
-        ushort group = LittleEndian.ReadUInt16(body.Slice(endOfKey + 1, 2));
-        uint? value = body.Length == endOfKey + 7 ? LittleEndian.ReadUInt32(body.Slice(endOfKey + 3, 4)) : null;
+        ushort group = BinaryPrimitives.ReadUInt16LittleEndian(body.Slice(endOfKey + 1, 2));
+        uint? value = body.Length == endOfKey + 7 ? BinaryPrimitives.ReadUInt32LittleEndian(body.Slice(endOfKey + 3, 4)) : null;
         return new ParameterValueMessage(key, group, value, mode);
     }
 

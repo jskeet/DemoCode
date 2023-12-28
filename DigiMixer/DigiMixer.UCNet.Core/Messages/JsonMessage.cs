@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using Newtonsoft.Json;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
@@ -21,7 +22,7 @@ public class JsonMessage : UCNetMessage
 
     protected override void WriteBody(Span<byte> buffer)
     {
-        LittleEndian.WriteInt32(buffer, byteCount);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer, byteCount);
         Encoding.UTF8.GetBytes(json, buffer.Slice(4));
     }
 
@@ -33,7 +34,7 @@ public class JsonMessage : UCNetMessage
 
     internal static JsonMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        int length = LittleEndian.ReadInt32(body);
+        int length = BinaryPrimitives.ReadInt32LittleEndian(body);
         if (length != body.Length - 4)
         {
             throw new ArgumentException($"Message starts claiming JSON data length {length} but is {body.Length - 4}");

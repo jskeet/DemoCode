@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
@@ -34,13 +35,13 @@ public class CompressedJsonMessage : UCNetMessage
 
     protected override void WriteBody(Span<byte> span)
     {
-        LittleEndian.WriteInt32(span, compressedData.Length);
+        BinaryPrimitives.WriteInt32LittleEndian(span, compressedData.Length);
         compressedData.CopyTo(span.Slice(4));
     }
 
     internal static CompressedJsonMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        int length = LittleEndian.ReadInt32(body);
+        int length = BinaryPrimitives.ReadInt32LittleEndian(body);
         if (length != body.Length - 4)
         {
             throw new ArgumentException($"Message starts claiming compressed data length {length} but is {body.Length}");

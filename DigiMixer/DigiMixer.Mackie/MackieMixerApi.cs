@@ -2,6 +2,7 @@
 using DigiMixer.Mackie.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Text;
 
@@ -59,7 +60,7 @@ public class MackieMixerApi : IMixerApi
         meterLayout[3] = 1;
         for (int i = 0; i < meterAddresses.Count; i++)
         {
-            BigEndian.WriteInt32(meterLayout.AsSpan().Slice(i * 4 + 4), meterAddresses[i]);
+            BinaryPrimitives.WriteInt32BigEndian(meterLayout.AsSpan().Slice(i * 4 + 4), meterAddresses[i]);
         }
         await controller.SendRequest(MackieCommand.MeterLayout, meterLayout, cancellationToken);
         await controller.SendRequest(MackieCommand.BroadcastControl, [0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01], cancellationToken);

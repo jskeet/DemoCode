@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
@@ -15,7 +16,7 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
     public int RowCount => rowMappingData.Length / 6;
     public IEnumerable<MeterMessageRow<ushort>> Rows =>
         Enumerable.Range(0, RowCount)
-            .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => LittleEndian.ReadUInt16(Data.Slice(x * 2))));
+            .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => BinaryPrimitives.ReadUInt16LittleEndian(Data.Slice(x * 2))));
 
     protected MeterMessageBase(string meterType, byte[] data, byte[] rowMappingData, MessageMode mode) : base(mode)
     {
@@ -33,7 +34,7 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
     {
         int typeLength = Encoding.UTF8.GetBytes(MeterType, span);
         int dataStart = typeLength + 2;
-        LittleEndian.WriteUInt16(span.Slice(dataStart), (ushort) (data.Length / ValueSize));
+        BinaryPrimitives.WriteUInt16LittleEndian(span.Slice(dataStart), (ushort) (data.Length / ValueSize));
         data.CopyTo(span.Slice(dataStart + 2));
         int rowMappingStart = dataStart + 2 + data.Length;
         span[rowMappingStart] = (byte) RowCount;

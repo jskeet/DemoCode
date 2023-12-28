@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.Mackie.Core;
@@ -91,7 +92,7 @@ public sealed class MackieMessageBody
     public uint GetUInt32(int chunk)
     {
         var slice = data.AsSpan().Slice(chunk * 4);
-        return IsNetworkOrder ? BigEndian.ReadUInt32(slice) : LittleEndian.ReadUInt32(slice);
+        return IsNetworkOrder ? BinaryPrimitives.ReadUInt32BigEndian(slice) : BinaryPrimitives.ReadUInt32LittleEndian(slice);
     }
 
     /// <summary>
@@ -109,7 +110,7 @@ public sealed class MackieMessageBody
     public float GetSingle(int chunk)
     {
         var slice = data.AsSpan().Slice(chunk * 4);
-        return IsNetworkOrder ? BigEndian.ReadSingle(slice) : LittleEndian.ReadSingle(slice);
+        return IsNetworkOrder ? BinaryPrimitives.ReadSingleBigEndian(slice) : BinaryPrimitives.ReadSingleLittleEndian(slice);
     }
 
     public override string ToString()

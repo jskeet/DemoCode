@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.Diagnostics;
 using DigiMixer.QuSeries.Core;
+using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 
@@ -149,7 +150,7 @@ public class ConnectClient : Tool
             {
                 return;
             }
-            mixerUdpPort = LittleEndian.ReadUInt16(qgp.Data);
+            mixerUdpPort = BinaryPrimitives.ReadUInt16LittleEndian(qgp.Data);
             Console.WriteLine($"Mixer UDP port: {mixerUdpPort}");
         }
     }

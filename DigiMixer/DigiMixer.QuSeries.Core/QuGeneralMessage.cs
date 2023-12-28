@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.QuSeries.Core;
 
@@ -23,7 +24,7 @@ public class QuGeneralMessage : QuControlMessage
     {
         buffer[0] = 0x7f;
         buffer[1] = Type;
-        LittleEndian.WriteUInt16(buffer.Slice(2), (ushort) data.Length);
+        BinaryPrimitives.WriteUInt16LittleEndian(buffer.Slice(2), (ushort) data.Length);
         data.CopyTo(buffer.Slice(4));
     }
 

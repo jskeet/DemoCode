@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using System;
+using System.Buffers.Binary;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -36,7 +37,7 @@ public class DmMessage : IMixerMessage<DmMessage>
         {
             return null;
         }
-        int bodyLength = BigEndian.ReadInt32(data[4..8]);
+        int bodyLength = BinaryPrimitives.ReadInt32BigEndian(data[4..8]);
         if (data.Length < bodyLength + 8)
         {
             return null;
@@ -51,13 +52,13 @@ public class DmMessage : IMixerMessage<DmMessage>
         {
             throw new InvalidDataException("Expected overall container with format 0x11");
         }
-        var containerLength = BigEndian.ReadInt32(body.Slice(1));
+        var containerLength = BinaryPrimitives.ReadInt32BigEndian(body.Slice(1));
         if (containerLength != bodyLength - 5)
         {
             throw new InvalidDataException($"Expected overall container internal length {bodyLength - 5}; was {containerLength}");
         }
         var segments = new List<DmSegment>();
-        var flags = BigEndian.ReadUInt32(body.Slice(5));
+        var flags = BinaryPrimitives.ReadUInt32BigEndian(body.Slice(5));
         var nextSegmentData = body.Slice(9);
         while (nextSegmentData.Length > 0)
         {
@@ -81,10 +82,10 @@ public class DmMessage : IMixerMessage<DmMessage>
     {
         // Note: we assume the span is right-sized to Length.
         Encoding.ASCII.GetBytes(Type, buffer);
-        BigEndian.WriteInt32(buffer.Slice(4), buffer.Length - 8);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(4), buffer.Length - 8);
         buffer[8] = (byte) DmSegmentFormat.Binary;
-        BigEndian.WriteInt32(buffer.Slice(9), buffer.Length - 13);
-        BigEndian.WriteUInt32(buffer.Slice(13), Flags);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(9), buffer.Length - 13);
+        BinaryPrimitives.WriteUInt32BigEndian(buffer.Slice(13), Flags);
         buffer = buffer.Slice(17);
         foreach (var segment in Segments)
         {

@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.QuSeries.Core;
 
@@ -24,7 +25,7 @@ public abstract class QuControlMessage : IMixerMessage<QuControlMessage>
         if (data[0] == 0x7f)
         {
             byte type = data[1];
-            int dataLength = LittleEndian.ReadInt16(data.Slice(2));
+            int dataLength = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(2));
             if (data.Length < dataLength + 4)
             {
                 return null;

@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using PcapngFile;
+using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 
@@ -44,19 +45,19 @@ public class IPV4Packet
         {
             return null;
         }
-        var ipLength = BigEndian.ReadUInt16(dataSpan.Slice(16));
+        var ipLength = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(16));
         var type = (ProtocolType) data[23];
         IPAddress sourceAddress = new IPAddress(dataSpan.Slice(26, 4));
         IPAddress destAddress = new IPAddress(dataSpan.Slice(30, 4));
-        int sourcePort = BigEndian.ReadUInt16(dataSpan.Slice(34));
-        int destPort = BigEndian.ReadUInt16(dataSpan.Slice(36));
+        int sourcePort = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(34));
+        int destPort = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(36));
 
         int dataOffset;
         int dataLength;
         if (type == ProtocolType.Udp)
         {
             dataOffset = 42;
-            dataLength = BigEndian.ReadUInt16(dataSpan.Slice(38)) - 8; // The header includes its own length
+            dataLength = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(38)) - 8; // The header includes its own length
         }
         else if (type == ProtocolType.Tcp)
         {

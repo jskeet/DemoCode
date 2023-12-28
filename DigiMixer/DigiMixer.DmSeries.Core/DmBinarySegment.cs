@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.DmSeries.Core;
 
@@ -42,13 +43,13 @@ public sealed class DmBinarySegment : DmSegment
     public override void WriteTo(Span<byte> buffer)
     {
         buffer[0] = (byte) Format;
-        BigEndian.WriteInt32(buffer.Slice(1), data.Length);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(1), data.Length);
         Data.CopyTo(buffer.Slice(5));
     }
 
     public static DmBinarySegment Parse(ReadOnlySpan<byte> buffer)
     {
-        var dataLength = BigEndian.ReadInt32(buffer.Slice(1));
+        var dataLength = BinaryPrimitives.ReadInt32BigEndian(buffer.Slice(1));
         var bytes = new byte[dataLength];
         buffer.Slice(5, dataLength).CopyTo(bytes);
         return new DmBinarySegment(bytes);

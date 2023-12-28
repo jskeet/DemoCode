@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.Mackie.Core;
@@ -30,7 +31,7 @@ public sealed class MackieMessage : IMixerMessage<MackieMessage>
             return null;
         }
         byte seq = data[1];
-        int chunkCount = BigEndian.ReadInt16(data.Slice(2));
+        int chunkCount = BinaryPrimitives.ReadInt16BigEndian(data.Slice(2));
         MackieMessageType type = (MackieMessageType) data[4];
         MackieCommand command = (MackieCommand) data[5];
 
@@ -61,7 +62,7 @@ public sealed class MackieMessage : IMixerMessage<MackieMessage>
         var body = Body.InNetworkOrder();
         buffer[0] = Header0;
         buffer[1] = Sequence;
-        BigEndian.WriteInt16(buffer.Slice(2), (short) Body.ChunkCount);
+        BinaryPrimitives.WriteInt16BigEndian(buffer.Slice(2), (short) Body.ChunkCount);
         buffer[4] = (byte) Type;
         buffer[5] = (byte) Command;
 
@@ -70,7 +71,7 @@ public sealed class MackieMessage : IMixerMessage<MackieMessage>
         {
             headerChecksum -= buffer[i];
         }
-        BigEndian.WriteUInt16(buffer.Slice(6), headerChecksum);
+        BinaryPrimitives.WriteUInt16BigEndian(buffer.Slice(6), headerChecksum);
 
         if (body.Length != 0)
         {
@@ -80,7 +81,7 @@ public sealed class MackieMessage : IMixerMessage<MackieMessage>
             {
                 bodyChecksum -= Body.Data[i];
             }
-            BigEndian.WriteUInt32(buffer.Slice(body.Length + 8), bodyChecksum);
+            BinaryPrimitives.WriteUInt32BigEndian(buffer.Slice(body.Length + 8), bodyChecksum);
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Buffers.Binary;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
@@ -27,7 +28,7 @@ public class MeterMessageRow<T>
         var rowSpan = ((ReadOnlySpan<byte>) rowData).Slice(rowNumber * 6, 6);
         Source = (MeterSource) rowSpan[0];
         Stage = (MeterStage) rowSpan[1];
-        Offset = LittleEndian.ReadUInt16(rowSpan.Slice(2));
-        Count = LittleEndian.ReadUInt16(rowSpan.Slice(4));
+        Offset = BinaryPrimitives.ReadUInt16LittleEndian(rowSpan.Slice(2));
+        Count = BinaryPrimitives.ReadUInt16LittleEndian(rowSpan.Slice(4));
     }
 }
