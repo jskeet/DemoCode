@@ -7,7 +7,7 @@ public class CqConversions
     internal static DbFaderScale FaderScale { get; } = new(-100, -40, -30, -20, -10, -5, -1, 5, 10);
 
     public static FaderLevel RawToFaderLevel(ushort raw) =>
-        FaderScale.ConvertToFaderLevel((raw - 0x8000) / 256.0d);        
+        FaderScale.ConvertToFaderLevel((raw - 0x8000) / 256.0d);
 
     public static ushort FaderLevelToRaw(FaderLevel level)
     {

@@ -1,5 +1,4 @@
 ﻿using DigiMixer.Core;
-using System.Globalization;
 using System.Text;
 
 namespace DigiMixer.Diagnostics;

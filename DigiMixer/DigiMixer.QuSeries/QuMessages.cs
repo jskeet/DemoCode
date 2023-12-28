@@ -1,5 +1,4 @@
-﻿using DigiMixer.Core;
-using DigiMixer.QuSeries.Core;
+﻿using DigiMixer.QuSeries.Core;
 using System.Buffers.Binary;
 
 namespace DigiMixer.QuSeries;

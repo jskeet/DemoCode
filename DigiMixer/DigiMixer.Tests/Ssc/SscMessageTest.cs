@@ -69,7 +69,7 @@ public class SscMessageTest
         var badProperty = new SscProperty("no/slash/at/start", null);
         Assert.Throws<ArgumentException>(() => new SscMessage(badProperty));
 
-        badProperty  = new SscProperty("/slash/at/end/", null);
+        badProperty = new SscProperty("/slash/at/end/", null);
         Assert.Throws<ArgumentException>(() => new SscMessage(badProperty));
     }
 

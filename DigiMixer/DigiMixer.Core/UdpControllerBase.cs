@@ -110,6 +110,6 @@ public abstract class UdpControllerBase
         // need a specific port for that.
         using var temporaryClient = new UdpClient();
         temporaryClient.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
-        return checked ((ushort) ((IPEndPoint) temporaryClient.Client.LocalEndPoint!).Port);
+        return checked((ushort) ((IPEndPoint) temporaryClient.Client.LocalEndPoint!).Port);
     }
 }

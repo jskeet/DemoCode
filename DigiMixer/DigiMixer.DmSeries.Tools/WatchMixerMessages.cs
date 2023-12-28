@@ -1,7 +1,6 @@
 ﻿using DigiMixer.Diagnostics;
 using DigiMixer.DmSeries.Core;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Threading;
 
 namespace DigiMixer.DmSeries.Tools;
 

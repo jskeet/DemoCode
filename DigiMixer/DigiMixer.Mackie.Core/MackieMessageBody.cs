@@ -1,5 +1,4 @@
-﻿using DigiMixer.Core;
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.Text;
 
 namespace DigiMixer.Mackie.Core;

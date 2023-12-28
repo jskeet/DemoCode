@@ -34,7 +34,7 @@ public class CqFullDataResponseMessage : CqMessage
             _ => GetString(GetOffset(), 6)
         };
 
-        int GetOffset () => channelId switch
+        int GetOffset() => channelId switch
         {
             { IsInput: true, Value: int ch } when ch <= CqChannels.MonoInputCount => 0x0180 + (ch - 1) * 0x118,
             { IsInput: true, Value: CqChannels.Stereo1LeftValue or CqChannels.Stereo1RightValue } => 0x1bc0,

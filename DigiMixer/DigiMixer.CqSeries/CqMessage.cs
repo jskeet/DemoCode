@@ -1,5 +1,4 @@
-﻿using DigiMixer.Core;
-using DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
 using System.Buffers.Binary;
 using System.Text;
 

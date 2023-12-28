@@ -1,5 +1,4 @@
-﻿using DigiMixer.Core;
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.Collections.Immutable;
 
 namespace DigiMixer.DmSeries.Core;

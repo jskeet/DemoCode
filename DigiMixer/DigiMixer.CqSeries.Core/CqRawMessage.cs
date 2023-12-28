@@ -24,7 +24,7 @@ public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
         Type = type;
         this.data = data ?? throw new ArgumentNullException(nameof(data));
     }
-    
+
     /// <summary>
     /// Length of the total message, including header.
     /// </summary>
@@ -79,7 +79,7 @@ public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
             }
             return new CqRawMessage(CqMessageFormat.FixedLength9, CqMessageType.Regular, data[1..9].ToArray());
         }
-        
+
         return new CqRawMessage(CqMessageFormat.FixedLength8, CqMessageType.Regular, data[1..8].ToArray());
     }
 

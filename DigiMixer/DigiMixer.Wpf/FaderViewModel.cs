@@ -42,7 +42,7 @@ public class FaderViewModel : ViewModelBase<IFader>
 
     public Brush Background { get; }
 
-    public int MaxFaderLevel => Model.Scale.MaxValue; 
+    public int MaxFaderLevel => Model.Scale.MaxValue;
 
     public int FaderLevel
     {

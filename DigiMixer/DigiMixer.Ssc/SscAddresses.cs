@@ -155,7 +155,7 @@ public static class SscAddresses
                     public string Type => $"{prefix}/type";
                     public string Lifetime => $"{prefix}/lifetime";
                     public string Gauge => $"{prefix}/gauge";
-                }                
+                }
             }
         }
     }

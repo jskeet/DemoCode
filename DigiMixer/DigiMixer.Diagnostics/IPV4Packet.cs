@@ -1,5 +1,4 @@
-﻿using DigiMixer.Core;
-using PcapngFile;
+﻿using PcapngFile;
 using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
