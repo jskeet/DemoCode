@@ -3,27 +3,15 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="OutputChannelViewModel1.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NodaTime" Version="3.1.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DigiMixer.DmSeries\DigiMixer.DmSeries.csproj" />
-    <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />
-    <ProjectReference Include="..\DigiMixer.Osc\DigiMixer.Osc.csproj" />
-    <ProjectReference Include="..\DigiMixer.CqSeries\DigiMixer.CqSeries.csproj" />
-    <ProjectReference Include="..\DigiMixer.QuSeries\DigiMixer.QuSeries.csproj" />
-    <ProjectReference Include="..\DigiMixer.UCNet\DigiMixer.UCNet.csproj" />
-    <ProjectReference Include="..\DigiMixer.UiHttp\DigiMixer.UiHttp.csproj" />
-    <ProjectReference Include="..\DigiMixer\DigiMixer.csproj" />
+    <ProjectReference Include="..\..\WpfUtil\JonSkeet.WpfLogging\JonSkeet.WpfLogging.csproj" />
+    <ProjectReference Include="..\DigiMixer.Controls\DigiMixer.Controls.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,63 @@
+﻿<StatusBarItem x:Class="JonSkeet.WpfUtil.StatusItem"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+               xmlns:local="clr-namespace:JonSkeet.WpfUtil"
+               x:Name="StatusItemContent"
+               mc:Ignorable="d" 
+               d:DataContext="{d:DesignInstance local:StatusViewModel}"
+               d:DesignHeight="450" d:DesignWidth="800"
+               Content="{Binding Text}"
+               HorizontalAlignment="Left"
+               Visibility="{Binding ., Converter={StaticResource NullVisibilityConverter}}">
+    <StatusBarItem.Style>
+        <Style TargetType="{x:Type StatusBarItem}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static local:StatusType.Error}">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard Name="Error_storyboard">
+                            <BeginStoryboard.Storyboard>
+                                <Storyboard>
+                                    <ColorAnimationUsingKeyFrames 
+                                                    Storyboard.TargetProperty="(Background).(Color)"
+                                                    AutoReverse="True"
+                                                    RepeatBehavior="Forever"
+                                                    Duration="0:0:0.7">
+                                        <DiscreteColorKeyFrame Value="Red" KeyTime="00:00:0" />
+                                        <DiscreteColorKeyFrame Value="Black" KeyTime="00:00:0.55" />
+                                    </ColorAnimationUsingKeyFrames>
+                                    <ColorAnimationUsingKeyFrames 
+                                                    Storyboard.TargetProperty="(Foreground).(Color)"
+                                                    AutoReverse="True"
+                                                    RepeatBehavior="Forever"
+                                                    Duration="0:0:0.7">
+                                        <DiscreteColorKeyFrame Value="White" KeyTime="00:00:0" />
+                                        <DiscreteColorKeyFrame Value="Orange" KeyTime="00:00:0.55" />
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard.Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static local:StatusType.Warning}">
+                    <DataTrigger.Setters>
+                        <Setter Property="Background" Value="Orange" />
+                        <Setter Property="Foreground" Value="Black" />
+                    </DataTrigger.Setters>
+                    <DataTrigger.EnterActions>
+                        <StopStoryboard BeginStoryboardName="Error_storyboard"/>
+                    </DataTrigger.EnterActions>                    
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static local:StatusType.Normal}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <DataTrigger.EnterActions>
+                        <StopStoryboard BeginStoryboardName="Error_storyboard"/>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+    </StatusBarItem.Style>
+</StatusBarItem>

@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:utils="clr-namespace:JonSkeet.WpfUtil;assembly=JonSkeet.WpfUtil"
+                    xmlns:local="clr-namespace:DigiMixer.Controls">
+    <Brush x:Key="ChannelMeterCurrent">#01D328</Brush>
+    <Brush x:Key="ChannelMeterPeak">Green</Brush>
+    <Brush x:Key="ChannelBorderMuted">DarkRed</Brush>
+    <Brush x:Key="ChannelBorderUnmuted">LightGreen</Brush>
+    
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <utils:BooleanToBrushConverter x:Key="ChannelBorderConverter" TrueBrush="{StaticResource ChannelBorderMuted}" FalseBrush="{StaticResource ChannelBorderUnmuted}" />
+    <utils:ConfigurableBooleanToVisibilityConverter x:Key="MeterVisibilityConverter" FalseVisibility="Hidden"/>
+    <utils:ConfigurableBooleanToVisibilityConverter x:Key="FaderVisibilityConverter" FalseVisibility="Collapsed"/>
+</ResourceDictionary>

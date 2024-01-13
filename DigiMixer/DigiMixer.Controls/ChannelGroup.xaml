@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="DigiMixer.Controls.ChannelGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigiMixer.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=local:ChannelGroupViewModel}"
+             Visibility="{Binding Visible, Converter={StaticResource VisibilityConverter}}">
+    <GroupBox Header="{Binding Name}" Grid.IsSharedSizeScope="True">
+        <ItemsControl ItemsSource="{Binding Channels}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:ChannelStrip />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </GroupBox>
+</UserControl>

@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="DigiMixer.Controls.ChannelStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigiMixer.Controls"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance local:IChannelViewModelBase}"             
+             BorderThickness="2" HorizontalContentAlignment="Left"
+             Margin="5" Padding="3">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+                <ResourceDictionary Source="FaderStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.BorderBrush>
+        <Binding Path="Muted" Converter="{StaticResource ChannelBorderConverter}" />
+    </UserControl.BorderBrush>
+
+    <Grid Height="170">
+        <Grid.RowDefinitions>
+            <RowDefinition SharedSizeGroup="textRow" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!-- TODO: Get this to actually collapse properly. It goes half way back, but not all the way. -->
+        <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap" x:Name="title" MaxWidth="{Binding ActualWidth, ElementName=metersAndFaders}" HorizontalAlignment="Stretch" />
+        <StackPanel Grid.Row="1" Margin="0,5,0,0" Orientation="Horizontal" MinWidth="75" x:Name="metersAndFaders">
+            <Grid Width="5" Margin="3,3,0,3">
+                <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding PeakOutput.Value, Mode=OneWay}"  />
+                <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding Output.Value, Mode=OneWay}" />
+            </Grid>
+
+            <Grid Width="5" Margin="3,3,0,3" Visibility="{Binding IsStereo, Converter={StaticResource MeterVisibilityConverter}}">
+                <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding StereoPeakOutput.Value, Mode=OneWay}"  />
+                <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding StereoOutput.Value, Mode=OneWay}" />
+            </Grid>
+            
+            <ItemsControl ItemsSource="{Binding Faders}" Margin="3,3,0,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True" Background="{Binding Appearance.Background}" Margin="2,0,2,0" Width="35" Visibility="{Binding Appearance.Visible, Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock DockPanel.Dock="Bottom" Text="{Binding FaderLevelDb, StringFormat={}{0:0.0}}" HorizontalAlignment="Center" Padding="2,0,2,2" />
+                            <Slider DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Center" Style="{StaticResource Fader}"
+                                    Minimum="0" Maximum="{Binding MaxFaderLevel}" Value="{Binding FaderLevel}" ToolTip="{Binding FaderLevelPercentage}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <CheckBox Grid.Row="2" IsChecked="{Binding Muted}" Margin="0,5,0,0">Muted</CheckBox>
+    </Grid>
+</UserControl>

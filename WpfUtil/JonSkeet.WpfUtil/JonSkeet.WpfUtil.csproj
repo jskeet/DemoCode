@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWpf>True</UseWpf>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NodaTime" Version="3.1.10" />
+    <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>

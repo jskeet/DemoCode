@@ -4,19 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigiMixer.Wpf"
+        xmlns:mixer="clr-namespace:DigiMixer.Controls;assembly=DigiMixer.Controls"
+        xmlns:utils="clr-namespace:JonSkeet.WpfUtil;assembly=JonSkeet.WpfUtil"
         mc:Ignorable="d"
-        Title="MainWindow" SizeToContent="WidthAndHeight">
-    <StackPanel Margin="10">
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchUi24R">Launch Ui24R</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchX32">Launch X32</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR18">Launch XR18</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchXR16">Launch XR16</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchM18">Launch M18</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchDL16S">Launch DL16S</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchDL32R">Launch DL32R</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="Launch16R">Launch 16R</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchQuSB">Launch Qu-SB</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchCQ20B">Launch CQ20B</Button>
-        <Button Margin="3" HorizontalAlignment="Left" Click="LaunchDM3">Launch DM3</Button>
-    </StackPanel>
+        Title="{Binding Title}" SizeToContent="WidthAndHeight" MaxWidth="1500"
+        d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem Width="10" />
+            <utils:StatusItem DataContext="{Binding Mixer.Status}" />
+            <StatusBarItem Width="10" />
+            <utils:StatusItem DataContext="{Binding PeripheralController.XTouchStatus}" />
+            <StatusBarItem Width="10" />
+            <utils:StatusItem DataContext="{Binding PeripheralController.PlatformMStatus}" />
+            <StatusBarItem Width="10" />
+            <utils:StatusItem DataContext="{Binding PeripheralController.PlatformXStatus}" />
+        </StatusBar>
+        <StackPanel DockPanel.Dock="Top" Margin="10,5,10,10" Orientation="Vertical">
+            <mixer:MixerControlPanel DataContext="{Binding Mixer}" />
+            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                <!-- TODO: Move to a menu bar, including credits -->
+                <Button Margin="0,0,0,0" Command="{Binding ShowLogCommand}" HorizontalAlignment="Left">Show log</Button>
+                <Button Margin="0,0,0,0" Command="{Binding ReconfigureCommand}" HorizontalAlignment="Left">Change configuration</Button>
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
 </Window>
