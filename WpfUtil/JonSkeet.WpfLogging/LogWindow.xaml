@@ -6,5 +6,5 @@
         xmlns:local="clr-namespace:JonSkeet.WpfLogging"
         mc:Ignorable="d"
         Title="Logs" Height="450" Width="800">
-    <local:LogTab Margin="5" />
+    <local:LogViewerControl Margin="5" />
 </Window>

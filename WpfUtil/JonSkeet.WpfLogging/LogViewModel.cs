@@ -15,7 +15,7 @@ public class LogViewModel : ViewModelBase
 {
     private const int DisplayedLogLimit = 250;
 
-    private readonly Log log;
+    private readonly MemoryLoggerProvider log;
 
     public ObservableCollection<LogEntryViewModel> LogEntries { get; private set; }
 
@@ -41,7 +41,7 @@ public class LogViewModel : ViewModelBase
         }
     }
 
-    public LogViewModel(Log log)
+    public LogViewModel(MemoryLoggerProvider log)
     {
         this.log = log;
         log.LogEntryLogged += MaybeAddLogEntry;

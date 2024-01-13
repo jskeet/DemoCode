@@ -1,5 +1,4 @@
-﻿using DigiMixer.Controls;
-using JonSkeet.WpfLogging;
+﻿using JonSkeet.WpfLogging;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -10,7 +9,7 @@ namespace DigiMixer.Wpf;
 public partial class App : Application
 {
     public static new App Current => (App) Application.Current;
-    public Log Log { get; private set; }
+    public MemoryLoggerProvider Log { get; private set; }
     private MainWindowViewModel viewModel;
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -21,7 +20,7 @@ public partial class App : Application
         FileLocations.MaybeCreateInitialConfig();
 
         var config = JsonUtilities.LoadJson<DigiMixerAppConfig>(FileLocations.ConfigFile);
-        Log = new Log(SystemClock.Instance, config.Logging);
+        Log = new MemoryLoggerProvider(SystemClock.Instance, config.Logging);
         Log.CreateLogger("App").LogInformation("DigiMixer version: {version}", Versions.AppVersion);
 
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>

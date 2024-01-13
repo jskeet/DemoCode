@@ -9,13 +9,13 @@ using System.Windows.Input;
 namespace JonSkeet.WpfLogging;
 
 /// <summary>
-/// Interaction logic for LogTab.xaml
+/// Interaction logic for LogViewerControl.xaml
 /// </summary>
-public partial class LogTab : UserControl
+public partial class LogViewerControl : UserControl
 {
     private LogViewModel ViewModel => DataContext as LogViewModel;
 
-    public LogTab()
+    public LogViewerControl()
     {
         InitializeComponent();
     }

@@ -34,8 +34,8 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
     {
         this.config = config;
         this.logger = logger;
-        ShowLogCommand = AysCommand.FromAction(ShowLog);
-        ReconfigureCommand = AysCommand.FromAction(Reconfigure);
+        ShowLogCommand = ActionCommand.FromAction(ShowLog);
+        ReconfigureCommand = ActionCommand.FromAction(Reconfigure);
     }
 
     internal async Task InitializeViewModels()

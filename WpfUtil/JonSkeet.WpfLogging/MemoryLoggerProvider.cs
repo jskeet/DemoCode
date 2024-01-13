@@ -16,9 +16,10 @@ using System.Windows.Threading;
 namespace JonSkeet.WpfLogging;
 
 /// <summary>
-/// A log, consisting of log entries.
+/// A memory-based log, consisting of log entries, suitable for viewing in <see cref="LogWindow"/>
+/// or <see cref="LogViewerControl"/>.
 /// </summary>
-public sealed class Log : ILoggerProvider
+public sealed class MemoryLoggerProvider : ILoggerProvider
 {
     // A lock to protect "entries", which may be added to from multiple threads.
     private readonly object _lock = new object();
@@ -31,7 +32,7 @@ public sealed class Log : ILoggerProvider
 
     public event EventHandler<LogEntry> LogEntryLogged;
 
-    public Log(IClock clock, LoggingConfig config)
+    public MemoryLoggerProvider(IClock clock, LoggingConfig config)
     {
         this.clock = clock;
         this.config = config;
@@ -134,11 +135,11 @@ public sealed class Log : ILoggerProvider
 
     private class LoggerImpl : ILogger
     {
-        private readonly Log log;
+        private readonly MemoryLoggerProvider log;
         private readonly string categoryName;
         private readonly LogLevel level;
 
-        internal LoggerImpl(Log log, string categoryName, LogLevel level) =>
+        internal LoggerImpl(MemoryLoggerProvider log, string categoryName, LogLevel level) =>
             (this.log, this.categoryName, this.level) = (log, categoryName, level);
 
         public IDisposable BeginScope<TState>(TState state) => NoOpDisposable.Instance;
