@@ -36,13 +36,14 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
         this.logger = logger;
         ShowLogCommand = ActionCommand.FromAction(ShowLog);
         ReconfigureCommand = ActionCommand.FromAction(Reconfigure);
+        InitializeViewModels();
     }
 
-    internal async Task InitializeViewModels()
+    private void InitializeViewModels()
     {
         var log = App.Current.Log;
         var mixerVm = new DigiMixerViewModel(log.CreateLogger("Mixer"), config.Mixer);
-        var peripheralController = await PeripheralController.Create(log, mixerVm, config.EnablePeripherals);
+        var peripheralController = PeripheralController.Create(log, mixerVm, config.EnablePeripherals);
         // Start the peripheral monitoring task, but just log if it fails.
         peripheralController.Start().Ignore(log.CreateLogger("PeripheralControllerMonitoring"));
         Mixer = mixerVm;
@@ -69,7 +70,7 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
         // Now create the new view models, with a specific error message if we fail to recreate them.
         try
         {
-            await InitializeViewModels();
+            InitializeViewModels();
         }
         catch (Exception ex)
         {

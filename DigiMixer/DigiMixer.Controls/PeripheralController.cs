@@ -31,12 +31,12 @@ public class PeripheralController : IAsyncDisposable
         PlatformXStatus = new StatusViewModel("Platform-X");
     }
 
-    public static async Task<PeripheralController> Create(ILoggerProvider loggerProvider, DigiMixerViewModel mixerVm, bool enablePeripherals)
+    public static PeripheralController Create(ILoggerProvider loggerProvider, DigiMixerViewModel mixerVm, bool enablePeripherals)
     {
         var config = mixerVm.Config;
-        var xtouchController = enablePeripherals && !string.IsNullOrEmpty(config.XTouchMiniDevice) ? await XTouchMiniMackieController.ConnectAsync(config.XTouchMiniDevice) : null;
-        var platformMController = enablePeripherals && !string.IsNullOrEmpty(config.IconMPlusDevice) ? await PlatformMXController.ConnectAsync(config.IconMPlusDevice) : null;
-        var platformXController = enablePeripherals && !string.IsNullOrEmpty(config.IconXPlusDevice) ? await PlatformMXController.ConnectAsync(config.IconXPlusDevice) : null;
+        var xtouchController = enablePeripherals && !string.IsNullOrEmpty(config.XTouchMiniDevice) ? new XTouchMiniMackieController(config.XTouchMiniDevice) : null;
+        var platformMController = enablePeripherals && !string.IsNullOrEmpty(config.IconMPlusDevice) ? new PlatformMXController(config.IconMPlusDevice, PlatformMXController.PlatformMModelId) : null;
+        var platformXController = enablePeripherals && !string.IsNullOrEmpty(config.IconXPlusDevice) ? new PlatformMXController(config.IconXPlusDevice, PlatformMXController.PlatformXModelId) : null;
 
         var xtouchMixerController = xtouchController is null ? null : new XTouchDigiMixerController(loggerProvider.CreateLogger("XTouchMixerController"), mixerVm, xtouchController, config.XTouchSensitivity);
         var platformMMixerController = platformMController is null ? null : new IconPlatformMixerController(loggerProvider.CreateLogger("PlatformMMixerController"), mixerVm, platformMController, 0, controlMain: true);

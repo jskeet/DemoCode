@@ -8,6 +8,9 @@ namespace IconPlatform.Model
 {
     public class PlatformMXController : IAsyncDisposable
     {
+        public const byte PlatformMModelId = 0x14;
+        public const byte PlatformXModelId = 0x15;
+
         public EventHandler<ButtonEventArgs> ButtonChanged;
         public EventHandler<FaderEventArgs> FaderMoved;
         public EventHandler<KnobTurnedEventArgs> KnobTurned;
@@ -19,12 +22,12 @@ namespace IconPlatform.Model
 
         public bool Connected => inputPort is object;
 
-        private PlatformMXController(string portName, byte modelId) =>
+        public PlatformMXController(string portName, byte modelId) =>
             (PortName, this.modelId) = (portName, modelId);
 
         public static async Task<PlatformMXController> ConnectAsync(string portName)
         {
-            var controller = new PlatformMXController(portName, portName?.StartsWith("Platform M") ?? true ? (byte) 0x14 : (byte) 0x15);
+            var controller = new PlatformMXController(portName, portName?.StartsWith("Platform M") ?? true ? PlatformMModelId : PlatformXModelId);
             await controller.MaybeReconnect();
             return controller;
         }
@@ -33,7 +36,8 @@ namespace IconPlatform.Model
         /// Checks whether or not there are ports with the given name. If there are, and the
         /// controller is not currently connected, a new connection is made. If there aren't,
         /// and the controller was previously connected, the existing ports are closed and
-        /// the the controller is deemed disconnected.
+        /// the the controller is deemed disconnected. This method does not throw any exceptions
+        /// if the port is found but can't be connected.
         /// </summary>
         /// <returns>true if the controller has reconnected (from not being connected)</returns>
         public virtual async Task<bool> MaybeReconnect()
@@ -54,11 +58,23 @@ namespace IconPlatform.Model
                 return false;
             }
 
-            var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
-            var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
-            this.inputPort = inputPort;
-            this.outputPort = outputPort;
-            inputPort.MessageReceived += HandleInputMessage;
+            try
+            {
+                var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
+                var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
+                this.inputPort = inputPort;
+                this.outputPort = outputPort;
+                inputPort.MessageReceived += HandleInputMessage;
+            }
+            catch
+            {
+                // Deliberately swallow the exception. The port may be in use by another app, which
+                // is equivalent to not existing, as far as we're concerned.
+                // (This approach is always worrying, but for now it's probably the simplest option.)
+                this.inputPort = null;
+                this.outputPort = null;
+                return false;
+            }
             return true;
         }
 

@@ -12,7 +12,7 @@ public partial class App : Application
     public MemoryLoggerProvider Log { get; private set; }
     private MainWindowViewModel viewModel;
 
-    protected override async void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
@@ -46,7 +46,6 @@ public partial class App : Application
         };
 
         viewModel = new MainWindowViewModel(config, Log.CreateLogger("DigiMixer"));
-        await viewModel.InitializeViewModels();
         ShowMainWindow();
     }
 

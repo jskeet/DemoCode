@@ -42,7 +42,8 @@ namespace XTouchMini.Model
         /// Checks whether or not there are ports with the given name. If there are, and the
         /// controller is not currently connected, a new connection is made. If there aren't,
         /// and the controller was previously connected, the existing ports are closed and
-        /// the the controller is deemed disconnected.
+        /// the the controller is deemed disconnected. This method does not throw any exceptions
+        /// if the port is found but can't be connected.
         /// </summary>
         /// <returns>true if the controller has reconnected (from not being connected)</returns>
         public virtual async Task<bool> MaybeReconnect()
@@ -62,12 +63,23 @@ namespace XTouchMini.Model
                 await DisposeAsync().ConfigureAwait(false);
                 return false;
             }
-
-            var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
-            var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
-            this.inputPort = inputPort;
-            this.outputPort = outputPort;
-            inputPort.MessageReceived += HandleInputMessage;
+            try
+            {
+                var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
+                var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
+                this.inputPort = inputPort;
+                this.outputPort = outputPort;
+                inputPort.MessageReceived += HandleInputMessage;
+            }
+            catch
+            {
+                // Deliberately swallow the exception. The port may be in use by another app, which
+                // is equivalent to not existing, as far as we're concerned.
+                // (This approach is always worrying, but for now it's probably the simplest option.)
+                this.inputPort = null;
+                this.outputPort = null;
+                return false;
+            }
             return true;
         }
 
