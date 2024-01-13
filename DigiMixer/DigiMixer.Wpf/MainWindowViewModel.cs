@@ -28,6 +28,7 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
     }
 
     public ICommand ShowLogCommand { get; }
+    public ICommand ShowCreditsCommand { get; }
     public ICommand ReconfigureCommand { get; }
 
     public MainWindowViewModel(DigiMixerAppConfig config, ILogger logger)
@@ -35,6 +36,7 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
         this.config = config;
         this.logger = logger;
         ShowLogCommand = ActionCommand.FromAction(ShowLog);
+        ShowCreditsCommand = ActionCommand.FromAction(() => new CreditsWindow().ShowDialog());
         ReconfigureCommand = ActionCommand.FromAction(Reconfigure);
         InitializeViewModels();
     }

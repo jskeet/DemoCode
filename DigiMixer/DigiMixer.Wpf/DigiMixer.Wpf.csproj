@@ -7,6 +7,7 @@
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>true</ImplicitUsings>
+    <ApplicationIcon>DigiMixer.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

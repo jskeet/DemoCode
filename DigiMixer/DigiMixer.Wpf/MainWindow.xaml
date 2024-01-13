@@ -10,6 +10,15 @@
         Title="{Binding Title}" SizeToContent="WidthAndHeight" MaxWidth="1500"
         d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
     <DockPanel>
+        <Menu DockPanel.Dock="Top" Padding="4">
+            <MenuItem Header="Configuration" >
+                <MenuItem Header="Reconfigure" Command="{Binding ReconfigureCommand}" />
+            </MenuItem>
+            <MenuItem Header="About">
+                <MenuItem Header="Show log" Command="{Binding ShowLogCommand}"/>
+                <MenuItem Header="Credits" Command="{Binding ShowCreditsCommand}" />
+            </MenuItem>
+        </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem Width="10" />
             <utils:StatusItem DataContext="{Binding Mixer.Status}" />
@@ -20,13 +29,6 @@
             <StatusBarItem Width="10" />
             <utils:StatusItem DataContext="{Binding PeripheralController.PlatformXStatus}" />
         </StatusBar>
-        <StackPanel DockPanel.Dock="Top" Margin="10,5,10,10" Orientation="Vertical">
-            <mixer:MixerControlPanel DataContext="{Binding Mixer}" />
-            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                <!-- TODO: Move to a menu bar, including credits -->
-                <Button Margin="0,0,0,0" Command="{Binding ShowLogCommand}" HorizontalAlignment="Left">Show log</Button>
-                <Button Margin="0,0,0,0" Command="{Binding ReconfigureCommand}" HorizontalAlignment="Left">Change configuration</Button>
-            </StackPanel>
-        </StackPanel>
+        <mixer:MixerControlPanel DockPanel.Dock="Top" Margin="10,5,10,10" DataContext="{Binding Mixer}" />
     </DockPanel>
 </Window>
