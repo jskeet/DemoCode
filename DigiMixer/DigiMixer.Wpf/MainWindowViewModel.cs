@@ -44,7 +44,7 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
     private void InitializeViewModels()
     {
         var log = App.Current.Log;
-        var mixerVm = new DigiMixerViewModel(log.CreateLogger("Mixer"), config.Mixer);
+        var mixerVm = new DigiMixerViewModel(log.CreateLogger("Mixer"), config.Mixer, FileLocations.SnapshotsDirectory);
         var peripheralController = PeripheralController.Create(log, mixerVm, config.EnablePeripherals);
         // Start the peripheral monitoring task, but just log if it fails.
         peripheralController.Start().Ignore(log.CreateLogger("PeripheralControllerMonitoring"));

@@ -25,9 +25,9 @@
             </GroupBox>
             <GroupBox Margin="5,0,0,0" Header="Tools" VerticalAlignment="Top">
                 <StackPanel Orientation="Vertical">
-                    <Button Content="Mute all channels" Click="MuteAll" />
-                    <Button Content="Save snapshot" Click="SaveSnapshot" />
-                    <Button Content="Load snapshot" Click="LoadSnapshot" />
+                    <Button Content="Mute all channels" Command="{Binding MuteAllCommand}"/>
+                    <Button Content="Save snapshot" Command="{Binding SaveSnapshotCommand}"/>
+                    <Button Content="Load snapshot" Command="{Binding LoadSnapshotCommand}" />
                 </StackPanel>
             </GroupBox>
         </StackPanel>

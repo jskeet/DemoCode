@@ -3,6 +3,9 @@ using DigiMixer;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.Windows.Threading;
+using System.Windows.Input;
+using System.IO;
+using NodaTime.Text;
 
 namespace DigiMixer.Controls;
 
@@ -13,6 +16,8 @@ namespace DigiMixer.Controls;
 /// </summary>
 public class DigiMixerViewModel : ViewModelBase, IDisposable
 {
+    private static readonly InstantPattern DefaultSnapshotFilePattern = InstantPattern.CreateWithInvariantCulture("'Snapshot ' uuuu-MM-dd HH-mm'Z.json'");
+
     /// <summary>
     /// Input channels with associated output faders.
     /// </summary>
@@ -87,8 +92,14 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
         set => GroupByInput = !value;
     }
 
+    public ICommand MuteAllCommand { get; }
+    public ICommand LoadSnapshotCommand { get; }
+    public ICommand SaveSnapshotCommand { get; }
+
+    private readonly ILogger logger;
+    private readonly string snapshotsDirectory;
+
     internal DigiMixerConfig Config { get; }
-    private ILogger logger;
     private Mixer mixer;
     private bool disposed;
     private DispatcherTimer meterPeakUpdater;
@@ -96,11 +107,15 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
     public StatusViewModel Status { get; } = new StatusViewModel("Mixer");
     public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 100_000;
 
-    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config)
+    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config, string snapshotsFolder)
     {
         Config = config;
         this.logger = logger;
+        this.snapshotsDirectory = snapshotsFolder;
         Status.ReportNormal("Connecting");
+        MuteAllCommand = ActionCommand.FromAction(MuteAll);
+        LoadSnapshotCommand = ActionCommand.FromAction(LoadSnapshot);
+        SaveSnapshotCommand = ActionCommand.FromAction(SaveSnapshot);
 
         // We build up the input/output channels in two passes, as they need to refer to each other.
         Duration feedbackMutingDuration = Duration.FromMilliseconds(config.FeedbackMutingMillis);
@@ -221,4 +236,47 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             vm.UpdatePeakOutputs(logger);
         }
     }
+
+
+    private void MuteAll()
+    {
+        foreach (var channelVm in InputChannels)
+        {
+            channelVm.Muted = true;
+        }
+    }
+
+    private void SaveSnapshot()
+    {
+        var snapshot = DigiMixerSnapshot.FromMixerViewModel(this);
+        if (snapshot is null)
+        {
+            // This isn't really great, but it's unlikely to be a problem.
+            Dialogs.ShowErrorDialog("Waiting for data", "The mixer has not received all the necessary data yet. Please wait and try again.");
+            return;
+        }
+        MaybeCreateSnapshotsDirectory();
+        var now = SystemClock.Instance.GetCurrentInstant();
+        var defaultFile = DefaultSnapshotFilePattern.Format(now);
+        var file = Dialogs.ShowSaveFileDialog(snapshotsDirectory, "JSON files|*.json", defaultFile);
+        if (file is null)
+        {
+            return;
+        }
+        JsonUtilities.SaveJson(file, snapshot);
+    }
+
+    private void LoadSnapshot()
+    {
+        MaybeCreateSnapshotsDirectory();
+        var file = Dialogs.ShowOpenFileDialog(snapshotsDirectory, "JSON files|*.json");
+        if (file is null)
+        {
+            return;
+        }
+        var snapshot = JsonUtilities.LoadJson<DigiMixerSnapshot>(file);
+        snapshot.CopyToViewModel(this);
+    }
+
+    private void MaybeCreateSnapshotsDirectory() => Directory.CreateDirectory(snapshotsDirectory);
 }

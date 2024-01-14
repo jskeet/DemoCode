@@ -12,6 +12,7 @@ internal class FileLocations
 
     internal static string ConfigFile => Path.Combine(AppDataDirectory, "config.json");
 
+    internal static string SnapshotsDirectory => Path.Combine(AppDataDirectory, "Snapshots");
     internal static string LoggingDirectory => Path.Combine(AppDataDirectory, "Logs");
 
     internal static void MaybeCreateAppDataDirectory()
