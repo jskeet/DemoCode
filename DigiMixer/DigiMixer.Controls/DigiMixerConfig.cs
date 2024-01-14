@@ -77,7 +77,7 @@ public class DigiMixerConfig
     /// </summary>
     public List<ChannelMapping> OutputChannels { get; set; } = new List<ChannelMapping>();
 
-    internal IMixerApi CreateMixerApi(ILogger logger)
+    public IMixerApi CreateMixerApi(ILogger logger)
     {
         if (Fake || !Enabled)
         {

@@ -62,7 +62,19 @@ public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
 
     private async void Reconfigure()
     {
-        // TODO: prompt for the new configuration.
+        var clone = JsonUtilities.Clone(config);
+
+        var vm = new ConfigurationEditorViewModel(App.Current.Log.CreateLogger("ConfigurationEditor"), clone);
+        var dialog = new ConfigurationEditorDialog { DataContext = vm };
+        if (dialog.ShowDialog() != true)
+        {
+            return;
+        }
+        // The user has accepted the new config, so now we need to apply it.
+
+        // The VM doesn't always keep the underlying model up-to-date.
+        vm.UpdateModel();
+        config = vm.Model;
 
         // Dispose of the old mixer, then wait for a second to allow resource to actually get freed
         // and become accessible again.

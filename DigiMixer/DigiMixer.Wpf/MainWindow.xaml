@@ -7,7 +7,7 @@
         xmlns:mixer="clr-namespace:DigiMixer.Controls;assembly=DigiMixer.Controls"
         xmlns:utils="clr-namespace:JonSkeet.WpfUtil;assembly=JonSkeet.WpfUtil"
         mc:Ignorable="d"
-        Title="{Binding Title}" SizeToContent="WidthAndHeight" MaxWidth="1500"
+        Title="{Binding Title}" SizeToContent="WidthAndHeight" MaxWidth="1800"
         d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Padding="4">
