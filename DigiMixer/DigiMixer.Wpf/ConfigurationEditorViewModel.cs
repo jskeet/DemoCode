@@ -10,6 +10,8 @@ namespace DigiMixer.Wpf;
 
 public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
 {
+    private const string InputPrefix = "input-";
+    private const string OutputPrefix = "output-";
     private readonly ILogger logger;
 
     private static List<(string, MHT)> allMixerTypes = new()
@@ -61,8 +63,8 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         set => SetProperty(IconXPlusDevice, value, x => Model.Mixer.IconXPlusDevice = x);
     }
 
-    public ChannelListViewModel InputChannels { get; } = new();
-    public ChannelListViewModel OutputChannels { get; } = new();
+    public ChannelListViewModel InputChannels { get; } = new(InputPrefix);
+    public ChannelListViewModel OutputChannels { get; } = new(OutputPrefix);
 
     public List<string> AllMixerTypes => allMixerTypes.Select(pair => pair.Item1).ToList();
 
@@ -135,7 +137,7 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         {
             var inputMappings = inputs.Select((input, index) => new ChannelMappingViewModel(new ChannelMapping
             {
-                Id = $"input-{index + 1}",
+                Id = $"{InputPrefix}{index + 1}",
                 DisplayName = input.Name,
                 Channel = input.LeftOrMonoChannelId.Value,
                 InitiallyVisible = true
@@ -144,7 +146,7 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
 
             var outputMappings = outputs.Select((output, index) => new ChannelMappingViewModel(new ChannelMapping
             {
-                Id = $"output-{index + 1}",
+                Id = $"{OutputPrefix}{index + 1}",
                 DisplayName = output.Name,
                 Channel = output.LeftOrMonoChannelId.Value,
                 InitiallyVisible = true
