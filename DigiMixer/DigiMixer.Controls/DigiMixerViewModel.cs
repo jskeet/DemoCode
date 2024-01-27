@@ -279,4 +279,18 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
     }
 
     private void MaybeCreateSnapshotsDirectory() => Directory.CreateDirectory(snapshotsDirectory);
+
+    public void LogStatus(ILogger statusLogger)
+    {
+        if (Config.Fake)
+        {
+            return;
+        }
+        var unmutedChannels = InputChannels.Where(ic => !ic.Muted).ToList();
+        statusLogger.LogTrace("Mixer {mixer}: Connected? {connected}; Unmuted channels: {channelCount}", mixer.MixerInfo.Model, mixer.Connected ? "Yes" : "No", unmutedChannels.Count);
+        foreach (var channel in unmutedChannels)
+        {
+            statusLogger.LogTrace("  {name}: {db}", channel.DisplayName, channel.Faders.FirstOrDefault()?.FaderLevelDb.ToString("0.##"));
+        }
+    }
 }
