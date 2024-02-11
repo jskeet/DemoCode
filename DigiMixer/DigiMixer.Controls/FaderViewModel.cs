@@ -48,7 +48,7 @@ public class FaderViewModel : ViewModelBase
         set => Fader?.SetFaderLevel(new(value));
     }
 
-    public double FaderLevelDb => fader?.Scale.ConvertToDb(FaderLevel) ?? 0;
+    public double FaderLevelDb => NormalizeSmallNegativeToZero(fader?.Scale.ConvertToDb(FaderLevel) ?? 0);
     public int MaxFaderLevel => fader?.Scale.MaxValue ?? 100_000;
 
     // The config-based IDs.
@@ -95,4 +95,11 @@ public class FaderViewModel : ViewModelBase
             RaisePropertyChanged(nameof(FaderLevelDb));
         }
     }
+
+    /// <summary>
+    /// If we just format the raw "value" we see -0.0 quite a lot (e.g. for -0.05).
+    /// With this method, if the 1dp value is going to be rounded to 0.0 anyway, we omit the sign.
+    /// </summary>
+    private static double NormalizeSmallNegativeToZero(double value) =>
+        -0.1 < value && value < 0 ? 0.0 : value;
 }
