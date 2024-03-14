@@ -21,13 +21,6 @@ public class LogViewModel : ViewModelBase
 
     public IReadOnlyList<LogLevel> AllFilterLevels { get; } = Enum.GetValues<LogLevel>().ToReadOnlyList();
 
-    private string manualEntryText;
-    public string ManualEntryText
-    {
-        get => manualEntryText;
-        set => SetProperty(ref manualEntryText, value);
-    }
-
     private LogLevel filterLevel = LogLevel.Information;
     public LogLevel FilterLevel
     {
@@ -46,17 +39,6 @@ public class LogViewModel : ViewModelBase
         this.log = log;
         log.LogEntryLogged += MaybeAddLogEntry;
         PopulateLogEntries();
-    }
-
-    internal void AddManualEntry()
-    {
-        string text = ManualEntryText;
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            text = "(No text provided)";
-        }
-        log.CreateLogger("Manual").LogInformation("{text}", text);
-        ManualEntryText = "";
     }
 
     private void PopulateLogEntries()

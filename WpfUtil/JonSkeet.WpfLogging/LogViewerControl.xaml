@@ -24,12 +24,6 @@
             <ComboBox Margin="5,0,0,0" ItemsSource="{Binding AllFilterLevels}" SelectedItem="{Binding FilterLevel}" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" DockPanel.Dock="Top" Margin="3">
-            <TextBlock Text="Add entry:"/>
-            <TextBox Margin="5,0,0,0" Text="{Binding ManualEntryText, UpdateSourceTrigger=PropertyChanged}" MinWidth="300" PreviewKeyDown="HandleManualEntryKey" />
-            <Button Margin="5,0,0,0" Click="AddManualEntry">Add</Button>
-        </StackPanel>
-
         <utils:BetterScrollViewer Grid.Row="2" AutoScrollAtBottom="True" Margin="3" >
             <ItemsControl ItemsSource="{Binding LogEntries}">
                 <ItemsControl.ItemsPanel>
