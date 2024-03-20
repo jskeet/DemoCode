@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.1.0</Version>
-    <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>1.2.0</Version>
+    <PackageValidationBaselineVersion>1.1.0</PackageValidationBaselineVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>    
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
