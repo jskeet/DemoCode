@@ -7,4 +7,6 @@ public class Class1
     }
     
     public int Property => 10;
+    
+    public int? NullableProperty => 10;
 }
