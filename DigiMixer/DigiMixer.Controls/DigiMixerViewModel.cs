@@ -282,7 +282,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
 
     public void LogStatus(ILogger statusLogger)
     {
-        if (Config.Fake)
+        if (Config.Fake || mixer is null)
         {
             return;
         }
