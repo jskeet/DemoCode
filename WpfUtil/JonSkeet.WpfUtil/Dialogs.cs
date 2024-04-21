@@ -12,6 +12,13 @@ namespace JonSkeet.WpfUtil;
 public static class Dialogs
 {
     /// <summary>
+    /// A value to specify as a Window.Tag to bypass HandleDialogClosing logic.
+    /// This is typically to be used by code showing a dialog in a non-dialog manner,
+    /// e.g. to take screenshots.
+    /// </summary>
+    public const string FakeDialogResultTag = nameof(FakeDialogResultTag);
+
+    /// <summary>
     /// Returns the user's download folder, or null if it can't be determined.
     /// </summary>
     /// <returns></returns>
@@ -121,6 +128,11 @@ public static class Dialogs
     /// </summary>
     public static void HandleDialogClosing(Window window, CancelEventArgs e, string originalModelJson, string newModelJson, string modelType)
     {
+        if (ReferenceEquals(window.Tag, FakeDialogResultTag))
+        {
+            return;
+        }
+
         // If we already know what to do, there's no more work needed.
         if (window.DialogResult is bool)
         {
