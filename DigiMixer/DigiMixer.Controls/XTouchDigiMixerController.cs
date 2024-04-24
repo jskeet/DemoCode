@@ -17,14 +17,13 @@ internal class XTouchDigiMixerController : IAsyncDisposable
 
     private bool lastConnected = false;
 
-    public XTouchDigiMixerController(ILogger logger, DigiMixerViewModel mixerVm, XTouchMiniMackieController xtouchController, int sensitivity)
+    public XTouchDigiMixerController(ILogger logger, DigiMixerViewModel mixerVm, XTouchMiniMackieController xtouchController, int sensitivity, bool mainVolumeEnabled)
     {
         (this.logger, this.xtouchController) = (logger, xtouchController);
         xtouchController.ButtonDown += HandleButtonDown;
         xtouchController.KnobTurned += HandleKnobTurned;
         xtouchController.KnobUp += HandleKnobPushRelease;
         xtouchController.KnobDown += HandleKnobPushRelease;
-        xtouchController.FaderMoved += ChangeMainVolume;
         channels = mixerVm.InputChannels
             .Select((channel, index) => new XTouchDigiMixerControlledChannel(logger, channel, xtouchController, index + 1, sensitivity, true))
             // First 8 channels are knob+button (fader and mute); last 8 are button-only (mute).
@@ -36,7 +35,14 @@ internal class XTouchDigiMixerController : IAsyncDisposable
             .Select((channel, index) => new XTouchDigiMixerControlledChannel(logger, channel, xtouchController, index + 1, sensitivity, false))
             .ToList();
 
-        mainFader = mixerVm.OverallOutputChannels.FirstOrDefault(channel => channel.ChannelId.IsMainOutput)?.Faders[0];
+        if (mainVolumeEnabled)
+        {
+            mainFader = mixerVm.OverallOutputChannels.FirstOrDefault(channel => channel.ChannelId.IsMainOutput)?.Faders[0];
+            if (mainFader is not null)
+            {
+                xtouchController.FaderMoved += ChangeMainVolume;
+            }
+        }
     }
 
     public async Task<bool> CheckConnectionAsync()
@@ -71,13 +77,8 @@ internal class XTouchDigiMixerController : IAsyncDisposable
     private void HandleButtonDown(object sender, ButtonEventArgs e) =>
         GetChannelOrNull(e.Button)?.HandleButtonPressed();
 
-    private void ChangeMainVolume(object sender, FaderEventArgs e)
-    {
-        if (mainFader is not null)
-        {
-            mainFader.FaderLevel = e.Position * mainFader.MaxFaderLevel / 127;
-        }
-    }
+    private void ChangeMainVolume(object sender, FaderEventArgs e) =>
+        mainFader.FaderLevel = e.Position * mainFader.MaxFaderLevel / 127;
 
     private XTouchDigiMixerControlledChannel GetChannelOrNull(int index) =>
         index > 0 && index <= channels.Count ? channels[index - 1] : null;

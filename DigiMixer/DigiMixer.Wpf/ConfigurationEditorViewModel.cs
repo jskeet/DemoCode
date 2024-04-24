@@ -45,6 +45,12 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         set => SetProperty(EnablePeripherals, value, x => Model.EnablePeripherals = x);
     }
 
+    public bool XTouchMainVolumeEnabled
+    {
+        get => Model.Mixer.XTouchMainVolumeEnabled;
+        set => SetProperty(XTouchMainVolumeEnabled, value, x => Model.Mixer.XTouchMainVolumeEnabled = x);
+    }
+
     public string XTouchMiniDevice
     {
         get => Model.Mixer.XTouchMiniDevice;

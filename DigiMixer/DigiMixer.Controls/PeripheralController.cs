@@ -38,7 +38,7 @@ public class PeripheralController : IAsyncDisposable
         var platformMController = enablePeripherals && !string.IsNullOrEmpty(config.IconMPlusDevice) ? new PlatformMXController(config.IconMPlusDevice, PlatformMXController.PlatformMModelId) : null;
         var platformXController = enablePeripherals && !string.IsNullOrEmpty(config.IconXPlusDevice) ? new PlatformMXController(config.IconXPlusDevice, PlatformMXController.PlatformXModelId) : null;
 
-        var xtouchMixerController = xtouchController is null ? null : new XTouchDigiMixerController(loggerProvider.CreateLogger("XTouchMixerController"), mixerVm, xtouchController, config.XTouchSensitivity);
+        var xtouchMixerController = xtouchController is null ? null : new XTouchDigiMixerController(loggerProvider.CreateLogger("XTouchMixerController"), mixerVm, xtouchController, config.XTouchSensitivity, config.XTouchMainVolumeEnabled);
         var platformMMixerController = platformMController is null ? null : new IconPlatformMixerController(loggerProvider.CreateLogger("PlatformMMixerController"), mixerVm, platformMController, 0, controlMain: true);
         var platformXMixerController = platformXController is null ? null : new IconPlatformMixerController(loggerProvider.CreateLogger("PlatformXMixerController"), mixerVm, platformXController, 8, controlMain: false);
         return new PeripheralController(loggerProvider.CreateLogger("PeripheralController"), xtouchMixerController, platformMMixerController, platformXMixerController);

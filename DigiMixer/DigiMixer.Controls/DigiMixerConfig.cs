@@ -33,8 +33,6 @@ public class DigiMixerConfig
     public string Address { get; set; }
     public int? Port { get; set; }
 
-    [DefaultValue(5)]
-    public int XTouchSensitivity { get; set; } = 5;
     public MixerHardwareType HardwareType { get; set; }
 
     /// <summary>
@@ -55,6 +53,15 @@ public class DigiMixerConfig
     /// Name of the X-Touch Mini device as a MIDI port.
     /// </summary>
     public string XTouchMiniDevice { get; set; }
+
+    [DefaultValue(5)]
+    public int XTouchSensitivity { get; set; } = 5;
+
+    /// <summary>
+    /// Whether the main fader on the X-Touch Mini should be used for the main volume.
+    /// </summary>
+    [DefaultValue(true)]
+    public bool XTouchMainVolumeEnabled { get; set; } = true;
 
     /// <summary>
     /// Name of the iCON Platform M+ device as a MIDI port.

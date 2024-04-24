@@ -25,6 +25,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -68,14 +69,16 @@
         <TextBlock Grid.Row="12" Grid.Column="0" Margin="0,5,0,0">X-Touch Mini device</TextBlock>
         <TextBox Grid.Row="12" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding XTouchMiniDevice, TargetNullValue=''}" />
         <Button Grid.Row="12" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="XTouch" />
-        <TextBlock Grid.Row="13" Grid.Column="0" Margin="0,5,0,0">Icon Platform-M+ device</TextBlock>
-        <TextBox Grid.Row="13" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconMPlusDevice, TargetNullValue=''}" />
-        <Button Grid.Row="13" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconM" />
-        <TextBlock Grid.Row="14" Grid.Column="0" Margin="0,5,0,0">Icon Platform-X+ device</TextBlock>
-        <TextBox Grid.Row="14" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconXPlusDevice, TargetNullValue=''}" />
-        <Button Grid.Row="14" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconX" />
+        <TextBlock Grid.Row="13" Grid.Column="0" Margin="0,5,0,0">Change main fader volume with X-Touch fader?</TextBlock>
+        <CheckBox Grid.Row="13" Grid.Column="1" Margin="5,5,0,0" IsChecked="{Binding XTouchMainVolumeEnabled}" />
+        <TextBlock Grid.Row="14" Grid.Column="0" Margin="0,5,0,0">Icon Platform-M+ device</TextBlock>
+        <TextBox Grid.Row="14" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconMPlusDevice, TargetNullValue=''}" />
+        <Button Grid.Row="14" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconM" />
+        <TextBlock Grid.Row="15" Grid.Column="0" Margin="0,5,0,0">Icon Platform-X+ device</TextBlock>
+        <TextBox Grid.Row="15" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconXPlusDevice, TargetNullValue=''}" />
+        <Button Grid.Row="15" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconX" />
             
-        <StackPanel Grid.Row="15" Grid.Column="2" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="16" Grid.Column="2" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="OK" Click="AcceptConfiguration" />
             <Button Content="Cancel" Click="Cancel" />
         </StackPanel>
