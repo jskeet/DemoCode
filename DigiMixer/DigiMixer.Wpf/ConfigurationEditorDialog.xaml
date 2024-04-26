@@ -6,81 +6,89 @@
         xmlns:local="clr-namespace:DigiMixer.Wpf"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:ConfigurationEditorViewModel}"
-        Title="Configuration" SizeToContent="WidthAndHeight">
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <!-- TODO: Don't hard code the width, but use a container that just naturally uses up all the available space without requesting any more. -->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="Wrap" HorizontalAlignment="Left" Width="530">
+        Title="Configuration"
+        Width="550" SizeToContent="Height">
+    <DockPanel Margin="5">
+        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" HorizontalAlignment="Left">
             First pick your mixer type and specify its IP address (and port if you've reconfigured your mixer to use a non-standard port).
             Use the "Test configuration" button to check that DigiMixer can connect; if the test succeeds, you'll be offered the opportunity
-            to use the detected named channels in the channel mapping below. We recommend that you do this, but you can edit the mapping afterwards.
+            to use the detected named channels in the "Inputs" and "Outputs" tabs below. We recommend that you do this, but you can edit the mapping afterwards.
             (Input and output channel numbers start at 1 for normal inputs and aux outputs; the main output is always number 100. DigiMixer
             supports FX channels on some mixers, but not all.)
             <LineBreak />
             <LineBreak />
-            Finally, if you want to control your mixer using an X-Touch Mini, Icon Platform-M+ or Icon Platform-X+ device, make sure
-            "Enable peripherals" is ticked and pick the corresponding MIDI ports.
+            Finally, if you want to control your mixer using an X-Touch Mini, Icon Platform-M+ or Icon Platform-X+ device,
+            go to the "Peripherals" tab, make sure "Enable peripherals" is ticked and pick the corresponding MIDI ports.
             <LineBreak />
             <LineBreak />
             If you click "OK", the new configuration will be saved and used immediately. If you click "Cancel" (or close the dialog) the
             new configuration will be abandoned.
         </TextBlock>
-        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0"><Bold>Mixer</Bold></TextBlock>
-        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">Mixer type</TextBlock>
-        <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,5,0,0" ItemsSource="{Binding AllMixerTypes}" SelectedValue="{Binding SelectedMixerType}" HorizontalAlignment="Left" />
-        <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,5,0,0">IP Address</TextBlock>
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="100" Text="{Binding Address}" />
-        <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,5,0,0">Port (blank for default)</TextBlock>
-        <TextBox Grid.Row="4" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="50" Text="{Binding Port, TargetNullValue=''}" />
-        <Button Grid.Row="5" Grid.Column="0" Content="Test configuration" HorizontalAlignment="Left" Command="{Binding TestConfigurationCommand}" />
-        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0"><Bold>Input Channel Mapping</Bold></TextBlock>
-        <local:ChannelListControl Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
-                                  Margin="0,5,0,0" DataContext="{Binding InputChannels}" />
-        <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,5,0,0"><Bold>Output Channel Mapping</Bold></TextBlock>
-        <local:ChannelListControl Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3"
-                                  Margin="0,5,0,0" DataContext="{Binding OutputChannels}" />
-        <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0"><Bold>Peripherals</Bold></TextBlock>
-        
-        <TextBlock Grid.Row="11" Grid.Column="0" Margin="0,5,0,0">Enable peripherals?</TextBlock>
-        <CheckBox Grid.Row="11" Grid.Column="1" Margin="5,5,0,0" IsChecked="{Binding EnablePeripherals}" />
-        <TextBlock Grid.Row="12" Grid.Column="0" Margin="0,5,0,0">X-Touch Mini device</TextBlock>
-        <TextBox Grid.Row="12" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding XTouchMiniDevice, TargetNullValue=''}" />
-        <Button Grid.Row="12" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="XTouch" />
-        <TextBlock Grid.Row="13" Grid.Column="0" Margin="0,5,0,0">Change main fader volume with X-Touch fader?</TextBlock>
-        <CheckBox Grid.Row="13" Grid.Column="1" Margin="5,5,0,0" IsChecked="{Binding XTouchMainVolumeEnabled}" />
-        <TextBlock Grid.Row="14" Grid.Column="0" Margin="0,5,0,0">Icon Platform-M+ device</TextBlock>
-        <TextBox Grid.Row="14" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconMPlusDevice, TargetNullValue=''}" />
-        <Button Grid.Row="14" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconM" />
-        <TextBlock Grid.Row="15" Grid.Column="0" Margin="0,5,0,0">Icon Platform-X+ device</TextBlock>
-        <TextBox Grid.Row="15" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconXPlusDevice, TargetNullValue=''}" />
-        <Button Grid.Row="15" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconX" />
+
+        <TabControl DockPanel.Dock="Top" Margin="0,10,0,0" Height="300">
+            <TabItem Header="Mixer">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,5,0,0">Mixer type</TextBlock>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,5,0,0" ItemsSource="{Binding AllMixerTypes}" SelectedValue="{Binding SelectedMixerType}" HorizontalAlignment="Left" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">IP Address</TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="100" Text="{Binding Address}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">Port (blank for default)</TextBlock>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="50" Text="{Binding Port, TargetNullValue=''}" />
+                    <Button Grid.Row="3" Grid.Column="0" Content="Test configuration" HorizontalAlignment="Left" Command="{Binding TestConfigurationCommand}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Inputs">
+                <local:ChannelListControl Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
+                                Margin="0,5,0,0" DataContext="{Binding InputChannels}" />
+            </TabItem>
+            <TabItem Header="Outputs">
+                <local:ChannelListControl Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
+                                Margin="0,5,0,0" DataContext="{Binding OutputChannels}" />
+            </TabItem>
+            <TabItem Header="Peripherals">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,5,0,0">Enable peripherals?</TextBlock>
+                    <CheckBox Grid.Row="0" Grid.Column="1" Margin="5,5,0,0" IsChecked="{Binding EnablePeripherals}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">X-Touch Mini device</TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding XTouchMiniDevice, TargetNullValue=''}" />
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="XTouch" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">Change main fader volume with X-Touch fader?</TextBlock>
+                    <CheckBox Grid.Row="2" Grid.Column="1" Margin="5,5,0,0" IsChecked="{Binding XTouchMainVolumeEnabled}" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,5,0,0">Icon Platform-M+ device</TextBlock>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconMPlusDevice, TargetNullValue=''}" />
+                    <Button Grid.Row="3" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconM" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,5,0,0">Icon Platform-X+ device</TextBlock>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="5,5,0,0" HorizontalAlignment="Left" Width="125" Text="{Binding IconXPlusDevice, TargetNullValue=''}" />
+                    <Button Grid.Row="4" Grid.Column="2" Margin="5,5,0,0" Content="Pick" HorizontalAlignment="Left" Command="{Binding PickMidiDeviceCommand}" CommandParameter="IconX" />
+                </Grid>
+            </TabItem>
+        </TabControl>
             
-        <StackPanel Grid.Row="16" Grid.Column="2" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="OK" Click="AcceptConfiguration" />
             <Button Content="Cancel" Click="Cancel" />
         </StackPanel>
-    </Grid>
+    </DockPanel>
 </Window>
