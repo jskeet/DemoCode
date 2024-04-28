@@ -55,6 +55,7 @@ namespace XTouchMini.Model
 
         protected override void HandleMidiMessage(byte[] data)
         {
+            Console.WriteLine($"data[0]: {data[0]}");
             switch (data[0])
             {
                 case 0xb0:
@@ -66,7 +67,6 @@ namespace XTouchMini.Model
                 case 0x90:
                     byte midiButton = data[1];
                     bool down = data[2] == 0x7f;
-                    Console.WriteLine($"Midi button: {midiButton}");
                     switch (midiButton)
                     {
                         case >= 0x20 and <= 0x27:
