@@ -57,7 +57,7 @@ void InputPort_MessageReceived(object sender, MidiReceivedEventArgs e)
 {
     Console.WriteLine(BitConverter.ToString(e.Data));
 }
-
+/*
 void LogMidiDevices(ILogger logger)
 {
     var manager = MidiAccessManager.Default;
@@ -73,4 +73,4 @@ void LogMidiDevices(ILogger logger)
             logger.LogInformation("  Name: {name}; ID: {id}", device.Name, device.Id);
         }
     }
-}
+}*/
