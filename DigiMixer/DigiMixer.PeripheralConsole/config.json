@@ -1,0 +1,103 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug"
+    },
+    "UnbufferedLogging": true
+  },
+  "Mixer": {
+    "Address": "192.168.1.62",
+    "Port": 10023,
+    "HardwareType": "X32",
+    "FeedbackMutingThreshold": 0.99,
+    "FeedbackMutingMillis": 1000,
+    "XTouchMiniDevice": "X-TOUCH MINI",
+    "IconM+Device": "Platform M+ V2.19",
+    "IconX+Device": "Platform X+1 V2.13",
+    "XTouchSensitivity": 8,
+    "InputChannels": [
+      {
+        "Id": "Panther",
+        "Channel": 1,
+        "InitiallyVisible": true,
+        "ShortName": "Panther"
+      },
+      {
+        "Id": "Work",
+        "Channel": 11,
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "Pizza",
+        "Channel": 3,
+        "InitiallyVisible": true
+      },
+      {
+        "Id": "Sleepy",
+        "Channel": 5,
+        "InitiallyVisible": true
+      },
+      {
+        "Id": "Cooper",
+        "Channel": 7,
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "House",
+        "Channel": 16,
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "MXA310B",
+        "Channel": 9,
+        "InitiallyVisible": true
+      },
+      {
+        "Id": "Dante 10",
+        "Channel": 10,
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "Shotgun",
+        "Channel": 17,
+        "DisplayName": "Shotgun",
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "Dante 13",
+        "Channel": 13,
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "Dante 14",
+        "Channel": 14,
+        "InitiallyVisible": false
+      },
+      {
+        "Id": "Dante 15",
+        "Channel": 15,
+        "InitiallyVisible": false
+      }
+    ],
+    "OutputChannels": [
+      {
+        "Id": "Main",
+        "Channel": 100,
+        "InitiallyVisible": true
+      },
+      {
+        "Id": "Panther",
+        "Channel": 9,
+        "InitiallyVisible": true
+      },
+      {
+        "Id": "XR-18 (work)",
+        "Channel": 1,
+        "DisplayName": "Work Laptop",
+        "Color": "Pink",
+        "InitiallyVisible": true
+      }
+    ]
+  },
+  "EnablePeripherals": true
+}

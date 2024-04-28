@@ -1,5 +1,5 @@
 ﻿using IconPlatform.Model;
-using JonSkeet.WpfUtil;
+using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.Controls;

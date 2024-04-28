@@ -1,5 +1,6 @@
 ﻿using Commons.Music.Midi;
 using DigiMixer.Controls;
+using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

@@ -1,5 +1,5 @@
 ﻿using DigiMixer.Controls;
-using JonSkeet.WpfUtil;
+using JonSkeet.CoreAppUtil;
 
 namespace DigiMixer.Wpf;
 

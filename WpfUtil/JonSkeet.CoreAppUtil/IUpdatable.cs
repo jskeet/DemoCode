@@ -1,4 +1,4 @@
-﻿namespace JonSkeet.WpfUtil;
+﻿namespace JonSkeet.CoreAppUtil;
 
 /// <summary>
 /// Indicates that an item can have its status updated from another one.

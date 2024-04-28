@@ -5,7 +5,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 public static class Notifications
 {

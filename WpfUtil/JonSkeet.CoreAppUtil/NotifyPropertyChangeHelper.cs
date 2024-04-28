@@ -4,7 +4,7 @@
 
 using System.ComponentModel;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 public static class NotifyPropertyChangedHelper
 {

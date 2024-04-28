@@ -4,7 +4,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 public static class Disposables
 {

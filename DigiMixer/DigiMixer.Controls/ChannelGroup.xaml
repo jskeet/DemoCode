@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigiMixer.Controls"
+             xmlns:appcore="clr-namespace:DigiMixer.Controls;assembly=DigiMixer.AppCore"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=local:ChannelGroupViewModel}"
+             d:DataContext="{d:DesignInstance Type=appcore:ChannelGroupViewModel}"
              Visibility="{Binding Visible, Converter={StaticResource VisibilityConverter}}">
     <GroupBox Header="{Binding Name}" Grid.IsSharedSizeScope="True">
         <ItemsControl ItemsSource="{Binding Channels}">

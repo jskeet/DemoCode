@@ -5,7 +5,7 @@
 using System.ComponentModel;
 using System.Windows.Input;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 /// <summary>
 /// A label for a command. This is slightly hacky, but has proved useful in At Your Service.

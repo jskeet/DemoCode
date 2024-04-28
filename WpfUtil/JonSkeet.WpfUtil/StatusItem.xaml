@@ -3,10 +3,11 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+               xmlns:coreapputil="clr-namespace:JonSkeet.CoreAppUtil;assembly=JonSkeet.CoreAppUtil"
                xmlns:local="clr-namespace:JonSkeet.WpfUtil"
                x:Name="StatusItemContent"
                mc:Ignorable="d" 
-               d:DataContext="{d:DesignInstance local:StatusViewModel}"
+               d:DataContext="{d:DesignInstance coreapputil:StatusViewModel}"
                d:DesignHeight="450" d:DesignWidth="800"
                Content="{Binding Text}"
                HorizontalAlignment="Left"
@@ -14,7 +15,7 @@
     <StatusBarItem.Style>
         <Style TargetType="{x:Type StatusBarItem}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Type}" Value="{x:Static local:StatusType.Error}">
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static coreapputil:StatusType.Error}">
                     <DataTrigger.EnterActions>
                         <BeginStoryboard Name="Error_storyboard">
                             <BeginStoryboard.Storyboard>
@@ -40,7 +41,7 @@
                         </BeginStoryboard>
                     </DataTrigger.EnterActions>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Type}" Value="{x:Static local:StatusType.Warning}">
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static coreapputil:StatusType.Warning}">
                     <DataTrigger.Setters>
                         <Setter Property="Background" Value="Orange" />
                         <Setter Property="Foreground" Value="Black" />
@@ -49,7 +50,7 @@
                         <StopStoryboard BeginStoryboardName="Error_storyboard"/>
                     </DataTrigger.EnterActions>                    
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Type}" Value="{x:Static local:StatusType.Normal}">
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static coreapputil:StatusType.Normal}">
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="Foreground" Value="Black"/>
                     <DataTrigger.EnterActions>

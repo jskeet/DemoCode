@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 public static class ObservableCollections
 {
