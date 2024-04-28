@@ -86,6 +86,10 @@ namespace XTouchMini.Model
         private void HandleInputMessage(object sender, MidiReceivedEventArgs args)
         {
             Console.WriteLine("Got input message");
+            if (args is not null)
+            {
+                return;
+            }
             var data = args.Length == args.Data.Length && args.Start == 0
                 ? args.Data : args.Data.Skip(args.Start).Take(args.Length).ToArray();
             if (data.Length == 0)
