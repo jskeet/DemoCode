@@ -65,6 +65,8 @@ namespace XTouchMini.Model
                     OnFaderMoved(Layer.None, data[2]);
                     break;
                 case 0x59:
+                    Console.WriteLine($"Got 0x59: length={data.Length}");
+                    break;
                 case 0x90:
                     byte midiButton = data[1];
                     bool down = data[2] == 0x7f;
