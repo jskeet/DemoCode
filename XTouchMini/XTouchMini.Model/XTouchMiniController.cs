@@ -5,6 +5,7 @@
 using Commons.Music.Midi;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace XTouchMini.Model
@@ -29,14 +30,21 @@ namespace XTouchMini.Model
         public event EventHandler<ButtonEventArgs> ButtonUp;
         public event EventHandler<FaderEventArgs> FaderMoved;
 
-        protected XTouchMiniController(string portName) =>
+        protected XTouchMiniController(string portName)
+        {
+            inputCallback = HandleInputMessage;
+            syncContext = SynchronizationContext.Current;
             this.portName = portName;
+        }
 
         /// <summary>
         /// Sets the operation mode of the X-Touch Mini.
         /// </summary>
         public void SetOperationMode(OperationMode operationMode) =>
             SendMidiMessage(0xb0, 0x7f, (byte) operationMode);
+
+        private readonly SynchronizationContext syncContext;
+        private readonly SendOrPostCallback inputCallback;
 
         /// <summary>
         /// Checks whether or not there are ports with the given name. If there are, and the
@@ -69,7 +77,18 @@ namespace XTouchMini.Model
                 var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
                 this.inputPort = inputPort;
                 this.outputPort = outputPort;
-                inputPort.MessageReceived += HandleInputMessage;
+                // Ensure we process the message in a suitable synchronization context, if we have one.
+                inputPort.MessageReceived += (sender, args) =>
+                {
+                    if (syncContext is null)
+                    {
+                        inputCallback(args);
+                    }
+                    else
+                    {
+                        syncContext.Post(inputCallback, args);
+                    }
+                };
             }
             catch
             {
@@ -83,18 +102,16 @@ namespace XTouchMini.Model
             return true;
         }
 
-        private void HandleInputMessage(object sender, MidiReceivedEventArgs args)
+        private void HandleInputMessage(object state)
         {
-            Console.WriteLine("Got input message");
+            var args = (MidiReceivedEventArgs) state;
             var data = args.Length == args.Data.Length && args.Start == 0
                 ? args.Data : args.Data.Skip(args.Start).Take(args.Length).ToArray();
             if (data.Length == 0)
             {
                 return;
             }
-            // Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.FFFFFF}: Received bytes: {BitConverter.ToString(data)}");
             HandleMidiMessage(data);
-            Console.WriteLine("Finished input message");
         }
 
         /// <summary>
