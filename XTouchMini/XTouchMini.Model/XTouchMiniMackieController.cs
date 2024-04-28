@@ -66,6 +66,7 @@ namespace XTouchMini.Model
                 case 0x90:
                     byte midiButton = data[1];
                     bool down = data[2] == 0x7f;
+                    Console.WriteLine($"Midi button: {midiButton}");
                     switch (midiButton)
                     {
                         case >= 0x20 and <= 0x27:
