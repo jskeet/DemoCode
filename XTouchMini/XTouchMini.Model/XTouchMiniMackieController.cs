@@ -55,7 +55,7 @@ namespace XTouchMini.Model
 
         protected override void HandleMidiMessage(byte[] data)
         {
-            Console.WriteLine($"data[0]: {data[0]}");
+            Console.WriteLine($"data[0]: {data[0]:x2}");
             switch (data[0])
             {
                 case 0xb0:

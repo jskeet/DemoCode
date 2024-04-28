@@ -107,7 +107,7 @@ namespace XTouchMini.Model
             Console.WriteLine("Thread: " + Thread.CurrentThread.ManagedThreadId);
             var args = (MidiReceivedEventArgs) state;
             var data = args.Length == args.Data.Length && args.Start == 0
-                ? args.Data : args.Data.Skip(args.Start).Take(args.Length).ToArray();
+                ? args.Data.ToArray() : args.Data.Skip(args.Start).Take(args.Length).ToArray();
             if (data.Length == 0)
             {
                 Console.WriteLine("No data");
