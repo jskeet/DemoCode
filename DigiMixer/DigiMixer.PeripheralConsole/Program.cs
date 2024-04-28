@@ -25,6 +25,8 @@ async Task StartMixerController()
     var inputPort = await manager.OpenInputAsync("24_0").ConfigureAwait(false);
     inputPort.MessageReceived += InputPort_MessageReceived;
 
+    await Task.Delay(60000);
+
     /*
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddLogging(builder =>
