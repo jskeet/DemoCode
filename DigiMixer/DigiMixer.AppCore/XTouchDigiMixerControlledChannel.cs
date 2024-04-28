@@ -86,5 +86,10 @@ internal class XTouchDigiMixerControlledChannel
         fader.FaderLevel = newLevel;
     }
 
-    public void HandleButtonPressed() => mixerChannel.Muted = !mixerChannel.Muted;
+    public void HandleButtonPressed()
+    {
+        Console.WriteLine("Processing button push");
+        mixerChannel.Muted = !mixerChannel.Muted;
+        Console.WriteLine("Finished button push");
+    }
 }
