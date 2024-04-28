@@ -85,6 +85,7 @@ namespace XTouchMini.Model
 
         private void HandleInputMessage(object sender, MidiReceivedEventArgs args)
         {
+            Console.WriteLine("Got input message");
             var data = args.Length == args.Data.Length && args.Start == 0
                 ? args.Data : args.Data.Skip(args.Start).Take(args.Length).ToArray();
             if (data.Length == 0)
@@ -93,6 +94,7 @@ namespace XTouchMini.Model
             }
             // Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.FFFFFF}: Received bytes: {BitConverter.ToString(data)}");
             HandleMidiMessage(data);
+            Console.WriteLine("Finished input message");
         }
 
         /// <summary>

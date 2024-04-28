@@ -13,8 +13,14 @@ internal sealed class SingleThreadSynchronizationContext :  SynchronizationConte
     {
         while (m_queue.TryTake(out var workItem, Timeout.Infinite))
         {
-            // TODO: Catch errors.
-            workItem.Key(workItem.Value);
+            try
+            {
+                workItem.Key(workItem.Value);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception in synchronization context: {e}");
+            }
         }
     }
 

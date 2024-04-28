@@ -11,7 +11,7 @@
     "HardwareType": "X32",
     "FeedbackMutingThreshold": 0.99,
     "FeedbackMutingMillis": 1000,
-    "XTouchMiniDevice": "X-TOUCH MINI",
+    "XTouchMiniDevice": "X-TOUCH MINI MIDI 1",
     "IconM+Device": "Platform M+ V2.19",
     "IconX+Device": "Platform X+1 V2.13",
     "XTouchSensitivity": 8,
