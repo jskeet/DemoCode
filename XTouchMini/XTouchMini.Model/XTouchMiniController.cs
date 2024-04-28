@@ -110,9 +110,11 @@ namespace XTouchMini.Model
                 ? args.Data : args.Data.Skip(args.Start).Take(args.Length).ToArray();
             if (data.Length == 0)
             {
+                Console.WriteLine("No data");
                 return;
             }
             HandleMidiMessage(data);
+            Console.WriteLine("Finished message");
         }
 
         /// <summary>
