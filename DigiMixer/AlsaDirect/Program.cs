@@ -2,14 +2,14 @@
 using AlsaSharp;
 
 var sequencer = new AlsaSequencer(AlsaIOType.Duplex, AlsaIOMode.NonBlocking);
-var ports = EnumerateMatchingPorts(sequencer, AlsaPortCapabilities.Write | AlsaPortCapabilities.NoExport).ToList();
+var ports = EnumerateMatchingPorts(sequencer, AlsaPortCapabilities.Read | AlsaPortCapabilities.SubsRead).ToList();
 foreach (var p in ports)
 {
     Console.WriteLine($"{p.Name} {p.Id}");
 }
 
 var buffer = new byte[1024];
-var sourcePort = ports.Single(p => p.Id == "24_00");
+var sourcePort = ports.Single(p => p.Id == "24_0");
 var appPort = CreateInputConnectedPort(sequencer, sourcePort);
 sequencer.StartListening(appPort.Port, buffer, DumpMessage);
 
