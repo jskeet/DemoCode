@@ -5,6 +5,7 @@
 using Commons.Music.Midi;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace XTouchMini.Model
@@ -19,6 +20,7 @@ namespace XTouchMini.Model
         private readonly string portName;
         private IMidiInput inputPort;
         private IMidiOutput outputPort;
+        private byte? lastMidiStatus;
 
         public bool Connected => inputPort is object;
 
@@ -29,14 +31,21 @@ namespace XTouchMini.Model
         public event EventHandler<ButtonEventArgs> ButtonUp;
         public event EventHandler<FaderEventArgs> FaderMoved;
 
-        protected XTouchMiniController(string portName) =>
+        protected XTouchMiniController(string portName)
+        {
+            inputCallback = HandleInputMessage;
+            syncContext = SynchronizationContext.Current;
             this.portName = portName;
+        }
 
         /// <summary>
         /// Sets the operation mode of the X-Touch Mini.
         /// </summary>
         public void SetOperationMode(OperationMode operationMode) =>
             SendMidiMessage(0xb0, 0x7f, (byte) operationMode);
+
+        private readonly SynchronizationContext syncContext;
+        private readonly SendOrPostCallback inputCallback;
 
         /// <summary>
         /// Checks whether or not there are ports with the given name. If there are, and the
@@ -69,7 +78,19 @@ namespace XTouchMini.Model
                 var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
                 this.inputPort = inputPort;
                 this.outputPort = outputPort;
-                inputPort.MessageReceived += HandleInputMessage;
+                this.lastMidiStatus = null;
+                // Ensure we process the message in a suitable synchronization context, if we have one.
+                inputPort.MessageReceived += (sender, args) =>
+                {
+                    if (syncContext is null)
+                    {
+                        inputCallback(args);
+                    }
+                    else
+                    {
+                        syncContext.Post(inputCallback, args);
+                    }
+                };
             }
             catch
             {
@@ -83,15 +104,30 @@ namespace XTouchMini.Model
             return true;
         }
 
-        private void HandleInputMessage(object sender, MidiReceivedEventArgs args)
+        private void HandleInputMessage(object state)
         {
-            var data = args.Length == args.Data.Length && args.Start == 0
-                ? args.Data : args.Data.Skip(args.Start).Take(args.Length).ToArray();
-            if (data.Length == 0)
+            var args = (MidiReceivedEventArgs) state;
+            if (args.Length == 0)
             {
                 return;
             }
-            // Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.FFFFFF}: Received bytes: {BitConverter.ToString(data)}");
+
+            // Workaround for https://github.com/atsushieno/alsa-sharp/issues/2
+            bool useCachedStatus = args.Data[args.Start] < 128;
+            if (useCachedStatus && lastMidiStatus is null)
+            {
+                throw new InvalidOperationException("Received MIDI message with no status byte, and no cached status");
+            }
+            int dataOffset = useCachedStatus ? 1 : 0;
+            int length = args.Length + dataOffset;
+            byte[] data = new byte[length];
+            if (useCachedStatus)
+            {
+                data[0] = lastMidiStatus.Value;
+            }
+            Buffer.BlockCopy(args.Data, args.Start, data, dataOffset, args.Length);
+            // Cache the status (regardless of whether we've just received it or not).
+            lastMidiStatus = data[0];
             HandleMidiMessage(data);
         }
 
