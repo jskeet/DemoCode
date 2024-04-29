@@ -1,6 +1,5 @@
-﻿using JonSkeet.WpfUtil;
-using DigiMixer;
-using DigiMixer.Core;
+﻿using DigiMixer.Core;
+using JonSkeet.CoreAppUtil;
 using NodaTime;
 
 namespace DigiMixer.Controls;

@@ -1,4 +1,4 @@
-﻿using JonSkeet.WpfUtil;
+﻿using JonSkeet.CoreAppUtil;
 using DigiMixer;
 using DigiMixer.Core;
 

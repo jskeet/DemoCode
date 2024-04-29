@@ -1,11 +1,7 @@
-﻿using JonSkeet.WpfUtil;
-using DigiMixer;
+﻿using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using System.Windows.Threading;
 using System.Windows.Input;
-using System.IO;
-using NodaTime.Text;
 
 namespace DigiMixer.Controls;
 
@@ -16,8 +12,6 @@ namespace DigiMixer.Controls;
 /// </summary>
 public class DigiMixerViewModel : ViewModelBase, IDisposable
 {
-    private static readonly InstantPattern DefaultSnapshotFilePattern = InstantPattern.CreateWithInvariantCulture("'Snapshot ' uuuu-MM-dd HH-mm'Z.json'");
-
     /// <summary>
     /// Input channels with associated output faders.
     /// </summary>
@@ -93,29 +87,24 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
     }
 
     public ICommand MuteAllCommand { get; }
-    public ICommand LoadSnapshotCommand { get; }
-    public ICommand SaveSnapshotCommand { get; }
 
     private readonly ILogger logger;
-    private readonly string snapshotsDirectory;
 
     internal DigiMixerConfig Config { get; }
     private Mixer mixer;
     private bool disposed;
-    private DispatcherTimer meterPeakUpdater;
+    //FIXME
+    //private DispatcherTimer meterPeakUpdater;
 
     public StatusViewModel Status { get; } = new StatusViewModel("Mixer");
     public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 100_000;
 
-    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config, string snapshotsFolder)
+    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config)
     {
         Config = config;
         this.logger = logger;
-        this.snapshotsDirectory = snapshotsFolder;
         Status.ReportNormal("Connecting");
         MuteAllCommand = ActionCommand.FromAction(MuteAll);
-        LoadSnapshotCommand = ActionCommand.FromAction(LoadSnapshot);
-        SaveSnapshotCommand = ActionCommand.FromAction(SaveSnapshot);
 
         // We build up the input/output channels in two passes, as they need to refer to each other.
         Duration feedbackMutingDuration = Duration.FromMilliseconds(config.FeedbackMutingMillis);
@@ -145,6 +134,8 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
         Task mixerCreationTask = CreateMixer();
         mixerCreationTask.ContinueWith(task => logger.LogError("Mixer creation task failed"), TaskContinuationOptions.NotOnRanToCompletion);
 
+        RunMeterUpdateLoop().Ignore(logger);
+
         async Task CreateMixer()
         {
             while (!disposed)
@@ -153,7 +144,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
                 {
                     Mixer mixer = await Mixer.Create(logger, () => config.CreateMixerApi(logger));
                     SetMixer(mixer);
-                    logger.LogInformation("Initial connection to mixer successful");
+                    logger.LogInformation("Initial connection to mixer successful:");
                     return;
                 }
                 catch (Exception e)
@@ -190,12 +181,6 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
         {
             output.UpdateFromMixer(mixer);
         }
-        meterPeakUpdater = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromMilliseconds(100),
-            IsEnabled = true
-        };
-        meterPeakUpdater.Tick += UpdateMeterPeaks;
 
         void UpdateMixerStatus()
         {
@@ -210,33 +195,44 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
         }
     }
 
+    private async Task RunMeterUpdateLoop()
+    {
+        while (!disposed)
+        {
+            UpdateMeterPeaks();
+            await Task.Delay(100);
+        }
+
+        void UpdateMeterPeaks()
+        {
+            if (mixer is null)
+            {
+                return;
+            }
+            foreach (var vm in InputChannels)
+            {
+                vm.UpdatePeakOutputs(logger);
+            }
+            foreach (var vm in OutputChannels)
+            {
+                vm.UpdatePeakOutputs(logger);
+            }
+            foreach (var vm in OverallOutputChannels)
+            {
+                vm.UpdatePeakOutputs(logger);
+            }
+            foreach (var vm in InputsWithNoFaders)
+            {
+                vm.UpdatePeakOutputs(logger);
+            }
+        }
+    }
+
     public void Dispose()
     {
         disposed = true;
-        meterPeakUpdater?.Stop();
         mixer?.Dispose();
     }
-
-    private void UpdateMeterPeaks(object sender, EventArgs e)
-    {
-        foreach (var vm in InputChannels)
-        {
-            vm.UpdatePeakOutputs(logger);
-        }
-        foreach (var vm in OutputChannels)
-        {
-            vm.UpdatePeakOutputs(logger);
-        }
-        foreach (var vm in OverallOutputChannels)
-        {
-            vm.UpdatePeakOutputs(logger);
-        }
-        foreach (var vm in InputsWithNoFaders)
-        {
-            vm.UpdatePeakOutputs(logger);
-        }
-    }
-
 
     private void MuteAll()
     {
@@ -245,40 +241,6 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             channelVm.Muted = true;
         }
     }
-
-    private void SaveSnapshot()
-    {
-        var snapshot = DigiMixerSnapshot.FromMixerViewModel(this);
-        if (snapshot is null)
-        {
-            // This isn't really great, but it's unlikely to be a problem.
-            Dialogs.ShowErrorDialog("Waiting for data", "The mixer has not received all the necessary data yet. Please wait and try again.");
-            return;
-        }
-        MaybeCreateSnapshotsDirectory();
-        var now = SystemClock.Instance.GetCurrentInstant();
-        var defaultFile = DefaultSnapshotFilePattern.Format(now);
-        var file = Dialogs.ShowSaveFileDialog(snapshotsDirectory, "JSON files|*.json", defaultFile);
-        if (file is null)
-        {
-            return;
-        }
-        JsonUtilities.SaveJson(file, snapshot);
-    }
-
-    private void LoadSnapshot()
-    {
-        MaybeCreateSnapshotsDirectory();
-        var file = Dialogs.ShowOpenFileDialog(snapshotsDirectory, "JSON files|*.json");
-        if (file is null)
-        {
-            return;
-        }
-        var snapshot = JsonUtilities.LoadJson<DigiMixerSnapshot>(file);
-        snapshot.CopyToViewModel(this);
-    }
-
-    private void MaybeCreateSnapshotsDirectory() => Directory.CreateDirectory(snapshotsDirectory);
 
     public void LogStatus(ILogger statusLogger)
     {

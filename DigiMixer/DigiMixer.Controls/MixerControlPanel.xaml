@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:DigiMixer.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=local:DigiMixerViewModel}">
+             d:DataContext="{d:DesignInstance Type=local:MixerControlPanelViewModel}">
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <GroupBox Header="Grouping selection">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" DataContext="{Binding Mixer}">
                     <StackPanel Orientation="Vertical" Margin="5,5,0,0">
                         <RadioButton GroupName="ChannelGrouping" IsChecked="{Binding GroupByInput}" Content="Group by input" />
                         <RadioButton GroupName="ChannelGrouping" IsChecked="{Binding GroupByOutput}" Content="Group by output" />
@@ -25,15 +25,15 @@
             </GroupBox>
             <GroupBox Margin="5,0,0,0" Header="Tools" VerticalAlignment="Top">
                 <StackPanel Orientation="Vertical">
-                    <Button Content="Mute all channels" Command="{Binding MuteAllCommand}"/>
+                    <Button Content="Mute all channels" Command="{Binding Mixer.MuteAllCommand}"/>
                     <Button Content="Save snapshot" Command="{Binding SaveSnapshotCommand}"/>
                     <Button Content="Load snapshot" Command="{Binding LoadSnapshotCommand}" />
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding InputsGroup}" />
-        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding OverallOutputsGroup}" />
-        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding OutputsWithInputsGroup}" />
-        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding InputsMuteAndMeterGroup}" />
+        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding Mixer.InputsGroup}" />
+        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding Mixer.OverallOutputsGroup}" />
+        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding Mixer.OutputsWithInputsGroup}" />
+        <local:ChannelGroup Margin="0,10,0,0" DataContext="{Binding Mixer.InputsMuteAndMeterGroup}" />
     </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Controls;
+using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using System.Collections.ObjectModel;
 using System.Windows.Input;

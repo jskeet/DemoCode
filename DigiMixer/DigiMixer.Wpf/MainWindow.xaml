@@ -21,7 +21,7 @@
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem Width="10" />
-            <utils:StatusItem DataContext="{Binding Mixer.Status}" />
+            <utils:StatusItem DataContext="{Binding MixerControlPanelVM.Mixer.Status}" />
             <StatusBarItem Width="10" />
             <utils:StatusItem DataContext="{Binding PeripheralController.XTouchStatus}" />
             <StatusBarItem Width="10" />
@@ -29,6 +29,6 @@
             <StatusBarItem Width="10" />
             <utils:StatusItem DataContext="{Binding PeripheralController.PlatformXStatus}" />
         </StatusBar>
-        <mixer:MixerControlPanel DockPanel.Dock="Top" Margin="10,5,10,10" DataContext="{Binding Mixer}" />
+        <mixer:MixerControlPanel DockPanel.Dock="Top" Margin="10,5,10,10" DataContext="{Binding MixerControlPanelVM}" />
     </DockPanel>
 </Window>
