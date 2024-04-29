@@ -20,6 +20,7 @@ namespace XTouchMini.Model
         private readonly string portName;
         private IMidiInput inputPort;
         private IMidiOutput outputPort;
+        private byte? lastMidiStatus;
 
         public bool Connected => inputPort is object;
 
@@ -77,6 +78,7 @@ namespace XTouchMini.Model
                 var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
                 this.inputPort = inputPort;
                 this.outputPort = outputPort;
+                this.lastMidiStatus = null;
                 // Ensure we process the message in a suitable synchronization context, if we have one.
                 inputPort.MessageReceived += (sender, args) =>
                 {
@@ -104,19 +106,29 @@ namespace XTouchMini.Model
 
         private void HandleInputMessage(object state)
         {
-            Console.WriteLine("Thread: " + Thread.CurrentThread.ManagedThreadId);
             var args = (MidiReceivedEventArgs) state;
-            Console.WriteLine("Data: " + BitConverter.ToString(args.Data));
-            Console.WriteLine($"Start/Length: {args.Start} {args.Length}");
-            var data = args.Length == args.Data.Length && args.Start == 0
-                ? args.Data.ToArray() : args.Data.Skip(args.Start).Take(args.Length).ToArray();
-            if (data.Length == 0)
+            if (args.Length == 0)
             {
-                Console.WriteLine("No data");
                 return;
             }
+
+            // Workaround for https://github.com/atsushieno/alsa-sharp/issues/2
+            bool useCachedStatus = args.Data[args.Start] < 128;
+            if (useCachedStatus && lastMidiStatus is null)
+            {
+                throw new InvalidOperationException("Received MIDI message with no status byte, and no cached status");
+            }
+            int dataOffset = useCachedStatus ? 1 : 0;
+            int length = args.Length + dataOffset;
+            byte[] data = new byte[length];
+            if (useCachedStatus)
+            {
+                data[0] = lastMidiStatus.Value;
+            }
+            Buffer.BlockCopy(args.Data, args.Start, data, dataOffset, args.Length);
+            // Cache the status (regardless of whether we've just received it or not).
+            lastMidiStatus = data[0];
             HandleMidiMessage(data);
-            Console.WriteLine("Finished message");
         }
 
         /// <summary>
