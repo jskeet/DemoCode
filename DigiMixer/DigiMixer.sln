@@ -78,8 +78,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.PeripheralConsole
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JonSkeet.CoreAppUtil", "..\WpfUtil\JonSkeet.CoreAppUtil\JonSkeet.CoreAppUtil.csproj", "{160D0BEC-5CF6-4472-9BBF-498E2E07D5E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlsaDirect", "AlsaDirect\AlsaDirect.csproj", "{7D424FF9-0C11-48F4-88F7-06A277C3C25F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -368,14 +366,6 @@ Global
 		{160D0BEC-5CF6-4472-9BBF-498E2E07D5E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{160D0BEC-5CF6-4472-9BBF-498E2E07D5E3}.Release|x64.ActiveCfg = Release|Any CPU
 		{160D0BEC-5CF6-4472-9BBF-498E2E07D5E3}.Release|x64.Build.0 = Release|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Debug|x64.Build.0 = Debug|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Release|x64.ActiveCfg = Release|Any CPU
-		{7D424FF9-0C11-48F4-88F7-06A277C3C25F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

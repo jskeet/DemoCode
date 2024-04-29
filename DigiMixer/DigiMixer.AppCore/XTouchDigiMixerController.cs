@@ -80,11 +80,8 @@ internal class XTouchDigiMixerController : IAsyncDisposable
     private void ChangeMainVolume(object sender, FaderEventArgs e) =>
         mainFader.FaderLevel = e.Position * mainFader.MaxFaderLevel / 127;
 
-    private XTouchDigiMixerControlledChannel GetChannelOrNull(int index)
-    {
-        Console.WriteLine("In GetChannelOrNull");
-        return index > 0 && index <= channels.Count ? channels[index - 1] : null;
-    }
+    private XTouchDigiMixerControlledChannel GetChannelOrNull(int index) =>
+        index > 0 && index <= channels.Count ? channels[index - 1] : null;
 
     private XTouchDigiMixerControlledChannel GetSecondaryChannelOrNull(int index) =>
         secondaryChannels.Count >= index ? secondaryChannels[index - 1] : null;

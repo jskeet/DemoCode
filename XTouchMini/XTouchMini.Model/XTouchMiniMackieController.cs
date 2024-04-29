@@ -55,7 +55,6 @@ namespace XTouchMini.Model
 
         protected override void HandleMidiMessage(byte[] data)
         {
-            Console.WriteLine($"data[0]: {data[0]:x2}");
             switch (data[0])
             {
                 case 0xb0:
@@ -63,9 +62,6 @@ namespace XTouchMini.Model
                     break;
                 case 0xe8:
                     OnFaderMoved(Layer.None, data[2]);
-                    break;
-                case 0x59:
-                    Console.WriteLine($"Got 0x59: length={data.Length}");
                     break;
                 case 0x90:
                     byte midiButton = data[1];
