@@ -10,7 +10,7 @@ using NodaTime;
 using NodaTime.Serialization.JsonNet;
 using System.IO;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 /// <summary>
 /// Centralized JSON conversion code to avoid inconsistent settings etc.

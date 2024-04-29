@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace JonSkeet.WpfUtil;
+namespace JonSkeet.CoreAppUtil;
 
 /// <summary>
 /// Base for view model classes, supporting simple property changes.

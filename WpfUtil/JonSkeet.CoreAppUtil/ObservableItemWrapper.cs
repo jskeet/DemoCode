@@ -1,4 +1,4 @@
-﻿namespace JonSkeet.WpfUtil;
+﻿namespace JonSkeet.CoreAppUtil;
 
 /// <summary>
 /// A wrapper for an item within an observable collection, allowing the value

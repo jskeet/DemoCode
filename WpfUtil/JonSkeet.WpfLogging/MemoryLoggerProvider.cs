@@ -2,7 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using JonSkeet.WpfUtil;
+using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Text;
@@ -19,7 +19,7 @@ namespace JonSkeet.WpfLogging;
 /// A memory-based log, consisting of log entries, suitable for viewing in <see cref="LogWindow"/>
 /// or <see cref="LogViewerControl"/>.
 /// </summary>
-public sealed class MemoryLoggerProvider : ILoggerProvider
+public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
 {
     // A lock to protect "entries", which may be added to from multiple threads.
     private readonly object _lock = new object();
@@ -128,9 +128,14 @@ public sealed class MemoryLoggerProvider : ILoggerProvider
 
     public ILogger CreateLogger(string categoryName) => new LoggerImpl(this, categoryName, GetLogLevel(categoryName));
 
-    public void Dispose()
+    void IDisposable.Dispose()
     {
-        throw new NotImplementedException();
+    }
+
+    void ILoggerFactory.AddProvider(ILoggerProvider provider)
+    {
+        // We implement ILoggerFactory as a more suitable interface to inject into
+        // other code, but really we only "want" the CreateLogger method.
     }
 
     private class LoggerImpl : ILogger
