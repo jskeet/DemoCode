@@ -21,13 +21,14 @@ return 0;
 
 async Task StartMixerController()
 {
+    /*
     var manager = MidiAccessManager.Default;
     var inputPort = await manager.OpenInputAsync("24_0").ConfigureAwait(false);
     inputPort.MessageReceived += InputPort_MessageReceived;
 
     await Task.Delay(60000);
-
-    /*
+    */
+    
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddLogging(builder =>
     {
@@ -47,7 +48,7 @@ async Task StartMixerController()
     var serviceProvider = serviceCollection.BuildServiceProvider();
     var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
     LogMidiDevices(loggerFactory.CreateLogger("Midi"));
-
+    /*
     var mixerVm = new DigiMixerViewModel(loggerFactory.CreateLogger("Mixer"), config.Mixer);
     var peripheralController = PeripheralController.Create(loggerFactory, mixerVm, config.EnablePeripherals);
     // Start the peripheral monitoring task. This is all we're really interested in.
@@ -59,7 +60,7 @@ void InputPort_MessageReceived(object sender, MidiReceivedEventArgs e)
 {
     Console.WriteLine(BitConverter.ToString(e.Data));
 }
-/*
+
 void LogMidiDevices(ILogger logger)
 {
     var manager = MidiAccessManager.Default;
@@ -75,4 +76,4 @@ void LogMidiDevices(ILogger logger)
             logger.LogInformation("  Name: {name}; ID: {id}", device.Name, device.Id);
         }
     }
-}*/
+}
