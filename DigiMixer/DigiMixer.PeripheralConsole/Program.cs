@@ -54,7 +54,7 @@ async Task StartMixerController()
     var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
     var mixerVm = new DigiMixerViewModel(loggerFactory.CreateLogger("Mixer"), config.Mixer);
-    var peripheralController = PeripheralController.Create(loggerFactory, mixerVm, config.EnablePeripherals);
+    var peripheralController = PeripheralController.Create(loggerFactory, mixerVm, enablePeripherals: true);
     // Start the peripheral monitoring task. This is all we're really interested in.
     await peripheralController.Start();
 }
