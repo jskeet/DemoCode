@@ -53,13 +53,18 @@ namespace XTouchMini.Model
         /// and the controller was previously connected, the existing ports are closed and
         /// the the controller is deemed disconnected. This method does not throw any exceptions
         /// if the port is found but can't be connected.
+        ///
+        /// This port is matched precisely if possible, but otherwise on a prefix basis.
         /// </summary>
         /// <returns>true if the controller has reconnected (from not being connected)</returns>
         public virtual async Task<bool> MaybeReconnect()
         {
             var manager = MidiAccessManager.Default;
-            var input = manager.Inputs.FirstOrDefault(p => p.Name == portName);
-            var output = manager.Outputs.FirstOrDefault(p => p.Name == portName);
+            var inputs = manager.Inputs.ToList();
+            var outputs = manager.Outputs.ToList();
+            // Precise match first, then prefix match.
+            var input = inputs.FirstOrDefault(p => p.Name == portName) ?? inputs.FirstOrDefault(p => p.Name.StartsWith(portName));
+            var output = outputs.FirstOrDefault(p => p.Name == portName) ?? outputs.FirstOrDefault(p => p.Name.StartsWith(portName));
 
             bool wasConnected = this.inputPort is object && this.outputPort is object;
             bool nowConnected = input is object && output is object;
