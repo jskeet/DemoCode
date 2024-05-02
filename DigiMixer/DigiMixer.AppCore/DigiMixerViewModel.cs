@@ -144,7 +144,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
                 {
                     Mixer mixer = await Mixer.Create(logger, () => config.CreateMixerApi(logger));
                     SetMixer(mixer);
-                    logger.LogInformation("Initial connection to mixer successful:");
+                    logger.LogInformation("Initial connection to mixer successful");
                     return;
                 }
                 catch (Exception e)
@@ -187,10 +187,12 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             if (mixer.Connected)
             {
                 Status.ReportNormal(mixer.MixerInfo?.ToString() ?? "Connected");
+                logger.LogInformation("Mixer connected: {info}", mixer.MixerInfo?.ToString() ?? "(No info)");
             }
             else
             {
                 Status.ReportError("Disconnected");
+                logger.LogInformation("Mixer disconnected");
             }
         }
     }

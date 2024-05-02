@@ -57,6 +57,7 @@ namespace IconPlatform.Model
             if (wasConnected)
             {
                 await DisposeAsync().ConfigureAwait(false);
+                Logger.LogInformation("Disconnected");
                 return false;
             }
 
@@ -64,15 +65,18 @@ namespace IconPlatform.Model
             {
                 var inputPort = await manager.OpenInputAsync(input.Id).ConfigureAwait(false);
                 var outputPort = await manager.OpenOutputAsync(output.Id).ConfigureAwait(false);
+                Logger.LogInformation("Connected");
                 this.inputPort = inputPort;
                 this.outputPort = outputPort;
                 inputPort.MessageReceived += HandleInputMessage;
             }
-            catch
+            catch (Exception ex)
             {
                 // Deliberately swallow the exception. The port may be in use by another app, which
                 // is equivalent to not existing, as far as we're concerned.
-                // (This approach is always worrying, but for now it's probably the simplest option.)
+                // (This approach is always worrying, but for now it's probably the simplest option.
+                // At least we can log it, though only at trace level.)
+                Logger.LogTrace(ex, "Failed to reconnect");
                 this.inputPort = null;
                 this.outputPort = null;
                 return false;
