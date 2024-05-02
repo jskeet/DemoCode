@@ -1,4 +1,5 @@
 ﻿using IconPlatform.Model;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace IconPlatform.ConsoleDemo
     {
         static async Task Main(string[] args)
         {
-            var controller = await PlatformMXController.ConnectAsync("Platform M+ V2.15");
+            var controller = await PlatformMXController.ConnectAsync(NullLogger.Instance, "Platform M+ V2.15");
 
             controller.ButtonChanged += (sender, args) =>
             {

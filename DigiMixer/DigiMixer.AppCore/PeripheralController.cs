@@ -34,14 +34,27 @@ public class PeripheralController : IAsyncDisposable
     public static PeripheralController Create(ILoggerFactory loggerFactory, DigiMixerViewModel mixerVm, bool enablePeripherals)
     {
         var config = mixerVm.Config;
-        var xtouchController = enablePeripherals && !string.IsNullOrEmpty(config.XTouchMiniDevice) ? new XTouchMiniMackieController(config.XTouchMiniDevice) : null;
-        var platformMController = enablePeripherals && !string.IsNullOrEmpty(config.IconMPlusDevice) ? new PlatformMXController(config.IconMPlusDevice, PlatformMXController.PlatformMModelId) : null;
-        var platformXController = enablePeripherals && !string.IsNullOrEmpty(config.IconXPlusDevice) ? new PlatformMXController(config.IconXPlusDevice, PlatformMXController.PlatformXModelId) : null;
+        var xtouchController = enablePeripherals && !string.IsNullOrEmpty(config.XTouchMiniDevice)
+            ? new XTouchMiniMackieController(CreateLogger("XTouchMini"), config.XTouchMiniDevice) : null;
+        var platformMController = enablePeripherals && !string.IsNullOrEmpty(config.IconMPlusDevice)
+            ? new PlatformMXController(CreateLogger("IconM"), config.IconMPlusDevice, PlatformMXController.PlatformMModelId)
+            : null;
+        var platformXController = enablePeripherals && !string.IsNullOrEmpty(config.IconXPlusDevice)
+            ? new PlatformMXController(CreateLogger("IconX"), config.IconXPlusDevice, PlatformMXController.PlatformXModelId)
+            : null;
 
-        var xtouchMixerController = xtouchController is null ? null : new XTouchDigiMixerController(loggerFactory.CreateLogger("XTouchMixerController"), mixerVm, xtouchController, config.XTouchSensitivity, config.XTouchMainVolumeEnabled);
-        var platformMMixerController = platformMController is null ? null : new IconPlatformMixerController(loggerFactory.CreateLogger("PlatformMMixerController"), mixerVm, platformMController, 0, controlMain: true);
-        var platformXMixerController = platformXController is null ? null : new IconPlatformMixerController(loggerFactory.CreateLogger("PlatformXMixerController"), mixerVm, platformXController, 8, controlMain: false);
-        return new PeripheralController(loggerFactory.CreateLogger("PeripheralController"), xtouchMixerController, platformMMixerController, platformXMixerController);
+        var xtouchMixerController = xtouchController is not null
+            ? new XTouchDigiMixerController(CreateLogger("XTouchMixerController"), mixerVm, xtouchController, config.XTouchSensitivity, config.XTouchMainVolumeEnabled)
+            : null;
+        var platformMMixerController = platformMController is not null
+            ? new IconPlatformMixerController(CreateLogger("PlatformMMixerController"), mixerVm, platformMController, 0, controlMain: true)
+            : null;
+        var platformXMixerController = platformXController is not null
+            ? new IconPlatformMixerController(CreateLogger("PlatformXMixerController"), mixerVm, platformXController, 8, controlMain: false)
+            : null;
+        return new PeripheralController(CreateLogger("PeripheralController"), xtouchMixerController, platformMMixerController, platformXMixerController);
+
+        ILogger CreateLogger(string name) => loggerFactory.CreateLogger(name);
     }
 
     public async Task Start()

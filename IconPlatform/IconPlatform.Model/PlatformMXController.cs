@@ -1,4 +1,5 @@
 ﻿using Commons.Music.Midi;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace IconPlatform.Model
         public EventHandler<FaderEventArgs> FaderMoved;
         public EventHandler<KnobTurnedEventArgs> KnobTurned;
 
+        private ILogger Logger { get; }
         public string PortName { get; }
         private IMidiInput inputPort;
         private IMidiOutput outputPort;
@@ -22,12 +24,12 @@ namespace IconPlatform.Model
 
         public bool Connected => inputPort is object;
 
-        public PlatformMXController(string portName, byte modelId) =>
-            (PortName, this.modelId) = (portName, modelId);
+        public PlatformMXController(ILogger logger, string portName, byte modelId) =>
+            (Logger, PortName, this.modelId) = (logger, portName, modelId);
 
-        public static async Task<PlatformMXController> ConnectAsync(string portName)
+        public static async Task<PlatformMXController> ConnectAsync(ILogger logger, string portName)
         {
-            var controller = new PlatformMXController(portName, portName?.StartsWith("Platform M") ?? true ? PlatformMModelId : PlatformXModelId);
+            var controller = new PlatformMXController(logger, portName, portName?.StartsWith("Platform M") ?? true ? PlatformMModelId : PlatformXModelId);
             await controller.MaybeReconnect();
             return controller;
         }

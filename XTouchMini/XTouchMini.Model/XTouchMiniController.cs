@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using Commons.Music.Midi;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -16,12 +17,13 @@ namespace XTouchMini.Model
     /// for controlling the lights of the X-Touch Mini.
     /// </summary>
     public abstract class XTouchMiniController : IAsyncDisposable
-    {
+    {        
         private readonly string portName;
         private IMidiInput inputPort;
         private IMidiOutput outputPort;
         private byte? lastMidiStatus;
 
+        protected ILogger Logger { get; }
         public bool Connected => inputPort is object;
 
         public event EventHandler<KnobTurnedEventArgs> KnobTurned;
@@ -31,8 +33,9 @@ namespace XTouchMini.Model
         public event EventHandler<ButtonEventArgs> ButtonUp;
         public event EventHandler<FaderEventArgs> FaderMoved;
 
-        protected XTouchMiniController(string portName)
+        protected XTouchMiniController(ILogger logger, string portName)
         {
+            Logger = logger;
             inputCallback = HandleInputMessage;
             syncContext = SynchronizationContext.Current;
             this.portName = portName;

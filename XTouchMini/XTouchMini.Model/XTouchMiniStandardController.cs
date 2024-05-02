@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace XTouchMini.Model
@@ -11,16 +12,17 @@ namespace XTouchMini.Model
     /// </summary>
     public class XTouchMiniStandardController : XTouchMiniController
     {
-        private XTouchMiniStandardController(string portName) : base(portName)
+        private XTouchMiniStandardController(ILogger logger, string portName) : base(logger, portName)
         {
         }
 
         /// <summary>
         /// Connects to an X-Touch Mini and sets it to Standard mode.
         /// </summary>
-        /// <param name="name">The MIDI name of the input/output ports.</param>
-        public static Task<XTouchMiniStandardController> ConnectAsync(string portName) =>
-            ConnectAsync(new XTouchMiniStandardController(portName));
+        /// <param name="logger">The logger to use in this controller.</param>
+        /// <param name="portName">The MIDI name of the input/output ports.</param>
+        public static Task<XTouchMiniStandardController> ConnectAsync(ILogger logger, string portName) =>
+            ConnectAsync(new XTouchMiniStandardController(logger, portName));
 
         public override async Task<bool> MaybeReconnect()
         {

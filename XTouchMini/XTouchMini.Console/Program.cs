@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using XTouchMini.Model;
@@ -9,7 +10,7 @@ namespace XTouchMini.Console
     {
         static async Task Main(string[] args)
         {
-            await using (var controller = await XTouchMiniStandardController.ConnectAsync("X-TOUCH MINI"))
+            await using (var controller = await XTouchMiniStandardController.ConnectAsync(NullLogger.Instance, "X-TOUCH MINI"))
             {
                 System.Console.WriteLine("Connected");
                 controller.ButtonDown += (sender, args) => System.Console.WriteLine($"Button {args.Button} in {args.Layer} pressed");

@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging.Abstractions;
 using OscMixerControl;
 using System;
 using System.Threading;
@@ -15,11 +16,11 @@ namespace XTouchMini.MixerControl
         static async Task Main()
         {
             // MIDI input name hard-coded as I think the chances of anyone else running this are slim...
-            await using (var controller = await XTouchMiniMackieController.ConnectAsync("X-TOUCH MINI"))
+            await using (var controller = await XTouchMiniMackieController.ConnectAsync(NullLogger.Instance, "X-TOUCH MINI"))
             {
                 Console.WriteLine("Connected to controller");
 
-                using (var mixer = new Mixer())
+                using (var mixer = new Mixer(XAirDescriptor.Instance))
                 {
                     // IP address hard-coded as I think the chances of anyone else running this are slim...
                     mixer.Connect("192.168.1.41", 10024);

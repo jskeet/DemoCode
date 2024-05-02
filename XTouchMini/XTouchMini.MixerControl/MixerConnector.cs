@@ -28,9 +28,9 @@ namespace XTouchMini.MixerControl
 
             // TODO: Mapping from knob to input channel customization
             channels = Enumerable.Range(1, 8)
-                .Select(index => new ControlledChannel(XAir.CreateInputChannel(mixer, index), controller, index))
+                .Select(index => new ControlledChannel(XAirDescriptor.Instance.CreateInputChannel(mixer, index), controller, index))
                 .ToList();
-            mainOutput = XAir.CreateMainOutputChannel(mixer);
+            mainOutput = XAirDescriptor.Instance.CreateMainOutputChannel(mixer);
             renewTimer = new Timer(RefreshSubscriptionsAsync);
         }
 

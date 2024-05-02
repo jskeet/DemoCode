@@ -17,7 +17,6 @@ namespace IconPlatform.MixerControl
         private readonly List<Channel> channels;
         private readonly Mixer mixer;
         private readonly Timer renewTimer;
-        private readonly Channel mainOutput;
         private readonly PlatformMXController controller;
 
         internal MixerConnector(PlatformMXController controller, Mixer mixer)
@@ -29,7 +28,7 @@ namespace IconPlatform.MixerControl
 
             // TODO: Mapping from knob to input channel customization
             channels = Enumerable.Range(1, 8)
-                .Select(index => XAir.CreateInputChannel(mixer, index))
+                .Select(index => XAirDescriptor.Instance.CreateInputChannel(mixer, index))
                 .ToList();
             renewTimer = new Timer(RefreshSubscriptionsAsync);
         }

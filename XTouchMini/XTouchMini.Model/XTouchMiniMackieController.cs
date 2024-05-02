@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -39,7 +40,7 @@ namespace XTouchMini.Model
         private const byte LayerAMidiButton = 0x54;
         private const byte LayerBMidiButton = 0x55;
 
-        public XTouchMiniMackieController(string portName) : base(portName)
+        public XTouchMiniMackieController(ILogger logger, string portName) : base(logger, portName)
         {
         }
 
@@ -89,8 +90,8 @@ namespace XTouchMini.Model
             }
         }
 
-        public static Task<XTouchMiniMackieController> ConnectAsync(string portName) =>
-            ConnectAsync(new XTouchMiniMackieController(portName));
+        public static Task<XTouchMiniMackieController> ConnectAsync(ILogger logger, string portName) =>
+            ConnectAsync(new XTouchMiniMackieController(logger, portName));
 
         public void SetButtonLedState(int button, LedState state)
         {
