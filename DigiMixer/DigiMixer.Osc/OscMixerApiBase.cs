@@ -22,17 +22,19 @@ internal abstract class OscMixerApiBase : IMixerApi
     private readonly Func<ILogger, IOscClient> clientProvider;
     protected IOscClient Client { get; private set; }
     private readonly DelegatingReceiver receiver = new();
+    protected MixerApiOptions Options { get; }
 
     protected IMixerReceiver Receiver => receiver;
 
     protected abstract object MutedValue { get; }
     protected abstract object UnmutedValue { get; }
 
-    private protected OscMixerApiBase(ILogger logger, Func<ILogger, IOscClient> clientProvider)
+    private protected OscMixerApiBase(ILogger logger, Func<ILogger, IOscClient> clientProvider, MixerApiOptions? options)
     {
         this.clientProvider = clientProvider;
         Logger = logger ?? NullLogger.Instance;
         Client = IOscClient.Fake.Instance;
+        Options = options ?? MixerApiOptions.Default;
         receiverActionsByAddress = BuildReceiverMap();
     }
 

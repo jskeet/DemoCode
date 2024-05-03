@@ -9,8 +9,8 @@ namespace DigiMixer.QuSeries;
 
 public class QuMixer
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 51326) =>
-        new AutoReceiveMixerApi(new QuMixerApi(logger, host, port));
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 51326, MixerApiOptions? options = null) =>
+        new AutoReceiveMixerApi(new QuMixerApi(logger, host, port, options));
 }
 
 internal class QuMixerApi : IMixerApi
@@ -26,14 +26,16 @@ internal class QuMixerApi : IMixerApi
     private QuControlClient? controlClient;
     private QuMeterClient? meterClient;
     private IPEndPoint? mixerUdpEndPoint;
+    private readonly MixerApiOptions options;
 
     private MixerInfo currentMixerInfo = MixerInfo.Empty;
 
-    internal QuMixerApi(ILogger logger, string host, int port)
+    internal QuMixerApi(ILogger logger, string host, int port, MixerApiOptions? options)
     {
         this.logger = logger;
         this.host = host;
         this.port = port;
+        this.options = options ?? MixerApiOptions.Default;
         AddMessageHandlers();
     }
 

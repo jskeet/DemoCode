@@ -8,8 +8,8 @@ namespace DigiMixer.UCNet;
 
 public static class StudioLive
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 53000) =>
-        new StudioLiveMixerApi(logger, host, port);
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 53000, MixerApiOptions? options = null) =>
+        new StudioLiveMixerApi(logger, host, port, options);
 
     private class StudioLiveMixerApi : IMixerApi
     {
@@ -20,16 +20,18 @@ public static class StudioLive
         private readonly string host;
         private readonly int port;
         private readonly Dictionary<string, Action<ParameterValueMessage>> parameterHandlers;
+        private readonly MixerApiOptions options;
 
         private UCNetClient? client;
         private UCNetMeterListener? meterListener;
         private CancellationTokenSource? cts;
 
-        internal StudioLiveMixerApi(ILogger logger, string host, int port)
+        internal StudioLiveMixerApi(ILogger logger, string host, int port, MixerApiOptions? options)
         {
             this.logger = logger;
             this.host = host;
             this.port = port;
+            this.options = options ?? MixerApiOptions.Default;
             parameterHandlers = MapParameterHandlers();
             clientIdentifier = $"DigiMixer-{Guid.NewGuid()}";
         }

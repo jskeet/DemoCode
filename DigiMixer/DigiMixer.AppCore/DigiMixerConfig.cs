@@ -84,7 +84,7 @@ public class DigiMixerConfig
     /// </summary>
     public List<ChannelMapping> OutputChannels { get; set; } = new List<ChannelMapping>();
 
-    public IMixerApi CreateMixerApi(ILogger logger)
+    public IMixerApi CreateMixerApi(ILogger logger, MixerApiOptions options = null)
     {
         if (Fake || !Enabled)
         {
@@ -93,16 +93,16 @@ public class DigiMixerConfig
         return HardwareType switch
         {
             MixerHardwareType.Fake => new FakeMixerApi(this),
-            MixerHardwareType.XAir => XAir.CreateMixerApi(logger, Address, Port ?? 10024),
-            MixerHardwareType.X32 => X32.CreateMixerApi(logger, Address, Port ?? 10023),
-            MixerHardwareType.SoundcraftUi => new UiHttpMixerApi(logger, Address, Port ?? 80),
-            MixerHardwareType.AllenHeathQu => QuMixer.CreateMixerApi(logger, Address, Port ?? 51326),
+            MixerHardwareType.XAir => XAir.CreateMixerApi(logger, Address, Port ?? 10024, options),
+            MixerHardwareType.X32 => X32.CreateMixerApi(logger, Address, Port ?? 10023, options),
+            MixerHardwareType.SoundcraftUi => new UiHttpMixerApi(logger, Address, Port ?? 80, options),
+            MixerHardwareType.AllenHeathQu => QuMixer.CreateMixerApi(logger, Address, Port ?? 51326, options),
             // We don't provide inbound port customization, but it would be easy to do if we ever needed to.
-            MixerHardwareType.RcfM18 => Rcf.CreateMixerApi(logger, Address, Port ?? 8000),
-            MixerHardwareType.MackieDL => new MackieMixerApi(logger, Address, Port ?? 50001),
-            MixerHardwareType.StudioLive => StudioLive.CreateMixerApi(logger, Address, Port ?? 53000),
-            MixerHardwareType.AllenHeathCq => CqMixer.CreateMixerApi(logger, Address, Port ?? 51326),
-            MixerHardwareType.YamahaDm => DmMixer.CreateMixerApi(logger, Address, Port ?? 50368),
+            MixerHardwareType.RcfM18 => Rcf.CreateMixerApi(logger, Address, Port ?? 8000, options: options),
+            MixerHardwareType.MackieDL => new MackieMixerApi(logger, Address, Port ?? 50001, options),
+            MixerHardwareType.StudioLive => StudioLive.CreateMixerApi(logger, Address, Port ?? 53000, options),
+            MixerHardwareType.AllenHeathCq => CqMixer.CreateMixerApi(logger, Address, Port ?? 51326, options),
+            MixerHardwareType.YamahaDm => DmMixer.CreateMixerApi(logger, Address, Port ?? 50368, options),
             _ => throw new InvalidOperationException($"Unknown mixer type: {HardwareType}")
         };
     }

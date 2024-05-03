@@ -14,8 +14,8 @@ namespace DigiMixer.Osc;
 /// </summary>
 public static class X32
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 10023) =>
-        new AutoReceiveMixerApi(new X32OscMixerApi(logger, host, port));
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 10023, MixerApiOptions? options = null) =>
+        new AutoReceiveMixerApi(new X32OscMixerApi(logger, host, port, options));
 
     private class X32OscMixerApi : XSeriesMixerApiBase
     {
@@ -39,7 +39,7 @@ public static class X32
         // 100/101 = Main L/R
         private int[] mainOutputToChannelId;
 
-        internal X32OscMixerApi(ILogger logger, string host, int port) : base(logger, host, port)
+        internal X32OscMixerApi(ILogger logger, string host, int port, MixerApiOptions? options) : base(logger, host, port, options)
         {
             mainOutputToChannelId = new int[17];
         }

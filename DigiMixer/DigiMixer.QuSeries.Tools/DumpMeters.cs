@@ -9,7 +9,7 @@ public class DumpMeters : Tool
     public override async Task<int> Execute()
     {
         var logger = NullLogger.Instance;
-        var api = new QuMixerApi(logger, "192.168.1.60", 51326);
+        var api = new QuMixerApi(logger, "192.168.1.60", 51326, options: null);
         // This won't compile, as I removed MeterHandler after figuring out the meters.
         // It's easy to put back if we need this code again though.
         //api.MeterHandler += LogMeter;

@@ -16,6 +16,7 @@ public class MackieMixerApi : IMixerApi
     private readonly ILogger logger;
     private readonly string host;
     private readonly int port;
+    private readonly MixerApiOptions options;
 
     private readonly ConcurrentDictionary<int, ChannelValueAction> channelValueActions = new();
     private readonly ConcurrentDictionary<int, Action<string>> channelNameActions = new();
@@ -26,11 +27,12 @@ public class MackieMixerApi : IMixerApi
 
     private MackieController? controller;
 
-    public MackieMixerApi(ILogger? logger, string host, int port = 50001)
+    public MackieMixerApi(ILogger? logger, string host, int port = 50001, MixerApiOptions? options = null)
     {
         this.logger = logger ?? NullLogger.Instance;
         this.host = host;
         this.port = port;
+        this.options = options ?? MixerApiOptions.Default;
         mixerProfile = NullProfile.Instance;
     }
 

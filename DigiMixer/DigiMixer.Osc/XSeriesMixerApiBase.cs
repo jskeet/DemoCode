@@ -17,7 +17,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
     protected abstract string InputChannelLevelsMeter { get; }
     protected abstract string OutputChannelLevelsMeter { get; }
 
-    internal XSeriesMixerApiBase(ILogger logger, string host, int port) : base(logger, logger => new UdpOscClient(logger, host, port))
+    internal XSeriesMixerApiBase(ILogger logger, string host, int port, MixerApiOptions? options) : base(logger, logger => new UdpOscClient(logger, host, port), options)
     {
     }
 
@@ -64,8 +64,18 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
     public override sealed async Task SendKeepAlive()
     {
         await Client.SendAsync(new OscMessage(XRemoteAddress));
-        await Client.SendAsync(new OscMessage("/batchsubscribe", InputChannelLevelsMeter, InputChannelLevelsMeter, 0, 0, 0 /* fast */));
-        await Client.SendAsync(new OscMessage("/batchsubscribe", OutputChannelLevelsMeter, OutputChannelLevelsMeter, 0, 0, 0 /* fast */));
+        if (Options?.MeterOptions?.UpdateFrequency is var frequency && frequency != MeterUpdateFrequency.Off)
+        {
+            var timeFactor = frequency switch
+            {
+                MeterUpdateFrequency.Fast => 1, // 50ms between updates
+                MeterUpdateFrequency.Medium => 4, // 200ms between updates
+                MeterUpdateFrequency.Slow => 10, // 1s between updates
+                _ => throw new ArgumentOutOfRangeException(nameof(MeterOptions.UpdateFrequency))
+            };
+            await Client.SendAsync(new OscMessage("/batchsubscribe", InputChannelLevelsMeter, InputChannelLevelsMeter, 0, 0, timeFactor));
+            await Client.SendAsync(new OscMessage("/batchsubscribe", OutputChannelLevelsMeter, OutputChannelLevelsMeter, 0, 0, timeFactor));
+        }
     }
 
     public override sealed async Task<bool> CheckConnection(CancellationToken cancellationToken)

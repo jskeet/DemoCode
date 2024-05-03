@@ -28,14 +28,16 @@ public class UiHttpMixerApi : IMixerApi
     private IUiClient receivingClient;
     private Task receivingClientReadTask;
     private readonly DelegatingReceiver receiver = new();
-
+    private readonly MixerApiOptions options;
     private MixerInfo currentMixerInfo;
 
-    public UiHttpMixerApi(ILogger? logger, string host, int port = 80)
+    public UiHttpMixerApi(ILogger? logger, string host, int port = 80, MixerApiOptions? options = null)
     {
         this.logger = logger ?? NullLogger.Instance;
         this.host = host;
         this.port = port;
+        this.options = options ?? MixerApiOptions.Default;
+
         currentMixerInfo = MixerInfo.Empty;
         receiverActionsByAddress = BuildReceiverMap();
         sendingClient = IUiClient.Fake.Instance;

@@ -3,6 +3,7 @@
 
 using Commons.Music.Midi;
 using DigiMixer.Controls;
+using DigiMixer.Core;
 using DigiMixer.PeripheralConsole;
 using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +54,9 @@ async Task StartMixerController()
     var serviceProvider = serviceCollection.BuildServiceProvider();
     var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
-    var mixerVm = new DigiMixerViewModel(loggerFactory.CreateLogger("Mixer"), config.Mixer);
+    var mixerVm = new DigiMixerViewModel(loggerFactory.CreateLogger("Mixer"), config.Mixer,
+        // We don't use the meters, so let's not create unnecessary network traffic.
+        new MixerApiOptions { MeterOptions = new() { UpdateFrequency = MeterUpdateFrequency.Off } });
     var peripheralController = PeripheralController.Create(loggerFactory, mixerVm, enablePeripherals: true);
     // Start the peripheral monitoring task. This is all we're really interested in.
     await peripheralController.Start();

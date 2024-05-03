@@ -6,8 +6,8 @@ namespace DigiMixer.DmSeries;
 
 public static class DmMixer
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 50368) =>
-            new DmMixerApi(logger, host, port);
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 50368, MixerApiOptions? options = null) =>
+        new DmMixerApi(logger, host, port, options);
 }
 
 internal class DmMixerApi : IMixerApi
@@ -19,6 +19,7 @@ internal class DmMixerApi : IMixerApi
     private readonly ILogger logger;
     private readonly string host;
     private readonly int port;
+    private readonly MixerApiOptions options;
 
     private CancellationTokenSource? cts;
     private DmClient? controlClient;
@@ -29,11 +30,12 @@ internal class DmMixerApi : IMixerApi
 
     private Task<DmMessage>? fullDataTask;
 
-    public DmMixerApi(ILogger logger, string host, int port)
+    public DmMixerApi(ILogger logger, string host, int port, MixerApiOptions? options)
     {
         this.logger = logger;
         this.host = host;
         this.port = port;
+        this.options = options ?? MixerApiOptions.Default;
         lastKeepAliveReceived = DateTimeOffset.UtcNow;
     }
 

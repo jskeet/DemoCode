@@ -15,8 +15,8 @@ namespace DigiMixer.Osc;
 /// </summary>
 public static class XAir
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 10024) =>
-        new XAirOscMixerApi(logger, host, port);
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 10024, MixerApiOptions? options = null) =>
+        new XAirOscMixerApi(logger, host, port, options);
 
     private class XAirOscMixerApi : XSeriesMixerApiBase
     {
@@ -33,7 +33,7 @@ public static class XAir
         private const string InputChannelLinkAddress = "/config/chlink";
         private const string BusChannelLinkAddress = "/config/buslink";
 
-        internal XAirOscMixerApi(ILogger logger, string host, int port) : base(logger, host, port)
+        internal XAirOscMixerApi(ILogger logger, string host, int port, MixerApiOptions? options) : base(logger, host, port, options)
         {
         }
 

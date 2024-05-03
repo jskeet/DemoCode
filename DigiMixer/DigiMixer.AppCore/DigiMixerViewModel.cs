@@ -1,4 +1,5 @@
-﻿using JonSkeet.CoreAppUtil;
+﻿using DigiMixer.Core;
+using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.Windows.Input;
@@ -99,7 +100,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
     public StatusViewModel Status { get; } = new StatusViewModel("Mixer");
     public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 100_000;
 
-    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config)
+    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config, MixerApiOptions options = null)
     {
         Config = config;
         this.logger = logger;
@@ -142,7 +143,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             {
                 try
                 {
-                    Mixer mixer = await Mixer.Create(logger, () => config.CreateMixerApi(logger));
+                    Mixer mixer = await Mixer.Create(logger, () => config.CreateMixerApi(logger, options));
                     SetMixer(mixer);
                     logger.LogInformation("Initial connection to mixer successful");
                     return;

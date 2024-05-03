@@ -9,11 +9,11 @@ namespace DigiMixer.Osc;
 /// </summary>
 public static class Rcf
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int outboundPort = 8000, int inboundPort = 9000) =>
-        new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, outboundPort, inboundPort));
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int outboundPort = 8000, int inboundPort = 9000, MixerApiOptions? options = null) =>
+        new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, outboundPort, inboundPort, options));
 
-    public static IMixerApi CreateMixerApiForProxy(ILogger logger, string host, int proxyPort = 8001) =>
-        new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, proxyPort));
+    public static IMixerApi CreateMixerApiForProxy(ILogger logger, string host, int proxyPort = 8001, MixerApiOptions? options = null) =>
+        new AutoReceiveMixerApi(new RcfOscMixerApi(logger, host, proxyPort, options));
 
     // See https://github.com/Jille/rcf-m18/blob/master/gen/source.txt for more information
     // App also sends:
@@ -45,13 +45,13 @@ public static class Rcf
             .Append(SerialNumberAddress)
             .ToArray();
 
-        internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort) :
-            base(logger, logger => new UdpOscClient(logger, host, outboundPort, inboundPort))
+        internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort, MixerApiOptions? options) :
+            base(logger, logger => new UdpOscClient(logger, host, outboundPort, inboundPort), options)
         {
         }
 
-        internal RcfOscMixerApi(ILogger logger, string host, int proxyPort) :
-            base(logger, logger => new UdpOscClient(logger, host, proxyPort))
+        internal RcfOscMixerApi(ILogger logger, string host, int proxyPort, MixerApiOptions? options) :
+            base(logger, logger => new UdpOscClient(logger, host, proxyPort), options)
         {
         }
 

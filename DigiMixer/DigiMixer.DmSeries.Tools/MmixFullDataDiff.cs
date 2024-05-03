@@ -9,7 +9,7 @@ public class MmixFullDataDiff : Tool
 {
     public override async Task<int> Execute()
     {
-        var mixer = new DmMixerApi(NullLogger.Instance, "192.168.1.86", 50368);
+        var mixer = new DmMixerApi(NullLogger.Instance, "192.168.1.86", 50368, options: null);
         await mixer.Connect(default);
 
         byte[]? currentSnapshot = null;

@@ -10,8 +10,8 @@ namespace DigiMixer.CqSeries;
 /// </summary>
 public class CqMixer
 {
-    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 51326) =>
-        new AutoReceiveMixerApi(new CqMixerApi(logger, host, port));
+    public static IMixerApi CreateMixerApi(ILogger logger, string host, int port = 51326, MixerApiOptions? options = null) =>
+        new AutoReceiveMixerApi(new CqMixerApi(logger, host, port, options));
 }
 
 internal class CqMixerApi : IMixerApi
@@ -24,6 +24,7 @@ internal class CqMixerApi : IMixerApi
     private readonly ILogger logger;
     private readonly string host;
     private readonly int port;
+    private readonly MixerApiOptions options;
     private readonly LinkedList<MessageListener> temporaryListeners = new();
 
     private CancellationTokenSource? cts;
@@ -33,11 +34,12 @@ internal class CqMixerApi : IMixerApi
 
     private MixerInfo currentMixerInfo = MixerInfo.Empty;
 
-    internal CqMixerApi(ILogger logger, string host, int port)
+    internal CqMixerApi(ILogger logger, string host, int port, MixerApiOptions? options)
     {
         this.logger = logger;
         this.host = host;
         this.port = port;
+        this.options = options ?? MixerApiOptions.Default;
     }
 
     public async Task Connect(CancellationToken cancellationToken)
