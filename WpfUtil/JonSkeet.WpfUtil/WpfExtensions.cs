@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using JonSkeet.CoreAppUtil;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -31,6 +32,9 @@ public static class WpfExtensions
         }
         return null;
     }
+
+    public static Task ScrollCurrentAndNextIntoView<T>(this ListBox listBox, SelectableCollection<T> items) where T : class =>
+        ScrollCurrentAndNextIntoView(listBox, items, items.SelectedIndex);
 
     public static async Task ScrollCurrentAndNextIntoView<T>(this ListBox listBox, IReadOnlyList<T> items, int currentIndex)
     {

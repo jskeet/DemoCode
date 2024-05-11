@@ -86,6 +86,12 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         }
     }
 
+    protected IDisposable SubscribeRelatedProperty(INotifyPropertyChanged source, string sourceName, string targetName) =>
+        Notifications.Subscribe(source, sourceName, (_, _) => RaisePropertyChanged(targetName));
+
+    protected IDisposable SubscribeReactionMethod(INotifyPropertyChanged source, string sourceName, Action action) =>
+        Notifications.Subscribe(source, sourceName, (_, _) => action());
+
     /// <summary>
     /// Returns an array of related property names, to raise a property changed event on each of them.
     /// These can contain cycles, and the change event will only be raised once. Return null for no properties.

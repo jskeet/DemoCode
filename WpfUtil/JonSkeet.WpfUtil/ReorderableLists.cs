@@ -1,9 +1,10 @@
-﻿using System.Windows.Controls;
+﻿using JonSkeet.CoreAppUtil;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace JonSkeet.WpfUtil;
 
-public static class ReorderableList
+public static class ReorderableLists
 {
     public static bool MaybeHandleKeyboard(this IReorderableList viewModel, ListBox listBox, KeyEventArgs e)
     {
@@ -33,12 +34,3 @@ public static class ReorderableList
     }
 }
 
-/// <summary>
-/// Interface to support the above extension methods.
-/// </summary>
-public interface IReorderableList
-{
-    void MoveSelectedItemUp();
-    void MoveSelectedItemDown();
-    void DeleteSelectedItem();
-}

@@ -63,6 +63,8 @@ public static class ObservableCollections
     public static List<T> Unwrap<T>(this ObservableCollection<ObservableItemWrapper<T>> source) =>
         source.Select(item => item.Value).ToList();
 
+    // TODO: Move the methods below to SelectableCollection, if we don't need them more generally?
+
     /// <summary>
     /// Removes the given item (expected to be the selected item in a list) and returns
     /// the new item to select, which is the item currently after it (or before it if it's at the end of the list),
