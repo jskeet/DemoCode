@@ -54,12 +54,16 @@ public static class WpfExtensions
             () => listBox.ScrollIntoView(items[currentIndex]));
     }
 
-    public static void FocusOnSelectedItem(this ListBox listBox)
+    /// <summary>
+    /// Attempts to focus on the selected item in the given listbox.
+    /// </summary>
+    /// <returns>Whether the selected item was found (and therefore whether focus was requested).</returns>
+    public static bool FocusOnSelectedItem(this ListBox listBox)
     {
         var selectedItem = listBox.SelectedItem;
         if (selectedItem is null)
         {
-            return;
+            return false;
         }
         var container = listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) as UIElement;
         // Sometimes we need to update the layout in order to get the container.
@@ -69,5 +73,6 @@ public static class WpfExtensions
             container = listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) as UIElement;
         }
         container?.Focus();
+        return container is not null;
     }
 }
