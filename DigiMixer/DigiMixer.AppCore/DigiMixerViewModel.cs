@@ -93,12 +93,10 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
 
     internal DigiMixerConfig Config { get; }
     private Mixer mixer;
-    private bool disposed;
-    //FIXME
-    //private DispatcherTimer meterPeakUpdater;
+    private bool disposed;    
 
     public StatusViewModel Status { get; } = new StatusViewModel("Mixer");
-    public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 100_000;
+    public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 1_000_000;
 
     public DigiMixerViewModel(ILogger logger, DigiMixerConfig config, MixerApiOptions options = null)
     {

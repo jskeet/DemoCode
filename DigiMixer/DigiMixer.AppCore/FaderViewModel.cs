@@ -49,7 +49,7 @@ public class FaderViewModel : ViewModelBase
     }
 
     public double FaderLevelDb => NormalizeSmallNegativeToZero(fader?.Scale.ConvertToDb(FaderLevel) ?? 0);
-    public int MaxFaderLevel => fader?.Scale.MaxValue ?? 100_000;
+    public int MaxFaderLevel => fader?.Scale.MaxValue ?? 1_000_000;
 
     // The config-based IDs.
     public string InputId { get; }
