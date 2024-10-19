@@ -72,8 +72,6 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "DigiMixer.Msix", "DigiMixer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.AppCore", "DigiMixer.AppCore\DigiMixer.AppCore.csproj", "{B5A51266-596D-4138-A62A-6C5B86E7C619}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JonSkeet.ViewModelUtil", "..\WpfUtil\JonSkeet.ViewModelUtil\JonSkeet.ViewModelUtil.csproj", "{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.PeripheralConsole", "DigiMixer.PeripheralConsole\DigiMixer.PeripheralConsole.csproj", "{7B9C23C7-E656-4137-B01A-C1A1AE9E7B02}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JonSkeet.CoreAppUtil", "..\WpfUtil\JonSkeet.CoreAppUtil\JonSkeet.CoreAppUtil.csproj", "{160D0BEC-5CF6-4472-9BBF-498E2E07D5E3}"
@@ -342,14 +340,6 @@ Global
 		{B5A51266-596D-4138-A62A-6C5B86E7C619}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5A51266-596D-4138-A62A-6C5B86E7C619}.Release|x64.ActiveCfg = Release|Any CPU
 		{B5A51266-596D-4138-A62A-6C5B86E7C619}.Release|x64.Build.0 = Release|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Debug|x64.Build.0 = Debug|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Release|x64.ActiveCfg = Release|Any CPU
-		{34ADED37-0270-4C26-B3EE-C154FF5E6CBA}.Release|x64.Build.0 = Release|Any CPU
 		{7B9C23C7-E656-4137-B01A-C1A1AE9E7B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B9C23C7-E656-4137-B01A-C1A1AE9E7B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B9C23C7-E656-4137-B01A-C1A1AE9E7B02}.Debug|x64.ActiveCfg = Debug|Any CPU

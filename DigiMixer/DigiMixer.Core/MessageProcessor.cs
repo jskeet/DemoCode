@@ -30,14 +30,10 @@ public sealed class MessageProcessor<TMessage> where TMessage : class, IMixerMes
     }
 
     /// <summary>
-    /// Synchronously processes the data from <paramref name="data"/>, retaining any data
+    /// Asynchronously processes the data from <paramref name="data"/>, retaining any data
     /// that isn't part of a message. The data may contain multiple messages, and each will be
     /// processed separately.
     /// </summary>
-    /// <remarks>
-    /// This is currently synchronous, which seems to be "okay"; we could potentially change it to be asynchronous
-    /// later.
-    /// </remarks>
     public async Task Process(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
     {
         data.CopyTo(buffer.Slice(UnprocessedLength));

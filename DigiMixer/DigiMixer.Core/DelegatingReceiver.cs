@@ -5,7 +5,7 @@ namespace DigiMixer.Core;
 /// <summary>
 /// Receiver which allows further receivers to be registered with it.
 /// This allows each <see cref="IMixerApi"/> implementation to
-/// using a single instance of this class, and register additional
+/// use a single instance of this class, and register additional
 /// receivers with <see cref="RegisterReceiver(DigiMixer.Core.IMixerReceiver)"/>.
 /// </summary>
 public sealed class DelegatingReceiver : IMixerReceiver
