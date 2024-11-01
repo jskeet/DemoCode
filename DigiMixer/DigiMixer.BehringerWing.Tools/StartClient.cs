@@ -14,9 +14,9 @@ internal class StartClient(string JsonFile) : Tool
     public override async Task<int> Execute()
     {
         string json = File.ReadAllText(JsonFile);
-        var descriptions = JsonConvert.DeserializeObject<List<NodeDescription>>(json)!;
+        var descriptions = JsonConvert.DeserializeObject<Dictionary<string, uint>>(json)!;
 
-        var namesByNodeHash = descriptions.ToDictionary(d => d.Hash, d => d.Name);
+        var namesByNodeHash = descriptions.ToDictionary(pair => pair.Value, pair => pair.Key);
 
         var loggingFactory = LoggerFactory.Create(builder => builder.AddConsole().AddSimpleConsole(options => options.SingleLine = true)
             .SetMinimumLevel(LogLevel.Debug));
