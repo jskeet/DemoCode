@@ -6,7 +6,7 @@ using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using XTouchMini.Model;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// Connection between an X-Touch Mini controller and a mixer channel.

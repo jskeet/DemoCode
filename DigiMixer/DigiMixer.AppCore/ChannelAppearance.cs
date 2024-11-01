@@ -1,6 +1,6 @@
 ﻿using JonSkeet.CoreAppUtil;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// The overall appearance of an input or output channel.

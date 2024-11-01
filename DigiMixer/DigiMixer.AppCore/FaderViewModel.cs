@@ -1,9 +1,10 @@
 ﻿using JonSkeet.CoreAppUtil;
 using DigiMixer;
+using DigiMixer.AppCore;
 using DigiMixer.Core;
 using System.ComponentModel;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 // Note on fader appearances:
 // - Input-specific faders are always paired with a specific output channel (which may be "main")

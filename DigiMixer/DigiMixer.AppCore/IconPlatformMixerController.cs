@@ -2,7 +2,7 @@
 using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 internal class IconPlatformMixerController : IAsyncDisposable
 {

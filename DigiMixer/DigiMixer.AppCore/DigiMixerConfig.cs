@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.ComponentModel;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// Configuration for the mixer.

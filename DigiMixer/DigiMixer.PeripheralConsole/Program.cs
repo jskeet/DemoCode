@@ -2,7 +2,7 @@
 // a digital mixer, without any UI (which means it can be portable).
 
 using Commons.Music.Midi;
-using DigiMixer.Controls;
+using DigiMixer.AppCore;
 using DigiMixer.Core;
 using DigiMixer.PeripheralConsole;
 using JonSkeet.CoreAppUtil;

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.Windows.Input;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// The view model for the mixer, which may initial not be connected.

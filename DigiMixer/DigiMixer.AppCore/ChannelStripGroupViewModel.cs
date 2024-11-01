@@ -1,6 +1,6 @@
 ﻿using JonSkeet.CoreAppUtil;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// Simple representation of a group of channels, each with an associated set of

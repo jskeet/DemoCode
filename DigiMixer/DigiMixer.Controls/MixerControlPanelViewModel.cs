@@ -1,4 +1,5 @@
-﻿using JonSkeet.CoreAppUtil;
+﻿using DigiMixer.AppCore;
+using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using NodaTime;
 using NodaTime.Text;

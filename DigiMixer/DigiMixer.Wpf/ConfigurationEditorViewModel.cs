@@ -1,11 +1,11 @@
 ﻿using Commons.Music.Midi;
-using DigiMixer.Controls;
+using DigiMixer.AppCore;
 using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Windows.Input;
-using MHT = DigiMixer.Controls.DigiMixerConfig.MixerHardwareType;
+using MHT = DigiMixer.AppCore.DigiMixerConfig.MixerHardwareType;
 
 namespace DigiMixer.Wpf;
 

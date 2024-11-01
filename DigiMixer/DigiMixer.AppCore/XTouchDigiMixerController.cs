@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using XTouchMini.Model;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 internal class XTouchDigiMixerController : IAsyncDisposable
 {

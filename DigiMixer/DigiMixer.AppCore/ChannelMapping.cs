@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// A mapping between an configuration channel ID (text-based, user-configurable)

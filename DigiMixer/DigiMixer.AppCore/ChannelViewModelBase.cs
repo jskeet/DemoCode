@@ -1,11 +1,10 @@
-﻿using JonSkeet.CoreAppUtil;
-using DigiMixer;
-using DigiMixer.Core;
+﻿using DigiMixer.Core;
+using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.ComponentModel;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModelBase where T : ChannelBase
 {

@@ -1,8 +1,7 @@
-﻿using JonSkeet.CoreAppUtil;
-using DigiMixer;
-using DigiMixer.Core;
+﻿using DigiMixer.Core;
+using JonSkeet.CoreAppUtil;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 // Note: we currently create multiple OutputChannelViewModels for the same output:
 // one with faders-per-input and one without. That may not be ideal.

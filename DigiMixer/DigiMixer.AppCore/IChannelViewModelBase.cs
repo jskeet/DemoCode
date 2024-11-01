@@ -1,7 +1,8 @@
-﻿using DigiMixer.Core;
+﻿using DigiMixer.AppCore;
+using DigiMixer.Core;
 using System.ComponentModel;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 public interface IChannelViewModelBase : INotifyPropertyChanged
 {

@@ -2,7 +2,7 @@
 using JonSkeet.CoreAppUtil;
 using NodaTime;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
 {

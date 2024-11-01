@@ -1,4 +1,5 @@
-﻿using JonSkeet.CoreAppUtil;
+﻿using DigiMixer.AppCore;
+using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -62,7 +63,7 @@ internal class FileLocations
         {
             Mixer = new()
             {
-                HardwareType = Controls.DigiMixerConfig.MixerHardwareType.Fake,                
+                HardwareType = DigiMixerConfig.MixerHardwareType.Fake,                
                 InputChannels =
                 {
                     new() { Id = "Channel 1", Channel = 1, InitiallyVisible = true }

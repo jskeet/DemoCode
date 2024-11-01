@@ -1,4 +1,5 @@
-﻿using DigiMixer.Controls;
+﻿using DigiMixer.AppCore;
+using DigiMixer.Controls;
 using JonSkeet.WpfLogging;
 using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;

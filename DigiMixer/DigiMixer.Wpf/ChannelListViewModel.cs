@@ -1,4 +1,4 @@
-﻿using DigiMixer.Controls;
+﻿using DigiMixer.AppCore;
 using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using System.Collections.ObjectModel;

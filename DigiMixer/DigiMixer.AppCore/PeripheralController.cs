@@ -3,7 +3,7 @@ using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using XTouchMini.Model;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 public class PeripheralController : IAsyncDisposable
 {

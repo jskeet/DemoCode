@@ -1,6 +1,6 @@
 ﻿using DigiMixer.Core;
 
-namespace DigiMixer.Controls;
+namespace DigiMixer.AppCore;
 
 /// <summary>
 /// A fake <see cref="IMixerApi"/> implementation which can be used for testing,
