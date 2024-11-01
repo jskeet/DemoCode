@@ -1,6 +1,8 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
 
-public class CqVersionRequestMessage : CqMessage
+namespace DigiMixer.CqSeries;
+
+internal class CqVersionRequestMessage : CqMessage
 {
     public CqVersionRequestMessage() : base(CqMessageFormat.VariableLength, CqMessageType.VersionRequest, [])
     {

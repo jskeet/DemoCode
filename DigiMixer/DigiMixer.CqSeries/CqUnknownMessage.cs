@@ -1,8 +1,10 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
 
-public sealed class CqUnknownMessage : CqMessage
+namespace DigiMixer.CqSeries;
+
+internal sealed class CqUnknownMessage : CqMessage
 {
-    public CqUnknownMessage(CqRawMessage rawMessage) : base(rawMessage)
+    internal CqUnknownMessage(CqRawMessage rawMessage) : base(rawMessage)
     {
     }
 }

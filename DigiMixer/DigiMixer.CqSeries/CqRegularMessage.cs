@@ -1,8 +1,9 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.CqSeries.Core;
 
-namespace DigiMixer.CqSeries.Core;
+namespace DigiMixer.CqSeries;
 
-public class CqRegularMessage : CqMessage
+internal class CqRegularMessage : CqMessage
 {
     public static (byte X, byte Y, byte Z) SetFaderXyz => (6, 6, 14);
     public static (byte X, byte Y, byte Z) SetMuteXyz => (6, 6, 12);

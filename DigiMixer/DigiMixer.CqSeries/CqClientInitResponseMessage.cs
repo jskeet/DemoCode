@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
+
+namespace DigiMixer.CqSeries;
 
 public class CqClientInitResponseMessage : CqMessage
 {

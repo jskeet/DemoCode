@@ -1,6 +1,6 @@
 ﻿using DigiMixer.Core;
 
-namespace DigiMixer.CqSeries.Core;
+namespace DigiMixer.CqSeries;
 
 public class CqConversions
 {

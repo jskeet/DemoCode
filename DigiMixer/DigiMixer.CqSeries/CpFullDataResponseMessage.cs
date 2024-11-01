@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
+using DigiMixer.CqSeries.Core;
 
-namespace DigiMixer.CqSeries.Core;
+namespace DigiMixer.CqSeries;
 
 // Channel modelling:
 // Inputs 1-16: regular inputs
@@ -14,9 +15,9 @@ namespace DigiMixer.CqSeries.Core;
 // TODO: Non-CQ20B modelling...
 
 
-public class CqFullDataResponseMessage : CqMessage
+internal class CqFullDataResponseMessage : CqMessage
 {
-    public CqFullDataResponseMessage(byte[] data) : base(CqMessageFormat.VariableLength, CqMessageType.FullDataResponse, data)
+    internal CqFullDataResponseMessage(byte[] data) : base(CqMessageFormat.VariableLength, CqMessageType.FullDataResponse, data)
     {
     }
 

@@ -1,6 +1,8 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
 
-public sealed class CqUdpHandshakeMessage : CqMessage
+namespace DigiMixer.CqSeries;
+
+internal sealed class CqUdpHandshakeMessage : CqMessage
 {
     public ushort UdpPort => GetUInt16(0);
 

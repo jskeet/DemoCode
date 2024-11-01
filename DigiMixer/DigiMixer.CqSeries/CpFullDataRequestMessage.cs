@@ -1,8 +1,10 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
 
-public class CqFullDataRequestMessage : CqMessage
+namespace DigiMixer.CqSeries;
+
+internal class CqFullDataRequestMessage : CqMessage
 {
-    public CqFullDataRequestMessage() : base(CqMessageFormat.VariableLength, CqMessageType.FullDataRequest, [])
+    internal CqFullDataRequestMessage() : base(CqMessageFormat.VariableLength, CqMessageType.FullDataRequest, [])
     {
     }
 

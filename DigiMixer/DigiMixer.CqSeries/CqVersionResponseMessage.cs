@@ -1,6 +1,8 @@
-﻿namespace DigiMixer.CqSeries.Core;
+﻿using DigiMixer.CqSeries.Core;
 
-public class CqVersionResponseMessage : CqMessage
+namespace DigiMixer.CqSeries;
+
+internal class CqVersionResponseMessage : CqMessage
 {
     public string Version => $"{Data[1]}.{Data[2]}.{Data[3]} r{GetUInt16(4)}";
 
