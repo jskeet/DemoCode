@@ -75,7 +75,7 @@ public abstract class TcpControllerBase : IDisposable
                 {
                     throw new InvalidOperationException("Unexpected TCP stream termination");
                 }
-                await ProcessData(buffer.Slice(0, bytesRead), CancellationToken);
+                await ProcessData(buffer[..bytesRead], CancellationToken);
             }
         }
         catch (Exception e)
@@ -95,5 +95,6 @@ public abstract class TcpControllerBase : IDisposable
         ControllerStatus = ControllerStatus.Disposed;
         cts.Cancel();
         tcpClient.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

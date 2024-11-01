@@ -56,7 +56,7 @@ public class IPV4Packet
         if (type == ProtocolType.Udp)
         {
             dataOffset = 42;
-            dataLength = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(38)) - 8; // The header includes its own length
+            dataLength = BinaryPrimitives.ReadUInt16BigEndian(dataSpan[38..]) - 8; // The header includes its own length
         }
         else if (type == ProtocolType.Tcp)
         {

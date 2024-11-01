@@ -79,7 +79,7 @@ public class FullDataDiffer : Tool
                 return;
             }
 
-            List<int> differences = new();
+            List<int> differences = [];
             for (int i = 0; i < currentSnapshot.Length; i++)
             {
                 if (newSnapshot[i] != currentSnapshot[i])
