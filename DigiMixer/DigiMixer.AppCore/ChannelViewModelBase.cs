@@ -163,7 +163,7 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
 
     private class PeakBuffer
     {
-        private Queue<OutputRecord> queue;
+        private readonly Queue<OutputRecord> queue;
         private MeterLevel currentPeak;
         private readonly long bufferPeriodTicks;
 
