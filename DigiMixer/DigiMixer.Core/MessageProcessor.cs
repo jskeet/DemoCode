@@ -36,10 +36,10 @@ public sealed class MessageProcessor<TMessage> where TMessage : class, IMixerMes
     /// </summary>
     public async Task Process(ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
     {
-        data.CopyTo(buffer.Slice(UnprocessedLength));
+        data.CopyTo(buffer[UnprocessedLength..]);
         UnprocessedLength += data.Length;
         int start = 0;
-        while (TMessage.TryParse(buffer.Slice(start, UnprocessedLength - start).Span) is TMessage message)
+        while (TMessage.TryParse(buffer[start..UnprocessedLength].Span) is TMessage message)
         {
             MessagesProcessed++;
             await messageAction(message, cancellationToken);
@@ -53,7 +53,7 @@ public sealed class MessageProcessor<TMessage> where TMessage : class, IMixerMes
         // Otherwise, copy whatever's left.
         else
         {
-            buffer.Slice(start, UnprocessedLength - start).CopyTo(buffer);
+            buffer[start..UnprocessedLength].CopyTo(buffer);
             UnprocessedLength -= start;
         }
     }
