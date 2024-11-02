@@ -1,8 +1,5 @@
 ﻿using System.Buffers.Binary;
-using System;
 using System.Runtime.CompilerServices;
-using System.Text;
-using Microsoft.Win32.SafeHandles;
 
 namespace DigiMixer.BehringerWing.Core;
 
@@ -206,7 +203,7 @@ public sealed class WingToken
             0xd1 => DecodeString(span, 2, firstByte - 0xd0) is string value ? (ForString(value), value.Length + 2) : (null, 0),
             0xd2 => DecodeUInt16(span) is ushort value ? (ForNodeIndex(value), 3) : (null, 0),
             0xd3 => DecodeInt16(span) is short value ? (ForInt16(value), 3) : (null, 0),
-            0xd4 => DecodeInt32(span) is int value ? (ForInt32(value), 5): (null, 0),
+            0xd4 => DecodeInt32(span) is int value ? (ForInt32(value), 5) : (null, 0),
             0xd5 => DecodeFloat(span) is float value ? (ForFloat32(value), 5) : (null, 0),
             0xd6 => DecodeFloat(span) is float value ? (ForRawFloat32(value), 5) : (null, 0),
             0xd7 => DecodeInt32(span) is int value ? (ForNodeHash((uint) value), 5) : (null, 0),

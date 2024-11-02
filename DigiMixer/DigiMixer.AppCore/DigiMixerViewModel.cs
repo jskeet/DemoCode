@@ -93,7 +93,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
 
     internal DigiMixerConfig Config { get; }
     private Mixer mixer;
-    private bool disposed;    
+    private bool disposed;
 
     public StatusViewModel Status { get; } = new StatusViewModel("Mixer");
     public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 1_000_000;

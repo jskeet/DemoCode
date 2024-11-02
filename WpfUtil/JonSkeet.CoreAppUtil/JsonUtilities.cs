@@ -8,7 +8,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using NodaTime;
 using NodaTime.Serialization.JsonNet;
-using System.IO;
 
 namespace JonSkeet.CoreAppUtil;
 

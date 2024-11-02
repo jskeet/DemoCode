@@ -1,6 +1,5 @@
 ﻿using DigiMixer.AppCore;
 using JonSkeet.CoreAppUtil;
-using JonSkeet.WpfUtil;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -8,8 +7,7 @@ namespace DigiMixer.Wpf;
 
 public class ChannelListViewModel : ViewModelBase, IReorderableList
 {
-    private readonly 
-        string idPrefix;
+    private readonly string idPrefix;
     public ObservableCollection<ChannelMappingViewModel> Mappings { get; } = new();
 
     public ICommand AddChannelCommand { get; }

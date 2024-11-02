@@ -17,7 +17,7 @@ namespace XTouchMini.Model
     /// for controlling the lights of the X-Touch Mini.
     /// </summary>
     public abstract class XTouchMiniController : IAsyncDisposable
-    {        
+    {
         private readonly string portName;
         private IMidiInput inputPort;
         private IMidiOutput outputPort;

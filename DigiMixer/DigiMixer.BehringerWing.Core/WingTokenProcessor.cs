@@ -99,7 +99,7 @@ internal class WingTokenProcessor
                 {
                     readBuffer.Span[unprocessedReadLength++] = WingConstants.Escape;
                     readBuffer.Span[unprocessedReadLength++] = db;
-                }                
+                }
                 continue;
             }
             if (db == WingConstants.Escape)

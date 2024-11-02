@@ -5,7 +5,7 @@ namespace DigiMixer.PeripheralConsole;
 // Taken from https://devblogs.microsoft.com/pfxteam/await-synchronizationcontext-and-console-apps/
 // and https://devblogs.microsoft.com/pfxteam/await-synchronizationcontext-and-console-apps-part-3/
 // with very small modifications.
-internal sealed class SingleThreadSynchronizationContext :  SynchronizationContext
+internal sealed class SingleThreadSynchronizationContext : SynchronizationContext
 {
     private readonly BlockingCollection<KeyValuePair<SendOrPostCallback, object>> m_queue = new BlockingCollection<KeyValuePair<SendOrPostCallback, object>>();
 

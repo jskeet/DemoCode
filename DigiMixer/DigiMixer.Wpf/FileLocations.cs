@@ -63,7 +63,7 @@ internal class FileLocations
         {
             Mixer = new()
             {
-                HardwareType = DigiMixerConfig.MixerHardwareType.Fake,                
+                HardwareType = DigiMixerConfig.MixerHardwareType.Fake,
                 InputChannels =
                 {
                     new() { Id = "Channel 1", Channel = 1, InitiallyVisible = true }

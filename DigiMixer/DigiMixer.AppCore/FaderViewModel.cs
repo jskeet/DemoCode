@@ -1,7 +1,5 @@
-﻿using JonSkeet.CoreAppUtil;
-using DigiMixer;
-using DigiMixer.AppCore;
-using DigiMixer.Core;
+﻿using DigiMixer.Core;
+using JonSkeet.CoreAppUtil;
 using System.ComponentModel;
 
 namespace DigiMixer.AppCore;

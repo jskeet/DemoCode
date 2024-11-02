@@ -12,7 +12,7 @@ internal static class Channels
     internal const int AuxCount = 8;
     internal const int AllInputsCount = WingInputCount + AuxCount;
 
-    internal static ChannelId FirstWingInputChannelId { get; }  = ChannelId.Input(1);
+    internal static ChannelId FirstWingInputChannelId { get; } = ChannelId.Input(1);
     internal static ChannelId FirstAuxChannelId { get; } = ChannelId.Input(WingInputCount + 1);
 
     internal const int MainCount = 4;

@@ -1,7 +1,7 @@
 ﻿using DigiMixer.AppCore;
 using DigiMixer.Controls;
-using JonSkeet.WpfLogging;
 using JonSkeet.CoreAppUtil;
+using JonSkeet.WpfLogging;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
 using System.Windows.Input;

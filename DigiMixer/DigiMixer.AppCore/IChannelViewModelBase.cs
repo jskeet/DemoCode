@@ -1,5 +1,4 @@
-﻿using DigiMixer.AppCore;
-using DigiMixer.Core;
+﻿using DigiMixer.Core;
 using System.ComponentModel;
 
 namespace DigiMixer.AppCore;

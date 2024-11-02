@@ -1,5 +1,5 @@
-﻿using JonSkeet.WpfLogging;
-using JonSkeet.CoreAppUtil;
+﻿using JonSkeet.CoreAppUtil;
+using JonSkeet.WpfLogging;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.Windows;
