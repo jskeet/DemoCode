@@ -94,16 +94,16 @@ internal class StartClient(string JsonFile) : Tool
         await client.Connect(default);
         client.Start();
 
-        //await client.SendAudioEngineTokens([WingToken.RootNode, WingToken.DataRequest], default);
-        await client.SendAudioEngineTokens([WingToken.ForNodeHash(2273546959), WingToken.DataRequest], default);
+        await client.SendAudioEngineTokens([WingToken.RootNode, WingToken.DataRequest], default);
+        //await client.SendAudioEngineTokens([WingToken.ForNodeHash(2273546959), WingToken.DataRequest], default);
 
-        bool mute = true;
+        //bool mute = true;
         while (true)
         {
-            await Task.Delay(500);
-            //await client.SendAudioEngineTokens([WingToken.RootNode], default);
-            await client.SendAudioEngineTokens([WingToken.ForNodeHash(4111428088), WingToken.ForBool(mute)], default);
-            mute = !mute;
+            await Task.Delay(5000);
+            await client.SendAudioEngineTokens([WingToken.RootNode], default);
+            //await client.SendAudioEngineTokens([WingToken.ForNodeHash(4111428088), WingToken.ForBool(mute)], default);
+            //mute = !mute;
         }
 
         //return 0;

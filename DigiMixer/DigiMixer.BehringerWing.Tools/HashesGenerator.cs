@@ -2,6 +2,7 @@
 using DigiMixer.Diagnostics;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Immutable;
 
 namespace DigiMixer.BehringerWing.Tools;
 
@@ -25,7 +26,7 @@ public class HashesGenerator(string JsonFile, string OutputFile) : Tool
         var inputs = inputPrefixes
             .Select((prefix, index) => new InputChannelHashes(
                 ChannelId.Input(index + 1),
-                nameToHash[$"{prefix}.name"],
+                nameToHash[$"{prefix}.$name"],
                 nameToHash[$"{prefix}.fdr"],
                 nameToHash[$"{prefix}.mute"],
                 nameToHash[$"{prefix}.in.set.$mode"],
@@ -56,6 +57,9 @@ public class HashesGenerator(string JsonFile, string OutputFile) : Tool
             writer.WriteLine($"        new(ChannelId.Input({input.Id.Value}), {input.Name}, {input.Fader}, {input.Mute}, {input.StereoMode}, [{string.Join(", ", input.OutputLevels)}]),");
         }
         writer.WriteLine("    ];");
+        writer.WriteLine();
+        writer.WriteLine("    internal static ImmutableDictionary<ChannelId, InputChannelHashes> AllInputsByChannelId { get; } =");
+        writer.WriteLine("        InputChannelHashes.AllInputs.ToImmutableDictionary(ch => ch.Id);");
         writer.WriteLine("}");
         writer.WriteLine();
         writer.WriteLine("internal partial record OutputChannelHashes");
@@ -67,6 +71,9 @@ public class HashesGenerator(string JsonFile, string OutputFile) : Tool
             writer.WriteLine($"        new(ChannelId.Output({output.Id.Value}), {output.Name}, {output.Fader}, {output.Mute}),");
         }
         writer.WriteLine("    ];");
+        writer.WriteLine();
+        writer.WriteLine("    internal static ImmutableDictionary<ChannelId, OutputChannelHashes> AllOutputsByChannelId { get; } =");
+        writer.WriteLine("        AllOutputs.ToImmutableDictionary(ch => ch.Id);");
         writer.WriteLine("}");
 
         return Task.FromResult(0);

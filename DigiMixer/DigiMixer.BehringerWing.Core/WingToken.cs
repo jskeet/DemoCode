@@ -32,7 +32,7 @@ public sealed class WingToken
     public static WingToken ForString(string value) => new(WingTokenType.String, value);
     public static WingToken ForNodeName(string value) => new(WingTokenType.NodeName, value);
     public static WingToken ForStep(byte value) => new(WingTokenType.Step, value);
-    public static WingToken ForBool(bool value) => new(value ? WingTokenType.TrueOnOne : WingTokenType.FalseOffZero);
+    public static WingToken ForBool(bool value) => value ? TrueOnOne : FalseOffZero;
     public static WingToken? ForNodeDefinition(WingNodeDefinition definition) => new(WingTokenType.NodeDefinition, definition);
 
     public WingTokenType Type { get; }
