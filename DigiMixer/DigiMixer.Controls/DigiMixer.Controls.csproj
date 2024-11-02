@@ -8,18 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\IconPlatform\IconPlatform.Model\IconPlatform.Model.csproj" />
     <ProjectReference Include="..\..\WpfUtil\JonSkeet.WpfUtil\JonSkeet.WpfUtil.csproj" />
-    <ProjectReference Include="..\..\XTouchMini\XTouchMini.Model\XTouchMini.Model.csproj" />
     <ProjectReference Include="..\DigiMixer.AppCore\DigiMixer.AppCore.csproj" />
-    <ProjectReference Include="..\DigiMixer.CqSeries\DigiMixer.CqSeries.csproj" />
-    <ProjectReference Include="..\DigiMixer.DmSeries\DigiMixer.DmSeries.csproj" />
-    <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />
-    <ProjectReference Include="..\DigiMixer.Osc\DigiMixer.Osc.csproj" />
-    <ProjectReference Include="..\DigiMixer.QuSeries\DigiMixer.QuSeries.csproj" />
-    <ProjectReference Include="..\DigiMixer.UCNet\DigiMixer.UCNet.csproj" />
-    <ProjectReference Include="..\DigiMixer.UiHttp\DigiMixer.UiHttp.csproj" />
-    <ProjectReference Include="..\DigiMixer\DigiMixer.csproj" />
   </ItemGroup>
 
 </Project>

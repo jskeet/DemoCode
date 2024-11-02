@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 
+    - The DigiMixer.Hardware project is a single project containing the source code from
+    - all the individual mixer implementations. The intention is that higher level projects
+    - (notably DigiMixer.AppCore) can add a project dependency just on DigiMixer.Hardware,
+    - and still use all the mixer implementations. This allows the inclusion of far fewer
+    - DigiMixer projects in other solutions.
+    -->
+  
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigiMixer.Core\DigiMixer.Core.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="SharpZipLib" Version="1.4.1" />
+    <PackageReference Include="OscCore" Version="1.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DigiMixer.BehringerWing\*.cs" />
+    <Compile Include="..\DigiMixer.BehringerWing.Core\*.cs" />
+    <Compile Include="..\DigiMixer.CqSeries\*.cs" />
+    <Compile Include="..\DigiMixer.CqSeries.Core\*.cs" />
+    <Compile Include="..\DigiMixer.DmSeries\*.cs" />
+    <Compile Include="..\DigiMixer.DmSeries.Core\*.cs" />
+    <Compile Include="..\DigiMixer.Mackie\*.cs" />
+    <Compile Include="..\DigiMixer.Mackie.Core\*.cs" />
+    <Compile Include="..\DigiMixer.Osc\*.cs" />
+    <Compile Include="..\DigiMixer.QuSeries\*.cs" />
+    <Compile Include="..\DigiMixer.QuSeries.Core\*.cs" />
+    <Compile Include="..\DigiMixer.UCNet\*.cs" />
+    <Compile Include="..\DigiMixer.UCNet.Core\*.cs" />
+    <Compile Include="..\DigiMixer.UCNet.Core\Messages\*.cs" />
+    <Compile Include="..\DigiMixer.UiHttp\*.cs" />
+  </ItemGroup>
+
+</Project>
