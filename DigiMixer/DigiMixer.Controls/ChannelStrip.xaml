@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:appcore="clr-namespace:DigiMixer.Controls;assembly=DigiMixer.AppCore"
+             xmlns:appcore="clr-namespace:DigiMixer.AppCore;assembly=DigiMixer.AppCore"
              xmlns:local="clr-namespace:DigiMixer.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance appcore:IChannelViewModelBase}"             
