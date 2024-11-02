@@ -9,6 +9,7 @@
     <ProjectReference Include="..\..\IconPlatform\IconPlatform.Model\IconPlatform.Model.csproj" />
     <ProjectReference Include="..\..\WpfUtil\JonSkeet.CoreAppUtil\JonSkeet.CoreAppUtil.csproj" />
     <ProjectReference Include="..\..\XTouchMini\XTouchMini.Model\XTouchMini.Model.csproj" />
+    <ProjectReference Include="..\DigiMixer.BehringerWing\DigiMixer.BehringerWing.csproj" />
     <ProjectReference Include="..\DigiMixer.CqSeries\DigiMixer.CqSeries.csproj" />
     <ProjectReference Include="..\DigiMixer.DmSeries\DigiMixer.DmSeries.csproj" />
     <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />

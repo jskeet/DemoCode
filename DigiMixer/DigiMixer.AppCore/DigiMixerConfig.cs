@@ -1,4 +1,5 @@
-﻿using DigiMixer.Core;
+﻿using DigiMixer.BehringerWing;
+using DigiMixer.Core;
 using DigiMixer.CqSeries;
 using DigiMixer.DmSeries;
 using DigiMixer.Mackie;
@@ -103,6 +104,7 @@ public class DigiMixerConfig
             MixerHardwareType.StudioLive => StudioLive.CreateMixerApi(logger, Address, Port ?? 53000, options),
             MixerHardwareType.AllenHeathCq => CqMixer.CreateMixerApi(logger, Address, Port ?? 51326, options),
             MixerHardwareType.YamahaDm => DmMixer.CreateMixerApi(logger, Address, Port ?? 50368, options),
+            MixerHardwareType.BehringerWing => WingMixer.CreateMixerApi(logger, Address, Port ?? 2222, options),
             _ => throw new InvalidOperationException($"Unknown mixer type: {HardwareType}")
         };
     }
@@ -123,6 +125,7 @@ public class DigiMixerConfig
         MackieDL,
         StudioLive,
         AllenHeathCq,
-        YamahaDm
+        YamahaDm,
+        BehringerWing
     }
 }

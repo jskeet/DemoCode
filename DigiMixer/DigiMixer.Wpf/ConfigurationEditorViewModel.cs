@@ -19,6 +19,7 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
     {
         ("Behringer X-Air (XR-12, XR-16, XR-18)", MHT.XAir),
         ("Behringer X-32 / Midas M-32", MHT.X32),
+        ("Behringer Wing", MHT.BehringerWing),
         ("Mackie DL series", MHT.MackieDL),
         ("Allen & Heath Qu series", MHT.AllenHeathQu),
         ("Allen & Heath Cq series", MHT.AllenHeathCq),
