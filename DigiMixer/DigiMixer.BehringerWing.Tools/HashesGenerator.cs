@@ -13,12 +13,12 @@ public class HashesGenerator(string JsonFile, string OutputFile) : Tool
         string json = File.ReadAllText(JsonFile);
         var nameToHash = JsonConvert.DeserializeObject<Dictionary<string, uint>>(json)!;
 
-        var inputPrefixes = Enumerable.Range(1, 40).Select(i => $"ch.{i}")
-            .Concat(Enumerable.Range(1, 8).Select(i => $"aux.{i}"))
+        var inputPrefixes = Enumerable.Range(1, Channels.WingInputCount).Select(i => $"ch.{i}")
+            .Concat(Enumerable.Range(1, Channels.AuxCount).Select(i => $"aux.{i}"))
             .ToList();
 
-        var outputPrefixes = Enumerable.Range(1, 4).Select(i => $"main.{i}")
-            .Concat(Enumerable.Range(1, 16).Select(i => $"bus.{i}"))
+        var outputPrefixes = Enumerable.Range(1, Channels.MainCount).Select(i => $"main.{i}")
+            .Concat(Enumerable.Range(1, Channels.BusCount).Select(i => $"bus.{i}"))
             .ToList();
 
         var outputsForInputs = outputPrefixes.Select(op => op.Replace("bus", "send"));

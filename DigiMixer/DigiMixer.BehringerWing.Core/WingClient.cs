@@ -46,9 +46,11 @@ public sealed class WingClient : TcpControllerBase
         }
     }
 
-    // TODO: Build these into a single buffer and send in one go.
     public Task SendAudioEngineTokens(IEnumerable<WingToken> tokens, CancellationToken cancellationToken) =>
         SendTokens(WingProtocolChannel.AudioEngine, tokens, cancellationToken);
+
+    public Task SendMeterRequest(WingMeterRequest request, CancellationToken cancellationToken) =>
+        SendTokens(WingProtocolChannel.MeterDataRequests, [WingToken.ForMeterRequest(request)], cancellationToken);
 
     private async Task SendTokens(WingProtocolChannel channel, IEnumerable<WingToken> tokens, CancellationToken cancellationToken)
     {

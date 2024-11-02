@@ -20,5 +20,7 @@ public enum WingTokenType
     DataRequest,
     DefinitionRequest,
     EndOfRequest,
-    NodeDefinition
+    NodeDefinition,
+    // This is never received, only sent.
+    MeterRequest
 }

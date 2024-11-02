@@ -17,6 +17,14 @@ public class WingMixer
 internal class WingMixerApi : IMixerApi
 {
     private static DbFaderScale DbFaderScale { get; } = new(-89.5, -40, -30, -20, -10, -5, -1, 5, 10);
+    // Currently we always use a report ID of 0x44 0x69 0x67 0x69 ("Digi" in ASCII)
+    private static WingMeterRequest MeterRequestNoPort = new(UdpPort: null, ReportId: 0x44696769,
+        [
+            new(WingMeterType.InputChannelV2, [.. Enumerable.Range(1, Channels.WingInputCount)]),
+            new(WingMeterType.AuxV2, [.. Enumerable.Range(1, Channels.AuxCount)]),
+            new(WingMeterType.MainV2, [.. Enumerable.Range(1, Channels.MainCount)]),
+            new(WingMeterType.BusV2, [.. Enumerable.Range(1, Channels.BusCount)]),
+        ]);
 
     private readonly DelegatingReceiver receiver = new();
     private readonly ILogger logger;
@@ -27,12 +35,13 @@ internal class WingMixerApi : IMixerApi
 
     private CancellationTokenSource? cts;
     private WingClient? controlClient;
+    private WingMeterClient? meterClient;
 
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(4);
     public IFaderScale FaderScale => DbFaderScale;
     private Queue<TaskCompletionSource> dataRequestCompletions = new();
 
-    // This is only used during DetectConfiguration, but it's simpler to accumulate
+    // This is used during DetectConfiguration, but it's simpler to accumulate
     // state in general than to add actions that are only used temporarily.
     // This doesn't include output channels: all output channels are assumed to be stereo.
     private Dictionary<ChannelId, bool> monoOrStereoChannels = new();
@@ -82,6 +91,40 @@ internal class WingMixerApi : IMixerApi
         string? EmptyToNull(string text) => text == "" ? null : text;
     }
 
+    private void HandleMeterMessage(object? sender, WingMeterMessage message)
+    {
+        // We report stereo values for all channels, even if they're not actually stereo.
+        var stereoCount = Channels.AllInputsCount + Channels.AllOutputsCount;
+        var channelMeterPairs = new (ChannelId, MeterLevel)[stereoCount * 2];
+
+        int pairsIndex = 0;
+        PopulateData(WingMeterType.InputChannelV2, Channels.WingInputCount, Channels.FirstWingInputChannelId,
+            data => data.InputLeft, data => data.InputRight);
+        PopulateData(WingMeterType.AuxV2, Channels.AuxCount, Channels.FirstAuxChannelId,
+            data => data.InputLeft, data => data.InputRight);
+        PopulateData(WingMeterType.MainV2, Channels.MainCount, Channels.FirstMainChannelId,
+            data => data.OutputLeft, data => data.OutputRight);
+        PopulateData(WingMeterType.BusV2, Channels.BusCount, Channels.FirstBusChannelId,
+            data => data.OutputLeft, data => data.OutputRight);
+
+        void PopulateData(WingMeterType meterType, int count, ChannelId firstChannel,
+            Func<WingMeterMessage.ChannelV2Data, short> leftSelector, Func<WingMeterMessage.ChannelV2Data, short> rightSelector)
+        {
+            ChannelId channel = firstChannel;
+            int offset = MeterRequestNoPort.GetFirstDataOffset(meterType);
+            for (int i = 0; i < count; i++)
+            {
+                var data = message.GetChannelV2(offset, i);
+                channelMeterPairs[pairsIndex++] = (channel, ConvertToMeterLevel(leftSelector(data)));
+                channelMeterPairs[pairsIndex++] = (Channels.RightStereoChannel(channel), ConvertToMeterLevel(rightSelector(data)));
+                channel = channel.WithValue(channel.Value + 1);
+            }
+        }
+        receiver.ReceiveMeterLevels(channelMeterPairs);
+
+        MeterLevel ConvertToMeterLevel(short value) => MeterLevel.FromDb(value / 256.0);
+    }
+
     public async Task Connect(CancellationToken cancellationToken)
     {
         Dispose();
@@ -92,8 +135,13 @@ internal class WingMixerApi : IMixerApi
         await controlClient.Connect(cancellationToken);
         controlClient.Start();
 
+        meterClient = new WingMeterClient(logger);
+        meterClient.MessageReceived += HandleMeterMessage;
+        meterClient.Start();
+
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         await controlClient.SendAudioEngineTokens([WingToken.RootNode], linkedCts.Token);
+        await controlClient.SendMeterRequest(MeterRequestNoPort with { UdpPort = meterClient.LocalUdpPort }, linkedCts.Token);
     }
 
     private void HandleAudioEngineToken(object? sender, WingToken token)
@@ -130,13 +178,13 @@ internal class WingMixerApi : IMixerApi
 
         var stereoLeftInputChannels = monoOrStereoChannels.Where(pair => pair.Value).Select(pair => pair.Key);
 
-        var inputChannels = Hashes.AllInputChannels.Concat(stereoLeftInputChannels.Select(RightStereoChannel));
-        var outputChannels = Hashes.AllOutputChannels
-            .Concat(Hashes.AllOutputChannels.Select(RightStereoChannel))
+        var inputChannels = Channels.AllInputChannels.Concat(stereoLeftInputChannels.Select(Channels.RightStereoChannel));
+        var outputChannels = Channels.AllOutputChannels
+            .Concat(Channels.AllOutputChannels.Select(Channels.RightStereoChannel))
             // We need this as an output so we can use the "Main LR" faders. But we don't actually want to see a fader/meter for it. Bit weird.
             .Append(ChannelId.MainOutputLeft);
-        var stereoPairs = stereoLeftInputChannels.Concat(Hashes.AllOutputChannels)
-            .Select(left => new StereoPair(left, RightStereoChannel(left), StereoFlags.None));
+        var stereoPairs = stereoLeftInputChannels.Concat(Channels.AllOutputChannels)
+            .Select(left => new StereoPair(left, Channels.RightStereoChannel(left), StereoFlags.None));
         return new(inputChannels, outputChannels, stereoPairs);
     }
 
@@ -151,7 +199,7 @@ internal class WingMixerApi : IMixerApi
         }
         var completeTcs = new TaskCompletionSource();
         dataRequestCompletions.Enqueue(completeTcs);
-        await SendTokens([WingToken.RootNode, WingToken.DataRequest], cancellationToken);
+        await controlClient.SendAudioEngineTokens([WingToken.RootNode, WingToken.DataRequest], cancellationToken);
         using (cancellationToken.Register(() => completeTcs.TrySetCanceled()))
         {
             await completeTcs.Task;
@@ -190,22 +238,17 @@ internal class WingMixerApi : IMixerApi
     {
         if (controlClient is not null && cts is not null)
         {
-            // TODO: Send a meter request instead, when we've implemented metering.
-            // Hopefully sending this token won't be harmful, but there's no genuine "no-op" as far as I can tell.
-            await controlClient.SendAudioEngineTokens([WingToken.EndOfRequest], cts.Token);
+            await controlClient.SendMeterRequest(MeterRequestNoPort, cts.Token);
         }
     }
 
-    private Task SetNodeValue(uint nodeHash, WingToken value) =>
-        SendTokens([WingToken.ForNodeHash(nodeHash), value], null);
-
-    private async Task SendTokens(IEnumerable<WingToken> tokens, CancellationToken? cancellationToken)
+    private async Task SetNodeValue(uint nodeHash, WingToken value)
     {
-        CancellationToken ct = cancellationToken ?? cts?.Token ?? default;
-        if (controlClient is not null)
+        if (controlClient is null)
         {
-            await controlClient.SendAudioEngineTokens(tokens, ct);
+            return;
         }
+        await controlClient.SendAudioEngineTokens([WingToken.ForNodeHash(nodeHash), value], cts?.Token ?? default);
     }
 
     public Task<bool> CheckConnection(CancellationToken cancellationToken)
@@ -227,8 +270,4 @@ internal class WingMixerApi : IMixerApi
         controlClient?.Dispose();
         controlClient = null;
     }
-
-    // We model the "right" channels as the "left" channels + 1000, with a hope that nothing assumes
-    // they're contiguous.
-    private static ChannelId RightStereoChannel(ChannelId left) => left.WithValue(left.Value + 1000);
 }

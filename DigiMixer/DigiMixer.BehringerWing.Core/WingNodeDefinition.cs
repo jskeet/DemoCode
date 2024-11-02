@@ -1,5 +1,4 @@
 ﻿using System.Buffers.Binary;
-using System.Text;
 
 namespace DigiMixer.BehringerWing.Core;
 
@@ -38,8 +37,6 @@ public sealed class WingNodeDefinition
         return new(parentHash, nodeHash, nodeIndex, name, longName, flags);
     }
 
-    public int CopyTo(Span<byte> span)
-    {
-        throw new NotImplementedException();
-    }
+    // We don't current send node definitions, so we don't need to be able to serialize them.
+    internal int CopyTo(Span<byte> span) => throw new NotImplementedException();
 }

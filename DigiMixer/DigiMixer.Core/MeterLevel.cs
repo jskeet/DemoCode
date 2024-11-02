@@ -3,9 +3,8 @@
 namespace DigiMixer.Core;
 
 /// <summary>
-/// FIXME
 /// The level of a meter, e.g. the current output of a channel,
-/// with a maximum level of 0dB.
+/// with a maximum level of 0dB. The range is 0.0 to 1.0.
 /// </summary>
 public struct MeterLevel : IEquatable<MeterLevel>, IComparable<MeterLevel>
 {
@@ -57,4 +56,6 @@ public struct MeterLevel : IEquatable<MeterLevel>, IComparable<MeterLevel>
     public static bool operator <(MeterLevel left, MeterLevel right) => left.Value < right.Value;
     public static bool operator >=(MeterLevel left, MeterLevel right) => left.Value >= right.Value;
     public static bool operator <=(MeterLevel left, MeterLevel right) => left.Value <= right.Value;
+
+    public override string ToString() => Value.ToString();
 }

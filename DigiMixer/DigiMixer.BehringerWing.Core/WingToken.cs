@@ -34,6 +34,7 @@ public sealed class WingToken
     public static WingToken ForStep(byte value) => new(WingTokenType.Step, value);
     public static WingToken ForBool(bool value) => value ? TrueOnOne : FalseOffZero;
     public static WingToken? ForNodeDefinition(WingNodeDefinition definition) => new(WingTokenType.NodeDefinition, definition);
+    public static WingToken ForMeterRequest(WingMeterRequest request) => new(WingTokenType.MeterRequest, request);
 
     public WingTokenType Type { get; }
 
@@ -70,6 +71,7 @@ public sealed class WingToken
     public string StringValue => ValidateType(WingTokenType.String, objectValue as string)!;
     public string NodeName => ValidateType(WingTokenType.NodeName, objectValue as string)!;
     public WingNodeDefinition NodeDefinition => ValidateType(WingTokenType.NodeDefinition, objectValue as WingNodeDefinition)!;
+    public WingMeterRequest MeterRequest => ValidateType(WingTokenType.MeterRequest, objectValue as WingMeterRequest)!;
     public byte Step => ValidateType(WingTokenType.Step, (byte) int32Value);
 
     /// <summary>
@@ -171,6 +173,8 @@ public sealed class WingToken
                 return 1;
             case WingTokenType.NodeDefinition:
                 return NodeDefinition.CopyTo(span);
+            case WingTokenType.MeterRequest:
+                return MeterRequest.CopyTo(span);
             default:
                 throw new InvalidOperationException($"Unknown token type {Type}");
         }
