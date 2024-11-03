@@ -64,7 +64,7 @@ internal class WingMixerApi : IMixerApi
         Register(Hashes.AllChannelHashes, hash => hash.Name, (id, token) => receiver.ReceiveChannelName(id, EmptyToNull(token.StringValue)));
         Register(Hashes.AllChannelHashes, hash => hash.Mute, (id, token) => receiver.ReceiveMuteStatus(id, token.BoolValue));
         // We treat mid/side as stereo.
-        Register(InputChannelHashes.AllInputs, hash => hash.StereoMode, (id, token) => monoOrStereoChannels[id] = token.StringValue == "MONO");
+        Register(InputChannelHashes.AllInputs, hash => hash.StereoMode, (id, token) => monoOrStereoChannels[id] = token.StringValue != "M");
         Register(InputChannelHashes.AllInputs, hash => hash.Fader, (id, token) => receiver.ReceiveFaderLevel(id, ChannelId.MainOutputLeft, DbFaderScale.ConvertToFaderLevel(token.Float32Value)));
         Register(OutputChannelHashes.AllOutputs, hash => hash.Fader, (id, token) => receiver.ReceiveFaderLevel(id, DbFaderScale.ConvertToFaderLevel(token.Float32Value)));
 
