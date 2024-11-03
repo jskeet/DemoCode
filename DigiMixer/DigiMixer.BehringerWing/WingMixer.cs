@@ -33,6 +33,7 @@ internal class WingMixerApi : IMixerApi
     private readonly MixerApiOptions options;
     private readonly ImmutableDictionary<uint, Action<WingToken>> valueActionsByHash;
 
+    private MixerInfo mixerInfo = MixerInfo.Empty;
     private CancellationTokenSource? cts;
     private WingClient? controlClient;
     private WingMeterClient? meterClient;
@@ -75,6 +76,10 @@ internal class WingMixerApi : IMixerApi
                 builder[inputHash.OutputLevels[outputIndex]] = token => receiver.ReceiveFaderLevel(inputHash.Id, outputId, DbFaderScale.ConvertToFaderLevel(token.Float32Value));
             }
         }
+        // Mixer info
+        builder[Hashes.ConsoleName] = token => receiver.ReceiveMixerInfo(mixerInfo = mixerInfo with { Name = token.StringValue });
+        builder[Hashes.FirmwareVersion] = token => receiver.ReceiveMixerInfo(mixerInfo = mixerInfo with { Version = token.StringValue });
+        builder[Hashes.ConsoleModel] = token => receiver.ReceiveMixerInfo(mixerInfo = mixerInfo with { Model = token.StringValue });
 
         return builder.ToImmutable();
 

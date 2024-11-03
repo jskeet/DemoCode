@@ -28,4 +28,8 @@ internal static class Hashes
 
     internal static ImmutableDictionary<ChannelId, IChannelHashes> AllChannelHashesByChannelId { get; } =
         AllChannelHashes.ToImmutableDictionary(ch => ch.Id);
+
+    internal const uint ConsoleModel = 2555849122;    // $syscfg.cnsmdl - e.g. "wing-rack"
+    internal const uint FirmwareVersion = 2657714525; // $syscfg.$firmware - e.g. "3.0.4-0-g5f8d3e8f:release"
+    internal const uint ConsoleName = 3385532640;     // $syscfg.consolename - e.g. "ShedWing"
 }
