@@ -28,4 +28,18 @@ public class OutputChannelViewModel : ChannelViewModelBase<OutputChannel>
     }
 
     protected override IEnumerable<OutputChannel> GetChannels(Mixer mixer) => mixer.OutputChannels;
+
+    // Hack for Behringer Wing. See DigiMixerViewModel constructor for details.
+    public void RemoveOverallOutputFader()
+    {
+        var firstFader = Faders.FirstOrDefault();
+        if (firstFader is null)
+        {
+            return;
+        }
+        if (firstFader.InputChannelId is null)
+        {
+            Faders = Faders.Skip(1).ToReadOnlyList();
+        }
+    }
 }

@@ -112,10 +112,6 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
         OverallOutputChannels = config.OutputChannels.ToReadOnlyList(mapping => new OutputChannelViewModel(mapping));
         InputsWithNoFaders = config.InputChannels.ToReadOnlyList(mapping => new InputChannelViewModel(mapping, null, null));
 
-        InputsGroup = new ChannelGroupViewModel("Inputs", InputChannels, true);
-        OutputsWithInputsGroup = new ChannelGroupViewModel("Outputs", OutputChannels, false);
-        OverallOutputsGroup = new ChannelGroupViewModel("Outputs", OverallOutputChannels, true);
-        InputsMuteAndMeterGroup = new ChannelGroupViewModel("Inputs", InputsWithNoFaders, false);
         foreach (var inputChannel in InputChannels)
         {
             inputChannel.SetFaders(OutputChannels);
@@ -129,6 +125,33 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             outputChannel.SetFaders(Enumerable.Empty<InputChannelViewModel>());
         }
         // No SetFaders call for InputsWithNoFaders
+
+        // START OF HACK
+        // The Wing has a "Main LR" channel which doesn't have its own overall fader, mute or meter.
+        // We don't want to show those UI elements, but it's an odd thing to model on its own.
+        // For the moment, we detect that we're using a Wing and just handle things appropriately.
+        if (Config.HardwareType == DigiMixerConfig.MixerHardwareType.BehringerWing)
+        {
+            // Note: no change for InputChannels, as we *want* the fader there.
+            // Remove the "overall output" fader, meters and mute for Main LR when grouping by output.
+            foreach (var outputChannel in OutputChannels)
+            {
+                if (outputChannel.ChannelId.IsMainOutput)
+                {
+                    outputChannel.RemoveOverallOutputFader();
+                    outputChannel.HasMeters = false;
+                    outputChannel.HasMute = false;
+                }
+            }
+            // Remove the whole "overall output" element when grouping by output.
+            OverallOutputChannels = OverallOutputChannels.Where(c => !c.ChannelId.IsMainOutput).ToReadOnlyList();
+        }
+        // END OF HACK
+
+        InputsGroup = new ChannelGroupViewModel("Inputs", InputChannels, true);
+        OutputsWithInputsGroup = new ChannelGroupViewModel("Outputs", OutputChannels, false);
+        OverallOutputsGroup = new ChannelGroupViewModel("Outputs", OverallOutputChannels, true);
+        InputsMuteAndMeterGroup = new ChannelGroupViewModel("Inputs", InputsWithNoFaders, false);
 
         Task mixerCreationTask = CreateMixer();
         mixerCreationTask.ContinueWith(task => logger.LogError("Mixer creation task failed"), TaskContinuationOptions.NotOnRanToCompletion);
