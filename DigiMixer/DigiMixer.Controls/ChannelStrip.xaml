@@ -33,12 +33,12 @@
         <!-- TODO: Get this to actually collapse properly. It goes half way back, but not all the way. -->
         <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap" x:Name="title" MaxWidth="{Binding ActualWidth, ElementName=metersAndFaders}" HorizontalAlignment="Stretch" />
         <StackPanel Grid.Row="1" Margin="0,5,0,0" Orientation="Horizontal" MinWidth="75" x:Name="metersAndFaders">
-            <Grid Width="5" Margin="3,3,0,3">
+            <Grid Width="5" Margin="3,3,0,3" Visibility="{Binding HasLeftMeter, Converter={StaticResource FalseIsHiddenVisibilityConverter}}">
                 <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding PeakOutput.Value, Mode=OneWay}"  />
                 <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding Output.Value, Mode=OneWay}" />
             </Grid>
 
-            <Grid Width="5" Margin="3,3,0,3" Visibility="{Binding IsStereo, Converter={StaticResource MeterVisibilityConverter}}">
+            <Grid Width="5" Margin="3,3,0,3" Visibility="{Binding HasRightMeter, Converter={StaticResource FalseIsHiddenVisibilityConverter}}">
                 <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding StereoPeakOutput.Value, Mode=OneWay}"  />
                 <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding StereoOutput.Value, Mode=OneWay}" />
             </Grid>
@@ -60,6 +60,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
-        <CheckBox Grid.Row="2" IsChecked="{Binding Muted}" Margin="0,5,0,0">Muted</CheckBox>
+        <CheckBox Grid.Row="2" IsChecked="{Binding Muted}" Margin="0,5,0,0" Visibility="{Binding HasMute, Converter={StaticResource FalseIsHiddenVisibilityConverter}}">Muted</CheckBox>
     </Grid>
 </UserControl>

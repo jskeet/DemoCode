@@ -9,7 +9,7 @@ namespace DigiMixer.AppCore;
 public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModelBase where T : ChannelBase
 {
     private T channel;
-    [RelatedProperties(nameof(DisplayName), nameof(Output), nameof(StereoOutput), nameof(IsStereo), nameof(Muted))]
+    [RelatedProperties(nameof(DisplayName), nameof(Output), nameof(StereoOutput), nameof(Muted), nameof(HasMute), nameof(HasMeters))]
     private T Channel
     {
         get => channel;
@@ -32,7 +32,22 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
     public string DisplayName { get; }
     public string ShortName { get; }
 
-    public bool IsStereo => Channel?.IsStereo ?? false;
+    /// <summary>
+    /// Whether this channel has mute capabilities.
+    /// If this is false, the mute button should not be shown.
+    /// </summary>
+    public bool HasMute { get; set; } = true;
+
+    /// <summary>
+    /// Whether this channel supports meters. The <see cref="HasLeftMeter"/> and <see cref="HasRightMeter"/>
+    /// are convenience properties for view purposes, combining <see cref="HasMeters"/> and (for the right meter)
+    /// whether the channel is stereo.
+    /// </summary>
+    [RelatedProperties(nameof(HasLeftMeter), nameof(HasRightMeter))]
+    public bool HasMeters { get; set; } = true;
+    public bool HasLeftMeter => HasMeters;
+    public bool HasRightMeter => HasMeters && (Channel?.IsStereo ?? false);
+
     public MeterLevel Output => Channel?.MeterLevel ?? default;
     public MeterLevel StereoOutput => Channel?.StereoMeterLevel ?? default;
 
@@ -135,9 +150,6 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
     }
 
     protected abstract IEnumerable<T> GetChannels(Mixer mixer);
-
-    protected void UpdateChannel(IEnumerable<T> channels) =>
-        Channel = channels.FirstOrDefault(ch => ch.LeftOrMonoChannelId == ChannelId);
 
     private void HandleChannelPropertyChanged(object sender, PropertyChangedEventArgs e)
     {

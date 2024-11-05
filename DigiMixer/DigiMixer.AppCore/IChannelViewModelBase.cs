@@ -9,11 +9,14 @@ public interface IChannelViewModelBase : INotifyPropertyChanged
     string DisplayName { get; }
     string ShortName { get; }
 
-    bool IsStereo { get; }
+    bool HasLeftMeter { get; }
+    bool HasRightMeter { get; }
+    bool HasMute { get; }
+    // TODO: Potentially change Output/StereoOutput to LeftMeterLevel and RightMeterLevel, ditto peaks.
     MeterLevel Output { get; }
     MeterLevel StereoOutput { get; }
-    public MeterLevel PeakOutput { get; }
-    public MeterLevel StereoPeakOutput { get; }
-    public bool Muted { get; set; }
-    public IReadOnlyList<FaderViewModel> Faders { get; }
+    MeterLevel PeakOutput { get; }
+    MeterLevel StereoPeakOutput { get; }
+    bool Muted { get; set; }
+    IReadOnlyList<FaderViewModel> Faders { get; }
 }

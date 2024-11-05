@@ -9,6 +9,5 @@
     
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
     <utils:BooleanToBrushConverter x:Key="ChannelBorderConverter" TrueBrush="{StaticResource ChannelBorderMuted}" FalseBrush="{StaticResource ChannelBorderUnmuted}" />
-    <utils:ConfigurableBooleanToVisibilityConverter x:Key="MeterVisibilityConverter" FalseVisibility="Hidden"/>
-    <utils:ConfigurableBooleanToVisibilityConverter x:Key="FaderVisibilityConverter" FalseVisibility="Collapsed"/>
+    <utils:ConfigurableBooleanToVisibilityConverter x:Key="FalseIsHiddenVisibilityConverter" FalseVisibility="Hidden"/>
 </ResourceDictionary>
