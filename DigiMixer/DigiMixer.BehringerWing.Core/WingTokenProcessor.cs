@@ -63,7 +63,7 @@ internal class WingTokenProcessor
         {
             span[escapedLength++] = nonEscapedSpan[i];
             if (nonEscapedSpan[i] == WingConstants.Escape &&
-                (i == nonEscapedLength - 1 || (nonEscapedSpan[i + 1] >= WingConstants.MinProtocolChannelChange && nonEscapedSpan[i + 1] <= WingConstants.MaxProtocolChannelChange)))
+                (i == nonEscapedLength - 1 || (nonEscapedSpan[i + 1] >= WingConstants.MinValueToEscape && nonEscapedSpan[i + 1] <= WingConstants.MaxValueToEscape)))
             {
                 span[escapedLength++] = WingConstants.EscapedEscape;
             }
