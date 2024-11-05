@@ -4,16 +4,25 @@ namespace DigiMixer.BehringerWing.Core;
 
 public sealed class WingNodeDefinition
 {
-    public int ParentHash { get; }
-    public int NodeHash { get; }
-    public int NodeIndex { get; }
+    /// <summary>
+    /// A fake node definition for convenience.
+    /// </summary>
+    public static WingNodeDefinition Root { get; } = new WingNodeDefinition(0, 0, 0, "Root", "", 0);
+
+    public uint ParentHash { get; }
+    public uint NodeHash { get; }
+    public ushort NodeIndex { get; }
     public string Name { get; }
     public string LongName { get; }
-    // TODO: Rework this
-    public int Flags { get; }
+    public ushort Flags { get; }
     // TODO: Enums etc
 
-    private WingNodeDefinition(int parentHash, int nodeHash, int nodeIndex, string name, string longName, int flags)
+    public WingNodeType Type => (WingNodeType) ((Flags & 0xf0) >> 4);
+    public WingNodeUnit Units => (WingNodeUnit) (Flags & 0x0f);
+    public bool IsReadOnly => (Flags & 0x100) != 0;
+    public bool IsNode => Type == WingNodeType.Node;
+
+    private WingNodeDefinition(uint parentHash, uint nodeHash, ushort nodeIndex, string name, string longName, ushort flags)
     {
         ParentHash = parentHash;
         NodeHash = nodeHash;
@@ -25,14 +34,14 @@ public sealed class WingNodeDefinition
 
     internal static WingNodeDefinition Parse(ReadOnlySpan<byte> data)
     {
-        var parentHash = BinaryPrimitives.ReadInt32BigEndian(data);
-        var nodeHash = BinaryPrimitives.ReadInt32BigEndian(data[4..]);
-        var nodeIndex = BinaryPrimitives.ReadInt16BigEndian(data[6..]);
-        int nameLength = data[8];
-        string name = WingConstants.Encoding.GetString(data.Slice(9, nameLength));
-        int longNameLength = data[9 + nameLength];
-        string longName = WingConstants.Encoding.GetString(data.Slice(10 + nameLength, longNameLength));
-        var flags = BinaryPrimitives.ReadInt16BigEndian(data[(10 + nameLength + longNameLength)..]);
+        var parentHash = BinaryPrimitives.ReadUInt32BigEndian(data);
+        var nodeHash = BinaryPrimitives.ReadUInt32BigEndian(data[4..]);
+        var nodeIndex = BinaryPrimitives.ReadUInt16BigEndian(data[8..]);
+        int nameLength = data[10];
+        string name = WingConstants.Encoding.GetString(data.Slice(11, nameLength));
+        int longNameLength = data[11 + nameLength];
+        string longName = WingConstants.Encoding.GetString(data.Slice(12 + nameLength, longNameLength));
+        var flags = BinaryPrimitives.ReadUInt16BigEndian(data[(12 + nameLength + longNameLength)..]);
         // TODO: Post-flags enums etc
         return new(parentHash, nodeHash, nodeIndex, name, longName, flags);
     }

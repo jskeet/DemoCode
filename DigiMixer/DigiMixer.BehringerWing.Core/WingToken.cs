@@ -60,6 +60,7 @@ public sealed class WingToken
     }
 
     public bool BoolValue => ValidateType(WingTokenType.FalseOffZero, WingTokenType.TrueOnOne, int32Value == 1);
+    public int IntegerValue => ValidateType(WingTokenType.Int16, WingTokenType.Int32, WingTokenType.FalseOffZero, WingTokenType.TrueOnOne, int32Value);
     public int Int32Value => ValidateType(WingTokenType.Int32, WingTokenType.FalseOffZero, WingTokenType.TrueOnOne, int32Value);
     public short Int16Value => ValidateType(WingTokenType.Int16, (short) int32Value);
     public ushort NodeIndex => ValidateType(WingTokenType.NodeIndex, (ushort) int32Value);
@@ -186,6 +187,9 @@ public sealed class WingToken
 
     private T ValidateType<T>(WingTokenType expectedType1, WingTokenType expectedType2, WingTokenType expectedType3, T value, [CallerMemberName] string? caller = null) =>
         Type == expectedType1 || Type == expectedType2 || Type == expectedType3 ? value : throw new InvalidOperationException($"Invalid use of {caller} for type {Type}");
+
+    private T ValidateType<T>(WingTokenType expectedType1, WingTokenType expectedType2, WingTokenType expectedType3, WingTokenType expectedType4, T value, [CallerMemberName] string? caller = null) =>
+        Type == expectedType1 || Type == expectedType2 || Type == expectedType3 || Type == expectedType4 ? value : throw new InvalidOperationException($"Invalid use of {caller} for type {Type}");
 
     internal static (WingToken?, int) TryParse(ReadOnlySpan<byte> span)
     {
