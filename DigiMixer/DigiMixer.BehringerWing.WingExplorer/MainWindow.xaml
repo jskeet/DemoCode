@@ -1,0 +1,21 @@
+﻿<Window x:Class="DigiMixer.BehringerWing.WingExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigiMixer.BehringerWing.WingExplorer"
+        mc:Ignorable="d"
+        Title="Wing Explorer" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
+    <DockPanel Margin="10">
+        <local:MixerDetailsPanel
+            DataContext="{Binding MixerDetails}"
+            Visibility="{Binding DataContext.MixerDetailsVisible, RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Converter={StaticResource VisibilityConverter}}" />
+        <local:ProgressPanel
+            DataContext="{Binding Progress}"
+            Visibility="{Binding DataContext.ProgressVisible, RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Converter={StaticResource VisibilityConverter}}" />
+        <local:ExplorerPanel
+            DataContext="{Binding Explorer}"
+            Visibility="{Binding DataContext.ExplorerVisible, RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}, Converter={StaticResource VisibilityConverter}}" />
+    </DockPanel>
+</Window>

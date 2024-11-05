@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfUtil\JonSkeet.WpfUtil\JonSkeet.WpfUtil.csproj" />
+    <ProjectReference Include="..\DigiMixer.BehringerWing.Core\DigiMixer.BehringerWing.Core.csproj" />
+  </ItemGroup>
+
+</Project>
