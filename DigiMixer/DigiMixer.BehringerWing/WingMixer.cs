@@ -16,6 +16,9 @@ public class WingMixer
 
 internal class WingMixerApi : IMixerApi
 {
+    // If we don't receive a meter message for this long, report a problem.
+    private static readonly TimeSpan ConnectionMeterMessageTimeout = TimeSpan.FromSeconds(5);
+
     private static DbFaderScale DbFaderScale { get; } = new(-89.5, -40, -30, -20, -10, -5, -1, 5, 10);
     // Currently we always use a report ID of 0x44 0x69 0x67 0x69 ("Digi" in ASCII)
     private static WingMeterRequest MeterRequestNoPort = new(UdpPort: null, ReportId: 0x44696769,
@@ -37,6 +40,7 @@ internal class WingMixerApi : IMixerApi
     private CancellationTokenSource? cts;
     private WingClient? controlClient;
     private WingMeterClient? meterClient;
+    private DateTimeOffset lastMeterMessageReceived;
 
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(4);
     public IFaderScale FaderScale => DbFaderScale;
@@ -98,6 +102,8 @@ internal class WingMixerApi : IMixerApi
 
     private void HandleMeterMessage(object? sender, WingMeterMessage message)
     {
+        lastMeterMessageReceived = DateTimeOffset.UtcNow;
+
         // We report stereo values for all channels, even if they're not actually stereo.
         var stereoCount = Channels.AllInputsCount + Channels.AllOutputsCount;
         var channelMeterPairs = new (ChannelId, MeterLevel)[stereoCount * 2];
@@ -133,6 +139,9 @@ internal class WingMixerApi : IMixerApi
     public async Task Connect(CancellationToken cancellationToken)
     {
         Dispose();
+
+        // Assume we're connected until we haven't received a meter message for ConnectionMeterMessageTimeout.
+        lastMeterMessageReceived = DateTimeOffset.UtcNow;
 
         cts = new CancellationTokenSource();
         controlClient = new WingClient(logger, host, port);
@@ -265,9 +274,9 @@ internal class WingMixerApi : IMixerApi
             return Task.FromResult(false);
         }
 
-        // TODO: Actually use the connection (which could be tricky if we're requesting data).
-        // Possibly use "have we seen meter data"
-        return Task.FromResult(true);
+        var now = DateTimeOffset.UtcNow;
+        return Task.FromResult(lastMeterMessageReceived + ConnectionMeterMessageTimeout > now);
+
     }
 
     public void Dispose()
