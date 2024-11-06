@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.BehringerWing.Core;
+﻿using System.Buffers;
+
+namespace DigiMixer.BehringerWing.Core;
 
 /// <summary>
 /// Handles buffering, escaping and unescaping for Wing tokens, keeping track of the currently
@@ -9,15 +11,11 @@ internal class WingTokenProcessor
 {
     internal event EventHandler<(WingProtocolChannel, WingToken)>? TokenReceived;
 
+    private const int WriteBufferSize = 65536;
+    private readonly MemoryPool<byte> WritePool = MemoryPool<byte>.Shared;
+
     private WingProtocolChannel writeChannel = WingProtocolChannel.None;
     private WingProtocolChannel readChannel = WingProtocolChannel.None;
-
-    /// <summary>
-    /// This is used transiently (during <see cref="WriteTokens(WingProtocolChannel, IEnumerable{WingToken}, Span{byte})"/>)
-    /// to store the non-escaped data, which is then either escaped into the caller-passed buffer.
-    /// (This means we assume there are no concurrent write calls, but that's okay.)
-    /// </summary>
-    private readonly Memory<byte> writeBuffer = new byte[32768];
 
     /// <summary>
     /// This is used to store unescaped data for tokens. The data is unescaped in <see cref="Process"/>
@@ -51,7 +49,8 @@ internal class WingTokenProcessor
         }
 
         // Write the unescaped token data to our internal buffer.
-        var nonEscapedSpan = writeBuffer.Span;
+        using var memoryOwner = WritePool.Rent(WriteBufferSize);
+        var nonEscapedSpan = memoryOwner.Memory.Span;
         int nonEscapedLength = 0;
         foreach (var token in tokens)
         {

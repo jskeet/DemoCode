@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Buffers;
 
 namespace DigiMixer.Core;
 
@@ -8,6 +9,8 @@ namespace DigiMixer.Core;
 /// </summary>
 public abstract class TcpMessageProcessingControllerBase<TMessage> : TcpControllerBase where TMessage : class, IMixerMessage<TMessage>
 {
+    private readonly MemoryPool<byte> SendingPool = MemoryPool<byte>.Shared;
+
     private readonly MessageProcessor<TMessage> messageProcessor;
 
     protected TcpMessageProcessingControllerBase(ILogger logger, string host, int port,
@@ -18,14 +21,14 @@ public abstract class TcpMessageProcessingControllerBase<TMessage> : TcpControll
 
     public async Task SendAsync(TMessage message, CancellationToken cancellationToken)
     {
-        // TODO: Rent a buffer
-        Memory<byte> buffer = new byte[message.Length];
-        message.CopyTo(buffer.Span);
+        using var memoryOwner = SendingPool.Rent(message.Length);
+        var memory = memoryOwner.Memory[.. message.Length];
+        message.CopyTo(memory.Span);
         if (Logger.IsEnabled(LogLevel.Trace))
         {
             Logger.LogTrace("Sending message: {message}", message);
         }
-        await base.Send(buffer, cancellationToken);
+        await base.Send(memory, cancellationToken);
     }
 
     protected override Task ProcessData(ReadOnlyMemory<byte> data, CancellationToken cancellationToken) =>

@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
+using System.Buffers;
 
 namespace DigiMixer.BehringerWing.Core;
 
@@ -7,6 +8,9 @@ public sealed class WingClient : TcpControllerBase
 {
     public event EventHandler<WingToken>? AudioEngineTokenReceived;
     public event EventHandler<WingToken>? MeterTokenReceived;
+
+    private const int SendingBufferSize = 65536;
+    private readonly MemoryPool<byte> SendingPool = MemoryPool<byte>.Shared;
 
     /// <summary>
     /// The amount of unprocessed data left in the buffer.
@@ -18,7 +22,6 @@ public sealed class WingClient : TcpControllerBase
     /// </summary>
     public long MessagesProcessed { get; private set; }
 
-    private readonly Memory<byte> sendingBuffer = new byte[32768];
     private readonly WingTokenProcessor tokenProcessor;
 
     public WingClient(ILogger logger, string host, int port) : base(logger, host, port)
@@ -54,8 +57,9 @@ public sealed class WingClient : TcpControllerBase
 
     private async Task SendTokens(WingProtocolChannel channel, IEnumerable<WingToken> tokens, CancellationToken cancellationToken)
     {
-        int length = tokenProcessor.WriteTokens(channel, tokens, sendingBuffer.Span);
-        await base.Send(sendingBuffer[..length], cancellationToken);
+        using var memoryOwner = SendingPool.Rent(SendingBufferSize);
+        int length = tokenProcessor.WriteTokens(channel, tokens, memoryOwner.Memory.Span);
+        await base.Send(memoryOwner.Memory[..length], cancellationToken);
     }
 
     /// <summary>
