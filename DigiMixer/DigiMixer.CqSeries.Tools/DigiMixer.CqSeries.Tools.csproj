@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DigiMixer.CqSeries\DigiMixer.CqSeries.csproj" />
     <ProjectReference Include="..\DigiMixer.Diagnostics\DigiMixer.Diagnostics.csproj" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
