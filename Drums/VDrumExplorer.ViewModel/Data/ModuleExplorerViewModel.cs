@@ -20,10 +20,12 @@ namespace VDrumExplorer.ViewModel.Data
             : base(viewServices, logger, deviceViewModel, module.Data)
         {
             Module = module;
-            OpenCopyInKitExplorerCommand = new DelegateCommand<DataTreeNodeViewModel>(OpenCopyInKitExplorer, true);
-            CopyKitCommand = new DelegateCommand<DataTreeNodeViewModel>(CopyKit, true);
-            ImportKitFromFileCommand = new DelegateCommand<DataTreeNodeViewModel>(ImportKitFromFile, true);
-            ExportKitCommand = new DelegateCommand<DataTreeNodeViewModel>(ExportKit, true);
+            OpenCopyInKitExplorerCommand = new ConditionallyEnabledDelegateCommand<DataTreeNodeViewModel>(viewServices, OpenCopyInKitExplorer, IsKitNode);
+            CopyKitCommand = new ConditionallyEnabledDelegateCommand<DataTreeNodeViewModel>(viewServices, CopyKit, IsKitNode);
+            ImportKitFromFileCommand = new ConditionallyEnabledDelegateCommand<DataTreeNodeViewModel>(viewServices, ImportKitFromFile, IsKitNode);
+            ExportKitCommand = new ConditionallyEnabledDelegateCommand<DataTreeNodeViewModel>(viewServices, ExportKit, IsKitNode);
+
+            bool IsKitNode(DataTreeNodeViewModel node) => node?.KitNumber is not null;
         }
 
         protected override string ExplorerName =>  "Module Explorer";
@@ -38,14 +40,22 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void OpenCopyInKitExplorer(DataTreeNodeViewModel kitNode)
         {
-            var kit = Module.ExportKit(kitNode.KitNumber!.Value);
+            if (kitNode.KitNumber is not int kitNumber)
+            {
+                return;
+            }
+            var kit = Module.ExportKit(kitNumber);
             var viewModel = new KitExplorerViewModel(ViewServices, Logger, DeviceViewModel, kit);
             ViewServices.ShowKitExplorer(viewModel);
         }
 
         private void CopyKit(DataTreeNodeViewModel kitNode)
         {
-            var kit = Module.ExportKit(kitNode.KitNumber!.Value);
+            if (kitNode.KitNumber is not int kitNumber)
+            {
+                return;
+            }
+            var kit = Module.ExportKit(kitNumber);
             var viewModel = new CopyKitViewModel(Module, kit);
             var destinationKitNumber = ViewServices.ChooseCopyKitTarget(viewModel);
             if (destinationKitNumber is int destination)
@@ -56,6 +66,10 @@ namespace VDrumExplorer.ViewModel.Data
 
         private void ImportKitFromFile(DataTreeNodeViewModel kitNode)
         {
+            if (kitNode.KitNumber is not int kitNumber)
+            {
+                return;
+            }
             string? file = ViewServices.ShowOpenFileDialog(FileFilters.KitFiles);
             if (file is null)
             {
@@ -82,12 +96,17 @@ namespace VDrumExplorer.ViewModel.Data
                 Logger.LogError($"Kit was from {kit.Schema.Identifier.Name}; this module is {Module.Schema.Identifier.Name}");
                 return;
             }
-            Module.ImportKit(kit, kitNode.KitNumber!.Value);
+            Module.ImportKit(kit, kitNumber);
         }
 
         private void ExportKit(DataTreeNodeViewModel kitNode)
         {
-            var kit = Module.ExportKit(kitNode.KitNumber!.Value);
+            if (kitNode.KitNumber is not int kitNumber)
+            {
+                return;
+            }
+
+            var kit = Module.ExportKit(kitNumber);
             var file = ViewServices.ShowSaveFileDialog(FileFilters.KitFiles);
             if (file is null)
             {

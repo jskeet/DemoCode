@@ -3,7 +3,9 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Win32;
+using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VDrumExplorer.Gui.Dialogs;
 using VDrumExplorer.ViewModel;
 using VDrumExplorer.ViewModel.Audio;
@@ -97,5 +99,8 @@ namespace VDrumExplorer.Gui
             var result = dialog.ShowDialog();
             return result == true ? await task! : null;
         }
+
+        public void AddRequerySuggestion(EventHandler handler) => CommandManager.RequerySuggested += handler;
+        public void RemoveRequerySuggestion(EventHandler handler) => CommandManager.RequerySuggested -= handler;
     }
 }

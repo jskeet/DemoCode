@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System;
 using System.Threading.Tasks;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
@@ -38,5 +39,8 @@ namespace VDrumExplorer.ViewModel
         void ShowInstrumentRecorderDialog(InstrumentAudioRecorderViewModel viewModel);
         Task<T?> ShowDataTransferDialog<T>(DataTransferViewModel<T> viewModel)
             where T : class;
+
+        void AddRequerySuggestion(EventHandler handler);
+        void RemoveRequerySuggestion(EventHandler handler);
     }
 }

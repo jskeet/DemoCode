@@ -63,4 +63,31 @@ namespace VDrumExplorer.ViewModel
 
         public override void Execute(object parameter) => action((T) parameter);
     }
+
+    /// <summary>
+    /// Command which is enabled or not based on the parameter it is provided.
+    /// </summary>
+    public sealed class ConditionallyEnabledDelegateCommand<T> : ICommand
+    {
+        private readonly IViewServices viewServices;
+        private readonly Action<T> action;
+        private readonly Func<T, bool> enabled;
+
+        public ConditionallyEnabledDelegateCommand(IViewServices viewServices, Action<T> action, Func<T, bool> enabled)
+        {
+            this.viewServices = viewServices;
+            this.action = action;
+            this.enabled = enabled;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => viewServices.AddRequerySuggestion(value);
+            remove => viewServices.RemoveRequerySuggestion(value);
+        }
+
+        public bool CanExecute(object parameter) => parameter is T param && enabled(param);
+
+        public void Execute(object parameter) => action((T) parameter);
+    }
 }
