@@ -1,25 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <?define UpgradeCode = "{F49F13EA-B5CA-4A6E-98D2-4DC1F0347CDA}" ?>
   <?define ProductCode = "{19B8BB4E-687A-4B5D-A8A3-DFACF753E8E7}" ?>
   
   <!-- Note: using a single ProductCode prevents upgrade functionality. TODO: Investigate. -->
-	<Product Id="$(var.ProductCode)"
-           Name="!(loc.ProductName)"
-           Language="!(loc.Language)"
-           Version="$(var.BuildVersion)"
-           Manufacturer="!(loc.Manufacturer)"
-           UpgradeCode="$(var.UpgradeCode)">
-		<Package InstallerVersion="200"
-             Compressed="yes" 
-             InstallScope="perMachine"
-             Manufacturer="!(loc.Manufacturer)"
-             Description="!(loc.Description)"
-             Comments="!(loc.Comments)"
-             Languages="!(loc.Language)"
-             Keywords="!(loc.Keywords)"
-             />
+	<Package Name="!(loc.ProductName)" Language="!(loc.Language)" Version="$(var.BuildVersion)" Manufacturer="!(loc.Manufacturer)" UpgradeCode="$(var.UpgradeCode)" InstallerVersion="200" ProductCode="$(var.ProductCode)">
+		<SummaryInformation Manufacturer="!(loc.Manufacturer)" Description="!(loc.Description)" Keywords="!(loc.Keywords)" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of !(loc.ProductName) is already installed." />
 		<MediaTemplate EmbedCab="yes" />
@@ -28,53 +14,41 @@
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
 
-    <Property Id="APPURLINFOABOUT">https://jskeet.github.io/DemoCode/Drums/</Property>
+    <Property Id="APPURLINFOABOUT" Value="https://jskeet.github.io/DemoCode/Drums/" />
     
     <!-- Create a basic UI for the installer. -->
-    <UIRef Id="WixUI_Minimal"/>
-    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\licence.rtf"/>
+    <ui:WixUI Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\licence.rtf" />
   
-  </Product>
+  </Package>
 
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
       <!-- Shortcuts go here. -->
-      <Directory Id="ProgramMenuFolder">
+      <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="InstallProgramMenuFolder" Name="!(loc.ProductFolder)" />
-      </Directory>
+      </StandardDirectory>
       
       <!-- Actual files go here; they're all defined in ComponentsGenerated.wxs -->
-			<Directory Id="ProgramFilesFolder">
+			<StandardDirectory Id="ProgramFilesFolder">
 				<Directory Id="INSTALLFOLDER" Name="!(loc.ProductFolder)" />
-			</Directory>
-		</Directory>
-	</Fragment>
+			</StandardDirectory>
+		</Fragment>
 
 	<Fragment>
         
     <!-- Shortcut installation. -->
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <ComponentRef Id="MainAppShortcut"/>
-      <ComponentRef Id="SampleModule"/>
-      <ComponentGroupRef Id="PublishedComponents"/>
+      <ComponentRef Id="MainAppShortcut" />
+      <ComponentRef Id="SampleModule" />
+      <ComponentGroupRef Id="PublishedComponents" />
 		</ComponentGroup>
 
     <DirectoryRef Id="INSTALLFOLDER" FileSource="..\VDrumExplorer.Gui\bin\Release\net472">
       
       <Component Id="MainAppShortcut" Guid="{64B92AAB-ED3B-4A65-B39B-AD1D61E1D885}">
-        <Shortcut Id="MainAppShortcut"
-                  Name="!(loc.ShortcutName)"
-                  Target="[INSTALLFOLDER]VDrumExplorer.Gui.exe"
-                  Directory="InstallProgramMenuFolder"
-                  WorkingDirectory="INSTALLFOLDER" />
+        <Shortcut Id="MainAppShortcut" Name="!(loc.ShortcutName)" Target="[INSTALLFOLDER]VDrumExplorer.Gui.exe" Directory="InstallProgramMenuFolder" WorkingDirectory="INSTALLFOLDER" />
 
-        <RegistryValue Id="RegShortcutKey"
-                       Root="HKCU"
-                       Key="SOFTWARE\!(loc.ProductFolder)"
-                       Name="Shortcut"
-                       Value="1"
-                       Type="integer"
-                       KeyPath="yes" />
+        <RegistryValue Id="RegShortcutKey" Root="HKCU" Key="SOFTWARE\!(loc.ProductFolder)" Name="Shortcut" Value="1" Type="integer" KeyPath="yes" />
         
         <RemoveFolder Id="RemoveStartMenu" Directory="InstallProgramMenuFolder" On="uninstall" />
       </Component>
