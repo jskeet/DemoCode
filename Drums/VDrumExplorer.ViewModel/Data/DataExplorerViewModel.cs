@@ -33,6 +33,7 @@ namespace VDrumExplorer.ViewModel.Data
         public DelegateCommand PlayNoteCommand { get; }
         public DelegateCommand CopyNodeCommand { get; }
         public DelegateCommand PasteNodeCommand { get; }
+        public DelegateCommand MultiPasteCommand { get; }
         // There are app commands of course, but it's not clear how we bind them.
         public DelegateCommand SaveFileCommand { get; }
         public DelegateCommand SaveFileAsCommand { get; }
@@ -110,6 +111,7 @@ namespace VDrumExplorer.ViewModel.Data
                 if (SetProperty(ref copiedSnapshot, value))
                 {
                     PasteNodeCommand.Enabled = IsPasteNodeCommandValid;
+                    MultiPasteCommand.Enabled = value is not null;
                 }
             }
         }
@@ -136,6 +138,7 @@ namespace VDrumExplorer.ViewModel.Data
             CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, IsMatchingDeviceConnected);
             CopyNodeCommand = new DelegateCommand(CopyNode, true);
             PasteNodeCommand = new DelegateCommand(PasteNode, true);
+            MultiPasteCommand = new DelegateCommand(MultiPaste, false);
             Root = SingleItemCollection.Of(new DataTreeNodeViewModel(data.LogicalRoot, this));
             SelectedNode = Root[0];
 
@@ -279,6 +282,24 @@ namespace VDrumExplorer.ViewModel.Data
             }
             var relocated = CopiedSnapshot.Data.Relocated(CopiedSnapshot.SourceNode, targetNode!);
             Model.LoadPartialSnapshot(relocated, Logger);
+        }
+
+        private void MultiPaste()
+        {
+            if (CopiedSnapshot is not NodeSnapshot snapshot)
+            {
+                return;
+            }
+            var candidates = Root.Single().Model.SchemaNode.DescendantsAndSelf().Where(snapshot.IsValidForTarget).ToList();
+            var vm = new MultiPasteViewModel(snapshot, candidates);
+            if (ViewServices.ChooseMultiPasteTargets(vm))
+            {
+                foreach (var candidate in vm.Candidates.Where(c => c.Checked))
+                {
+                    var relocated = CopiedSnapshot.Data.Relocated(CopiedSnapshot.SourceNode, candidate.Candidate);
+                    Model.LoadPartialSnapshot(relocated, Logger);
+                }
+            }
         }
 
         private void ConvertToAlternativeSchema(ModuleIdentifierViewModel targetId) =>

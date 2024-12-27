@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VDrumExplorer.ViewModel.Audio;
 using VDrumExplorer.ViewModel.Data;
@@ -32,6 +33,7 @@ namespace VDrumExplorer.ViewModel
         string? ShowSaveFileDialog(string filter);
 
         int? ChooseCopyKitTarget(CopyKitViewModel viewModel);
+        bool ChooseMultiPasteTargets(MultiPasteViewModel viewModel);
         void ShowSchemaExplorer(ModuleSchemaViewModel viewModel);
         void ShowKitExplorer(KitExplorerViewModel viewModel);
         void ShowModuleExplorer(ModuleExplorerViewModel viewModel);

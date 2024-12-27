@@ -7,7 +7,6 @@ using System.IO;
 using System.Windows.Input;
 using VDrumExplorer.Model;
 using VDrumExplorer.Proto;
-using VDrumExplorer.ViewModel.Home;
 
 namespace VDrumExplorer.ViewModel.Data
 {

@@ -46,6 +46,13 @@ namespace VDrumExplorer.Gui
             return result == true ? viewModel.DestinationKitNumber : default(int?);
         }
 
+        public bool ChooseMultiPasteTargets(MultiPasteViewModel viewModel)
+        {
+            var dialog = new MultiPasteDialog { DataContext = viewModel };
+            var result = dialog.ShowDialog();
+            return result == true;
+        }
+
         public void ShowKitExplorer(KitExplorerViewModel viewModel) =>
             new DataExplorer { DataContext = viewModel }.Show();
 

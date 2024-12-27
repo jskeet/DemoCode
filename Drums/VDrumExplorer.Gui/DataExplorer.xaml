@@ -40,6 +40,7 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="{StaticResource PanelMargin}">
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding CopyNodeCommand}">Copy node</Button>
             <Button Margin="{StaticResource ValueMargin}" Command="{Binding PasteNodeCommand}">Paste node</Button>
+            <Button Margin="{StaticResource ValueMargin}" Command="{Binding MultiPasteCommand}">Multi-paste</Button>
             <TextBlock Margin="{StaticResource ValueMargin}">Copied node path:</TextBlock>
             <TextBlock Margin="{StaticResource ValueMargin}" Text="{Binding CopiedSnapshot.Path}" />
         </StackPanel>
