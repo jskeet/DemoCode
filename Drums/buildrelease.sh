@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Make sure we're using the VS2019 toolchain, so that
-# WiX (32 bit executable) is okay.
-origpwd=$PWD
-source ~/Utils/vs2019.sh
-cd $origpwd
-
 set -e
 
 if [[ $PFX_PATH == "" || $PFX_PASSWORD == "" ]]
