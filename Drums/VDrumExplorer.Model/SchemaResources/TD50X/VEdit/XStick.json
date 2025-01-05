@@ -25,9 +25,9 @@
     {
       "description": "Strainer adjust",
       "type": "enum16",
-      // Note: this minimum contradicts the documentation, but appears to be correct.
-      "min": 1,
+      // Note: "Off" isn't listed in the docs, but appears to be valid.
       "values": [
+        "Off",
         "Loose 1",
         "Loose 2",
         "Loose 3",
