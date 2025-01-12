@@ -273,7 +273,8 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             return;
         }
         var unmutedChannels = InputChannels.Where(ic => !ic.Muted).ToList();
-        statusLogger.LogTrace("Mixer {mixer}: Connected? {connected}; Unmuted channels: {channelCount}", mixer.MixerInfo.Model, mixer.Connected ? "Yes" : "No", unmutedChannels.Count);
+        statusLogger.LogTrace("Mixer {mixer}: Connected? {connected}; Unmuted channels: {channelCount}",
+            mixer.MixerInfo?.Model ?? "(Unknown)", mixer.Connected ? "Yes" : "No", unmutedChannels.Count);
         foreach (var channel in unmutedChannels)
         {
             statusLogger.LogTrace("  {name}: {db}", channel.DisplayName, channel.Faders.FirstOrDefault()?.FaderLevelDb.ToString("0.##"));
