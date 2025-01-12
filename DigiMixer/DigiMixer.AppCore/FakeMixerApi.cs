@@ -37,7 +37,11 @@ internal sealed class FakeMixerApi : IMixerApi
     {
     }
 
-    public void RegisterReceiver(IMixerReceiver receiver) => this.receiver.RegisterReceiver(receiver);
+    public void RegisterReceiver(IMixerReceiver receiver)
+    {
+        this.receiver.RegisterReceiver(receiver);
+        receiver.ReceiveMixerInfo(new MixerInfo("Fake", "Fake Mixer", "1.0.0"));
+    }
 
     public Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
     {
