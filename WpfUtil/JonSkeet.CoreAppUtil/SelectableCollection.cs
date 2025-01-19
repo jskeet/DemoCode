@@ -29,6 +29,12 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
         this.AddRange(items);
     }
 
+    public void AddAndSelect(T item)
+    {
+        Add(item);
+        SelectedIndex = Count - 1;
+    }
+
     private T selectedItem;
     /// <summary>
     /// The selected item in the collection, or null if no item is selected.

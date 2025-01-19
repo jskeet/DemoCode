@@ -117,6 +117,30 @@ public static class Dialogs
         return result == true ? dialog.FileName : null;
     }
 
+    /// <summary>
+    /// Opens an open file dialog and prompts the user with the given parameters, for potentially
+    /// multiple files.
+    /// The resulting filenames are returned, or null if the user cancelled the dialog.
+    /// </summary>
+    /// <param name="initialDirectory">The initial dialog to prompt with.</param>
+    /// <param name="filter">The file filter, in the form "description|pattern|description|pattern"
+    /// where patterns are semi-colon separated., e.g
+    /// "PowerPoint files|*.ppt;*.pptx|Image files|*.jpg;*.png"</param>
+    /// <param name="file">The initial file name to suggest, if any.</param>
+    /// <returns>The chosen filenames, or null if the user cancelled.</returns>
+    public static string[] ShowOpenMultipleFilesDialog(string initialDirectory, string filter, string file = "")
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = filter,
+            InitialDirectory = initialDirectory,
+            FileName = file,
+            Multiselect = true,
+        };
+        var result = dialog.ShowDialog();
+        return result == true ? dialog.FileNames : null;
+    }
+
     [DllImport("Shell32.dll")]
     private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr ppszPath);
 
