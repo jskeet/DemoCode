@@ -5,8 +5,7 @@ namespace JonSkeet.CoreAppUtil;
 
 public static class SelectableCollections
 {
-    public static SelectableCollection<T> ToSelectableCollection<T>(this IEnumerable<T> items) where T : class =>
-        new SelectableCollection<T>(items);
+    public static SelectableCollection<T> ToSelectableCollection<T>(this IEnumerable<T> items) where T : class => [.. items];
 }
 
 /// <summary>
