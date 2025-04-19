@@ -20,4 +20,17 @@ public static class CollectionExtensions
     /// </summary>
     public static IReadOnlyList<TResult> ToReadOnlyList<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) =>
         source.Select(selector).ToList().AsReadOnly();
+
+    /// <summary>
+    /// Returns the count of the given list, followed by the singular or plural form.
+    /// </summary>
+    public static string CountText<T>(this IReadOnlyList<T> list, string singular, string plural) =>
+        $"{list.Count} {(list.Count == 1 ? singular : plural)}";
+
+    /// <summary>
+    /// Convenience for calling <see cref="CountText{T}(IReadOnlyList{T}, string, string)"/>
+    /// when the plural is just "singular + 's'"
+    /// </summary>
+    public static string CountText<T>(this IReadOnlyList<T> list, string singular) =>
+        $"{list.Count} {singular}{(list.Count == 1 ? "" : "s")}";
 }
