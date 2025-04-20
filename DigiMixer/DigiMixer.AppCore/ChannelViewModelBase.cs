@@ -132,7 +132,7 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
         else
         {
             var duration = now - feedbackStart.Value;
-            if (duration >= feedbackMutingDuration.Value)
+            if (duration >= feedbackMutingDuration.Value && !Muted)
             {
                 logger.LogWarning("Muting channel {channel} ({description}) due to feedback ({count} samples observed)", ChannelId, DisplayName, feedbackCount);
                 Muted = true;
