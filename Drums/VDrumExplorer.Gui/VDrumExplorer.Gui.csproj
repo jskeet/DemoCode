@@ -5,8 +5,8 @@
     <TargetFramework>net48</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>Enable</Nullable>
-    <Version>1.0.0-alpha15</Version>
-    <AssemblyVersion>1.0.0.15</AssemblyVersion>
+    <Version>1.0.0-alpha16</Version>
+    <AssemblyVersion>1.0.0.16</AssemblyVersion>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
