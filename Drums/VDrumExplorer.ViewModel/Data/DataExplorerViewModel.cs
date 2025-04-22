@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +14,6 @@ using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Logical;
 using VDrumExplorer.Utility;
 using VDrumExplorer.ViewModel.Dialogs;
-using Microsoft.Extensions.Logging.Abstractions;
-using System.Diagnostics;
 using VDrumExplorer.ViewModel.Home;
 
 namespace VDrumExplorer.ViewModel.Data
@@ -37,6 +36,7 @@ namespace VDrumExplorer.ViewModel.Data
         // There are app commands of course, but it's not clear how we bind them.
         public DelegateCommand SaveFileCommand { get; }
         public DelegateCommand SaveFileAsCommand { get; }
+        public DelegateCommand ExportJsonCommand { get; }
         public CommandBase CopyDataToDeviceCommand { get; }
         public virtual ICommand CopyToTemporaryStudioSetCommand => CommandBase.NotImplemented;
 
@@ -67,6 +67,7 @@ namespace VDrumExplorer.ViewModel.Data
         protected abstract string ExplorerName { get; }
         public abstract string SaveFileFilter { get; }
         protected abstract void SaveToStream(Stream stream);
+        protected abstract string FormatAsJson();
         // Ugly, but simple.
         public bool IsKitExplorer => this is KitExplorerViewModel;
         public bool IsModuleExplorer => !IsKitExplorer;
@@ -135,6 +136,7 @@ namespace VDrumExplorer.ViewModel.Data
             PlayNoteCommand = new DelegateCommand(PlayNote, IsMatchingDeviceConnected);
             SaveFileCommand = new DelegateCommand(SaveFile, true);
             SaveFileAsCommand = new DelegateCommand(SaveFileAs, true);
+            ExportJsonCommand = new DelegateCommand(ExportJson, true);
             CopyDataToDeviceCommand = new DelegateCommand(CopyDataToDevice, IsMatchingDeviceConnected);
             CopyNodeCommand = new DelegateCommand(CopyNode, true);
             PasteNodeCommand = new DelegateCommand(PasteNode, true);
@@ -186,6 +188,17 @@ namespace VDrumExplorer.ViewModel.Data
             {
                 SaveToStream(stream);
             }
+        }
+
+        private void ExportJson()
+        {
+            var fileName = ViewServices.ShowSaveFileDialog(FileFilters.JsonFiles);
+            if (fileName is null)
+            {
+                return;
+            }
+            var json = FormatAsJson();
+            File.WriteAllText(fileName, json);
         }
 
         private void EnterEditMode()

@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Windows.Input;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Json;
 using VDrumExplorer.Proto;
 using VDrumExplorer.ViewModel.Dialogs;
 
@@ -125,5 +126,7 @@ namespace VDrumExplorer.ViewModel.Data
             var converted = new Module(Module.Data.ConvertToSchema(schema, Logger));
             ViewServices.ShowModuleExplorer(new ModuleExplorerViewModel(ViewServices, Logger, DeviceViewModel, converted));
         }
+
+        protected override string FormatAsJson() => Module.ToJson();
     }
 }

@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Windows.Input;
 using VDrumExplorer.Model;
+using VDrumExplorer.Model.Json;
 using VDrumExplorer.Proto;
 
 namespace VDrumExplorer.ViewModel.Data
 {
     public class KitExplorerViewModel : DataExplorerViewModel
     {
-
         public Kit Kit { get; }
 
         public int DefaultKitNumber
@@ -62,5 +62,7 @@ namespace VDrumExplorer.ViewModel.Data
             var converted = new Kit(Kit.Data.ConvertToSchema(schema, Logger), Kit.DefaultKitNumber);
             ViewServices.ShowKitExplorer(new KitExplorerViewModel(ViewServices, Logger, DeviceViewModel, converted));
         }
+
+        protected override string FormatAsJson() => Kit.ToJson();
     }
 }

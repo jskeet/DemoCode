@@ -9,6 +9,7 @@ namespace VDrumExplorer.ViewModel
     /// </summary>
     internal static class FileFilters
     {
+        internal const string JsonFiles = "JSON files|*.json";
         internal const string KitFiles = "Kit files|*.vkit";
         internal const string ModuleFiles = "V-Drum Explorer module files|*.vdrum";
         internal const string InstrumentAudioFiles = "V-Drum Explorer audio files|*.vaudio";
