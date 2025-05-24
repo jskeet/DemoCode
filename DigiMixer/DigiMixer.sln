@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protocols", "Protocols", "{
 	ProjectSection(SolutionItems) = preProject
 		Protocols\behringer-wing.md = Protocols\behringer-wing.md
 		Protocols\mackie.md = Protocols\mackie.md
+		Protocols\yamaha-tf.md = Protocols\yamaha-tf.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Ssc", "DigiMixer.Ssc\DigiMixer.Ssc.csproj", "{6C3761B7-E526-4DE8-9EA8-9B3F67EDFA11}"
@@ -86,6 +87,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiMixer.Hardware", "DigiMixer.Hardware\DigiMixer.Hardware.csproj", "{731B08FA-CF37-4CB4-9C7D-617E93E9E97E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.BehringerWing.WingExplorer", "DigiMixer.BehringerWing.WingExplorer\DigiMixer.BehringerWing.WingExplorer.csproj", "{20705AD5-B614-413D-9BB9-8308A958E4F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.TfSeries", "DigiMixer.TfSeries\DigiMixer.TfSeries.csproj", "{603E2343-6C02-4A68-A434-BC029AB6F788}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.TfSeries.Core", "DigiMixer.TfSeries.Core\DigiMixer.TfSeries.Core.csproj", "{7E0C4891-63AD-4E59-9717-402DDEAA585A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigiMixer.TfSeries.Tools", "DigiMixer.TfSeries.Tools\DigiMixer.TfSeries.Tools.csproj", "{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -407,6 +414,30 @@ Global
 		{20705AD5-B614-413D-9BB9-8308A958E4F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{20705AD5-B614-413D-9BB9-8308A958E4F4}.Release|x64.ActiveCfg = Release|Any CPU
 		{20705AD5-B614-413D-9BB9-8308A958E4F4}.Release|x64.Build.0 = Release|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Debug|x64.Build.0 = Debug|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Release|Any CPU.Build.0 = Release|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Release|x64.ActiveCfg = Release|Any CPU
+		{603E2343-6C02-4A68-A434-BC029AB6F788}.Release|x64.Build.0 = Release|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Debug|x64.Build.0 = Debug|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Release|x64.ActiveCfg = Release|Any CPU
+		{7E0C4891-63AD-4E59-9717-402DDEAA585A}.Release|x64.Build.0 = Release|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Debug|x64.Build.0 = Debug|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Release|x64.ActiveCfg = Release|Any CPU
+		{4A66EF70-036A-4AA3-BE57-D56645FEE3CD}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

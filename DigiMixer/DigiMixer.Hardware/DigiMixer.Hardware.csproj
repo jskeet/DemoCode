@@ -39,6 +39,8 @@
     <Compile Include="..\DigiMixer.Osc\*.cs" />
     <Compile Include="..\DigiMixer.QuSeries\*.cs" />
     <Compile Include="..\DigiMixer.QuSeries.Core\*.cs" />
+    <Compile Include="..\DigiMixer.TfSeries\*.cs" />
+    <Compile Include="..\DigiMixer.TfSeries.Core\*.cs" />
     <Compile Include="..\DigiMixer.UCNet\*.cs" />
     <Compile Include="..\DigiMixer.UCNet.Core\*.cs" />
     <Compile Include="..\DigiMixer.UCNet.Core\Messages\*.cs" />
