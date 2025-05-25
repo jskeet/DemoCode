@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Data;
 using System.Text;
 
 namespace DigiMixer.Diagnostics;
@@ -59,6 +60,20 @@ public class Hex
             data[i] = Convert.ToByte(dataText[(i * 2)..(i * 2 + 2)], 16);
         }
         return new HexDumpLine(direction, offset, data);
+    }
+
+    /// <summary>
+    /// Parses hex values, ignoring any spaces.
+    /// </summary>
+    public static byte[] ParseHex(string text)
+    {
+        text = text.Replace(" ", "");
+        byte[] data = new byte[text.Length / 2];
+        for (int i = 0; i < data.Length; i++)
+        {
+            data[i] = Convert.ToByte(text[(i * 2)..(i * 2 + 2)], 16);
+        }
+        return data;
     }
 
     public record HexDumpLine(Direction Direction, ulong Offset, byte[] Data)
