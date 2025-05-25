@@ -51,14 +51,14 @@ public class DmMessage : IMixerMessage<DmMessage>
         {
             throw new InvalidDataException("Expected overall container with format 0x11");
         }
-        var containerLength = BinaryPrimitives.ReadInt32BigEndian(body.Slice(1));
+        var containerLength = BinaryPrimitives.ReadInt32BigEndian(body[1..]);
         if (containerLength != bodyLength - 5)
         {
             throw new InvalidDataException($"Expected overall container internal length {bodyLength - 5}; was {containerLength}");
         }
         var segments = new List<DmSegment>();
-        var flags = BinaryPrimitives.ReadUInt32BigEndian(body.Slice(5));
-        var nextSegmentData = body.Slice(9);
+        var flags = BinaryPrimitives.ReadUInt32BigEndian(body[5..]);
+        var nextSegmentData = body[9..];
         while (nextSegmentData.Length > 0)
         {
             var format = (DmSegmentFormat) nextSegmentData[0];
@@ -72,26 +72,26 @@ public class DmMessage : IMixerMessage<DmMessage>
                 _ => throw new InvalidDataException($"Unexpected segment format {nextSegmentData[0]:x2}")
             };
             segments.Add(segment);
-            nextSegmentData = nextSegmentData.Slice(segment.Length);
+            nextSegmentData = nextSegmentData[segment.Length..];
         }
-        return new DmMessage(type, flags, segments.ToImmutableList());
+        return new DmMessage(type, flags, [.. segments]);
     }
 
     public void CopyTo(Span<byte> buffer)
     {
         // Note: we assume the span is right-sized to Length.
         Encoding.ASCII.GetBytes(Type, buffer);
-        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(4), buffer.Length - 8);
+        BinaryPrimitives.WriteInt32BigEndian(buffer[4..], buffer.Length - 8);
         buffer[8] = (byte) DmSegmentFormat.Binary;
-        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(9), buffer.Length - 13);
-        BinaryPrimitives.WriteUInt32BigEndian(buffer.Slice(13), Flags);
-        buffer = buffer.Slice(17);
+        BinaryPrimitives.WriteInt32BigEndian(buffer[9..], buffer.Length - 13);
+        BinaryPrimitives.WriteUInt32BigEndian(buffer[13..], Flags);
+        buffer = buffer[17..];
         foreach (var segment in Segments)
         {
             segment.WriteTo(buffer);
-            buffer = buffer.Slice(segment.Length);
+            buffer = buffer[segment.Length..];
         }
     }
 
-    public override string ToString() => $"{Type.PadRight(4)}: Flags={Flags:x8}; Segments={Segments.Count}";
+    public override string ToString() => $"{Type,-4}: Flags={Flags:x8}; Segments={Segments.Count}";
 }

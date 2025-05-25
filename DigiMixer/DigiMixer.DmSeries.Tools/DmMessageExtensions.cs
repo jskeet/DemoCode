@@ -36,7 +36,7 @@ internal static class DmMessageExtensions
                 case DmBinarySegment binary:
                     var data = binary.Data;
                     var hexLength = Math.Min(data.Length, 16);
-                    var hex = Formatting.ToHex(data.Slice(0, hexLength)) + (hexLength == data.Length ? "" : " [...]");
+                    var hex = Formatting.ToHex(data[..hexLength]) + (hexLength == data.Length ? "" : " [...]");
                     return $"Binary[{data.Length}]: {hex}";
                 case DmTextSegment text:
                     return $"Text: '{text.Text}'";

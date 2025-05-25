@@ -37,7 +37,7 @@ public abstract class Tool
             }
             return 1;
         }
-        var tool = (Tool) ctor.Invoke(args.Skip(1).ToArray());
+        var tool = (Tool) ctor.Invoke([..args.Skip(1)]);
         return await tool.Execute();
     }
 

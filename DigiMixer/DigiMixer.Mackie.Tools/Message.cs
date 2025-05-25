@@ -6,7 +6,7 @@ namespace DigiMixer.Mackie.Tools;
 public partial class Message
 {
     public static Message FromMackieMessage(MackieMessage message, bool outbound, DateTimeOffset? timestamp) =>
-        new Message
+        new()
         {
             Outbound = outbound,
             Command = (int) message.Command,
