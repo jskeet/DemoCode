@@ -86,11 +86,11 @@ internal class DmMixerApi : IMixerApi
         {
             throw new InvalidOperationException("Cannot detect configuration until connected");
         }
-        var data = await fullDataTask;
+        await fullDataTask;
         // TODO: Lots more! Including the stereo flags... we may not get everything we need here.
         var inputs = DmChannels.AllInputs;
         var outputs = DmChannels.AllOutputs;
-        return new MixerChannelConfiguration(inputs, outputs, new[] { StereoPair.FromLeft(ChannelId.MainOutputLeft, StereoFlags.FullyIndependent) });
+        return new MixerChannelConfiguration(inputs, outputs, [StereoPair.FromLeft(ChannelId.MainOutputLeft, StereoFlags.FullyIndependent)]);
     }
 
     public void Dispose()

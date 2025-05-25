@@ -25,6 +25,10 @@ public class IPV4Packet
         this.dataOffset = offset;
         this.dataLength = length;
         Timestamp = timestamp;
+        if (data.Length < offset + length || offset < 0 || length < 0)
+        {
+            throw new ArgumentOutOfRangeException($"Invalid data/length/offset. Data length: {data.Length}; offset: {offset}; length: {length}; type={type}");
+        }
     }
 
     public static IPV4Packet? TryConvert(BlockBase block)
@@ -44,12 +48,12 @@ public class IPV4Packet
         {
             return null;
         }
-        var ipLength = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(16));
+        var ipLength = BinaryPrimitives.ReadUInt16BigEndian(dataSpan[16..]);
         var type = (ProtocolType) data[23];
-        IPAddress sourceAddress = new IPAddress(dataSpan.Slice(26, 4));
-        IPAddress destAddress = new IPAddress(dataSpan.Slice(30, 4));
-        int sourcePort = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(34));
-        int destPort = BinaryPrimitives.ReadUInt16BigEndian(dataSpan.Slice(36));
+        IPAddress sourceAddress = new(dataSpan.Slice(26, 4));
+        IPAddress destAddress = new(dataSpan.Slice(30, 4));
+        int sourcePort = BinaryPrimitives.ReadUInt16BigEndian(dataSpan[34..]);
+        int destPort = BinaryPrimitives.ReadUInt16BigEndian(dataSpan[36..]);
 
         int dataOffset;
         int dataLength;
@@ -63,6 +67,12 @@ public class IPV4Packet
             int headerLength = (data[46] & 0xf0) >> 2;
             dataOffset = 34 + headerLength;
             dataLength = ipLength - (dataOffset - 14);
+
+            // Handle TCP segmentation offload
+            if (ipLength == 0)
+            {
+                dataLength = data.Length - dataOffset;
+            }
         }
         else
         {

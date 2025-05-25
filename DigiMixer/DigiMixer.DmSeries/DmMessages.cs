@@ -35,10 +35,10 @@ public static class DmMessages
     public static DmBinarySegment Empty16ByteBinarySegment { get; } =
         new DmBinarySegment(new byte[16]);
 
-    public static DmMessage RequestData(string type, string subtype) => new DmMessage(
+    public static DmMessage RequestData(string type, string subtype) => new(
         type, flags: 0x01010102, [new DmTextSegment(subtype), new DmBinarySegment([0x80])]);
 
-    public static DmMessage UnrequestData(string type, string subtype) => new DmMessage(
+    public static DmMessage UnrequestData(string type, string subtype) => new(
         type, flags: 0x01010102, [new DmTextSegment(subtype), new DmBinarySegment([0x00])]);
 
     internal static bool IsKeepAlive(DmMessage message) =>

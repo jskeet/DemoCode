@@ -16,7 +16,7 @@ internal sealed class FullChannelDataMessage
         data = (DmBinarySegment) message.Segments[7];
     }
 
-    private int GetStartOffset(ChannelId channel) => channel switch
+    private static int GetStartOffset(ChannelId channel) => channel switch
     {
         { IsInput: true, Value: int ch } => (ch - 1) * 0x1cf + 0x6088,
         { IsMainOutput: true, Value: int ch } => (ch - ChannelId.MainOutputLeft.Value) * 0x190 + 0x959e,
