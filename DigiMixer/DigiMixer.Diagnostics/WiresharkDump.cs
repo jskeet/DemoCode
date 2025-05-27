@@ -37,8 +37,10 @@ public class WiresharkDump
 
         List<AnnotatedMessage<TMessage>> messages = [];
 
-        var outboundProcessor = new MessageProcessor<TMessage>(AddMessage, 1024 * 1024);
-        var inboundProcessor = new MessageProcessor<TMessage>(AddMessage, 1024 * 1024);
+        int outboundOffset = 0;
+        int inboundOffset = 0;
+        var outboundProcessor = new MessageProcessor<TMessage>(m => AddMessage(m, ref outboundOffset), 1024 * 1024);
+        var inboundProcessor = new MessageProcessor<TMessage>(m => AddMessage(m, ref inboundOffset), 1024 * 1024);
 
         foreach (var packet in IPV4Packets)
         {
@@ -61,13 +63,14 @@ public class WiresharkDump
         }
         return [.. messages];
 
-        void AddMessage(TMessage message)
+        void AddMessage(TMessage message, ref int offset)
         {
             var direction = currentSource.OrThrow().Equals(clientAddr) ?
                 MessageDirection.ClientToMixer : MessageDirection.MixerToClient;
             var annotated = new AnnotatedMessage<TMessage>(message, currentTimestamp.OrThrow(), direction,
-                currentSource.OrThrow(), currentDestination.OrThrow());
+                offset, currentSource.OrThrow(), currentDestination.OrThrow());
             messages.Add(annotated);
+            offset += message.Length;
         }
     }
 }
