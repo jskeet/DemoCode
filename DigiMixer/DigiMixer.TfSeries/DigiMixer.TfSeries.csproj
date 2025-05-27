@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DigiMixer.TfSeries.Core\DigiMixer.TfSeries.Core.csproj" />
+		<ProjectReference Include="..\DigiMixer.Yamaha\DigiMixer.Yamaha.csproj" />
 	</ItemGroup>
 
 </Project>
