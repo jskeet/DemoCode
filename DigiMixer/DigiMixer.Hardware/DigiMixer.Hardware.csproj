@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\DigiMixer.AllenAndHeath.Core\*.cs" />
     <Compile Include="..\DigiMixer.BehringerWing\*.cs" />
     <Compile Include="..\DigiMixer.BehringerWing.Core\*.cs" />
     <Compile Include="..\DigiMixer.CqSeries\*.cs" />
@@ -39,6 +40,7 @@
     <Compile Include="..\DigiMixer.Osc\*.cs" />
     <Compile Include="..\DigiMixer.QuSeries\*.cs" />
     <Compile Include="..\DigiMixer.QuSeries.Core\*.cs" />
+    <Compile Include="..\DigiMixer.SqSeries\*.cs" />
     <Compile Include="..\DigiMixer.TfSeries\*.cs" />
     <Compile Include="..\DigiMixer.UCNet\*.cs" />
     <Compile Include="..\DigiMixer.UCNet.Core\*.cs" />
