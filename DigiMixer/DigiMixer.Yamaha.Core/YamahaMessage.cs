@@ -17,6 +17,9 @@ public class YamahaMessage : IMixerMessage<YamahaMessage>
     /// </summary>
     public uint Header { get; }
 
+    public byte Flag1 => (byte) (Header >> 16);
+    public RequestResponseFlag RequestResponse => (RequestResponseFlag) (byte) (Header >> 8);
+
     public int Length =>
         4 // Type
         + 4 // Message length (excluding type and length)
@@ -27,6 +30,18 @@ public class YamahaMessage : IMixerMessage<YamahaMessage>
 
     public ImmutableList<YamahaSegment> Segments { get; }
 
+    public YamahaMessage(YamahaMessageType type, byte flag1, RequestResponseFlag requestResponse, ImmutableList<YamahaSegment> segments) :
+        this(type, ConstructHeader(type, flag1, requestResponse, segments.Count), segments)
+    {
+    }
+
+    private static uint ConstructHeader(YamahaMessageType type, byte flag1, RequestResponseFlag requestResponse, int segmentCount) =>
+        (uint) ((type.HeaderByte << 24) |
+        (flag1 << 16) |
+        (((byte) requestResponse) << 8) |
+        ((byte) segmentCount));
+
+    // Potentially deprecate?
     public YamahaMessage(YamahaMessageType type, uint header, ImmutableList<YamahaSegment> segments)
     {
         Type = type;
@@ -40,7 +55,13 @@ public class YamahaMessage : IMixerMessage<YamahaMessage>
         {
             throw new ArgumentException($"Header {Header:x8} incompatible with  message type {Type}");
         }
+        if (RequestResponse != RequestResponseFlag.Request && RequestResponse != RequestResponseFlag.Response)
+        {
+            throw new ArgumentException($"Request response flag {RequestResponse} is unknown.");
+        }
     }
+
+    public YamahaMessage AsResponse() => new(Type, Flag1, RequestResponseFlag.Response, Segments);
 
     public static YamahaMessage? TryParse(ReadOnlySpan<byte> data)
     {
@@ -108,5 +129,5 @@ public class YamahaMessage : IMixerMessage<YamahaMessage>
         }
     }
 
-    public override string ToString() => $"{Type.Text,-4}: Flag1={(Header>>16) & 0xff:x2}; Flag2={(Header >> 8) & 0xff:x2}; Segments={Segments.Count}";
+    public override string ToString() => $"{Type.Text,-4}: Flag1={Flag1:x2}; ReqResp={RequestResponse}; Segments={Segments.Count}";
 }

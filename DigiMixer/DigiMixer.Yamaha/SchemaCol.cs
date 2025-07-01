@@ -7,6 +7,7 @@ namespace DigiMixer.Yamaha;
 public sealed class SchemaCol
 {
     public string Name { get; }
+    public string Path { get; }
     public ImmutableList<SchemaCol> Cols { get; }
     public ImmutableList<SchemaProperty> Properties { get; }
 
@@ -45,6 +46,7 @@ public sealed class SchemaCol
             throw new ArgumentException($"Unexpected schema data; expected COL, got {Encoding.ASCII.GetString(schema[0..3])}");
         }
         Name = Encoding.ASCII.GetString(schema.Slice(4, 24)).TrimEnd('\0');
+        Path = parent is null ? Name : $"{parent.Path}/{Name}";
         RelativeOffset = BinaryPrimitives.ReadInt32LittleEndian(schema.Slice(36, 4));
         AbsoluteOffset = (parent?.AbsoluteOffset ?? 0) + RelativeOffset;
         DataLength = BinaryPrimitives.ReadInt32LittleEndian(schema.Slice(40, 4));
