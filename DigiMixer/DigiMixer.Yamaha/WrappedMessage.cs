@@ -10,7 +10,9 @@ public abstract class WrappedMessage(YamahaMessage rawMessage)
     public YamahaMessage RawMessage { get; } = rawMessage;
 
     public static WrappedMessage? TryParse(YamahaMessage message) =>
-        (WrappedMessage?) SyncHashesMessage.TryParse(message) ??
-        (WrappedMessage?) KeepAliveMessage.TryParse(message) ??
-        SectionSchemaAndDataMessage.TryParse(message);
+        SyncHashesMessage.TryParse(message) ??
+        KeepAliveMessage.TryParse(message) ??
+        SectionSchemaAndDataMessage.TryParse(message) ??
+        MonitorDataMessage.TryParse(message) ??
+        (WrappedMessage?) SingleValueMessage.TryParse(message);
 }

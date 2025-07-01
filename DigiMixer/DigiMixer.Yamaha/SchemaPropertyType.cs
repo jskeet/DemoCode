@@ -3,6 +3,6 @@
 public enum SchemaPropertyType : byte
 {
     Text = 0,
-    Float = 1,
-    Integer= 2
+    SignedInteger = 1,
+    UnsignedInteger= 2
 }

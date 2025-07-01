@@ -2,64 +2,74 @@
 using DigiMixer.Diagnostics;
 using DigiMixer.Yamaha;
 using DigiMixer.Yamaha.Core;
-using System.Buffers.Binary;
-using System.Reflection.Metadata;
 using System.Security.Cryptography;
-using System.Text;
-using System.Xml.Linq;
 
 namespace DigiMixer.TfSeries.Tools;
 
 internal static class YamahaMessageExtensions
 {
-    internal static void DisplaySummary(this YamahaMessage message, string direction)
-    {
-        Console.WriteLine($"{direction} {message}: {string.Join(", ", message.Segments.Select(SummarizeSegment))}");
-
-        static string SummarizeSegment(YamahaSegment segment) => segment switch
-        {
-            YamahaBinarySegment binary => $"Binary[{binary.Data.Length}]",
-            YamahaTextSegment text => $"Text['{text.Text}']",
-            YamahaInt32Segment int32 => $"Int32[*{int32.Values.Count}]",
-            YamahaUInt32Segment uint32 => $"UInt32[*{uint32.Values.Count}]",
-            YamahaUInt16Segment uint16 => $"UInt16[*{uint16.Values.Count}]",
-            _ => throw new InvalidOperationException("Unknown segment type")
-        };
-    }
-
-    internal static void DisplayStructure(this AnnotatedMessage<YamahaMessage> annotatedMessage, DecodingOptions options, TextWriter writer)
+    internal static void DisplayStructure(this AnnotatedMessage<YamahaMessage> annotatedMessage, DecodingOptions options, TextWriter writer, Func<string, SchemaCol?>? schemaProvider = null)
     {
         var message = annotatedMessage.Message;
-        if (options.SkipKeepAlive && message.Type.Text == "EEVT" && message.Segments.Count > 3 && message.Segments[0] is YamahaTextSegment { Text: "KeepAlive" })
+        if (options.SkipKeepAlive && KeepAliveMessage.IsKeepAlive(message))
         {
             return;
         }
         string directionIndicator = annotatedMessage.Direction == MessageDirection.ClientToMixer ? "=>" : "<=";
-        writer.WriteLine($"{directionIndicator} 0x{annotatedMessage.StreamOffset:x8} {message}");
-        DisplaySegments(message, options, writer);
+        writer.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff}: {directionIndicator} 0x{annotatedMessage.StreamOffset:x8} {message}");
+        DisplayBody(message, options, writer, schemaProvider);
     }
 
-    internal static void DisplayStructure(this YamahaMessage message, string directionIndicator, DecodingOptions options, TextWriter writer)
+    internal static void DisplayStructure(this YamahaMessage message, string directionIndicator, DecodingOptions options, TextWriter writer, Func<string, SchemaCol?>? schemaProvider = null)
     {
-        if (options.SkipKeepAlive && message.Type.Text == "EEVT" && message.Segments.Count > 3 && message.Segments[0] is YamahaTextSegment { Text: "KeepAlive" })
+        if (options.SkipKeepAlive && KeepAliveMessage.IsKeepAlive(message))
         {
             return;
         }
-        writer.WriteLine($"{directionIndicator} {message}");
-        DisplaySegments(message, options, writer);
+        writer.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff}: {directionIndicator} {message}");
+        DisplayBody(message, options, writer, schemaProvider);
     }
 
-    private static void DisplaySegments(YamahaMessage message, DecodingOptions options, TextWriter writer)
+    private static void DisplayBody(YamahaMessage message, DecodingOptions options, TextWriter writer, Func<string, SchemaCol?>? schemaProvider = null)
     {
-        foreach (var segment in message.Segments)
+        var wrappedMessage = WrappedMessage.TryParse(message);
+
+        switch (wrappedMessage)
         {
-            writer.WriteLine($"  {DescribeSegment(segment)}");
+            case SectionSchemaAndDataMessage section:
+                writer.WriteLine($"    SectionSchemaAndData ({section.Data.Name})");
+                var hash = MD5.HashData(((YamahaBinarySegment) message.Segments[7]).Data);
+                writer.WriteLine($"    MD5: {Formatting.ToHex(hash)}");
+                if (options.DecodeSchema)
+                {
+                    DescribeSchema(section.Data);
+                }
+                if (options.DecodeData)
+                {
+                    DescribeData(section.Data);
+                }
+                break;
+            case SyncHashesMessage shm:
+                writer.WriteLine($"    SyncHashes: {shm.Subtype}");
+                break;
+            case KeepAliveMessage kam:
+                writer.WriteLine("    KeepAlive");
+                break;
+            case SingleValueMessage svm:
+                writer.WriteLine($"    SingleValue ({svm.SectionName}): Value={DescribeSegment(svm.ValueSegment)}");
+                if (schemaProvider?.Invoke(svm.SectionName) is SchemaCol schema)
+                {
+                    var property = svm.ResolveProperty(schema);
+                    writer.WriteLine($"    Property: {property.Path} (Indexes {string.Join(", ", svm.SchemaIndexes)})");
+                }
+                break;
         }
-        if (SectionSchemaAndDataMessage.TryParse(message) is { } section && options.DecodeSchemaAndData)
+        if (wrappedMessage is null || options.ShowAllSegments)
         {
-            var hash = MD5.HashData(((YamahaBinarySegment) message.Segments[7]).Data);
-            writer.WriteLine($"    MD5: {Formatting.ToHex(hash)}");
-            DescribeSchemaAndData(section.Data);
+            foreach (var segment in message.Segments)
+            {
+                writer.WriteLine($"  {DescribeSegment(segment)}");
+            }
         }
         writer.WriteLine();
 
@@ -85,7 +95,7 @@ internal static class YamahaMessageExtensions
             }
         }
 
-        void DescribeSchemaAndData(SectionSchemaAndData section)
+        void DescribeSchema(SectionSchemaAndData section)
         {
             writer.WriteLine($"    Hash text: {section.SchemaHash}");
             writer.WriteLine($"    Schema:");
@@ -98,11 +108,57 @@ internal static class YamahaMessageExtensions
             var nestedIndent = indent + "  ";
             foreach (var property in col.Properties)
             {
-                writer.WriteLine($"{nestedIndent}  PR: {property.Name}; Type={property.Type}; Length={property.Length}; Count={property.Count}");
+                writer.WriteLine($"{nestedIndent}PR: {property.Name}; Type={property.Type}; Length={property.Length}; Count={property.Count}");
             }
             foreach (var nested in col.Cols)
             {
                 DescribeCol(nested, nestedIndent);
+            }
+        }
+
+        void DescribeData(SectionSchemaAndData section)
+        {
+            DescribeColData(section, section.Schema, "", "      ", 0);
+        }
+
+        void DescribeColData(SectionSchemaAndData section, SchemaCol col, string colIndex, string indent, int additionalOffset)
+        {
+            writer.WriteLine($"{indent}COL{colIndex}: {col.Name}");
+            foreach (var property in col.Properties)
+            {
+                for (int i = 0; i < property.Count; i++)
+                {
+                    int propertyAdditionalOffset = additionalOffset + i * property.Length;
+                    string description = property.Type switch
+                    {
+                        SchemaPropertyType.Text => section.GetString(property, propertyAdditionalOffset),
+                        SchemaPropertyType.UnsignedInteger => property.Length switch
+                        {
+                            1 => section.GetUInt8(property, propertyAdditionalOffset).ToString(),
+                            2 => section.GetUInt16(property, propertyAdditionalOffset).ToString(),
+                            4 => section.GetUInt32(property, propertyAdditionalOffset).ToString(),
+                            _ => throw new InvalidOperationException($"Unexpected length {property.Length}")
+                        },
+                        SchemaPropertyType.SignedInteger => property.Length switch
+                        {
+                            1 => section.GetInt8(property, propertyAdditionalOffset).ToString(),
+                            2 => section.GetInt16(property, propertyAdditionalOffset).ToString(),
+                            4 => section.GetInt32(property, propertyAdditionalOffset).ToString(),
+                            _ => throw new InvalidOperationException($"Unexpected length {property.Length}")
+                        },
+                        _ => throw new InvalidOperationException($"Unexpected property type {property.Type}")
+                    };
+                    string index = property.Count == 1 ? "" : $"[{i}]";
+                    writer.WriteLine($"{indent}  {property.Name}{index}: {description}");
+                }
+            }
+            foreach (var nestedCol in col.Cols)
+            {
+                for (int i = 0; i < nestedCol.Count; i++)
+                {
+                    string nestedColIndex = nestedCol.Count == 1 ? "" : $"[{i}]";
+                    DescribeColData(section, nestedCol, nestedColIndex, indent + "  ", additionalOffset + i * nestedCol.DataLength);
+                }
             }
         }
     }

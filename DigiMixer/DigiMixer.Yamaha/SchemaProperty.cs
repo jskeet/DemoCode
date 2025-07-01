@@ -11,6 +11,11 @@ public sealed class SchemaProperty
     public string Name { get; }
 
     /// <summary>
+    /// The full path to the property (via ancestors).
+    /// </summary>
+    public string Path { get; }
+
+    /// <summary>
     /// The type of the property.
     /// </summary>
     public SchemaPropertyType Type { get; }
@@ -51,6 +56,7 @@ public sealed class SchemaProperty
         Length = BinaryPrimitives.ReadUInt16LittleEndian(schema[4..6]);
         Count = BinaryPrimitives.ReadUInt16LittleEndian(schema[6..8]);
         Name = Encoding.ASCII.GetString(schema.Slice(8, 24)).TrimEnd('\0');
+        Path = $"{parent.Path}/{Name}";
         Parent = parent;
         RelativeOffset = offset;
         AbsoluteOffset = offset + parent.AbsoluteOffset;

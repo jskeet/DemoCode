@@ -12,35 +12,27 @@ public sealed class SectionSchemaAndDataMessage : WrappedMessage
         Data = new((YamahaBinarySegment) RawMessage.Segments[7]);
     }
 
-    public static new SectionSchemaAndDataMessage? TryParse(YamahaMessage rawMessage)
-    {
-        var segments = rawMessage.Segments;
-        if (segments.Count != 9 ||
-            segments[0] is not YamahaBinarySegment seg0 ||
-            segments[1] is not YamahaTextSegment seg1 ||
-            segments[2] is not YamahaTextSegment seg2 ||
-            segments[3] is not YamahaUInt16Segment seg3 ||
-            segments[4] is not YamahaUInt32Segment seg4 ||
-            segments[5] is not YamahaUInt32Segment seg5 ||
-            segments[6] is not YamahaUInt32Segment seg6 ||
-            segments[7] is not YamahaBinarySegment seg7 ||
-            segments[8] is not YamahaBinarySegment seg8)
-        {
-            return null;
-        }
+    public static new SectionSchemaAndDataMessage? TryParse(YamahaMessage rawMessage) =>
+        IsSectionSchemaAndDataMessage(rawMessage) ? new(rawMessage) : null;
 
-        // Basic shape validation...
-        if (seg0.Data.Length != 1 || seg0.Data[0] != 0 ||
-            seg1.Text != seg2.Text ||
-            seg3.Values.Count != 1 || seg3.Values[0] != 0 ||
-            seg4.Values.Count != 0 ||
-            seg5.Values.Count != 0 ||
-            seg6.Values.Count != 1 || seg6.Values[0] != 0x000000f0 ||
-            seg7.Data.Length < 88 ||
-            seg8.Data.Length != 0)
-        {
-            return null;
-        }
-        return new(rawMessage);
-    }
+    private static bool IsSectionSchemaAndDataMessage(YamahaMessage rawMessage) =>
+        rawMessage.Flag1 == 0x14 &&
+        rawMessage.Segments.Count == 9 &&
+        rawMessage.Segments[0] is YamahaBinarySegment seg0 &&
+        seg0.Data.Length == 1 && seg0.Data[0] == 0 &&
+        rawMessage.Segments[1] is YamahaTextSegment seg1 &&
+        rawMessage.Segments[2] is YamahaTextSegment seg2 &&
+        seg1.Text == seg2.Text &&
+        rawMessage.Segments[3] is YamahaUInt16Segment seg3 &&
+        seg3.Values.Count == 1 && seg3.Values[0] == 0 &&
+        rawMessage.Segments[4] is YamahaUInt32Segment seg4 &&
+        seg4.Values.Count == 0 &&
+        rawMessage.Segments[5] is YamahaUInt32Segment seg5 &&
+        seg5.Values.Count == 0 &&
+        rawMessage.Segments[6] is YamahaUInt32Segment seg6 &&
+        seg6.Values.Count == 1 && seg6.Values[0] == 0x000000f0 &&
+        rawMessage.Segments[7] is YamahaBinarySegment seg7 &&
+        seg7.Data.Length >= 88 &&
+        rawMessage.Segments[8] is YamahaBinarySegment seg8 &&
+        seg8.Data.Length == 0;
 }
