@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+	  <PackageReference Include="NUnit" Version="4.3.2" />
+	  <PackageReference Include="NUnit.Analyzers" Version="4.9.2" />
+	  <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.2" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.2" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JonSkeet.RoslynAnalyzers.CodeFixes\JonSkeet.RoslynAnalyzers.CodeFixes.csproj" />
+    <ProjectReference Include="..\JonSkeet.RoslynAnalyzers\JonSkeet.RoslynAnalyzers.csproj" />
+  </ItemGroup>
+
+</Project>
