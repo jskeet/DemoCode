@@ -7,10 +7,13 @@ namespace JonSkeet.RoslynAnalyzers.Test;
 
 public class DangerousWithOperatorAnalyzerTest
 {
+    private const string AttributeDeclaration = "[System.AttributeUsage(System.AttributeTargets.Parameter)] internal class DangerousWithTargetAttribute : System.Attribute {}\n";
+    private const string OtherAttributeDeclaration = "[System.AttributeUsage(System.AttributeTargets.Parameter)] internal class OtherAttribute : System.Attribute {}\n";
+
     [Test]
-    public async Task TestNoInitializers()
+    public async Task NoDangerousParameters()
     {
-        var test = @"public record Simple(int X, int Y);
+        var test = AttributeDeclaration + @"public record Simple(int X, int Y);
 
         class Test
         {
@@ -25,12 +28,9 @@ public class DangerousWithOperatorAnalyzerTest
     }
 
     [Test]
-    public async Task TestInitializerUsedInUnsetParameter()
+    public async Task DangerousParameterUnset()
     {
-        var test = @"public record Simple(int X, int Y)
-        {
-            public int Z { get; } = Y * 2;
-        }
+        var test = AttributeDeclaration + @"public record Simple(int X, [DangerousWithTarget] int Y);
 
         class Test
         {
@@ -45,12 +45,9 @@ public class DangerousWithOperatorAnalyzerTest
     }
 
     [Test]
-    public async Task TestPropertyInitializerUsedInSetParameter()
+    public async Task DangerousParameterSet()
     {
-        var test = @"public record Simple(int X, int Y)
-        {
-            public int Z { get; } = X * 2;
-        }
+        var test = AttributeDeclaration + @"public record Simple([DangerousWithTarget] int X, int Y);
 
         class Test
         {
@@ -62,67 +59,38 @@ public class DangerousWithOperatorAnalyzerTest
         }";
 
         var diagnostic = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(11, 29, 11, 47)
+            .WithSpan(9, 29, 9, 47)
             .WithArguments("X");
         await VerifyCS.VerifyAnalyzerAsync(test, diagnostic);
     }
 
     [Test]
-    public async Task TestInitializerCallingMethodUsedInSetParameter()
+    public async Task MultipleDangerousParameters()
     {
-        var test = @"public record Simple(int X, int Y)
-        {
-            public int Z { get; } = M(X);
-            private static int M(int value) => value;
-        }
+        var test = AttributeDeclaration + @"public record Simple([DangerousWithTarget] int X, [DangerousWithTarget] int Y);
 
         class Test
         {
             static void M()
             {
                 Simple s1 = new Simple(10, 10);
-                Simple s2 = s1 with { X = 10 };
+                Simple s2 = s1 with { X = 20, Y = 20 };
             }
         }";
 
-        var diagnostic = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(12, 29, 12, 47)
+        var d1 = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
+            .WithSpan(9, 29, 9, 55)
             .WithArguments("X");
-        await VerifyCS.VerifyAnalyzerAsync(test, diagnostic);
+        var d2 = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
+            .WithSpan(9, 29, 9, 55)
+            .WithArguments("Y");
+        await VerifyCS.VerifyAnalyzerAsync(test, d1, d2);
     }
 
     [Test]
-    public async Task TestMultipleInitializersSingleDiagnostic()
+    public async Task OtherAttributesIgnored()
     {
-        var test = @"public record Simple(int X, int Y)
-        {
-            public int Z1 { get; } = X * 2;
-            public int Z2 { get; } = X * 2;
-        }
-
-        class Test
-        {
-            static void M()
-            {
-                Simple s1 = new Simple(10, 10);
-                Simple s2 = s1 with { X = 10 };
-            }
-        }";
-
-        var diagnostic = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(12, 29, 12, 47)
-            .WithArguments("X");
-        await VerifyCS.VerifyAnalyzerAsync(test, diagnostic);
-    }
-
-    [Test]
-    public async Task TestMultipleParametersDiagnostics()
-    {
-        var test = @"public record Simple(int X, int Y)
-        {
-            public int Z1 { get; } = X * 2;
-            public int Z2 { get; } = Y * 2;
-        }
+        var test = OtherAttributeDeclaration + @"public record Simple([Other] int X, int Y);
 
         class Test
         {
@@ -132,64 +100,6 @@ public class DangerousWithOperatorAnalyzerTest
                 Simple s2 = s1 with { X = 10, Y = 20 };
             }
         }";
-
-        var d1 = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(12, 29, 12, 55)
-            .WithArguments("X");
-        var d2 = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(12, 29, 12, 55)
-            .WithArguments("Y");
-        await VerifyCS.VerifyAnalyzerAsync(test, d1, d2);
-    }
-
-    [Test]
-    public async Task TestFieldInitializerUsedInSetParameter()
-    {
-        var test = @"public record Simple(int X, int Y)
-        {
-            private readonly int z = X * 2;
-
-            public int Z => z;
-        }
-
-        class Test
-        {
-            static void M()
-            {
-                Simple s1 = new Simple(10, 10);
-                Simple s2 = s1 with { X = 10 };
-            }
-        }";
-
-        var diagnostic = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(13, 29, 13, 47)
-            .WithArguments("X");
-        await VerifyCS.VerifyAnalyzerAsync(test, diagnostic);
-    }
-
-    [Test]
-    public async Task TestMultipleFieldInitializerUsedInSetParameter()
-    {
-        var test = @"public record Simple(int X, int Y)
-        {
-            private readonly int z = Y * 2, zz = X * 2;
-
-            public int Z => z;
-            public int ZZ => z;
-        }
-
-        class Test
-        {
-            static void M()
-            {
-                Simple s1 = new Simple(10, 10);
-                Simple s2 = s1 with { X = 10 };
-            }
-        }";
-
-        var diagnostic = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
-            .WithSpan(14, 29, 14, 47)
-            .WithArguments("X");
-        await VerifyCS.VerifyAnalyzerAsync(test, diagnostic);
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

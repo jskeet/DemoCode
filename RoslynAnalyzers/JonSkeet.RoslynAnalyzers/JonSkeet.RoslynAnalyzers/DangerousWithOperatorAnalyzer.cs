@@ -2,28 +2,22 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Xml.Linq;
 
 namespace JonSkeet.RoslynAnalyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class DangerousWithOperatorAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "JS0001";
+    public const string DiagnosticId = "JS0002";
 
-    // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
-    // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Localizing%20Analyzers.md for more on localization
-    private static readonly string Title = "With operator sets a record parameter used during initialization";
-    private static readonly string MessageFormat = "Record parameter '{0}' is used during initialization";
-    private static readonly string Description = "With operator sets a record parameter used during initialization.";
+    private const string Title = $"Record parameters annotated with [{DangerousWithTargetAnalyzer.DangerousWithTargetAttributeShortName}] should not be set using the 'with' operator.";
+    private const string MessageFormat = $"Record parameter '{{0}}' is annotated with [{DangerousWithTargetAnalyzer.DangerousWithTargetAttributeShortName}]";
+    private const string Description = $"Record parameters are annotated with [{DangerousWithTargetAnalyzer.DangerousWithTargetAttributeShortName}] if they are dangerous to set using the 'with' operator." +
+        " This is usually due to computations during initialization using the parameter, which aren't performed again using the new value. Using the 'with' operator with such parameters can lead to inconsistent state.";
     private const string Category = "Reliability";
 
-    // TODO: Should this actually be private? Harder to test.
     public static DiagnosticDescriptor Rule { get; } = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
@@ -42,59 +36,32 @@ public class DangerousWithOperatorAnalyzer : DiagnosticAnalyzer
         var node = context.Node;
         var assignedParameters = syntax.Initializer
             .Expressions
-            .Select(exp => model.GetSymbolInfo(((AssignmentExpressionSyntax) exp).Left).Symbol?.Name)
+            .Select(exp => model.GetSymbolInfo(((AssignmentExpressionSyntax) exp).Left).Symbol)
             .ToList();
-        var typeInfo = model.GetTypeInfo(syntax.Expression);
-        if (!typeInfo.ConvertedType.IsRecord)
-        {
-            return;
-        }
-        var recordMembers = typeInfo.ConvertedType.GetMembers();
-        foreach (var recordMember in recordMembers)
-        {
-            var declaringReferences = recordMember.DeclaringSyntaxReferences;
-            foreach (var decl in declaringReferences)
-            {
-                var declNode = decl.GetSyntax();
-                if (declNode is PropertyDeclarationSyntax prop && prop.Initializer is not null)
-                {
-                    MaybeReportDiagnostic(context, assignedParameters, prop.Initializer);
-                }
-                else if (declNode is FieldDeclarationSyntax field)
-                {
-                    foreach (var subDecl in field.Declaration.Variables)
-                    {
-                        MaybeReportDiagnostic(context, assignedParameters, subDecl.Initializer);
-                    }
-                }
-                else if (declNode is VariableDeclaratorSyntax variableDeclarator)
-                {
-                    MaybeReportDiagnostic(context, assignedParameters, variableDeclarator.Initializer);
-                }
-                else
-                {
-                    Debugger.Break();
-                }
-            }
-        }
-    }
 
-    private static void MaybeReportDiagnostic(SyntaxNodeAnalysisContext context, List<string> assignedParameters, EqualsValueClauseSyntax initializer)
-    {
-        var dataFlow = context.SemanticModel.AnalyzeDataFlow(initializer.Value);
-        var readSymbols = dataFlow.ReadInside;
-        for (int i = 0; i < readSymbols.Length; i++)
+        foreach (var assignedParameter in assignedParameters)
         {
-            var parameterIndex = assignedParameters.IndexOf(readSymbols[i].Name);
-            if (parameterIndex != -1)
+            // The assigned parameter refers to a property, but we need to get at the parameter declaration.
+            // We check each declaring syntax to see if it's actually declaring a parameter.
+            if (assignedParameter is not IPropertySymbol propertySymbol)
             {
-                // Avoid reporting the same parameter multiple times.
-                assignedParameters[parameterIndex] = null;
-                var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), readSymbols[i].Name);
-                context.ReportDiagnostic(diagnostic);
-                return;
+                continue;
+            }
+            foreach (var syntaxReference in propertySymbol.DeclaringSyntaxReferences)
+            {
+                var declarationSyntax = syntaxReference.GetSyntax();
+                if (declarationSyntax is not ParameterSyntax parameterSyntax)
+                {
+                    continue;
+                }
+                var declaredSymbol = model.GetDeclaredSymbol(parameterSyntax);
+                if (declaredSymbol is IParameterSymbol parameterSymbol &&
+                    DangerousWithTargetAnalyzer.HasDangerousWithTargetAttribute(parameterSymbol, model))
+                {
+                    var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), parameterSymbol.Name);
+                    context.ReportDiagnostic(diagnostic);
+                }
             }
         }
-        return;
     }
 }
