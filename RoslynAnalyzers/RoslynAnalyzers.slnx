@@ -2,6 +2,5 @@
   <Project Path="JonSkeet.RoslynAnalyzers/JonSkeet.RoslynAnalyzers.CodeFixes/JonSkeet.RoslynAnalyzers.CodeFixes.csproj" />
   <Project Path="JonSkeet.RoslynAnalyzers/JonSkeet.RoslynAnalyzers.Package/JonSkeet.RoslynAnalyzers.Package.csproj" />
   <Project Path="JonSkeet.RoslynAnalyzers/JonSkeet.RoslynAnalyzers.Test/JonSkeet.RoslynAnalyzers.Test.csproj" />
-  <Project Path="JonSkeet.RoslynAnalyzers/JonSkeet.RoslynAnalyzers.Vsix/JonSkeet.RoslynAnalyzers.Vsix.csproj" />
   <Project Path="JonSkeet.RoslynAnalyzers/JonSkeet.RoslynAnalyzers/JonSkeet.RoslynAnalyzers.csproj" />
 </Solution>

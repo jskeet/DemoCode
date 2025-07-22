@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
 using NUnit.Framework;
+using System.Threading;
 using System.Threading.Tasks;
 using VerifyCS = JonSkeet.RoslynAnalyzers.Test.Verifiers.CSharpAnalyzerVerifier<JonSkeet.RoslynAnalyzers.DangerousWithOperatorAnalyzer>;
 
@@ -101,5 +102,33 @@ public class DangerousWithOperatorAnalyzerTest
             }
         }";
         await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [Test]
+    public async Task SeparateSourceFiles()
+    {
+        var source1 = AttributeDeclaration + @"public record Simple([DangerousWithTarget] int X, int Y);";
+        var source2 = @"class Test
+        {
+            static void M()
+            {
+                Simple s1 = new Simple(10, 10);
+                Simple s2 = s1 with { X = 20, Y = 20 };
+            }
+        }";
+        var diagnostic = new DiagnosticResult(DangerousWithOperatorAnalyzer.Rule)
+            .WithSpan("/0/Test1.cs", 6, 29, 6, 55)
+            .WithArguments("X");
+        var test = new VerifyCS.Test
+        {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+            TestState =
+            {
+                Sources = { source1, source2 }
+            },
+            ExpectedDiagnostics = { diagnostic }
+        };
+
+        await test.RunAsync(CancellationToken.None);
     }
 }

@@ -34,34 +34,44 @@ public class DangerousWithOperatorAnalyzer : DiagnosticAnalyzer
         WithExpressionSyntax syntax = (WithExpressionSyntax) context.Node;
         var model = context.SemanticModel;
         var node = context.Node;
-        var assignedParameters = syntax.Initializer
-            .Expressions
-            .Select(exp => model.GetSymbolInfo(((AssignmentExpressionSyntax) exp).Left).Symbol)
-            .ToList();
 
-        foreach (var assignedParameter in assignedParameters)
+        var initalizerExpressions = syntax.Initializer.Expressions;
+        foreach (AssignmentExpressionSyntax initializerExpression in initalizerExpressions)
         {
+            var assignedParameter = model.GetSymbolInfo(initializerExpression.Left).Symbol;
             // The assigned parameter refers to a property, but we need to get at the parameter declaration.
-            // We check each declaring syntax to see if it's actually declaring a parameter.
             if (assignedParameter is not IPropertySymbol propertySymbol)
             {
                 continue;
             }
-            foreach (var syntaxReference in propertySymbol.DeclaringSyntaxReferences)
+            if (IsDangerous(propertySymbol))
             {
-                var declarationSyntax = syntaxReference.GetSyntax();
-                if (declarationSyntax is not ParameterSyntax parameterSyntax)
+                var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), assignedParameter.Name);
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
+        bool IsDangerous(IPropertySymbol propertySymbol)
+        {
+            // This is awful - there must be a better way of getting the parameter symbol for a record.
+            // I don't even known how to tell which constructor is the primary constructor...
+            var containingRecord = propertySymbol.ContainingType;
+            var constructors = containingRecord.InstanceConstructors;
+            foreach (var ctor in constructors)
+            {
+                foreach (var parameter in ctor.Parameters)
                 {
-                    continue;
-                }
-                var declaredSymbol = model.GetDeclaredSymbol(parameterSyntax);
-                if (declaredSymbol is IParameterSymbol parameterSymbol &&
-                    DangerousWithTargetAnalyzer.HasDangerousWithTargetAttribute(parameterSymbol, model))
-                {
-                    var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), parameterSymbol.Name);
-                    context.ReportDiagnostic(diagnostic);
+                    if (parameter.Name != propertySymbol.Name)
+                    {
+                        continue;
+                    }
+                    if (DangerousWithTargetAnalyzer.HasDangerousWithTargetAttribute(parameter))
+                    {
+                        return true;
+                    }
                 }
             }
+            return false;
         }
     }
 }

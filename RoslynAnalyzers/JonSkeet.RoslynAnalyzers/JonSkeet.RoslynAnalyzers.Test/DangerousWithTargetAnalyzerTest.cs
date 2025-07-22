@@ -130,9 +130,6 @@ public class DangerousWithTargetAnalyzerTest
             public int Z { get; } = X * 2;
         }";
 
-        var diagnostic = new DiagnosticResult(DangerousWithTargetAnalyzer.Rule)
-            .WithSpan(2, 22, 2, 27)
-            .WithArguments("X");
         await VerifyCS.VerifyAnalyzerAsync(test);
     }
 

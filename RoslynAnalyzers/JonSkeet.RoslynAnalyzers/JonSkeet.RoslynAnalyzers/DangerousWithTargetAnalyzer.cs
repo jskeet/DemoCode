@@ -57,7 +57,7 @@ public class DangerousWithTargetAnalyzer : DiagnosticAnalyzer
         // Null out any parameters which already have the annotation.
         for (int i = 0; i < parameterSymbols.Count; i++)
         {
-            if (HasDangerousWithTargetAttribute(parameterSymbols[i], model))
+            if (HasDangerousWithTargetAttribute(parameterSymbols[i]))
             {
                 parameterSymbols[i] = null;
             }
@@ -115,9 +115,6 @@ public class DangerousWithTargetAnalyzer : DiagnosticAnalyzer
         return;
     }
 
-    internal static bool HasDangerousWithTargetAttribute(IParameterSymbol symbol, SemanticModel model) =>
-        symbol.GetAttributes().Any(attr => attr.AttributeClass?.Name == DangerousWithTargetAttributeFullName);
-
-    internal static bool HasDangerousWithTargetAttribute(IPropertySymbol symbol, SemanticModel model) =>
+    internal static bool HasDangerousWithTargetAttribute(ISymbol symbol) =>
         symbol.GetAttributes().Any(attr => attr.AttributeClass?.Name == DangerousWithTargetAttributeFullName);
 }
