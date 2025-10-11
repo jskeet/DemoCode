@@ -118,6 +118,28 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
     }
 
     /// <summary>
+    /// Selects the next item, if there is one.
+    /// </summary>
+    public void MaybeSelectNext()
+    {
+        if (SelectedIndex + 1 < Count)
+        {
+            SelectedIndex++;
+        }
+    }
+
+    /// <summary>
+    /// Selects the previous item, if there is one.
+    /// </summary>
+    public void MaybeSelectPrevious()
+    {
+        if (SelectedIndex > 0)
+        {
+            SelectedIndex--;
+        }
+    }
+
+    /// <summary>
     /// Clears any existing selection. (This is equivalent to setting
     /// <see cref="SelectedIndex"/> to -1, or <see cref="SelectedItem"/> to null.)
     /// </summary>
