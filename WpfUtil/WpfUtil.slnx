@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="JonSkeet.CoreAppUtil/JonSkeet.CoreAppUtil.csproj" />
+  <Project Path="JonSkeet.WpfLogging/JonSkeet.WpfLogging.csproj" />
+  <Project Path="JonSkeet.WpfUtil/JonSkeet.WpfUtil.csproj" />
+</Solution>
