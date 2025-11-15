@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DigiMixer.Diagnostics\DigiMixer.Diagnostics.csproj" />
     <ProjectReference Include="..\DigiMixer.Mackie\DigiMixer.Mackie.csproj" />
-    <PackageReference Include="Google.Protobuf" Version="3.22.3" />
+    <PackageReference Include="Google.Protobuf" />
   </ItemGroup>
 
 </Project>

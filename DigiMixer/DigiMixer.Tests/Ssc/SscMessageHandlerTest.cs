@@ -57,7 +57,7 @@ public class SscMessageHandlerTest
         var response = new SscMessage(SscProperty.FromErrors(error));
         handler.HandleMessage(response);
 
-        Assert.Null(receivedValue);
+        Assert.That(receivedValue, Is.Null);
         Assert.That(receivedError, Is.EqualTo(error));
     }
 }

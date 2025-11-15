@@ -1,0 +1,27 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageVersion Include="Google.Protobuf" Version="3.33.1" />
+		<PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.0" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageVersion Include="NodaTime" Version="3.2.2" />
+		<PackageVersion Include="NUnit" Version="4.4.0" />
+		<PackageVersion Include="NUnit.Analyzers" Version="4.11.2" />
+		<PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
+		<PackageVersion Include="OscCore" Version="1.0.5" />
+		<PackageVersion Include="PcapngFile" Version="1.0.5" />
+		<PackageVersion Include="SharpZipLib" Version="1.4.2" />
+		<PackageVersion Include="System.CommandLine" Version="2.0.0" />
+		<PackageVersion Include="System.Net.Http" Version="4.3.4" />
+		<PackageVersion Include="System.Private.Uri" Version="4.3.2" />
+		<PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
+		<PackageVersion Include="coverlet.collector" Version="6.0.4" />
+		<PackageVersion Include="managed-midi" Version="1.10.1" />
+	</ItemGroup>
+</Project>

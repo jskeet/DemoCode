@@ -31,34 +31,37 @@ using System.CommandLine;
 var mixerAddressOption = new Option<string>("--mixerAddress")
 {
     Description = "The address of the mixer",
-    IsRequired = true
+    Required = true
 };
-var mixerPortOption = new Option<int>("--mixerPort", getDefaultValue: () => 8000)
+var mixerPortOption = new Option<int>("--mixerPort")
 {
+    DefaultValueFactory = _ => 8000,
     Description = "The port to connect to on the mixer",
-    IsRequired = false
+    Required = false
 };
-var localPortForMixerOption = new Option<int>("--localPortForMixer", getDefaultValue: () => 9000)
+var localPortForMixerOption = new Option<int>("--localPortForMixer")
 {
+    DefaultValueFactory = _ => 9000,
     Description = "The local port the mixer connects to",
-    IsRequired = false
+    Required = false
 };
-var localPortForClientsOption = new Option<int>("--localPortForClients", getDefaultValue: () => 8001)
+var localPortForClientsOption = new Option<int>("--localPortForClients")
 {
+    DefaultValueFactory = _ => 8001,
     Description = "The local port for clients to connect to",
-    IsRequired = false
+    Required = false
 };
 
 var factory = LoggerFactory.Create(builder => builder.AddConsole().AddSystemdConsole(options => { options.UseUtcTimestamp = true; options.TimestampFormat = "yyyy-MM-dd'T'HH:mm:ss.FFFFFF'Z'"; })
     .SetMinimumLevel(LogLevel.Debug));
 var logger = factory.CreateLogger("Proxy");
 
-var rootCommand = new RootCommand();
-rootCommand.AddOption(mixerAddressOption);
-rootCommand.AddOption(mixerPortOption);
-rootCommand.AddOption(localPortForMixerOption);
-rootCommand.AddOption(localPortForClientsOption);
-rootCommand.SetHandler((mixerAddress, mixerPort, localPortForMixer, localPortForClients) =>
-    Proxy.Start(mixerAddress, mixerPort, localPortForMixer, localPortForClients, logger),
-    mixerAddressOption, mixerPortOption, localPortForMixerOption, localPortForClientsOption);
-await rootCommand.InvokeAsync(args);
+var rootCommand = new RootCommand
+{
+    mixerAddressOption, mixerPortOption, localPortForMixerOption, localPortForClientsOption
+};
+var parseResult = rootCommand.Parse(args);
+await Proxy.Start(
+    parseResult.GetRequiredValue(mixerAddressOption), parseResult.GetValue(mixerPortOption),
+    parseResult.GetValue(localPortForMixerOption), parseResult.GetValue(localPortForClientsOption),
+    logger);

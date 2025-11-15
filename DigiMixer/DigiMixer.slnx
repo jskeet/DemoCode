@@ -1,0 +1,65 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Properties/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Protocols/">
+    <File Path="Protocols/ah-sq.md" />
+    <File Path="Protocols/behringer-wing.md" />
+    <File Path="Protocols/mackie.md" />
+    <File Path="Protocols/yamaha-tf.md" />
+  </Folder>
+  <Project Path="../IconPlatform/IconPlatform.Model/IconPlatform.Model.csproj" />
+  <Project Path="../WpfUtil/JonSkeet.CoreAppUtil/JonSkeet.CoreAppUtil.csproj" />
+  <Project Path="../WpfUtil/JonSkeet.WpfLogging/JonSkeet.WpfLogging.csproj" />
+  <Project Path="../WpfUtil/JonSkeet.WpfUtil/JonSkeet.WpfUtil.csproj" />
+  <Project Path="../XTouchMini/XTouchMini.Model/XTouchMini.Model.csproj" />
+  <Project Path="DigiMixer.AllenAndHeath.Core/DigiMixer.AllenAndHeath.Core.csproj" />
+  <Project Path="DigiMixer.AppCore/DigiMixer.AppCore.csproj" />
+  <Project Path="DigiMixer.BehringerWing.Core/DigiMixer.BehringerWing.Core.csproj" />
+  <Project Path="DigiMixer.BehringerWing.Tools/DigiMixer.BehringerWing.Tools.csproj" />
+  <Project Path="DigiMixer.BehringerWing.WingExplorer/DigiMixer.BehringerWing.WingExplorer.csproj" />
+  <Project Path="DigiMixer.BehringerWing/DigiMixer.BehringerWing.csproj" />
+  <Project Path="DigiMixer.Controls/DigiMixer.Controls.csproj" />
+  <Project Path="DigiMixer.Core/DigiMixer.Core.csproj" />
+  <Project Path="DigiMixer.CqSeries.Core/DigiMixer.CqSeries.Core.csproj" />
+  <Project Path="DigiMixer.CqSeries.Tools/DigiMixer.CqSeries.Tools.csproj" />
+  <Project Path="DigiMixer.CqSeries/DigiMixer.CqSeries.csproj" />
+  <Project Path="DigiMixer.Diagnostics/DigiMixer.Diagnostics.csproj" />
+  <Project Path="DigiMixer.DmSeries.Core/DigiMixer.DmSeries.Core.csproj" />
+  <Project Path="DigiMixer.DmSeries.Tools/DigiMixer.DmSeries.Tools.csproj" />
+  <Project Path="DigiMixer.DmSeries/DigiMixer.DmSeries.csproj" />
+  <Project Path="DigiMixer.Hardware/DigiMixer.Hardware.csproj" />
+  <Project Path="DigiMixer.Mackie.Core/DigiMixer.Mackie.Core.csproj" />
+  <Project Path="DigiMixer.Mackie.Tools/DigiMixer.Mackie.Tools.csproj" />
+  <Project Path="DigiMixer.Mackie/DigiMixer.Mackie.csproj" />
+  <Project Path="DigiMixer.Msix/DigiMixer.Msix.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+    <Platform Project="x64" />
+    <Build Solution="*|Any CPU" Project="false" />
+    <Deploy Solution="*|x64" />
+  </Project>
+  <Project Path="DigiMixer.Osc/DigiMixer.Osc.csproj" />
+  <Project Path="DigiMixer.PeripheralConsole/DigiMixer.PeripheralConsole.csproj" />
+  <Project Path="DigiMixer.QuSeries.Core/DigiMixer.QuSeries.Core.csproj" />
+  <Project Path="DigiMixer.QuSeries.Tools/DigiMixer.QuSeries.Tools.csproj" />
+  <Project Path="DigiMixer.QuSeries/DigiMixer.QuSeries.csproj" />
+  <Project Path="DigiMixer.RcfProxy/DigiMixer.RcfProxy.csproj" />
+  <Project Path="DigiMixer.SqSeries.Tools/DigiMixer.SqSeries.Tools.csproj" />
+  <Project Path="DigiMixer.SqSeries/DigiMixer.SqSeries.csproj" />
+  <Project Path="DigiMixer.Ssc/DigiMixer.Ssc.csproj" />
+  <Project Path="DigiMixer.Tests/DigiMixer.Tests.csproj" />
+  <Project Path="DigiMixer.TfSeries.Tools/DigiMixer.TfSeries.Tools.csproj" />
+  <Project Path="DigiMixer.TfSeries/DigiMixer.TfSeries.csproj" />
+  <Project Path="DigiMixer.UCNet.Core/DigiMixer.UCNet.Core.csproj" />
+  <Project Path="DigiMixer.UCNet.Tools/DigiMixer.UCNet.Tools.csproj" />
+  <Project Path="DigiMixer.UCNet/DigiMixer.UCNet.csproj" />
+  <Project Path="DigiMixer.UiHttp.Tools/DigiMixer.UiHttp.Tools.csproj" />
+  <Project Path="DigiMixer.UiHttp/DigiMixer.UiHttp.csproj" />
+  <Project Path="DigiMixer.Wpf/DigiMixer.Wpf.csproj" />
+  <Project Path="DigiMixer.Yamaha.Core/DigiMixer.Yamaha.Core.csproj" />
+  <Project Path="DigiMixer.Yamaha/DigiMixer.Yamaha.csproj" />
+  <Project Path="DigiMixer/DigiMixer.csproj" />
+</Solution>

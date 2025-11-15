@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigiMixer.Core\DigiMixer.Core.csproj" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
-    <PackageReference Include="PcapngFile" Version="1.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="PcapngFile" />
   </ItemGroup>
 
 </Project>

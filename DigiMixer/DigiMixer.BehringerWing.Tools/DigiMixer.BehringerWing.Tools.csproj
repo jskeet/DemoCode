@@ -10,6 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DigiMixer.Diagnostics\DigiMixer.Diagnostics.csproj" />
     <ProjectReference Include="..\DigiMixer.BehringerWing\DigiMixer.BehringerWing.csproj" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 </Project>

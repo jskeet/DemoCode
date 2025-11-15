@@ -50,7 +50,7 @@ public class SscMessageTest
             new SscProperty("/a/b1", 1.5),
             new SscProperty("/a/b2", "test")
         };
-        CollectionAssert.AreEqual(expected, message.Properties);
+        Assert.That(message.Properties, Is.EqualTo(expected).AsCollection);
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class SscMessageTest
         var original = new SscMessage(new SscProperty("/a/b/c", 10), new SscProperty(SscAddresses.Osc.Xid, "id"));
         Assert.That(original.Id, Is.EqualTo("id"));
         var noId = original.WithId(null);
-        Assert.Null(noId.Id);
+        Assert.That(noId.Id, Is.Null);
         Assert.That(noId.Properties.Count, Is.EqualTo(1));
     }
 
@@ -84,7 +84,7 @@ public class SscMessageTest
             new SscProperty("/a/b/c", 10),
             new SscProperty(SscAddresses.Osc.Xid, "id2")
         };
-        CollectionAssert.AreEquivalent(expected, withId.Properties);
+        Assert.That(withId.Properties, Is.EquivalentTo(expected));
     }
 
     [Test]
@@ -101,8 +101,8 @@ public class SscMessageTest
         """);
 
         // The error address still shows up as a property; Errors is just a convenience.
-        CollectionAssert.Contains(message.Properties, new SscProperty("/device/name", "EWDXEM2"));
-        Assert.NotNull(message.GetProperty(SscAddresses.Osc.Error));
+        Assert.That(message.Properties, Has.Member(new SscProperty("/device/name", "EWDXEM2")));
+        Assert.That(message.GetProperty(SscAddresses.Osc.Error), Is.Not.Null);
 
         var expected = new[]
         {
@@ -110,7 +110,7 @@ public class SscMessageTest
             new SscError("/mates/tx1/battery/xyz", 404, "address not found"),
             new SscError("/mates/tx1/battery/type", 424, "failed dependency")
         };
-        CollectionAssert.AreEqual(expected, message.Errors);
+        Assert.That(message.Errors, Is.EqualTo(expected).AsCollection);
     }
 
     [Test]
@@ -130,7 +130,7 @@ public class SscMessageTest
             new SscError("/abc", 404, "address not found"),
             new SscError("/x/y", 404, "address not found")
         };
-        CollectionAssert.AreEqual(expected, message.Errors);
+        Assert.That(message.Errors, Is.EqualTo(expected).AsCollection);
     }
 
     [Test]
@@ -151,7 +151,7 @@ public class SscMessageTest
             new SscError("/e2", 404, null),
             new SscError("/e3", 404, null)
         };
-        CollectionAssert.AreEqual(expected, message.Errors);
+        Assert.That(message.Errors, Is.EqualTo(expected).AsCollection);
     }
 
     [Test]
