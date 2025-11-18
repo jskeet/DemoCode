@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="OscCore" />
-    <PackageReference Include="System.Net.Http" />
     <ProjectReference Include="..\DigiMixer.Core\DigiMixer.Core.csproj" />
   </ItemGroup>
 </Project>

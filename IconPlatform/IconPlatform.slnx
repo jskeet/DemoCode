@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../OscMixerControl/OscMixerControl/OscMixerControl.csproj" />
+  <Project Path="IconPlatform.ConsoleDemo/IconPlatform.ConsoleDemo.csproj" />
+  <Project Path="IconPlatform.MixerControl/IconPlatform.MixerControl.csproj" />
+  <Project Path="IconPlatform.Model/IconPlatform.Model.csproj" />
+</Solution>

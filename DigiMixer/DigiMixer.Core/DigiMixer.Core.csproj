@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Core low-level interfaces and types for DigiMixer.</Description>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>

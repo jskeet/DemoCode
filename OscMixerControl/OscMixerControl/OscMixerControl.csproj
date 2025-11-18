@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OscCore" Version="1.0.5" />
+    <PackageReference Include="OscCore" />
   </ItemGroup>
 
 </Project>

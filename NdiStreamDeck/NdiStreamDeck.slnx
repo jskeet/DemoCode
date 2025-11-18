@@ -1,0 +1,12 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../../Tools/Church/NDILibDotNet2/NDILibDotNet2.csproj">
+    <Platform Solution="*|x86" Project="x86" />
+    <Platform Solution="Release|x64" Project="x64" />
+  </Project>
+  <Project Path="NdiStreamDeck/NdiStreamDeck.csproj" />
+</Solution>

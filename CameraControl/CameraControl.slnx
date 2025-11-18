@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CameraControl.Sandbox/CameraControl.Sandbox.csproj" />
+  <Project Path="CameraControl.Visca.Demo/CameraControl.Visca.Demo.csproj" />
+  <Project Path="CameraControl.Visca.StressTest/CameraControl.Visca.StressTest.csproj" />
+  <Project Path="CameraControl.Visca/CameraControl.Visca.csproj" />
+</Solution>

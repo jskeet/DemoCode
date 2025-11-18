@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="OscMixerControl.Console/OscMixerControl.Console.csproj" />
+  <Project Path="OscMixerControl.Proxy/OscMixerControl.Proxy.csproj" />
+  <Project Path="OscMixerControl.Wpf/OscMixerControl.Wpf.csproj" />
+  <Project Path="OscMixerControl/OscMixerControl.csproj" />
+</Solution>

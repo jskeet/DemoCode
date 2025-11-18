@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWpf>True</UseWpf>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <ImplicitUsings>true</ImplicitUsings>

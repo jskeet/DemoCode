@@ -106,7 +106,7 @@ namespace NdiStreamDeck
                     sourceIndex += (scale - 1) * 4;
                 }
             }
-            var bitmap = KeyBitmap.FromBgr24Array(width, height, data);
+            var bitmap = KeyBitmap.Create.FromBgr24Array(width, height, data);
             deck.SetKeyBitmap(row * columns, bitmap);
         }
 
@@ -153,7 +153,7 @@ namespace NdiStreamDeck
                             sourceIndex += (scale - 1) * 4;
                         }
                     }
-                    var bitmap = KeyBitmap.FromBgr24Array(keySize, keySize, data);
+                    var bitmap = KeyBitmap.Create.FromBgr24Array(keySize, keySize, data);
                     deck.SetKeyBitmap((row + keyOffsetY) * columns + col + keyOffsetX, bitmap);
                 }
             }

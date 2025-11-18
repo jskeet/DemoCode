@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../OscMixerControl/OscMixerControl/OscMixerControl.csproj" />
+  <Project Path="XTouchMini.Console/XTouchMini.Console.csproj" />
+  <Project Path="XTouchMini.MixerControl/XTouchMini.MixerControl.csproj" />
+  <Project Path="XTouchMini.Model/XTouchMini.Model.csproj" />
+</Solution>

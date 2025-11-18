@@ -2,6 +2,7 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using NewTek;
 using NewTek.NDI;
 using OpenMacroBoard.SDK;
 using StreamDeckSharp;
@@ -74,9 +75,11 @@ namespace NdiStreamDeck
         private void Start(object sender, RoutedEventArgs e)
         {
             DisposeViewsAndStatusProviders();
+            var bandwidth = NDIlib.recv_bandwidth_e.recv_bandwidth_highest;
+            var format = NDIlib.recv_color_format_e.recv_color_format_BGRX_BGRA;
             var sources = ndiFinderInfo.Text.Replace("\r\n", "\n").Split("\n")
                 .Where(name => !string.IsNullOrWhiteSpace(name))
-                .Select(name => VideoFrameReceiver.Start(Dispatcher, new Source(name)))
+                .Select(name => VideoFrameReceiver.Start(Dispatcher, new Source(name), format, bandwidth))
                 .ToList();
             statusProviders = sources.Select(source => new CameraStatusProvider(source)).ToList();
 
