@@ -9,6 +9,6 @@
 	<ItemGroup>
       <ProjectReference Include="..\..\..\Tools\Church\NDILibDotNet2\NDILibDotNet2.csproj" />
       <None Include="../../../Tools/Church/NdiRuntime/**" CopyToOutputDirectory="Always" Visible="False" />
-      <PackageReference Include="StreamDeckSharp" VersionOverride="6.1.0" />
+      <PackageReference Include="StreamDeckSharp" />
 	</ItemGroup>
 </Project>
