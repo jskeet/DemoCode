@@ -11,6 +11,7 @@ namespace DigiMixer.Osc;
 
 /// <summary>
 /// Factory methods and constants for working with X-32 mixers.
+/// Input channels 1-32 are the normal channels; 33-40 are aux in 1-8.
 /// </summary>
 public static class X32
 {
@@ -20,6 +21,7 @@ public static class X32
     private class X32OscMixerApi : XSeriesMixerApiBase
     {
         private const string InputChannelLinkAddressPrefix = "/config/chlink/";
+        private const string AuxInputChannelLinkAddressPrefix = "/config/auxlink/";
         private const string BusChannelLinkAddressPrefix = "/config/buslink/";
 
         private static readonly string[] outputMappingAddresses = Enumerable.Range(1, 16)
@@ -28,6 +30,9 @@ public static class X32
 
         private static IEnumerable<string> InputChannelLinkAddresses => Enumerable.Range(1, 16)
             .Select(x => $"{InputChannelLinkAddressPrefix}{x * 2 - 1}-{x * 2}");
+
+        private static IEnumerable<string> AuxInputChannelLinkAddresses => Enumerable.Range(1, 4)
+            .Select(x => $"{AuxInputChannelLinkAddressPrefix}{x * 2 - 1}-{x * 2}");
 
         private static IEnumerable<string> BusChannelLinkAddresses => Enumerable.Range(1, 8)
             .Select(x => $"{BusChannelLinkAddressPrefix}{x * 2 - 1}-{x * 2}");
@@ -44,9 +49,10 @@ public static class X32
             mainOutputToChannelId = new int[17];
         }
 
-        // Meter 1 gives input pre-fader/mute, so it's easy to tell what the "raw"
-        // input is after the pre-amp - so it's worth adjusting the pre-amp gain.
-        protected override string InputChannelLevelsMeter { get; } = "/meters/1";
+        // Meter 0 gives input pre-fader/mute for all channels including aux,
+        // so it's easy to tell what the "raw" input is after the pre-amp - so it's worth adjusting
+        // the pre-amp gain.
+        protected override string InputChannelLevelsMeter { get; } = "/meters/0";
         // Meter 4 gives the equivalent of the Meters => In/Out page, which is post-fader.
         // This is most useful in terms of knowing what's actually being sent.
         // (It *is* affected by mute; not sure if this is good or not really.)
@@ -55,27 +61,31 @@ public static class X32
         public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
             var result = await InfoReceiver.RequestAndWait(Client, cancellationToken,
-                InputChannelLinkAddresses.Concat(BusChannelLinkAddresses).ToArray());
+                InputChannelLinkAddresses
+                    .Concat(AuxInputChannelLinkAddresses)
+                    .Concat(BusChannelLinkAddresses)
+                    .ToArray());
             if (result is null)
             {
                 throw new InvalidOperationException("Detection timed out");
             }
-            var inputs = Enumerable.Range(1, 32).Select(i => ChannelId.Input(i));
-            var outputs = Enumerable.Range(1, 16).Select(i => ChannelId.Output(i))
+            var inputs = Enumerable.Range(1, 40).Select(ChannelId.Input);
+            var outputs = Enumerable.Range(1, 16).Select(ChannelId.Output)
                 .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
             var stereoPairs = CreateStereoPairs(32, InputChannelLinkAddressPrefix, ChannelId.Input)
+                .Concat(CreateStereoPairs(8, AuxInputChannelLinkAddressPrefix, ChannelId.Input, 32))
                 .Concat(CreateStereoPairs(16, BusChannelLinkAddressPrefix, ChannelId.Output))
                 .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
-            IEnumerable<StereoPair> CreateStereoPairs(int totalChannels, string prefix, Func<int, ChannelId> factory)
+            IEnumerable<StereoPair> CreateStereoPairs(int totalChannels, string prefix, Func<int, ChannelId> factory, int channelOffset = 0)
             {
                 for (int i = 1; i <= totalChannels; i += 2)
                 {
                     string address = $"{prefix}{i}-{i + 1}";
                     if (result[address][0] is 1)
                     {
-                        yield return new StereoPair(factory(i), factory(i + 1), StereoFlags.SplitNames);
+                        yield return new StereoPair(factory(i + channelOffset), factory(i + 1 + channelOffset), StereoFlags.SplitNames);
                     }
                 }
             }
@@ -93,9 +103,9 @@ public static class X32
 
         protected override void ReceiveInputMeters(OscMessage message)
         {
-            var levels = new (ChannelId, MeterLevel)[32];
+            var levels = new (ChannelId, MeterLevel)[40];
             var blob = (byte[]) message[0];
-            for (int i = 1; i <= 32; i++)
+            for (int i = 1; i <= 40; i++)
             {
                 ChannelId inputId = ChannelId.Input(i);
                 levels[i - 1] = (inputId, ToMeterLevel(blob, i - 1));
@@ -105,9 +115,9 @@ public static class X32
 
         protected override void ReceiveOutputMeters(OscMessage message)
         {
-            var levels = new (ChannelId, MeterLevel)[18];
+            var levels = new (ChannelId, MeterLevel)[16];
             var blob = (byte[]) message[0];
-            // /meters/2 has lots of information: we just look at the outputs,
+            // /meters/4 has lots of information: we just look at the outputs,
             // expecting all of our output channel IDs to be mapped to one of
             // the main outputs. (We don't currently use the aux outputs etc.)
             // When all the original data is requested, we map outputs to channel IDs,
@@ -158,12 +168,12 @@ public static class X32
         // Addresses
 
         protected override IEnumerable<ChannelId> GetPotentialInputChannels() =>
-            Enumerable.Range(1, 32).Select(ChannelId.Input);
+            Enumerable.Range(1, 40).Select(ChannelId.Input);
         protected override IEnumerable<ChannelId> GetPotentialOutputChannels() =>
             Enumerable.Range(1, 16).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft);
 
         protected override string GetInputPrefix(ChannelId inputId) =>
-            $"/ch/{inputId.Value:00}";
+            inputId.Value <= 32 ? $"/ch/{inputId.Value:00}" : $"/auxin/{inputId.Value - 32:00}";
 
         protected override string GetOutputPrefix(ChannelId outputId) =>
             outputId.IsMainOutput ? "/main/st" : $"/bus/{outputId.Value:00}";
