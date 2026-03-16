@@ -4,6 +4,7 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>Enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
   
   <ItemGroup>

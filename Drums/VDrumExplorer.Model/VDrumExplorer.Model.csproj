@@ -3,12 +3,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
     <Nullable>Enable</Nullable>
+	<ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+	<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />    
+    <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.5" />    
     
     <ProjectReference Include="..\VDrumExplorer.Utility\VDrumExplorer.Utility.csproj" />
 
