@@ -18,6 +18,7 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
 {
     private static readonly PropertyChangedEventArgs selectedItemChangedArgs = new PropertyChangedEventArgs(nameof(SelectedItem));
     private static readonly PropertyChangedEventArgs selectedIndexChangedArgs = new PropertyChangedEventArgs(nameof(SelectedIndex));
+    private static readonly PropertyChangedEventArgs hasSelectedItemChangedArgs = new PropertyChangedEventArgs(nameof(HasSelectedItem));
 
     public SelectableCollection()
     {
@@ -58,6 +59,8 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
         }
     }
 
+    public bool HasSelectedItem => SelectedIndex != -1;
+
     private int selectedIndex = -1;
 
     /// <summary>
@@ -94,6 +97,7 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
     {
         OnPropertyChanged(selectedItemChangedArgs);
         OnPropertyChanged(selectedIndexChangedArgs);
+        OnPropertyChanged(hasSelectedItemChangedArgs);
     }
 
     protected override void ClearItems()
