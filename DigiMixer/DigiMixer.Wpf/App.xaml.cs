@@ -56,10 +56,7 @@ public partial class App : Application
             Dispatcher.Invoke(ShowMainWindow);
             return;
         }
-        if (MainWindow is null)
-        {
-            MainWindow = new MainWindow { DataContext = viewModel };
-        }
+        MainWindow ??= new MainWindow { DataContext = viewModel };
         MainWindow.Show();
         if (MainWindow.WindowState == WindowState.Minimized)
         {

@@ -15,8 +15,8 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
     private const string OutputPrefix = "output-";
     private readonly ILogger logger;
 
-    private static List<(string, MHT)> allMixerTypes = new()
-    {
+    private static readonly List<(string, MHT)> allMixerTypes =
+    [
         ("Behringer X-Air (XR-12, XR-16, XR-18)", MHT.XAir),
         ("Behringer X-32 / Midas M-32", MHT.X32),
         ("Behringer Wing", MHT.BehringerWing),
@@ -27,7 +27,7 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         ("PreSonus StudioLive Series III", MHT.StudioLive),
         ("Soundcraft Ui series", MHT.SoundcraftUi),
         ("Fake", MHT.Fake)
-    };
+    ];
 
     public string Address
     {
@@ -74,7 +74,9 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
     public ChannelListViewModel InputChannels { get; } = new(InputPrefix);
     public ChannelListViewModel OutputChannels { get; } = new(OutputPrefix);
 
-    public List<string> AllMixerTypes => allMixerTypes.Select(pair => pair.Item1).ToList();
+#pragma warning disable CA1822 // Mark members as static - this is bound in the dialog
+    public List<string> AllMixerTypes => [.. allMixerTypes.Select(pair => pair.Item1)];
+#pragma warning restore CA1822 // Mark members as static
 
     public string SelectedMixerType
     {
@@ -101,7 +103,7 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         ReplaceMappings(Model.Mixer.InputChannels, InputChannels);
         ReplaceMappings(Model.Mixer.OutputChannels, OutputChannels);
 
-        void ReplaceMappings(List<ChannelMapping> list, ChannelListViewModel vm)
+        static void ReplaceMappings(List<ChannelMapping> list, ChannelListViewModel vm)
         {
             list.Clear();
             list.AddRange(vm.Mappings.Select(mapping => mapping.Model));
@@ -170,8 +172,8 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         try
         {
             var manager = MidiAccessManager.Default;
-            inputs = manager.Inputs.Select(p => p.Name).ToList();
-            outputs = manager.Outputs.Select(p => p.Name).ToList();
+            inputs = [.. manager.Inputs.Select(p => p.Name)];
+            outputs = [.. manager.Outputs.Select(p => p.Name)];
         }
         catch
         {

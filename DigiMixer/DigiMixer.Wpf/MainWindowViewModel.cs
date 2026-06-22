@@ -8,10 +8,12 @@ using System.Windows.Input;
 
 namespace DigiMixer.Wpf;
 
-public class MainWindowViewModel : ViewModelBase, IAsyncDisposable
+public sealed class MainWindowViewModel : ViewModelBase, IAsyncDisposable
 {
     private readonly ILogger logger;
+#pragma warning disable CA1822 // Mark members as static - used in binding
     public string Title => $"DigiMixer ({Versions.AppVersion})";
+#pragma warning restore CA1822 // Mark members as static
 
     private DigiMixerAppConfig config;
 

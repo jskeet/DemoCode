@@ -3,12 +3,8 @@ using JonSkeet.CoreAppUtil;
 
 namespace DigiMixer.Wpf;
 
-public class ChannelMappingViewModel : ViewModelBase<ChannelMapping>
+public class ChannelMappingViewModel(ChannelMapping model) : ViewModelBase<ChannelMapping>(model)
 {
-    public ChannelMappingViewModel(ChannelMapping model) : base(model)
-    {
-    }
-
     public string EffectiveDisplayName => Model.EffectiveDisplayName;
 
     [RelatedProperties(nameof(EffectiveDisplayName))]

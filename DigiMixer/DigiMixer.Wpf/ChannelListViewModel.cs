@@ -8,7 +8,7 @@ namespace DigiMixer.Wpf;
 public class ChannelListViewModel : ViewModelBase, IReorderableList
 {
     private readonly string idPrefix;
-    public ObservableCollection<ChannelMappingViewModel> Mappings { get; } = new();
+    public ObservableCollection<ChannelMappingViewModel> Mappings { get; } = [];
 
     public ICommand AddChannelCommand { get; }
 
