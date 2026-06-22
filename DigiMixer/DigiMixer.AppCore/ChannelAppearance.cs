@@ -10,7 +10,7 @@ public class ChannelAppearance : ViewModelBase
     private const string White = "White";
 
     private static readonly string[] defaultBrushes =
-    {
+    [
         "AntiqueWhite",
         "Beige",
         "BurlyWood",
@@ -41,7 +41,7 @@ public class ChannelAppearance : ViewModelBase
         "SkyBlue",
         "Violet",
         "YellowGreen"
-    };
+    ];
 
     public string Background { get; }
 
@@ -60,7 +60,7 @@ public class ChannelAppearance : ViewModelBase
         return new ChannelAppearance(brush, mapping.InitiallyVisible);
     }
 
-    internal static ChannelAppearance CreateVisibleWhite() => new ChannelAppearance(White, true);
+    internal static ChannelAppearance CreateVisibleWhite() => new(White, true);
 
     private ChannelAppearance(string background, bool visible)
     {

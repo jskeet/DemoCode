@@ -71,7 +71,7 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
         set => Channel?.SetMuted(value);
     }
 
-    public IReadOnlyList<FaderViewModel> Faders { get; protected set; } = new List<FaderViewModel>();
+    public IReadOnlyList<FaderViewModel> Faders { get; protected set; } = [];
 
     private readonly PeakBuffer peakBuffer;
     private readonly PeakBuffer stereoPeakBuffer;

@@ -5,20 +5,15 @@ namespace DigiMixer.AppCore;
 
 // Note: we currently create multiple OutputChannelViewModels for the same output:
 // one with faders-per-input and one without. That may not be ideal.
-public class OutputChannelViewModel : ChannelViewModelBase<OutputChannel>
+public class OutputChannelViewModel(ChannelMapping mapping) :
+    ChannelViewModelBase<OutputChannel>(ChannelId.Output(mapping.Channel), mapping)
 {
     public FaderViewModel OverallFader => Faders[0];
 
     /// <summary>
     /// Whether this output is a foldback.
     /// </summary>
-    public bool IsFoldback { get; }
-
-    public OutputChannelViewModel(ChannelMapping mapping)
-        : base(ChannelId.Output(mapping.Channel), mapping)
-    {
-        IsFoldback = mapping.Foldback;
-    }
+    public bool IsFoldback { get; } = mapping.Foldback;
 
     internal void SetFaders(IEnumerable<InputChannelViewModel> inputChannels)
     {
@@ -32,7 +27,7 @@ public class OutputChannelViewModel : ChannelViewModelBase<OutputChannel>
     // Hack for Behringer Wing. See DigiMixerViewModel constructor for details.
     public void RemoveOverallOutputFader()
     {
-        var firstFader = Faders.FirstOrDefault();
+        var firstFader = Faders.Count == 0 ? null : Faders[0];
         if (firstFader is null)
         {
             return;

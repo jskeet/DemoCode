@@ -18,11 +18,10 @@ internal class IconPlatformMixerController : IAsyncDisposable
         // TODO: Use the knob for something?
         platformController.ButtonChanged += HandleButtonChanged;
         platformController.FaderMoved += ChangeChannelVolume;
-        channelMappings = mixerVm.InputChannels
+        channelMappings = [.. mixerVm.InputChannels
             .Skip(channelsToSkip)
             .Select((channel, index) => new ChannelMapping(index + 1, channel))
-            .Take(8)
-            .ToList();
+            .Take(8)];
 
         if (controlMain)
         {
@@ -51,7 +50,7 @@ internal class IconPlatformMixerController : IAsyncDisposable
         bool nowConnected = platformController.Connected;
         if (lastConnected != nowConnected)
         {
-            logger.LogDebug($"IconPlatform controller '{{port}}' {(nowConnected ? "connected" : "disconnected")}", platformController.PortName);
+            logger.LogDebug("IconPlatform controller '{port}' {connected}", platformController.PortName, nowConnected ? "connected" : "disconnected");
             if (nowConnected)
             {
                 platformController.ClearText();

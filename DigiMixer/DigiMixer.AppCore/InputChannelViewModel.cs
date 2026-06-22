@@ -4,13 +4,9 @@ using NodaTime;
 
 namespace DigiMixer.AppCore;
 
-public class InputChannelViewModel : ChannelViewModelBase<InputChannel>
+public class InputChannelViewModel(ChannelMapping mapping, double? feedbackMutingThreshold, Duration? feedbackMutingDuration)
+    : ChannelViewModelBase<InputChannel>(ChannelId.Input(mapping.Channel), mapping, feedbackMutingThreshold, feedbackMutingDuration)
 {
-    public InputChannelViewModel(ChannelMapping mapping, double? feedbackMutingThreshold, Duration? feedbackMutingDuration)
-        : base(ChannelId.Input(mapping.Channel), mapping, feedbackMutingThreshold, feedbackMutingDuration)
-    {
-    }
-
     internal void SetFaders(IReadOnlyList<OutputChannelViewModel> outputChannels)
     {
         Faders = outputChannels

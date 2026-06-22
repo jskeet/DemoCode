@@ -27,7 +27,7 @@ internal class XTouchDigiMixerControlledChannel
     /// True for channels which are controlled by unpushed knobs and/or buttons;
     /// false for secondary channels which are only controlled by pushed knobs.
     /// </summary>
-    private bool primaryChannel;
+    private readonly bool primaryChannel;
     private bool knobEnabled = true;
 
     internal XTouchDigiMixerControlledChannel(

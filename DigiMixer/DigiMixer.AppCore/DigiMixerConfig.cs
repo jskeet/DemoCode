@@ -90,7 +90,7 @@ public class DigiMixerConfig
     public string IconXPlusDevice { get; set; }
 
     [Description("Configuration for each input channel to be used. (Any irrelevant channels do not need to be configured.)")]
-    public List<ChannelMapping> InputChannels { get; set; } = new List<ChannelMapping>();
+    public List<ChannelMapping> InputChannels { get; set; } = [];
 
     /// <summary>
     /// The configuration of mixer output channels. For a stereo output
@@ -98,7 +98,7 @@ public class DigiMixerConfig
     /// of 0 means "main bus".
     /// </summary>
     [Description("Configuration for each output channel to be used. (Any irrelevant channels do not need to be configured.) The main output channel is expected to be the first entry in this list.")]
-    public List<ChannelMapping> OutputChannels { get; set; } = new List<ChannelMapping>();
+    public List<ChannelMapping> OutputChannels { get; set; } = [];
 
     public IMixerApi CreateMixerApi(ILogger logger, MixerApiOptions options = null)
     {

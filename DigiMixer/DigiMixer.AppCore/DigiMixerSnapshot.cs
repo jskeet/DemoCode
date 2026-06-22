@@ -13,7 +13,7 @@ public class DigiMixerSnapshot
     /// not all channels have received data yet.
     /// </summary>
     public static DigiMixerSnapshot FromMixerViewModel(DigiMixerViewModel vm) =>
-        new DigiMixerSnapshot
+        new()
         {
             InputChannels = vm.InputChannels.ToDictionary(vm => vm.Id, MixerInputChannelSnapshot.FromChannelViewModel),
             OutputChannels = vm.OutputChannels.ToDictionary(vm => vm.Id, MixerOutputChannelSnapshot.FromChannelViewModel)
@@ -44,7 +44,7 @@ public class MixerInputChannelSnapshot
     public Dictionary<string, int> FaderLevels { get; set; }
 
     public static MixerInputChannelSnapshot FromChannelViewModel(InputChannelViewModel vm) =>
-        new MixerInputChannelSnapshot
+        new()
         {
             Muted = vm.Muted,
             FaderLevels = vm.Faders.ToDictionary(f => f.OutputId, f => f.FaderLevel)
@@ -68,7 +68,7 @@ public class MixerOutputChannelSnapshot
     public bool? Muted { get; set; }
     public int FaderLevel { get; set; }
 
-    public static MixerOutputChannelSnapshot FromChannelViewModel(OutputChannelViewModel vm) => new MixerOutputChannelSnapshot
+    public static MixerOutputChannelSnapshot FromChannelViewModel(OutputChannelViewModel vm) => new()
     {
         FaderLevel = vm.OverallFader.FaderLevel,
         Muted = vm.Muted

@@ -24,16 +24,14 @@ internal class XTouchDigiMixerController : IAsyncDisposable
         xtouchController.KnobTurned += HandleKnobTurned;
         xtouchController.KnobUp += HandleKnobPushRelease;
         xtouchController.KnobDown += HandleKnobPushRelease;
-        channels = mixerVm.InputChannels
+        channels = [.. mixerVm.InputChannels
             .Select((channel, index) => new XTouchDigiMixerControlledChannel(logger, channel, xtouchController, index + 1, sensitivity, true))
             // First 8 channels are knob+button (fader and mute); last 8 are button-only (mute).
-            .Take(16)
-            .ToList();
+            .Take(16)];
 
-        secondaryChannels = mixerVm.InputChannels
+        secondaryChannels = [.. mixerVm.InputChannels
             .Take(8)
-            .Select((channel, index) => new XTouchDigiMixerControlledChannel(logger, channel, xtouchController, index + 1, sensitivity, false))
-            .ToList();
+            .Select((channel, index) => new XTouchDigiMixerControlledChannel(logger, channel, xtouchController, index + 1, sensitivity, false))];
 
         if (mainVolumeEnabled)
         {
@@ -52,7 +50,7 @@ internal class XTouchDigiMixerController : IAsyncDisposable
         if (lastConnected != nowConnected)
         {
             lastConnected = nowConnected;
-            logger.LogDebug($"XTouch controller {(nowConnected ? "connected" : "disconnected")}");
+            logger.LogDebug("XTouch controller {connected}", nowConnected ? "connected" : "disconnected");
             if (nowConnected)
             {
                 xtouchController.Reset();

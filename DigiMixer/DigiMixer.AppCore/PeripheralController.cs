@@ -5,7 +5,7 @@ using XTouchMini.Model;
 
 namespace DigiMixer.AppCore;
 
-public class PeripheralController : IAsyncDisposable
+public sealed class PeripheralController : IAsyncDisposable
 {
     private readonly XTouchDigiMixerController xtouchDigiMixerController;
     private readonly IconPlatformMixerController platformMMixerController;
@@ -94,7 +94,7 @@ public class PeripheralController : IAsyncDisposable
         await MaybeCheckStatus(platformMMixerController?.CheckConnectionAsync(), PlatformMStatus);
         await MaybeCheckStatus(platformXMixerController?.CheckConnectionAsync(), PlatformXStatus);
 
-        async Task MaybeCheckStatus(Task<bool> task, StatusViewModel status)
+        static async Task MaybeCheckStatus(Task<bool> task, StatusViewModel status)
         {
             if (task is null)
             {

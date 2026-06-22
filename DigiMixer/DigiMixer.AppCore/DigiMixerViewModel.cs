@@ -11,7 +11,7 @@ namespace DigiMixer.AppCore;
 /// Once the mixer has been connected once, the configuration is assumed to
 /// be static, even if it disconnects and reconnects.
 /// </summary>
-public class DigiMixerViewModel : ViewModelBase, IDisposable
+public sealed class DigiMixerViewModel : ViewModelBase, IDisposable
 {
     /// <summary>
     /// Input channels with associated output faders.
@@ -122,7 +122,7 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
         }
         foreach (var outputChannel in OverallOutputChannels)
         {
-            outputChannel.SetFaders(Enumerable.Empty<InputChannelViewModel>());
+            outputChannel.SetFaders([]);
         }
         // No SetFaders call for InputsWithNoFaders
 
@@ -277,7 +277,8 @@ public class DigiMixerViewModel : ViewModelBase, IDisposable
             mixer.MixerInfo?.Model ?? "(Unknown)", mixer.Connected ? "Yes" : "No", unmutedChannels.Count);
         foreach (var channel in unmutedChannels)
         {
-            statusLogger.LogTrace("  {name}: {db}", channel.DisplayName, channel.Faders.FirstOrDefault()?.FaderLevelDb.ToString("0.##"));
+            var firstFader = channel.Faders.Count == 0 ? null : channel.Faders[0];
+            statusLogger.LogTrace("  {name}: {db}", channel.DisplayName, firstFader?.FaderLevelDb.ToString("0.##"));
         }
     }
 }

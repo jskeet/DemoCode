@@ -29,7 +29,7 @@ internal sealed class FakeMixerApi : IMixerApi
         var channelConfig = new MixerChannelConfiguration(
             config.InputChannels.Select(mapping => ChannelId.Input(mapping.Channel)),
             config.OutputChannels.Select(mapping => ChannelId.Output(mapping.Channel)),
-            Enumerable.Empty<StereoPair>());
+            []);
         return Task.FromResult(channelConfig);
     }
 
