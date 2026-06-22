@@ -1,10 +1,9 @@
-﻿using DigiMixer.AllenAndHeath.Core;
-using DigiMixer.Core;
+﻿using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using System.Buffers;
 using System.Net;
 
-namespace AllenAndHeath.Core;
+namespace DigiMixer.AllenAndHeath.Core;
 
 public class AHMeterClient : UdpControllerBase, IDisposable
 {
