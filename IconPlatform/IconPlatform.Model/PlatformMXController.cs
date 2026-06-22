@@ -20,7 +20,7 @@ namespace IconPlatform.Model
         public string PortName { get; }
         private IMidiInput inputPort;
         private IMidiOutput outputPort;
-        private byte modelId;
+        private readonly byte modelId;
 
         public bool Connected => inputPort is object;
 

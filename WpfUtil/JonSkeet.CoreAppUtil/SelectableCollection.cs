@@ -85,7 +85,7 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
             }
             if (value < 0 || value >= Count)
             {
-                throw new ArgumentOutOfRangeException("Specified index is out of range");
+                throw new ArgumentOutOfRangeException(nameof(value), "Specified index is out of range");
             }
             selectedIndex = value;
             selectedItem = this[value];

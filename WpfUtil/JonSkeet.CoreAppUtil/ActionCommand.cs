@@ -20,8 +20,8 @@ public interface ILabeledCommand : ICommand
 /// </summary>
 public class ActionCommand : ILabeledCommand
 {
-    private Func<object, Task> action;
-    private Func<object, bool> canExecute;
+    private readonly Func<object, Task> action;
+    private readonly Func<object, bool> canExecute;
 
     public string Label { get; }
 
