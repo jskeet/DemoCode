@@ -35,13 +35,13 @@ public class ActionCommand : ILabeledCommand
     }
 
     public static ActionCommand FromAction<TParam>(Func<TParam, Task> action) =>
-        new ActionCommand(p => action((TParam) p), _ => true, "Unlabeled");
+        new(p => action((TParam) p), _ => true, "Unlabeled");
 
     public static ActionCommand FromAction<TParam>(Action<TParam> action) =>
         FromAction<TParam>(p => { action(p); return Task.CompletedTask; });
 
     public static ActionCommand FromAction(Func<Task> action) =>
-        new ActionCommand(_ => action(), _ => true, "Unlabeled");
+        new(_ => action(), _ => true, "Unlabeled");
 
     public static ActionCommand FromAction(Action action) =>
         FromAction<object>(_ => action());
@@ -50,16 +50,13 @@ public class ActionCommand : ILabeledCommand
 
     public async void Execute(object parameter) => await action(parameter);
 
-    public ActionCommand WithCanExecute(bool canExecute) => new ActionCommand(action, _ => canExecute, Label);
+    public ActionCommand WithCanExecute(bool canExecute) => new(action, _ => canExecute, Label);
 
     // TODO: If we call this and then WithLabel on the result, we lose the change propagation.
     public ActionCommand WithCanExecuteProperty(INotifyPropertyChanged source, string name)
     {
-        var property = source.GetType().GetProperty(name);
-        if (property is null)
-        {
-            throw new ArgumentException($"Property {source.GetType().Name}.{name} not found.");
-        }
+        var property = source.GetType().GetProperty(name)
+            ?? throw new ArgumentException($"Property {source.GetType().Name}.{name} not found.");
         if (property.PropertyType != typeof(bool))
         {
             throw new ArgumentException($"Property {source.GetType().Name}.{name} is not Boolean.");
@@ -69,5 +66,5 @@ public class ActionCommand : ILabeledCommand
         return command;
     }
 
-    public ActionCommand WithLabel(string label) => new ActionCommand(action, canExecute, label);
+    public ActionCommand WithLabel(string label) => new(action, canExecute, label);
 }

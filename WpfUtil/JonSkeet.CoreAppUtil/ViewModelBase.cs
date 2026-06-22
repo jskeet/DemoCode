@@ -14,8 +14,8 @@ namespace JonSkeet.CoreAppUtil;
 /// </summary>
 public abstract class ViewModelBase : INotifyPropertyChanged
 {
-    private static ConcurrentDictionary<Type, Dictionary<string, string[]>> relatedPropertiesByTypeThenName = new ConcurrentDictionary<Type, Dictionary<string, string[]>>();
-    private static ConcurrentDictionary<Type, Dictionary<string, MethodInfo>> reactionMethodByTypeThenName = new ConcurrentDictionary<Type, Dictionary<string, MethodInfo>>();
+    private static readonly ConcurrentDictionary<Type, Dictionary<string, string[]>> relatedPropertiesByTypeThenName = new();
+    private static readonly ConcurrentDictionary<Type, Dictionary<string, MethodInfo>> reactionMethodByTypeThenName = new();
 
     private PropertyChangedEventHandler propertyChanged;
 
@@ -69,7 +69,7 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         }
         propertiesSoFar?.AddLast(name);
         var relatedProperties = GetRelatedProperties(name);
-        if (relatedProperties is object)
+        if (relatedProperties is not null)
         {
             if (propertiesSoFar is null)
             {
@@ -89,7 +89,7 @@ public abstract class ViewModelBase : INotifyPropertyChanged
     protected IDisposable SubscribeRelatedProperty(INotifyPropertyChanged source, string sourceName, string targetName) =>
         Notifications.Subscribe(source, sourceName, (_, _) => RaisePropertyChanged(targetName));
 
-    protected IDisposable SubscribeReactionMethod(INotifyPropertyChanged source, string sourceName, Action action) =>
+    protected static IDisposable SubscribeReactionMethod(INotifyPropertyChanged source, string sourceName, Action action) =>
         Notifications.Subscribe(source, sourceName, (_, _) => action());
 
     /// <summary>
@@ -110,24 +110,21 @@ public abstract class ViewModelBase : INotifyPropertyChanged
 
     private Dictionary<string, string[]> CreateRelatedPropertiesMap(Type type) =>
         GetAllProperties(type)
-            .Select(prop => (prop, prop.GetCustomAttribute<RelatedPropertiesAttribute>()))
-            .Where(pair => pair.Item2 is object)
-            .ToDictionary(pair => pair.Item1.Name, pair => pair.Item2.PropertyNames);
+            .Select(prop => (prop, attr: prop.GetCustomAttribute<RelatedPropertiesAttribute>()))
+            .Where(pair => pair.attr is not null)
+            .ToDictionary(pair => pair.prop.Name, pair => pair.attr.PropertyNames);
 
     private Dictionary<string, MethodInfo> CreateActionsMap(Type type)
     {
         return GetAllProperties(type)
-            .Select(prop => (prop, prop.GetCustomAttribute<ReactionMethodAttribute>()))
-            .Where(pair => pair.Item2 is object)
-            .ToDictionary(pair => pair.Item1.Name, pair => GetMethod(pair.Item2.MethodName));
+            .Select(prop => (prop, attr: prop.GetCustomAttribute<ReactionMethodAttribute>()))
+            .Where(pair => pair.attr is not null)
+            .ToDictionary(pair => pair.prop.Name, pair => GetMethod(pair.attr.MethodName));
 
         MethodInfo GetMethod(string name)
         {
-            var method = type.GetMethod(name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (method is null)
-            {
-                throw new InvalidOperationException($"Can't find method '{name}' in type '{GetType()}'");
-            }
+            var method = type.GetMethod(name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                ?? throw new InvalidOperationException($"Can't find method '{name}' in type '{GetType()}'");
             if (method.GetParameters().Length > 0)
             {
                 throw new InvalidOperationException($"Method '{name}' in type '{GetType()}' is parameterized, so can't be used in {nameof(ReactionMethodAttribute)}");
@@ -137,9 +134,9 @@ public abstract class ViewModelBase : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Returns all instance properties, including private ones, from this type and all types in the inheritance hierarchy.
+    /// Returns all instance properties, including private ones, from the given type and all types in the inheritance hierarchy.
     /// </summary>
-    private IEnumerable<PropertyInfo> GetAllProperties(Type type)
+    private static IEnumerable<PropertyInfo> GetAllProperties(Type type)
     {
         foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
@@ -182,12 +179,9 @@ public abstract class ViewModelBase : INotifyPropertyChanged
 /// Base class for view models which wrap a single model.
 /// </summary>
 /// <typeparam name="TModel">The model type this is based on.</typeparam>
-public abstract class ViewModelBase<TModel> : ViewModelBase
+public abstract class ViewModelBase<TModel>(TModel model) : ViewModelBase
 {
-    public TModel Model { get; }
-
-    protected ViewModelBase(TModel model) =>
-        Model = model;
+    public TModel Model => model;
 
     protected override void OnPropertyChangedHasSubscribers()
     {

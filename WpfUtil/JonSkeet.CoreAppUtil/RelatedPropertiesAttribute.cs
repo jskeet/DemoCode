@@ -10,12 +10,7 @@ namespace JonSkeet.CoreAppUtil;
 /// notifications are raised for the related properties too.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class RelatedPropertiesAttribute : Attribute
+public class RelatedPropertiesAttribute(params string[] propertyNames) : Attribute
 {
-    public string[] PropertyNames { get; set; }
-
-    public RelatedPropertiesAttribute(params string[] propertyNames)
-    {
-        PropertyNames = propertyNames;
-    }
+    public string[] PropertyNames { get; set; } = propertyNames;
 }

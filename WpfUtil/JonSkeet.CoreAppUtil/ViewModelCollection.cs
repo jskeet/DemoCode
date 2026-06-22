@@ -8,26 +8,16 @@ public static class ViewModelCollections
         new(models, vmFactory);
 }
 
-public abstract class ViewModelCollection<TViewModel> : SelectableCollection<TViewModel> where TViewModel : ViewModelBase
+public abstract class ViewModelCollection<TViewModel>(IEnumerable<TViewModel> viewModels)
+    : SelectableCollection<TViewModel>(viewModels) where TViewModel : ViewModelBase
 {
-    public ViewModelCollection(IEnumerable<TViewModel> viewModels) : base(viewModels)
-    {
-    }
-
     public abstract void UpdateModels();
 }
 
-public class ViewModelCollection<TViewModel, TModel> : ViewModelCollection<TViewModel>
+public class ViewModelCollection<TViewModel, TModel>(IList<TModel> models, Func<TModel, TViewModel> vmFactory)
+    : ViewModelCollection<TViewModel>(models.Select(vmFactory))
     where TViewModel : ViewModelBase<TModel>
 {
-    private readonly IList<TModel> models;
-
-    public ViewModelCollection(IList<TModel> models, Func<TModel, TViewModel> vmFactory)
-        : base(models.Select(vmFactory))
-    {
-        this.models = models;
-    }
-
     public override void UpdateModels()
     {
         models.Clear();

@@ -16,9 +16,9 @@ public static class SelectableCollections
 /// <typeparam name="T"></typeparam>
 public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList where T : class
 {
-    private static readonly PropertyChangedEventArgs selectedItemChangedArgs = new PropertyChangedEventArgs(nameof(SelectedItem));
-    private static readonly PropertyChangedEventArgs selectedIndexChangedArgs = new PropertyChangedEventArgs(nameof(SelectedIndex));
-    private static readonly PropertyChangedEventArgs hasSelectedItemChangedArgs = new PropertyChangedEventArgs(nameof(HasSelectedItem));
+    private static readonly PropertyChangedEventArgs selectedItemChangedArgs = new(nameof(SelectedItem));
+    private static readonly PropertyChangedEventArgs selectedIndexChangedArgs = new(nameof(SelectedIndex));
+    private static readonly PropertyChangedEventArgs hasSelectedItemChangedArgs = new(nameof(HasSelectedItem));
 
     public SelectableCollection()
     {

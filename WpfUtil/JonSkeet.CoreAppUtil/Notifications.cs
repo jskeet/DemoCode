@@ -27,19 +27,9 @@ public static class Notifications
         return Disposables.ForAction(() => source.PropertyChanged -= handler);
     }
 
-    public static void MaybeSubscribe(INotifyPropertyChanged source, PropertyChangedEventHandler handler)
-    {
-        if (source is not null)
-        {
-            source.PropertyChanged += handler;
-        }
-    }
+    public static void MaybeSubscribe(INotifyPropertyChanged source, PropertyChangedEventHandler handler) =>
+        source?.PropertyChanged += handler;
 
-    public static void MaybeUnsubscribe(INotifyPropertyChanged source, PropertyChangedEventHandler handler)
-    {
-        if (source is not null)
-        {
-            source.PropertyChanged -= handler;
-        }
-    }
+    public static void MaybeUnsubscribe(INotifyPropertyChanged source, PropertyChangedEventHandler handler) =>
+        source?.PropertyChanged -= handler;
 }

@@ -7,15 +7,8 @@ namespace JonSkeet.CoreAppUtil;
 /// <summary>
 /// ViewModel for <see cref="StatusItem"/>.
 /// </summary>
-public class StatusViewModel : ViewModelBase
+public class StatusViewModel(string prefix) : ViewModelBase
 {
-    private readonly string prefix;
-
-    public StatusViewModel(string prefix)
-    {
-        this.prefix = prefix;
-    }
-
     private string text;
     public string Text
     {

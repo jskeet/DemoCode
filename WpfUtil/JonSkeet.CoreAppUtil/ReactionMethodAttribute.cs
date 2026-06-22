@@ -9,12 +9,7 @@ namespace JonSkeet.CoreAppUtil;
 /// raising the property changed notification).
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class ReactionMethodAttribute : Attribute
+public class ReactionMethodAttribute(string methodName) : Attribute
 {
-    public string MethodName { get; set; }
-
-    public ReactionMethodAttribute(string methodName)
-    {
-        MethodName = methodName;
-    }
+    public string MethodName { get; set; } = methodName;
 }

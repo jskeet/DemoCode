@@ -61,7 +61,7 @@ public static class ObservableCollections
         items.Select(item => new ObservableItemWrapper<T>(item)).ToObservableCollection();
 
     public static List<T> Unwrap<T>(this ObservableCollection<ObservableItemWrapper<T>> source) =>
-        source.Select(item => item.Value).ToList();
+        [.. source.Select(item => item.Value)];
 
     // TODO: Move the methods below to SelectableCollection, if we don't need them more generally?
 
@@ -84,7 +84,7 @@ public static class ObservableCollections
         source.RemoveAt(index);
         return
             index < source.Count ? source[index]
-            : source.Count > 0 ? source[source.Count - 1]
+            : source.Count > 0 ? source[^1]
             : null;
     }
 

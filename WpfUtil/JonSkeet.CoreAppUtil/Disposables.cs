@@ -10,13 +10,8 @@ public static class Disposables
 {
     public static IDisposable ForAction(Action action) => new ActionDisposable(action);
 
-    private class ActionDisposable : IDisposable
+    private class ActionDisposable(Action action) : IDisposable
     {
-        private readonly Action action;
-
-        public ActionDisposable(Action action) =>
-            this.action = action;
-
         public void Dispose() => action();
     }
 
