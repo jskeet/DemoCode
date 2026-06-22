@@ -115,7 +115,7 @@ public static class XAir
 
         private static MeterLevel ToMeterLevel(byte[] blob, int index)
         {
-            short level = BinaryPrimitives.ReadInt16LittleEndian(blob.AsSpan().Slice(index * 2 + 4));
+            short level = BinaryPrimitives.ReadInt16LittleEndian(blob.AsSpan()[(index * 2 + 4)..]);
             return MeterLevel.FromDb(level / 256.0);
         }
 

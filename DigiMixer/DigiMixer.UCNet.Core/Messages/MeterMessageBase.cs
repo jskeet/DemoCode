@@ -16,7 +16,7 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
     public int RowCount => rowMappingData.Length / 6;
     public IEnumerable<MeterMessageRow<ushort>> Rows =>
         Enumerable.Range(0, RowCount)
-            .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => BinaryPrimitives.ReadUInt16LittleEndian(Data.Slice(x * 2))));
+            .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => BinaryPrimitives.ReadUInt16LittleEndian(Data[(x * 2)..])));
 
     protected MeterMessageBase(string meterType, byte[] data, byte[] rowMappingData, MessageMode mode) : base(mode)
     {
@@ -34,11 +34,11 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
     {
         int typeLength = Encoding.UTF8.GetBytes(MeterType, span);
         int dataStart = typeLength + 2;
-        BinaryPrimitives.WriteUInt16LittleEndian(span.Slice(dataStart), (ushort) (data.Length / ValueSize));
-        data.CopyTo(span.Slice(dataStart + 2));
+        BinaryPrimitives.WriteUInt16LittleEndian(span[dataStart..], (ushort) (data.Length / ValueSize));
+        data.CopyTo(span[(dataStart + 2)..]);
         int rowMappingStart = dataStart + 2 + data.Length;
         span[rowMappingStart] = (byte) RowCount;
-        rowMappingData.CopyTo(span.Slice(rowMappingStart + 1));
+        rowMappingData.CopyTo(span[(rowMappingStart + 1)..]);
     }
 
     public override string ToString() => $"{Type}: Type={MeterType}: Rows: {RowCount}; Data length={Data.Length}: {Formatting.ToHex(data)}";

@@ -24,14 +24,14 @@ public class QuGeneralMessage : QuControlMessage
     {
         buffer[0] = 0x7f;
         buffer[1] = Type;
-        BinaryPrimitives.WriteUInt16LittleEndian(buffer.Slice(2), (ushort) data.Length);
-        data.CopyTo(buffer.Slice(4));
+        BinaryPrimitives.WriteUInt16LittleEndian(buffer[2..], (ushort) data.Length);
+        data.CopyTo(buffer[4..]);
     }
 
     private const int FullDataLength = 10;
     public override string ToString()
     {
-        var hexSpan = Data.Length <= FullDataLength ? Data : Data.Slice(0, FullDataLength);
+        var hexSpan = Data.Length <= FullDataLength ? Data : Data[..FullDataLength];
         string dataDescription = Formatting.ToHex(hexSpan) + (Data.Length <= FullDataLength ? "" : $"... ({Data.Length} bytes)");
         return $"General: {Type}: {dataDescription}";
     }

@@ -36,10 +36,10 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
     {
         MagicNumber.CopyTo(buffer);
 
-        BinaryPrimitives.WriteUInt16LittleEndian(buffer.Slice(4), (ushort) (BodyLength + 6));
-        BinaryPrimitives.WriteUInt16LittleEndian(buffer.Slice(6), (ushort) Type);
-        BinaryPrimitives.WriteUInt32LittleEndian(buffer.Slice(8), (uint) Mode);
-        WriteBody(buffer.Slice(12));
+        BinaryPrimitives.WriteUInt16LittleEndian(buffer[4..], (ushort) (BodyLength + 6));
+        BinaryPrimitives.WriteUInt16LittleEndian(buffer[6..], (ushort) Type);
+        BinaryPrimitives.WriteUInt32LittleEndian(buffer[8..], (uint) Mode);
+        WriteBody(buffer[12..]);
     }
 
     protected abstract void WriteBody(Span<byte> span);
@@ -64,8 +64,8 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
         // Skip port (bytes 4 and 5)
         var length = span.Length - 6;
 
-        var type = (MessageType) BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(6));
-        var mode = (MessageMode) BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(8));
+        var type = (MessageType) BinaryPrimitives.ReadUInt16LittleEndian(span[6..]);
+        var mode = (MessageMode) BinaryPrimitives.ReadUInt32LittleEndian(span[8..]);
         var body = span[12..(length + 6)];
         return type switch
         {
@@ -100,13 +100,13 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
                 throw new InvalidDataException($"Header byte {i} is incorrect: expected {MagicNumber[i]:x2}; was {span[i]:x2}");
             }
         }
-        var length = BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(4));
+        var length = BinaryPrimitives.ReadUInt16LittleEndian(span[4..]);
         if (length > span.Length - 6)
         {
             return null;
         }
-        var type = (MessageType) BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(6));
-        var mode = (MessageMode) BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(8));
+        var type = (MessageType) BinaryPrimitives.ReadUInt16LittleEndian(span[6..]);
+        var mode = (MessageMode) BinaryPrimitives.ReadUInt32LittleEndian(span[8..]);
         var body = span[12..(length + 6)];
         return type switch
         {

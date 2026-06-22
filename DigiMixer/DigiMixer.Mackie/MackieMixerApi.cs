@@ -62,7 +62,7 @@ public class MackieMixerApi : IMixerApi
         meterLayout[3] = 1;
         for (int i = 0; i < meterAddresses.Count; i++)
         {
-            BinaryPrimitives.WriteInt32BigEndian(meterLayout.AsSpan().Slice(i * 4 + 4), meterAddresses[i]);
+            BinaryPrimitives.WriteInt32BigEndian(meterLayout.AsSpan()[(i * 4 + 4)..], meterAddresses[i]);
         }
         await controller.SendRequest(MackieCommand.MeterLayout, meterLayout, cancellationToken);
         await controller.SendRequest(MackieCommand.BroadcastControl, [0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01], cancellationToken);
@@ -123,7 +123,7 @@ public class MackieMixerApi : IMixerApi
         string GetMixerName(MackieMessage message)
         {
             var data = message.Body.InSequentialOrder().Data;
-            return Encoding.UTF8.GetString(data.Slice(4)).TrimEnd('\0');
+            return Encoding.UTF8.GetString(data[4..]).TrimEnd('\0');
         }
     }
 
@@ -264,7 +264,7 @@ public class MackieMixerApi : IMixerApi
         }
         int start = body.GetInt32(0);
         int count = (int) (chunk1 >> 16);
-        string allNames = Encoding.UTF8.GetString(body.InSequentialOrder().Data.Slice(8).ToArray());
+        string allNames = Encoding.UTF8.GetString(body.InSequentialOrder().Data[8..].ToArray());
 
         string[] names = allNames.Split('\0');
         for (int i = 0; i < count; i++)
@@ -378,7 +378,7 @@ public class MackieMixerApi : IMixerApi
         controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0, 0, 0, 0, 0, 0 });
         controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
         controller.MapCommandAction(MackieCommand.ChannelInfoControl, MaybeCompleteChannelInfo);
-        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data[..4]));
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
         controller.MapCommandAction(MackieCommand.ChannelNames, HandleChannelNames);
     }

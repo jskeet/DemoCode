@@ -26,7 +26,7 @@ public class FileRequestMessage : UCNetMessage
     protected override void WriteBody(Span<byte> span)
     {
         BinaryPrimitives.WriteUInt16LittleEndian(span, requestId);
-        Encoding.UTF8.GetBytes(path, span.Slice(2));
+        Encoding.UTF8.GetBytes(path, span[2..]);
     }
 
     internal static FileRequestMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)

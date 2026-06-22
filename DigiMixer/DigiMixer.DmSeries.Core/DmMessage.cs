@@ -5,9 +5,9 @@ using System.Text;
 
 namespace DigiMixer.DmSeries.Core;
 
-public class DmMessage : IMixerMessage<DmMessage>
+public class DmMessage(string type, uint flags, ImmutableList<DmSegment> segments) : IMixerMessage<DmMessage>
 {
-    public string Type { get; }
+    public string Type => type;
 
     /// <summary>
     /// Message length including header and data.
@@ -19,16 +19,9 @@ public class DmMessage : IMixerMessage<DmMessage>
         4 + // Flags
         Segments.Sum(seg => seg.Length);
 
-    public uint Flags { get; }
+    public uint Flags => flags;
 
-    public IReadOnlyList<DmSegment> Segments { get; }
-
-    public DmMessage(string type, uint flags, ImmutableList<DmSegment> segments)
-    {
-        Type = type;
-        Flags = flags;
-        Segments = segments;
-    }
+    public IReadOnlyList<DmSegment> Segments => segments;
 
     public static DmMessage? TryParse(ReadOnlySpan<byte> data)
     {

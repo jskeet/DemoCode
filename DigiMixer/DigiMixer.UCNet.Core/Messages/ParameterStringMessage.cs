@@ -20,7 +20,7 @@ public class ParameterStringMessage : UCNetMessage
     protected override void WriteBody(Span<byte> span)
     {
         int keyLength = Encoding.UTF8.GetBytes(Key, span);
-        Encoding.UTF8.GetBytes(Value, span.Slice(keyLength + 3));
+        Encoding.UTF8.GetBytes(Value, span[(keyLength + 3)..]);
     }
 
     public static ParameterStringMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)

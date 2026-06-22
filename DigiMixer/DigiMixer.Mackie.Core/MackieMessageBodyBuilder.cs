@@ -13,13 +13,13 @@ public sealed class MackieMessageBodyBuilder
 
     public MackieMessageBodyBuilder SetUInt32(int chunk, uint value)
     {
-        BinaryPrimitives.WriteUInt32BigEndian(data.AsSpan().Slice(chunk * 4), value);
+        BinaryPrimitives.WriteUInt32BigEndian(data.AsSpan()[(chunk * 4)..], value);
         return this;
     }
 
     public MackieMessageBodyBuilder SetSingle(int chunk, float value)
     {
-        BinaryPrimitives.WriteSingleBigEndian(data.AsSpan().Slice(chunk * 4), value);
+        BinaryPrimitives.WriteSingleBigEndian(data.AsSpan()[(chunk * 4)..], value);
         return this;
     }
 

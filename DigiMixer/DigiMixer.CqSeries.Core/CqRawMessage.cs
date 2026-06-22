@@ -93,12 +93,12 @@ public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
                 buffer[0] = VariableLengthPrefix;
                 buffer[1] = (byte) Type;
                 BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(2, 4), Data.Length);
-                data.Span.CopyTo(buffer.Slice(6));
+                data.Span.CopyTo(buffer[6..]);
                 break;
             case CqMessageFormat.FixedLength8:
             case CqMessageFormat.FixedLength9:
                 buffer[0] = FixedLengthPrefix;
-                data.Span.CopyTo(buffer.Slice(1));
+                data.Span.CopyTo(buffer[1..]);
                 break;
             default:
                 throw new InvalidOperationException();

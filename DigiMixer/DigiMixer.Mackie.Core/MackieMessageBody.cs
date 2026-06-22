@@ -90,7 +90,7 @@ public sealed class MackieMessageBody
     /// </summary>
     public uint GetUInt32(int chunk)
     {
-        var slice = data.AsSpan().Slice(chunk * 4);
+        var slice = data.AsSpan()[(chunk * 4)..];
         return IsNetworkOrder ? BinaryPrimitives.ReadUInt32BigEndian(slice) : BinaryPrimitives.ReadUInt32LittleEndian(slice);
     }
 
@@ -108,7 +108,7 @@ public sealed class MackieMessageBody
     /// </summary>
     public float GetSingle(int chunk)
     {
-        var slice = data.AsSpan().Slice(chunk * 4);
+        var slice = data.AsSpan()[(chunk * 4)..];
         return IsNetworkOrder ? BinaryPrimitives.ReadSingleBigEndian(slice) : BinaryPrimitives.ReadSingleLittleEndian(slice);
     }
 

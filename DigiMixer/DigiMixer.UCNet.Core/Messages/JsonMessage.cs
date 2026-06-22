@@ -22,7 +22,7 @@ public class JsonMessage : UCNetMessage
     protected override void WriteBody(Span<byte> buffer)
     {
         BinaryPrimitives.WriteInt32LittleEndian(buffer, byteCount);
-        Encoding.UTF8.GetBytes(json, buffer.Slice(4));
+        Encoding.UTF8.GetBytes(json, buffer[4..]);
     }
 
     public static JsonMessage FromJson(string json, MessageMode mode = MessageMode.FileRequest) =>
@@ -38,7 +38,7 @@ public class JsonMessage : UCNetMessage
         {
             throw new ArgumentException($"Message starts claiming JSON data length {length} but is {body.Length - 4}");
         }
-        return FromJson(Encoding.UTF8.GetString(body.Slice(4)), mode);
+        return FromJson(Encoding.UTF8.GetString(body[4..]), mode);
     }
 
     public override string ToString() => $"JSON: {json}";

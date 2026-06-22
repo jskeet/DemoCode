@@ -51,10 +51,10 @@ public class ParameterValueMessage : UCNetMessage
     protected override void WriteBody(Span<byte> span)
     {
         int textLength = Encoding.UTF8.GetBytes(Key, span);
-        BinaryPrimitives.WriteUInt16LittleEndian(span.Slice(textLength + 1), Group);
+        BinaryPrimitives.WriteUInt16LittleEndian(span[(textLength + 1)..], Group);
         if (Value is uint value)
         {
-            BinaryPrimitives.WriteUInt32LittleEndian(span.Slice(textLength + 3), value);
+            BinaryPrimitives.WriteUInt32LittleEndian(span[(textLength + 3)..], value);
         }
     }
 

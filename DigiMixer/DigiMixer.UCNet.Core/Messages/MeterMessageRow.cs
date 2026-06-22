@@ -27,7 +27,7 @@ public class MeterMessageRow<T>
         var rowSpan = ((ReadOnlySpan<byte>) rowData).Slice(rowNumber * 6, 6);
         Source = (MeterSource) rowSpan[0];
         Stage = (MeterStage) rowSpan[1];
-        Offset = BinaryPrimitives.ReadUInt16LittleEndian(rowSpan.Slice(2));
-        Count = BinaryPrimitives.ReadUInt16LittleEndian(rowSpan.Slice(4));
+        Offset = BinaryPrimitives.ReadUInt16LittleEndian(rowSpan[2..]);
+        Count = BinaryPrimitives.ReadUInt16LittleEndian(rowSpan[4..]);
     }
 }

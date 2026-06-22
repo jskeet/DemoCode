@@ -29,13 +29,13 @@ public class ChunkMessage : UCNetMessage
     internal static ChunkMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
         uint offset = BinaryPrimitives.ReadUInt32LittleEndian(body);
-        uint totalSize = BinaryPrimitives.ReadUInt32LittleEndian(body.Slice(4));
-        uint chunkSize = BinaryPrimitives.ReadUInt32LittleEndian(body.Slice(8));
+        uint totalSize = BinaryPrimitives.ReadUInt32LittleEndian(body[4..]);
+        uint chunkSize = BinaryPrimitives.ReadUInt32LittleEndian(body[8..]);
         if (chunkSize + 12 != body.Length)
         {
             throw new InvalidDataException($"Invalid Chunk message: chunk data size claimed to be {chunkSize} but message body is {body.Length} bytes (with 12 byte chunk header)");
         }
-        return new ChunkMessage(totalSize, offset, body.Slice(12).ToArray(), mode);
+        return new ChunkMessage(totalSize, offset, body[12..].ToArray(), mode);
     }
 
     public override string ToString() => $"Chunk: Offset={Offset}; Length={data.Length}; TotalSize={TotalSize}";

@@ -40,5 +40,5 @@ internal class CqRegularMessage : CqMessage
 
     public override string ToString() => Data.Length > 16
         ? $"Type={Type}; X={X}; Y={Y}; Z={Z}; TotalDataLength={Data.Length}"
-        : $"Type={Type}; X={X}; Y={Y}; Z={Z}; OtherData={Formatting.ToHex(Data.Slice(3))}";
+        : $"Type={Type}; X={X}; Y={Y}; Z={Z}; OtherData={Formatting.ToHex(Data[3..])}";
 }

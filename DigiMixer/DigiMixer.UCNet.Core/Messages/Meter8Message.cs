@@ -17,10 +17,10 @@ public class Meter8Message : MeterMessageBase<byte>
 
     internal static Meter8Message FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
-        string type = Encoding.UTF8.GetString(body.Slice(0, 4));
-        int dataCount = BinaryPrimitives.ReadUInt16LittleEndian(body.Slice(6));
+        string type = Encoding.UTF8.GetString(body[..4]);
+        int dataCount = BinaryPrimitives.ReadUInt16LittleEndian(body[6..]);
         var data = body.Slice(8, dataCount);
-        int rowCount = body.Slice(8 + data.Length)[0];
+        int rowCount = body[(8 + data.Length)..][0];
         var rowMappingData = body.Slice(8 + data.Length + 1, rowCount * 6);
         if (rowMappingData.Length + data.Length + 9 != body.Length)
         {

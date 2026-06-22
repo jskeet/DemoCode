@@ -25,7 +25,7 @@ public abstract class CqMessage
     {
     }
 
-    internal ushort GetUInt16(int index) => BinaryPrimitives.ReadUInt16LittleEndian(Data.Slice(index));
+    internal ushort GetUInt16(int index) => BinaryPrimitives.ReadUInt16LittleEndian(Data[index..]);
 
     internal string? GetString(int offset, int maxLength)
     {

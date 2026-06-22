@@ -35,7 +35,7 @@ public class CompressedJsonMessage : UCNetMessage
     protected override void WriteBody(Span<byte> span)
     {
         BinaryPrimitives.WriteInt32LittleEndian(span, compressedData.Length);
-        compressedData.CopyTo(span.Slice(4));
+        compressedData.CopyTo(span[4..]);
     }
 
     internal static CompressedJsonMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
@@ -45,7 +45,7 @@ public class CompressedJsonMessage : UCNetMessage
         {
             throw new ArgumentException($"Message starts claiming compressed data length {length} but is {body.Length}");
         }
-        return FromCompressedData(body.Slice(4).ToArray(), mode);
+        return FromCompressedData(body[4..].ToArray(), mode);
     }
 
     public string ToJson() => Ubjson.ToJson(uncompressedData);

@@ -3,18 +3,13 @@ using System.Collections.Immutable;
 
 namespace DigiMixer.DmSeries.Core;
 
-public sealed class DmUInt32Segment : DmSegment
+public sealed class DmUInt32Segment(ImmutableList<uint> values) : DmSegment
 {
     public override DmSegmentFormat Format => DmSegmentFormat.UInt32;
 
     public override int Length => 5 + Values.Count * 4;
 
-    public ImmutableList<uint> Values { get; }
-
-    public DmUInt32Segment(ImmutableList<uint> values)
-    {
-        Values = values;
-    }
+    public ImmutableList<uint> Values => values;
 
     public override void WriteTo(Span<byte> buffer)
     {

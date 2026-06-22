@@ -20,8 +20,8 @@ public class QuValueMessage : QuControlMessage
     internal QuValueMessage(ReadOnlySpan<byte> data) : this(
         data[0],
         data[1],
-        MemoryMarshal.Cast<byte, int>(data.Slice(2))[0],
-        MemoryMarshal.Cast<byte, ushort>(data.Slice(6))[0])
+        MemoryMarshal.Cast<byte, int>(data[2..])[0],
+        MemoryMarshal.Cast<byte, ushort>(data[6..])[0])
     {
     }
 
@@ -33,8 +33,8 @@ public class QuValueMessage : QuControlMessage
         buffer[1] = ClientId;
         buffer[2] = Section;
         // Note offsets of 3 and 7 rather than 2 and 6, as the message includes the fixed-length indicator.
-        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(3), Address);
-        BinaryPrimitives.WriteUInt16LittleEndian(buffer.Slice(7), RawValue);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer[3..], Address);
+        BinaryPrimitives.WriteUInt16LittleEndian(buffer[7..], RawValue);
     }
 
     public override string ToString() =>

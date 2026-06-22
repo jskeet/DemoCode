@@ -31,18 +31,18 @@ public class FileDataMessage : UCNetMessage
     internal static FileDataMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body)
     {
         ushort id = BinaryPrimitives.ReadUInt16LittleEndian(body);
-        ushort offset = BinaryPrimitives.ReadUInt16LittleEndian(body.Slice(2));
-        ushort unknown1 = BinaryPrimitives.ReadUInt16LittleEndian(body.Slice(4));
-        ushort totalSize = BinaryPrimitives.ReadUInt16LittleEndian(body.Slice(6));
-        uint unknown2 = BinaryPrimitives.ReadUInt32LittleEndian(body.Slice(8));
-        ushort chunkSize = BinaryPrimitives.ReadUInt16LittleEndian(body.Slice(12));
+        ushort offset = BinaryPrimitives.ReadUInt16LittleEndian(body[2..]);
+        ushort unknown1 = BinaryPrimitives.ReadUInt16LittleEndian(body[4..]);
+        ushort totalSize = BinaryPrimitives.ReadUInt16LittleEndian(body[6..]);
+        uint unknown2 = BinaryPrimitives.ReadUInt32LittleEndian(body[8..]);
+        ushort chunkSize = BinaryPrimitives.ReadUInt16LittleEndian(body[12..]);
 
         if (body.Length != chunkSize + 14)
         {
             throw new InvalidDataException($"Invalid FileData message: chunk data size claimed to be {chunkSize} but packet body is {body.Length} bytes (with 14 byte chunk header)");
         }
 
-        return new FileDataMessage(id, totalSize, offset, body.Slice(14).ToArray(), mode);
+        return new FileDataMessage(id, totalSize, offset, body[14..].ToArray(), mode);
     }
 
     public override string ToString() => $"FileData: ID={Id}; TotalSize={TotalSize}; Offset={Offset}; Length={data.Length}";
