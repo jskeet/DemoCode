@@ -6,28 +6,22 @@
 /// <see cref="FaderLevel"/> scale is provided by interpolating between fixed
 /// (mixer-specific) points.
 /// </summary>
-public sealed class DbFaderScale : IFaderScale
+/// <remarks>
+/// Constructs a scale based on the given dB values, to be equally spaced in the integer range.
+/// </remarks>
+/// <param name="dbValues">The dB values which should be equally spaced in the fader.
+/// The first value should be the effective "anything this or lower is -infinity",
+/// and the last value should be the maximum value supported by the mixer.</param>
+public sealed class DbFaderScale(params double[] dbValues) : IFaderScale
 {
     /// <summary>
     /// The number of integer values between each dB value provided in the constructor.
     /// </summary>
     private const int ValuesPerGap = 1024;
 
-    private readonly double[] dbValues;
+    private readonly double[] dbValues = (double[]) dbValues.Clone();
 
-    public int MaxValue { get; }
-
-    /// <summary>
-    /// Constructs a scale based on the given dB values, to be equally spaced in the integer range.
-    /// </summary>
-    /// <param name="dbValues">The dB values which should be equally spaced in the fader.
-    /// The first value should be the effective "anything this or lower is -infinity",
-    /// and the last value should be the maximum value supported by the mixer.</param>
-    public DbFaderScale(params double[] dbValues)
-    {
-        MaxValue = (dbValues.Length - 1) * ValuesPerGap;
-        this.dbValues = (double[]) dbValues.Clone();
-    }
+    public int MaxValue { get; } = (dbValues.Length - 1) * ValuesPerGap;
 
     public FaderLevel ConvertToFaderLevel(double db)
     {
@@ -56,7 +50,7 @@ public sealed class DbFaderScale : IFaderScale
     {
         if (level >= MaxValue)
         {
-            return dbValues[dbValues.Length - 1];
+            return dbValues[^1];
         }
         if (level <= 0)
         {

@@ -94,7 +94,7 @@ public abstract class UdpControllerBase
     /// that instead.
     /// </summary>
     protected virtual void ProcessData(byte[] data, int length) =>
-        ProcessData(data.AsSpan().Slice(0, length));
+        ProcessData(data.AsSpan()[..length]);
 
     public void Dispose()
     {

@@ -7,15 +7,9 @@
 /// wrap implementations which don't receive "echo" messages from
 /// the hardware as confirmation of changes.
 /// </summary>
-public class AutoReceiveMixerApi : IMixerApi
+public sealed class AutoReceiveMixerApi(IMixerApi target) : IMixerApi
 {
-    private readonly IMixerApi target;
     private readonly DelegatingReceiver receiver = new();
-
-    public AutoReceiveMixerApi(IMixerApi target)
-    {
-        this.target = target;
-    }
 
     public TimeSpan KeepAliveInterval => target.KeepAliveInterval;
     public IFaderScale FaderScale => target.FaderScale;

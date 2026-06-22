@@ -3,10 +3,9 @@
 /// <summary>
 /// Message processor with internal buffer, used to handle incoming TCP streams.
 /// </summary>
-public sealed class MessageProcessor<TMessage> where TMessage : class, IMixerMessage<TMessage>
+public sealed class MessageProcessor<TMessage>(Func<TMessage, CancellationToken, Task> messageAction, int bufferSize = 65540) where TMessage : class, IMixerMessage<TMessage>
 {
-    private readonly Func<TMessage, CancellationToken, Task> messageAction;
-    private readonly Memory<byte> buffer;
+    private readonly Memory<byte> buffer = new byte[bufferSize];
 
     /// <summary>
     /// The amount of unprocessed data left in the buffer.
@@ -17,12 +16,6 @@ public sealed class MessageProcessor<TMessage> where TMessage : class, IMixerMes
     /// The total number of messages processed.
     /// </summary>
     public long MessagesProcessed { get; private set; }
-
-    public MessageProcessor(Func<TMessage, CancellationToken, Task> messageAction, int bufferSize = 65540)
-    {
-        this.messageAction = messageAction;
-        buffer = new byte[bufferSize];
-    }
 
     public MessageProcessor(Action<TMessage> messageAction, int bufferSize = 65540)
         : this((message, cancellationToken) => { messageAction(message); return Task.CompletedTask; }, bufferSize)

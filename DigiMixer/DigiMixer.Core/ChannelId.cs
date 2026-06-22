@@ -30,14 +30,14 @@ public readonly struct ChannelId : IEquatable<ChannelId>
     private ChannelId(int value, bool input) =>
         (Value, IsInput) = (value, input);
 
-    public static ChannelId Input(int value) => new ChannelId(value, true);
-    public static ChannelId Output(int value) => new ChannelId(value, false);
+    public static ChannelId Input(int value) => new(value, true);
+    public static ChannelId Output(int value) => new(value, false);
 
     /// <summary>
     /// Creates a new ChannelId with the given value, and the same input/output aspect
     /// as this ChannelId.
     /// </summary>
-    public ChannelId WithValue(int value) => new ChannelId(value, IsInput);
+    public ChannelId WithValue(int value) => new(value, IsInput);
 
     public bool Equals(ChannelId other) => Value == other.Value && IsInput == other.IsInput;
     public override int GetHashCode() => Value ^ (IsInput ? 0x10000 : 0);

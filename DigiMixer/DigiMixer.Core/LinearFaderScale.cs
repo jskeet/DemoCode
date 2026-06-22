@@ -22,8 +22,8 @@ public sealed class LinearFaderScale : IFaderScale
     /// <param name="referencePoints"></param>
     public LinearFaderScale(params (int value, double db)[] referencePoints)
     {
-        rawValues = referencePoints.Select(rp => rp.value).ToArray();
-        dbValues = referencePoints.Select(rp => rp.db).ToArray();
+        rawValues = [.. referencePoints.Select(rp => rp.value)];
+        dbValues = [.. referencePoints.Select(rp => rp.db)];
         MaxValue = rawValues.Last();
     }
 
@@ -31,7 +31,7 @@ public sealed class LinearFaderScale : IFaderScale
     {
         if (level >= MaxValue)
         {
-            return dbValues[dbValues.Length - 1];
+            return dbValues[^1];
         }
         if (level <= 0)
         {
@@ -45,7 +45,7 @@ public sealed class LinearFaderScale : IFaderScale
         // This shouldn't happen anyway, but let's keep safe.
         if (index >= dbValues.Length)
         {
-            return dbValues[dbValues.Length - 1];
+            return dbValues[^1];
         }
         double lowerBoundDb = dbValues[index];
         double upperBoundDb = dbValues[index + 1];

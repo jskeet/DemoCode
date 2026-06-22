@@ -5,14 +5,12 @@
 /// implementation. This is simply an integer value; it only merits its own type to make it abundantly
 /// clear that values are for fader levels, not meter levels (or arbitrary protocol values).
 /// </summary>
-public struct FaderLevel
+public readonly struct FaderLevel(int value)
 {
     /// <summary>
     /// The value of the fader level, in the range indicated by the corresponding fader scale.
     /// </summary>
-    public int Value { get; }
-
-    public FaderLevel(int value) => Value = value;
+    public int Value => value;
 
     public override string ToString() => $"Level: {Value}";
 }

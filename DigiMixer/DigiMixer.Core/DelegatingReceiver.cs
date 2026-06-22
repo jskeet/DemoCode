@@ -13,7 +13,7 @@ public sealed class DelegatingReceiver : IMixerReceiver
     // Note: an alternative implementation might only use ConcurrentBag when there's
     // more than one receiver. Commonly there's only one, so creating a collection
     // snapshot on each call is over-the-top.
-    private readonly ConcurrentBag<IMixerReceiver> receivers = new ConcurrentBag<IMixerReceiver>();
+    private readonly ConcurrentBag<IMixerReceiver> receivers = [];
 
     public bool IsEmpty => receivers.IsEmpty;
 

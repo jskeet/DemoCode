@@ -6,16 +6,12 @@ namespace DigiMixer.Core;
 /// The level of a meter, e.g. the current output of a channel,
 /// with a maximum level of 0dB. The range is 0.0 to 1.0.
 /// </summary>
-public struct MeterLevel : IEquatable<MeterLevel>, IComparable<MeterLevel>
+public readonly struct MeterLevel(double value) : IEquatable<MeterLevel>, IComparable<MeterLevel>
 {
     public static MeterLevel MinValue { get; } = new MeterLevel(0d);
     public static MeterLevel MaxValue { get; } = new MeterLevel(1d);
 
-    public double Value { get; }
-
-    // TODO: ToString, linearize to a given integer scale.
-    public MeterLevel(double value) =>
-        Value = value;
+    public double Value => value;
 
     /// <summary>
     /// Converts from decibel levels (non-positive dB)

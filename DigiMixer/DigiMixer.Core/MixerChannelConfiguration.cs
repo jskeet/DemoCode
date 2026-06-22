@@ -5,30 +5,23 @@
 /// This can either be constructed explicitly (e.g. for an application which is aware
 /// of the desired channels) or detected by the underlying API code.
 /// </summary>
-public sealed class MixerChannelConfiguration
+public sealed class MixerChannelConfiguration(
+    IEnumerable<ChannelId> inputChannels,
+    IEnumerable<ChannelId> outputChannels,
+    IEnumerable<StereoPair> stereoPairs)
 {
     /// <summary>
     /// The input channels for the mixer.
     /// </summary>
-    public IReadOnlyList<ChannelId> InputChannels { get; }
+    public IReadOnlyList<ChannelId> InputChannels { get; } = inputChannels.ToList().AsReadOnly();
 
     /// <summary>
     /// The output channels for the mixer.
     /// </summary>
-    public IReadOnlyList<ChannelId> OutputChannels { get; }
+    public IReadOnlyList<ChannelId> OutputChannels { get; } = outputChannels.ToList().AsReadOnly();
 
     /// <summary>
     /// The stereo pairings of input or output channels.
     /// </summary>
-    public IReadOnlyList<StereoPair> StereoPairs { get; }
-
-    public MixerChannelConfiguration(
-        IEnumerable<ChannelId> inputChannels,
-        IEnumerable<ChannelId> outputChannels,
-        IEnumerable<StereoPair> stereoPairs)
-    {
-        InputChannels = inputChannels.ToList().AsReadOnly();
-        OutputChannels = outputChannels.ToList().AsReadOnly();
-        StereoPairs = stereoPairs.ToList().AsReadOnly();
-    }
+    public IReadOnlyList<StereoPair> StereoPairs { get; } = stereoPairs.ToList().AsReadOnly();
 }
