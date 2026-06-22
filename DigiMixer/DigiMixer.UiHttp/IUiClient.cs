@@ -6,7 +6,7 @@ internal interface IUiClient : IDisposable
     event EventHandler<UiMessage>? MessageReceived;
     Task Send(UiMessage message, CancellationToken cancellationToken = default);
 
-    public class Fake : IUiClient
+    public sealed class Fake : IUiClient
     {
         internal static Fake Instance { get; } = new Fake();
         private Fake() { }

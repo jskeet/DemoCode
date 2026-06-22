@@ -46,7 +46,7 @@ internal sealed class UiStreamClient : IUiClient
                 {
                     throw new InvalidOperationException("Unexpected TCP stream termination");
                 }
-                await messageProcessor.Process(buffer.Slice(0, bytesRead), cts.Token);
+                await messageProcessor.Process(buffer[..bytesRead], cts.Token);
             }
         }
         catch when (cts.IsCancellationRequested)

@@ -12,7 +12,7 @@ using static UiMeters;
 // TODO: make this thread-safe? Currently kinda hopes everything is on the dispatcher thread...
 // TODO: Can we actually mute on a per output basis? Eek...
 //       (Yes, we can - but turning on "aux send mute inheritance" makes it simpler.)
-public class UiHttpMixerApi : IMixerApi
+public sealed class UiHttpMixerApi : IMixerApi
 {
     private const string HttpPreamble = "GET /raw HTTP1.1\n\n";
 
@@ -131,19 +131,19 @@ public class UiHttpMixerApi : IMixerApi
         async Task ReadHttpResponseHeaders()
         {
             // Read a single byte at a time to avoid causing problems for the UiStreamClient.
-            byte[] buffer = new byte[1];
-            byte[] doubleLineBreak = { 0x0d, 0x0a, 0x0d, 0x0a };
+            Memory<byte> buffer = new byte[1];
+            byte[] doubleLineBreak = [0x0d, 0x0a, 0x0d, 0x0a];
             int doubleLineBreakIndex = 0;
             int totalBytesRead = 0;
             // If we've read this much data, we've missed it...
             while (totalBytesRead < 256)
             {
-                int bytesRead = await stream.ReadAsync(buffer, 0, 1);
+                int bytesRead = await stream.ReadAsync(buffer, initialCancellationToken);
                 if (bytesRead == 0)
                 {
                     throw new InvalidDataException("Never reached the end of the HTTP headers");
                 }
-                if (buffer[0] == doubleLineBreak[doubleLineBreakIndex])
+                if (buffer.Span[0] == doubleLineBreak[doubleLineBreakIndex])
                 {
                     doubleLineBreakIndex++;
                     if (doubleLineBreakIndex == doubleLineBreak.Length)
@@ -325,7 +325,7 @@ public class UiHttpMixerApi : IMixerApi
         }
         receiver.ReceiveMeterLevels(levels);
 
-        MeterLevel ToMeterLevel(byte rawValue)
+        static MeterLevel ToMeterLevel(byte rawValue)
         {
             // 240 is actually the highest value we see, but let's make sure that's actually the case...
             int normalized = Math.Min((int) rawValue, 240);
@@ -380,7 +380,7 @@ public class UiHttpMixerApi : IMixerApi
 
     private double FromFaderLevel(FaderLevel level) => level.Value / (float) FaderScale.MaxValue;
 
-    private FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderScale.MaxValue));
+    private FaderLevel ToFaderLevel(double value) => new((int) (value * FaderScale.MaxValue));
 
     public void Dispose()
     {

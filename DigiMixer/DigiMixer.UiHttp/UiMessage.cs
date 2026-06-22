@@ -45,7 +45,7 @@ public class UiMessage : IMixerMessage<UiMessage>
         {
             return null;
         }
-        data = data.Slice(0, endOfLine);
+        data = data[..endOfLine];
 
         int messageLength = data.Length + 1;
         // Formats:
@@ -60,8 +60,8 @@ public class UiMessage : IMixerMessage<UiMessage>
             type = Encoding.ASCII.GetString(data);
             return new UiMessage(type, null, null, messageLength);
         }
-        type = Encoding.ASCII.GetString(data.Slice(0, endOfType));
-        data = data.Slice(endOfType + 1);
+        type = Encoding.ASCII.GetString(data[..endOfType]);
+        data = data[(endOfType + 1)..];
 
         int endOfAddressOrValue = data.IndexOf((byte) '^');
         if (endOfAddressOrValue == -1)
@@ -69,8 +69,8 @@ public class UiMessage : IMixerMessage<UiMessage>
             string valueWithoutAddress = Encoding.ASCII.GetString(data);
             return new UiMessage(type, null, valueWithoutAddress, messageLength);
         }
-        string address = Encoding.ASCII.GetString(data.Slice(0, endOfAddressOrValue));
-        data = data.Slice(endOfAddressOrValue + 1);
+        string address = Encoding.ASCII.GetString(data[..endOfAddressOrValue]);
+        data = data[(endOfAddressOrValue + 1)..];
         string value = Encoding.ASCII.GetString(data);
         return new UiMessage(type, address, value, messageLength);
     }
@@ -79,10 +79,10 @@ public class UiMessage : IMixerMessage<UiMessage>
     internal static UiMessage InitMessage { get; } = new UiMessage(InitType, null, null, null);
 
     internal static UiMessage CreateSetMessage(string address, bool value) =>
-        new UiMessage(SetDoubleMessageType, address, value ? "1" : "0", null);
+        new(SetDoubleMessageType, address, value ? "1" : "0", null);
 
     internal static UiMessage CreateSetMessage(string address, double value) =>
-        new UiMessage(SetDoubleMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture), null);
+        new(SetDoubleMessageType, address, value.ToString("N17", CultureInfo.InvariantCulture), null);
 
     private static int ComputeLength(string messageType, string? address, string? value)
     {
@@ -107,18 +107,18 @@ public class UiMessage : IMixerMessage<UiMessage>
     public void CopyTo(Span<byte> buffer)
     {
         Encoding.ASCII.GetBytes(MessageType, buffer);
-        buffer = buffer.Slice(MessageType.Length);
+        buffer = buffer[MessageType.Length..];
         if (Address is string address)
         {
             buffer[0] = (byte) '^';
-            Encoding.ASCII.GetBytes(address, buffer.Slice(1));
-            buffer = buffer.Slice(1 + address.Length);
+            Encoding.ASCII.GetBytes(address, buffer[1..]);
+            buffer = buffer[(1 + address.Length)..];
         }
         if (Value is string value)
         {
             buffer[0] = (byte) '^';
-            Encoding.ASCII.GetBytes(value, buffer.Slice(1));
-            buffer = buffer.Slice(1 + value.Length);
+            Encoding.ASCII.GetBytes(value, buffer[1..]);
+            buffer = buffer[(1 + value.Length)..];
         }
         buffer[0] = (byte) '\n';
     }
