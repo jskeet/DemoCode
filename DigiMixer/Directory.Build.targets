@@ -1,9 +1,7 @@
 <Project>
 	<ItemGroup>
-		<!--
 		<PackageReference Include="JonSkeet.RoslynAnalyzers"
 			PrivateAssets="all"
 			IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
-			-->
 	</ItemGroup>
 </Project>
