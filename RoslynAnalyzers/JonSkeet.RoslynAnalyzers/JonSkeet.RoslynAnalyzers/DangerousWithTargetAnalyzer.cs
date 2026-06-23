@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
 namespace JonSkeet.RoslynAnalyzers;
@@ -93,6 +94,13 @@ public class DangerousWithTargetAnalyzer : DiagnosticAnalyzer
 
     private static void MaybeReportDiagnostic(SyntaxNodeAnalysisContext context, List<IParameterSymbol> parameterSymbols, EqualsValueClauseSyntax initializer)
     {
+        // TODO: Fix this so we can detect issues across partial classes.
+        // context.SemanticModel.AnalyzeDataFlow fails with when the initializer isn't in the same syntax
+        // tree as the parameters.
+        if (context.SemanticModel.SyntaxTree != initializer.Value.SyntaxTree)
+        {
+            return;
+        }
         var dataFlow = context.SemanticModel.AnalyzeDataFlow(initializer.Value);
         var readSymbols = dataFlow.ReadInside;
         for (int i = 0; i < readSymbols.Length; i++)

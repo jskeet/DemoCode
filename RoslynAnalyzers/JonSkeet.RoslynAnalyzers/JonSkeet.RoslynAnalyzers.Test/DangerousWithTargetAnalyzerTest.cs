@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
 using NUnit.Framework;
+using System.Threading;
 using System.Threading.Tasks;
 using VerifyCS = JonSkeet.RoslynAnalyzers.Test.Verifiers.CSharpAnalyzerVerifier<JonSkeet.RoslynAnalyzers.DangerousWithTargetAnalyzer>;
 
@@ -160,5 +161,37 @@ public class DangerousWithTargetAnalyzerTest
             .WithSpan(2, 51, 2, 56)
             .WithArguments("Y");
         await VerifyCS.VerifyAnalyzerAsync(test, diagnostic);
+    }
+
+    [Test]
+    public async Task PartialClassInMultipleFiles()
+    {
+        var source1 = @"
+using System.Collections.Immutable;
+internal partial record InputChannelHashes(int Id, uint Name, uint Fader, uint Mute, uint StereoMode, ImmutableList<uint> OutputLevels);
+";
+        var source2 = @"
+using System.Collections.Immutable;
+internal partial record InputChannelHashes
+{
+    internal static ImmutableList<InputChannelHashes> AllInputs { get; } =
+    [
+        new(1, 2627760978, 950957506, 4111428088, 3884397269, [3137631695, 2388890104]),
+    ];
+
+    internal static ImmutableDictionary<int, InputChannelHashes> AllInputsByChannelId { get; } =
+        InputChannelHashes.AllInputs.ToImmutableDictionary(ch => ch.Id);
+}
+";
+        var test = new VerifyCS.Test
+        {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+            TestState =
+            {
+                Sources = { source1, source2 }
+            },
+        };
+
+        await test.RunAsync(CancellationToken.None);
     }
 }

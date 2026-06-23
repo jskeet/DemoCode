@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
-	  <PackageReference Include="NUnit" Version="4.3.2" />
-	  <PackageReference Include="NUnit.Analyzers" Version="4.9.2" />
-	  <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
-	  <PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
-	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
-	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.2" />
-	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.2" />
-	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing" Version="1.1.2" />
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" VersionOverride="17.4.1" />
+	  <PackageReference Include="NUnit" VersionOverride="4.3.2" />
+	  <PackageReference Include="NUnit.Analyzers" VersionOverride="4.9.2" />
+	  <PackageReference Include="NUnit3TestAdapter" VersionOverride="5.0.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis" VersionOverride="4.14.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.Common" VersionOverride="4.14.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" VersionOverride="1.1.2" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" VersionOverride="1.1.2" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing" VersionOverride="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
