@@ -168,7 +168,7 @@ namespace IconPlatform.Model
             inputPort = null;
             outputPort = null;
 
-            async Task CloseAsync(IMidiPort port)
+            static async Task CloseAsync(IMidiPort port)
             {
                 if (port is null)
                 {
@@ -234,8 +234,8 @@ namespace IconPlatform.Model
         {
             int width = GetChannelTextWidth(channel);
             int position = GetChannelTextPosition(channel);
-            SetText(0x38 + position, topRow.PadRight(width).Substring(0, width));
-            SetText(position, bottomRow.PadRight(width).Substring(0, width));
+            SetText(0x38 + position, topRow.PadRight(width)[..width]);
+            SetText(position, bottomRow.PadRight(width)[..width]);
         }
 
         /// <summary>

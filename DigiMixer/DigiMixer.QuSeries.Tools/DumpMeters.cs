@@ -1,8 +1,7 @@
 ﻿using DigiMixer.Diagnostics;
-using DigiMixer.QuSeries.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace DigiMixer.QuSeries.Scratchpad;
+namespace DigiMixer.QuSeries.Tools;
 
 public class DumpMeters : Tool
 {
@@ -21,18 +20,18 @@ public class DumpMeters : Tool
         return 0;
     }
 
-    static void LogMeter(QuGeneralMessage message)
-    {
-        if (!message.HasNonZeroData())
-        {
-            return;
-        }
-        Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} Message: Type={message.Type}, Length={message.Data.Length}");
-        var lines = Hex.ConvertAndSplit(message.Data, 20);
-        foreach (var line in lines)
-        {
-            Console.WriteLine(line);
-        }
-        Console.WriteLine();
-    }
+    //private static void LogMeter(QuGeneralMessage message)
+    //{
+    //    if (!message.HasNonZeroData())
+    //    {
+    //        return;
+    //    }
+    //    Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff} Message: Type={message.Type}, Length={message.Data.Length}");
+    //    var lines = Hex.ConvertAndSplit(message.Data, 20);
+    //    foreach (var line in lines)
+    //    {
+    //        Console.WriteLine(line);
+    //    }
+    //    Console.WriteLine();
+    //}
 }

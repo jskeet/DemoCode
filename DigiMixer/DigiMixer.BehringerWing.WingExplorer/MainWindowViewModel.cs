@@ -145,7 +145,7 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public MixerTreeNode CreateTree(IReadOnlyDictionary<uint, WingNodeDefinition> definitions, IReadOnlyDictionary<uint, WingToken> values)
+    public static MixerTreeNode CreateTree(IReadOnlyDictionary<uint, WingNodeDefinition> definitions, IReadOnlyDictionary<uint, WingToken> values)
     {
         var names = new Dictionary<uint, string>();
         var fullNames = new Dictionary<uint, string>();

@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
+namespace DigiMixer.QuSeries.Tools;
+
 public class ConvertWiresharkDumps : Tool
 {
     public override Task<int> Execute()

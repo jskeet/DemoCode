@@ -9,7 +9,7 @@ namespace JonSkeet.WpfLogging;
 
 public class LoggingConfig
 {
-    public Dictionary<string, LogLevel> LogLevel { get; } = new Dictionary<string, LogLevel>();
+    public Dictionary<string, LogLevel> LogLevel { get; } = [];
 
     /// <summary>
     /// When true, all log entries are written to disk immediately.

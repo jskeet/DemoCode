@@ -9,5 +9,5 @@ namespace DigiMixer.PeripheralConsole;
 // Copied from JonSkeet.WpfLogging (and trimmed) so the same config can be used in both apps.
 public class LoggingConfig
 {
-    public Dictionary<string, LogLevel> LogLevel { get; } = new Dictionary<string, LogLevel>();
+    public Dictionary<string, LogLevel> LogLevel { get; } = [];
 }

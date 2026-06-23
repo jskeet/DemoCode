@@ -3,6 +3,8 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace DigiMixer.UCNet.Tools;
+
 public class StartClient : Tool
 {
     public override async Task<int> Execute()

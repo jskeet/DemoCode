@@ -13,9 +13,9 @@ public class InfoRequester(string Address, string Port, string File, string Info
         string address = Address;
         int port = int.Parse(Port);
         string file = File;
-        List<byte> infoItems = InfoItems.Split('-').Select(byte.Parse).ToList();
+        List<byte> infoItems = [.. InfoItems.Split('-').Select(byte.Parse)];
 
-        MessageCollection mc = new MessageCollection();
+        MessageCollection mc = new();
         using var controller = new MackieController(NullLogger.Instance, address, port);
         controller.MessageSent += (sender, message) => RecordMessage(message, true);
         controller.MessageReceived += (sender, message) => RecordMessage(message, false);

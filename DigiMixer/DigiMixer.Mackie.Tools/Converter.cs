@@ -20,7 +20,7 @@ internal class Converter
         var packets = dump.IPV4Packets.ToList();
 
         // This is updated before Process is called; it's the timestamp of the latest packet.
-        DateTime currentTimestamp = new DateTime(2000, 1, 1, 0, 0, 0);
+        DateTime currentTimestamp = new(2000, 1, 1, 0, 0, 0);
         var mc = new MessageCollection();
 
         var outboundProcessor = new MessageProcessor<MackieMessage>(

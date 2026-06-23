@@ -35,7 +35,7 @@ public class SscMessageHandlerTest
         double received = 0;
         var handler = new SscMessageHandler.Builder
         {
-            { "/abc/def", (double x) => received = x }
+            { "/abc/def", x => received = x }
         }.Build();
 
         var response = new SscMessage(new SscProperty("/abc/def", 5L));
@@ -57,7 +57,10 @@ public class SscMessageHandlerTest
         var response = new SscMessage(SscProperty.FromErrors(error));
         handler.HandleMessage(response);
 
-        Assert.That(receivedValue, Is.Null);
-        Assert.That(receivedError, Is.EqualTo(error));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(receivedValue, Is.Null);
+            Assert.That(receivedError, Is.EqualTo(error));
+        }
     }
 }

@@ -49,7 +49,7 @@ public class LogViewModel : ViewModelBase
         var matchingEntries = log.GetAllLogEntries().Where(ShouldShowEntry).OrderBy(entry => entry.Timestamp).Select(entry => new LogEntryViewModel(entry)).ToList();
         if (matchingEntries.Count > DisplayedLogLimit)
         {
-            matchingEntries = matchingEntries.Skip(matchingEntries.Count - DisplayedLogLimit).ToList();
+            matchingEntries = [.. matchingEntries.Skip(matchingEntries.Count - DisplayedLogLimit)];
         }
         LogEntries = new ObservableCollection<LogEntryViewModel>(matchingEntries);
         RaisePropertyChanged(nameof(LogEntries));

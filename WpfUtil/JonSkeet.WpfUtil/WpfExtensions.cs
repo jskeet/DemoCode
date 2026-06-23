@@ -65,9 +65,8 @@ public static class WpfExtensions
         {
             return false;
         }
-        var container = listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) as UIElement;
         // Sometimes we need to update the layout in order to get the container.
-        if (container is null)
+        if (listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) is not UIElement container)
         {
             listBox.UpdateLayout();
             container = listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) as UIElement;

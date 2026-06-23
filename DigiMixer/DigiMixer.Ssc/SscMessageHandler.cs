@@ -62,21 +62,15 @@ public sealed class SscMessageHandler
         RequestMessage = new SscMessage(actions.Keys.OrderBy(addr => addr, StringComparer.Ordinal)).WithId(id);
     }
 
-    public sealed class Builder : IEnumerable
+    /// <summary>
+    /// Creates a builder for a handler with the given <see cref="SscAddresses.Xid"/>.
+    /// </summary>
+    /// <param name="id">The ID for the handler. This is included in <see cref="RequestMessage"/>,
+    /// and can be used to correlate requests with handlers.</param>
+    public sealed class Builder(string? id) : IEnumerable
     {
-        private readonly string? id;
-        private readonly Dictionary<string, Func<object?, bool>> actions = new();
-        private readonly Dictionary<string, Action<SscError>> errorActions = new();
-
-        /// <summary>
-        /// Creates a builder for a handler with the given <see cref="SscAddresses.Xid"/>.
-        /// </summary>
-        /// <param name="id">The ID for the handler. This is included in <see cref="RequestMessage"/>,
-        /// and can be used to correlate requests with handlers.</param>
-        public Builder(string? id)
-        {
-            this.id = id;
-        }
+        private readonly Dictionary<string, Func<object?, bool>> actions = [];
+        private readonly Dictionary<string, Action<SscError>> errorActions = [];
 
         public Builder() : this(null)
         {
@@ -107,9 +101,9 @@ public sealed class SscMessageHandler
             errorActions[address] = errorHandler;
         }
 
-        public SscMessageHandler Build() => new SscMessageHandler(id, actions, errorActions);
+        public SscMessageHandler Build() => new(id, actions, errorActions);
 
-        private Func<object?, bool> MaybeHandle<T>(Action<T> handler) =>
+        private static Func<object?, bool> MaybeHandle<T>(Action<T> handler) =>
             obj =>
             {
                 if (obj is T value)

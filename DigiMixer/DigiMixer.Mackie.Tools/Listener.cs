@@ -27,7 +27,7 @@ public class Listener(string Address, string Port, string File) : Tool
 
     private static async Task<MessageCollection> Listen(string address, int port, CancellationToken token)
     {
-        MessageCollection mc = new MessageCollection();
+        MessageCollection mc = new();
         var controller = new MackieController(NullLogger.Instance, address, port);
         controller.MessageSent += (sender, message) => RecordMessage(message, true);
         controller.MessageReceived += (sender, message) => RecordMessage(message, false);

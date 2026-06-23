@@ -24,7 +24,7 @@ public static class Dialogs
     /// <returns></returns>
     public static string GetDownloadsFolder()
     {
-        Guid guid = new Guid("{374DE290-123F-4565-9164-39C4925E467B}");
+        Guid guid = new("{374DE290-123F-4565-9164-39C4925E467B}");
         int result = SHGetKnownFolderPath(guid, dwFlags: 0, hToken: IntPtr.Zero, out IntPtr outPath);
         if (result >= 0)
         {
@@ -142,7 +142,10 @@ public static class Dialogs
     }
 
     [DllImport("Shell32.dll")]
+    // Guid isn't supported by code generation for LibraryImportAttribute
+#pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
     private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr ppszPath);
+#pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
     /// <summary>
     /// Common code for dialogs where a model may or may not have been changed.

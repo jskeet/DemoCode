@@ -21,7 +21,7 @@ public class ReportFaderLevels : Tool
             await client.Send(UiMessage.AliveMessage, default);
         }
 
-        void MaybeLogMessage(object? sender, UiMessage message)
+        static void MaybeLogMessage(object? sender, UiMessage message)
         {
             if (message.Address?.EndsWith(".mix", StringComparison.Ordinal) == true)
             {
@@ -31,7 +31,7 @@ public class ReportFaderLevels : Tool
     }
 
     // Copied from UiHttpMixerApi. At some point we might want more of a separation.
-    private async Task<IUiClient> CreateStreamClient(string host, int port, CancellationToken initialCancellationToken)
+    private static async Task<IUiClient> CreateStreamClient(string host, int port, CancellationToken initialCancellationToken)
     {
         var tcpClient = new TcpClient() { NoDelay = true };
         await tcpClient.ConnectAsync(host, port, initialCancellationToken);
@@ -45,13 +45,13 @@ public class ReportFaderLevels : Tool
         {
             // Read a single byte at a time to avoid causing problems for the UiStreamClient.
             byte[] buffer = new byte[1];
-            byte[] doubleLineBreak = { 0x0d, 0x0a, 0x0d, 0x0a };
+            byte[] doubleLineBreak = [0x0d, 0x0a, 0x0d, 0x0a];
             int doubleLineBreakIndex = 0;
             int totalBytesRead = 0;
             // If we've read this much data, we've missed it...
             while (totalBytesRead < 256)
             {
-                int bytesRead = await stream.ReadAsync(buffer, 0, 1);
+                int bytesRead = await stream.ReadAsync(buffer.AsMemory(0, 1), initialCancellationToken);
                 if (bytesRead == 0)
                 {
                     throw new InvalidDataException("Never reached the end of the HTTP headers");

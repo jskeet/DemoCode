@@ -174,7 +174,7 @@ namespace XTouchMini.Model
             inputPort = null;
             outputPort = null;
 
-            async Task CloseAsync(IMidiPort port)
+            static async Task CloseAsync(IMidiPort port)
             {
                 if (port is null)
                 {

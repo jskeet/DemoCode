@@ -52,7 +52,7 @@ internal class Proxy
         const uint IOC_VENDOR = 0x18000000U;
         const int SIO_UDP_CONNRESET = unchecked((int) (IOC_IN | IOC_VENDOR | 12));
 
-        client.Client.IOControl(SIO_UDP_CONNRESET, new byte[] { 0x00 }, null);
+        client.Client.IOControl(SIO_UDP_CONNRESET, [0x00], null);
     }
 
     private async Task ListenAndWait()
@@ -99,7 +99,7 @@ internal class Proxy
             }
         }
 
-        bool ShouldReflectMessage(OscMessage message) =>
+        static bool ShouldReflectMessage(OscMessage message) =>
             message.Address.EndsWith("/mt_000") || message.Address.EndsWith("/fd_000");
     }
 

@@ -12,7 +12,7 @@ namespace DigiMixer.Ssc;
 /// </summary>
 public sealed class SscMessage
 {
-    private static readonly JsonSerializerSettings deserializationSettings = new JsonSerializerSettings
+    private static readonly JsonSerializerSettings deserializationSettings = new()
     {
         DateParseHandling = DateParseHandling.None
     };
@@ -105,7 +105,7 @@ public sealed class SscMessage
 
     public string ToJson()
     {
-        JObject obj = new JObject();
+        JObject obj = [];
         foreach (var property in Properties)
         {
             var segments = property.Address.Split('/');

@@ -22,7 +22,7 @@ namespace JonSkeet.WpfLogging;
 public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
 {
     // A lock to protect "entries", which may be added to from multiple threads.
-    private readonly object _lock = new object();
+    private readonly Lock _lock = new();
     private readonly List<LogEntry> entries;
 
     private readonly Instant start;
@@ -38,7 +38,7 @@ public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
         this.config = config;
         dispatcher = Dispatcher.CurrentDispatcher;
         start = clock.GetCurrentInstant();
-        entries = new List<LogEntry>();
+        entries = [];
         if (config.UnbufferedLogging)
         {
             DateTime start = DateTime.UtcNow;
@@ -112,10 +112,10 @@ public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
         var formattedStart = InstantPattern.General.Format(start);
         var formattedEnd = InstantPattern.General.Format(clock.GetCurrentInstant());
         string[] prefix =
-        {
+        [
             $"{DeriveLogName()} Log ({formattedStart} to {formattedEnd})",
             "----"
-        };
+        ];
         var lines = prefix.Concat(allEntriesLocal.Select(entry => entry.ToFileFormat()));
         File.WriteAllLines(file, lines);
     }

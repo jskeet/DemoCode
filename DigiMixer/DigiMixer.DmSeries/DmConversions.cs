@@ -1,6 +1,6 @@
 ﻿using DigiMixer.Core;
 
-namespace DigiMixer.DmSeries.Core;
+namespace DigiMixer.DmSeries;
 
 internal static class DmConversions
 {

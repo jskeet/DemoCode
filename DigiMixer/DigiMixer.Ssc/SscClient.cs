@@ -8,13 +8,9 @@ using System.Text;
 
 namespace DigiMixer.Ssc;
 
-public sealed class SscClient : UdpControllerBase, ISscClient
+public sealed class SscClient(ILogger logger, string host, int port) : UdpControllerBase(logger, host, port, localPort: null), ISscClient
 {
     public event EventHandler<SscMessage>? MessageReceived;
-
-    public SscClient(ILogger logger, string host, int port) : base(logger, host, port, localPort: null)
-    {
-    }
 
     protected override void ProcessData(ReadOnlySpan<byte> data)
     {

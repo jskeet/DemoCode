@@ -5,15 +5,17 @@ using System.Buffers.Binary;
 using System.Net;
 using System.Net.Sockets;
 
-namespace DigiMixer.QuSeries.Scratchpad;
+namespace DigiMixer.QuSeries.Tools;
 
 public class ConnectClient : Tool
 {
     public override async Task<int> Execute()
     {
         var address = IPAddress.Parse("192.168.1.60");
-        var udpClient = new UdpClient();
-        udpClient.EnableBroadcast = true;
+        var udpClient = new UdpClient
+        {
+            EnableBroadcast = true
+        };
         udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
         var localUdpPort = ((IPEndPoint) udpClient.Client.LocalEndPoint!).Port;
         udpClient.Close();
@@ -44,7 +46,7 @@ public class ConnectClient : Tool
 
         var introMessages = new[]
         {
-            QuControlMessage.Create(type: 0, new byte[] { (byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8) }),
+            QuControlMessage.Create(type: 0, [(byte) (localUdpPort & 0xff), (byte) (localUdpPort >> 8)]),
             // This is required in order to get notifications from other clients.
             QuControlMessage.Create(type: 4, Decode("13 00 00 00  ff ff ff ff ff ff 9f 0f", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 e0 03 c0 ff ff ff 7f")),
             //QuMessage.Create(type: 4, Decode("14 00 00 00  ff 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00", "00 00 00 00 00 00 00 00")),
@@ -115,7 +117,7 @@ public class ConnectClient : Tool
                     Console.WriteLine($"Receiving stream broken at {DateTime.UtcNow}");
                     return;
                 }
-                await messageBuffer.Process(buffer.Slice(0, bytesRead), default);
+                await messageBuffer.Process(buffer[..bytesRead], default);
             }
         }
 
@@ -137,7 +139,7 @@ public class ConnectClient : Tool
                     }
                     var endpoint = new IPEndPoint(address, mixerUdpPort.Value);
                     Console.WriteLine("Sending ping");
-                    await udpClient.SendAsync(new byte[] { 0x7f, 0x25, 0, 0 }, 4, endpoint);
+                    await udpClient.SendAsync([0x7f, 0x25, 0, 0], 4, endpoint);
                     nextPing = now + pingGap;
                 }
             }

@@ -13,7 +13,7 @@ public static class TypeConverters
         }
         else
         {
-            value = default(T);
+            value = default;
             return false;
         }
     }

@@ -5,6 +5,8 @@ using DigiMixer.QuSeries.Core;
 using System.Net;
 using System.Net.Sockets;
 
+namespace DigiMixer.QuSeries.Tools;
+
 public class DecodeWireshark : Tool
 {
     public override async Task<int> Execute()

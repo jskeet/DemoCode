@@ -28,7 +28,7 @@ public record SscProperty(string Address, object? Value)
     /// <returns>An error property containing the given errors.</returns>
     public static SscProperty FromErrors(IEnumerable<SscError> errors)
     {
-        JObject obj = new JObject();
+        JObject obj = [];
         foreach (var error in errors)
         {
             var segments = error.Address.Split('/');

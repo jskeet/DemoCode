@@ -10,7 +10,7 @@ public class Recorder(string Address, string Port, string File) : Tool
 {
     public override async Task<int> Execute()
     {
-        MessageCollection mc = new MessageCollection();
+        MessageCollection mc = new();
         var controller = new MackieController(NullLogger.Instance, Address, int.Parse(Port));
         controller.MessageSent += (sender, message) => RecordMessage(message, true);
         controller.MessageReceived += (sender, message) => RecordMessage(message, false);

@@ -7,5 +7,3 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Performance", "CA1873:Avoid potentially expensive logging",
     Justification = "Manually verified", Scope = "module")]
-[assembly: SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance",
-    Justification = "No need to micro-optimize", Scope = "member", Target = "~F:DigiMixer.RcfProxy.Proxy.clock")]

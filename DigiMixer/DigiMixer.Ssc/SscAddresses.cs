@@ -89,7 +89,7 @@ public static class SscAddresses
     {
         public static Rx Rx1 { get; } = GetRx(1);
         public static Rx Rx2 { get; } = GetRx(2);
-        public static Rx GetRx(int rx) => new Rx($"/rx{rx}");
+        public static Rx GetRx(int rx) => new($"/rx{rx}");
 
         public class Rx
         {
@@ -106,7 +106,7 @@ public static class SscAddresses
         {
             public static Rx Rx1 { get; } = GetRx(1);
             public static Rx Rx2 { get; } = GetRx(2);
-            public static Rx GetRx(int rx) => new Rx($"/m/rx{rx}");
+            public static Rx GetRx(int rx) => new($"/m/rx{rx}");
 
             public class Rx
             {
@@ -125,7 +125,7 @@ public static class SscAddresses
         {
             public static Tx Tx1 { get; } = GetTx(1);
             public static Tx Tx2 { get; } = GetTx(2);
-            public static Tx GetTx(int tx) => new Tx($"/mates/tx{tx}");
+            public static Tx GetTx(int tx) => new($"/mates/tx{tx}");
 
             public class Tx
             {

@@ -3,6 +3,8 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace DigiMixer.UCNet.Tools;
+
 /// <summary>
 /// Tool to report fader levels as reported by the meter messages.
 /// Note that this appears to stop reporting values after a little while;
@@ -37,7 +39,7 @@ public class ReportFaderLevels : Tool
             await client.SendAsync(new KeepAliveMessage(), default);
         }
 
-        void ReportMainFaderLevel(object? sender, UCNetMessage message)
+        static void ReportMainFaderLevel(object? sender, UCNetMessage message)
         {
             if (message is not Meter16Message { MeterType: "fdrs" } meterMessage)
             {

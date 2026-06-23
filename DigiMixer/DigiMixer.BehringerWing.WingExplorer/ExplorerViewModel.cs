@@ -5,7 +5,7 @@ namespace DigiMixer.BehringerWing.WingExplorer;
 
 public class ExplorerViewModel : ViewModelBase
 {
-    public ObservableCollection<MixerTreeNode> RootNodes { get; } = new();
+    public ObservableCollection<MixerTreeNode> RootNodes { get; } = [];
 
     public void SetRoot(MixerTreeNode node)
     {

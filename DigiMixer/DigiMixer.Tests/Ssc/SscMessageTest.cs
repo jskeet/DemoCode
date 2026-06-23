@@ -59,8 +59,11 @@ public class SscMessageTest
         var original = new SscMessage(new SscProperty("/a/b/c", 10), new SscProperty(SscAddresses.Osc.Xid, "id"));
         Assert.That(original.Id, Is.EqualTo("id"));
         var noId = original.WithId(null);
-        Assert.That(noId.Id, Is.Null);
-        Assert.That(noId.Properties.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(noId.Id, Is.Null);
+            Assert.That(noId.Properties, Has.Count.EqualTo(1));
+        }
     }
 
     [Test]
@@ -100,9 +103,12 @@ public class SscMessageTest
         }
         """);
 
-        // The error address still shows up as a property; Errors is just a convenience.
-        Assert.That(message.Properties, Has.Member(new SscProperty("/device/name", "EWDXEM2")));
-        Assert.That(message.GetProperty(SscAddresses.Osc.Error), Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            // The error address still shows up as a property; Errors is just a convenience.
+            Assert.That(message.Properties, Has.Member(new SscProperty("/device/name", "EWDXEM2")));
+            Assert.That(message.GetProperty(SscAddresses.Osc.Error), Is.Not.Null);
+        }
 
         var expected = new[]
         {
