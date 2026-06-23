@@ -18,7 +18,7 @@ public sealed class AHRawMessage : IMixerMessage<AHRawMessage>
     /// </summary>
     public byte? Type { get; }
 
-    private ReadOnlyMemory<byte> data;
+    private readonly ReadOnlyMemory<byte> data;
 
     public ReadOnlySpan<byte> Data => data.Span;
 
@@ -35,7 +35,7 @@ public sealed class AHRawMessage : IMixerMessage<AHRawMessage>
         {
             7 => AHMessageFormat.FixedLength8,
             8 => AHMessageFormat.FixedLength9,
-            _ => throw new ArgumentException()
+            _ => throw new ArgumentException($"Expected the length to be 7 or 8; was {data.Length}", nameof(data))
         };
         return new(format, null, data);
     }

@@ -24,9 +24,11 @@ public class FileDataMessage(ushort id, uint totalSize, ushort offset, byte[] da
     {
         ushort id = BinaryPrimitives.ReadUInt16LittleEndian(body);
         ushort offset = BinaryPrimitives.ReadUInt16LittleEndian(body[2..]);
+#pragma warning disable IDE0059 // Unnecessary assignment of a value - we want to use these eventually.
         ushort unknown1 = BinaryPrimitives.ReadUInt16LittleEndian(body[4..]);
         ushort totalSize = BinaryPrimitives.ReadUInt16LittleEndian(body[6..]);
         uint unknown2 = BinaryPrimitives.ReadUInt32LittleEndian(body[8..]);
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
         ushort chunkSize = BinaryPrimitives.ReadUInt16LittleEndian(body[12..]);
 
         if (body.Length != chunkSize + 14)

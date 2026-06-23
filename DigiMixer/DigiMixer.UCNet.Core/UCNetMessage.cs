@@ -12,12 +12,12 @@ namespace DigiMixer.UCNet.Core;
 //   - Mode (4 bytes)
 // - Body
 
-public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
+public abstract class UCNetMessage(MessageMode mode) : IMixerMessage<UCNetMessage>
 {
     private static readonly byte[] MagicNumber = [0x55, 0x43, 0x00, 0x01];
 
     // TODO: Give this a better name (and maybe use an enum)
-    public MessageMode Mode { get; }
+    public MessageMode Mode => mode;
 
     /// <summary>
     /// Length of the whole message, including the header.
@@ -26,11 +26,6 @@ public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
 
     public abstract MessageType Type { get; }
     protected abstract int BodyLength { get; }
-
-    protected UCNetMessage(MessageMode mode)
-    {
-        Mode = mode;
-    }
 
     public void CopyTo(Span<byte> buffer)
     {

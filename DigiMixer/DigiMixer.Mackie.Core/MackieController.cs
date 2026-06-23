@@ -7,24 +7,17 @@ namespace DigiMixer.Mackie.Core;
 /// <summary>
 /// Controller to handle the protocol for a Mackie DL-series mixer.
 /// </summary>
-public sealed class MackieController : TcpMessageProcessingControllerBase<MackieMessage>
+public sealed class MackieController(ILogger logger, string host, int port) : TcpMessageProcessingControllerBase<MackieMessage>(logger, host, port)
 {
     private int nextSeq = 0;
-    private readonly OutstandingRequest?[] outstandingRequests;
+    private readonly OutstandingRequest?[] outstandingRequests = new OutstandingRequest[256];
 
     // TODO: Think about thread safety. We don't write to the lists after starting, so it's probably okay...
-    private readonly List<Func<MackieMessage, CancellationToken, Task<MackieMessageBody?>>> requestHandlers;
-    private readonly List<Func<MackieMessage, CancellationToken, Task>> broadcastHandlers;
+    private readonly List<Func<MackieMessage, CancellationToken, Task<MackieMessageBody?>>> requestHandlers = [];
+    private readonly List<Func<MackieMessage, CancellationToken, Task>> broadcastHandlers = [];
 
     public event EventHandler<MackieMessage>? MessageSent;
     public event EventHandler<MackieMessage>? MessageReceived;
-
-    public MackieController(ILogger logger, string host, int port) : base(logger, host, port)
-    {
-        outstandingRequests = new OutstandingRequest[256];
-        requestHandlers = new();
-        broadcastHandlers = new();
-    }
 
     // Note: all the MapCommand implementations just add a general purpose handler.
     // That's not terribly efficient, but it's simple - and we don't expect to have many handlers.
@@ -115,10 +108,7 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
         var oldOutstandingRequest = Interlocked.Exchange(ref outstandingRequests[seq], outstandingRequest);
 
         // If there was already an outstanding request for this sequence number, cancel it.
-        if (oldOutstandingRequest is not null)
-        {
-            oldOutstandingRequest.CompletionSource.TrySetCanceled();
-        }
+        oldOutstandingRequest?.CompletionSource.TrySetCanceled(CancellationToken.None);
         await SendMessage(message, cancellationToken).ConfigureAwait(false);
         return await outstandingRequest.CompletionSource.Task.ConfigureAwait(false);
     }
@@ -147,7 +137,7 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
                     var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
                     if (outstandingRequest is null)
                     {
-                        Logger.LogError($"No outstanding request for sequence number: {message.Sequence}");
+                        Logger.LogError("No outstanding request for sequence number: {sequence}", message.Sequence);
                     }
                     else
                     {
@@ -166,7 +156,7 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
                     var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
                     if (outstandingRequest is null)
                     {
-                        Logger.LogError($"No outstanding request for sequence number: {message.Sequence} which received an error response");
+                        Logger.LogError("No outstanding request for sequence number: {sequence} which received an error response", message.Sequence);
                     }
                     else
                     {
@@ -175,13 +165,10 @@ public sealed class MackieController : TcpMessageProcessingControllerBase<Mackie
                 }
                 break;
             default:
-                Logger.LogError($"Unhandled message type: {message.Type}");
+                Logger.LogError("Unhandled message type: {type}", message.Type);
                 {
                     var outstandingRequest = Interlocked.Exchange(ref outstandingRequests[message.Sequence], null);
-                    if (outstandingRequest is not null)
-                    {
-                        outstandingRequest.CompletionSource.TrySetException(new MackieResponseException(message));
-                    }
+                    outstandingRequest?.CompletionSource.TrySetException(new MackieResponseException(message));
                 }
                 break;
         }

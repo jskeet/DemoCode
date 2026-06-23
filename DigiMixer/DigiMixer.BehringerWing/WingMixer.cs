@@ -21,7 +21,7 @@ internal class WingMixerApi : IMixerApi
 
     private static DbFaderScale DbFaderScale { get; } = new(-89.5, -40, -30, -20, -10, -5, -1, 5, 10);
     // Currently we always use a report ID of 0x44 0x69 0x67 0x69 ("Digi" in ASCII)
-    private static WingMeterRequest MeterRequestNoPort = new(UdpPort: null, ReportId: 0x44696769,
+    private static readonly WingMeterRequest MeterRequestNoPort = new(UdpPort: null, ReportId: 0x44696769,
         [
             new(WingMeterType.InputChannelV2, [.. Enumerable.Range(1, Channels.WingInputCount)]),
             new(WingMeterType.AuxV2, [.. Enumerable.Range(1, Channels.AuxCount)]),
@@ -44,12 +44,12 @@ internal class WingMixerApi : IMixerApi
 
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(4);
     public IFaderScale FaderScale => DbFaderScale;
-    private Queue<TaskCompletionSource> dataRequestCompletions = new();
+    private readonly Queue<TaskCompletionSource> dataRequestCompletions = new();
 
     // This is used during DetectConfiguration, but it's simpler to accumulate
     // state in general than to add actions that are only used temporarily.
     // This doesn't include output channels: all output channels are assumed to be stereo.
-    private Dictionary<ChannelId, bool> monoOrStereoChannels = new();
+    private readonly Dictionary<ChannelId, bool> monoOrStereoChannels = [];
 
     private uint currentHash = 0;
 

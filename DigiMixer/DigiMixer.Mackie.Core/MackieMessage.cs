@@ -4,25 +4,16 @@ using System.Text;
 
 namespace DigiMixer.Mackie.Core;
 
-public sealed class MackieMessage : IMixerMessage<MackieMessage>
+public sealed class MackieMessage(byte sequence, MackieMessageType type, MackieCommand command, MackieMessageBody body) : IMixerMessage<MackieMessage>
 {
-    private static readonly byte[] emptyBody = new byte[0];
     private const byte Header0 = 0xab;
 
-    public MackieCommand Command { get; }
-    public MackieMessageType Type { get; }
-    public byte Sequence { get; }
+    public MackieCommand Command { get; } = command;
+    public MackieMessageType Type { get; } = type;
+    public byte Sequence { get; } = sequence;
 
     public int Length => Body.Length == 0 ? 8 : Body.Length + 12;
-    public MackieMessageBody Body { get; }
-
-    public MackieMessage(byte sequence, MackieMessageType type, MackieCommand command, MackieMessageBody body)
-    {
-        Sequence = sequence;
-        Type = type;
-        Command = command;
-        Body = body;
-    }
+    public MackieMessageBody Body { get; } = body;
 
     public static MackieMessage? TryParse(ReadOnlySpan<byte> data)
     {
@@ -93,12 +84,12 @@ public sealed class MackieMessage : IMixerMessage<MackieMessage>
         if (Body.Length > 0)
         {
             var data = Body.InNetworkOrder().Data;
-            builder.Append(":");
+            builder.Append(':');
             for (int i = 0; i < 8 && i < data.Length; i += 4)
             {
                 if (i != 0)
                 {
-                    builder.Append(" ");
+                    builder.Append(' ');
                 }
                 builder.AppendFormat(" {0:x2} {1:x2} {2:x2} {3:x2}", data[i], data[i + 1], data[i + 2], data[i + 3]);
             }

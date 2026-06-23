@@ -143,8 +143,7 @@ public static class StudioLive
                     }
                 }
 
-                FaderLevel GetFaderLevel(MeterMessageRow<ushort> row, int index) =>
-                    new FaderLevel(row.GetValue(index));
+                FaderLevel GetFaderLevel(MeterMessageRow<ushort> row, int index) => new(row.GetValue(index));
             }
 
             void HandleMeterLevels()
@@ -202,10 +201,15 @@ public static class StudioLive
             }
         }
 
+        // We'll want to use this eventually...
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable IDE0060 // Remove unused parameter
         private void HandleMeter8Message(Meter8Message message)
         {
             //throw new NotImplementedException();
         }
+#pragma warning restore IDE0060 // Remove unused parameter
+#pragma warning restore CA1822 // Mark members as static
 
         private void HandleCompressedJson(CompressedJsonMessage message)
         {
@@ -264,7 +268,7 @@ public static class StudioLive
             }
         }
 
-        private FaderLevel ToFaderLevel(double value) => new FaderLevel((int) (value * FaderScale.MaxValue));
+        private FaderLevel ToFaderLevel(double value) => new((int) (value * FaderScale.MaxValue));
 
         private void HandleParameterValue(ParameterValueMessage parameterValue)
         {

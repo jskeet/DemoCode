@@ -30,7 +30,7 @@ internal class CqRegularMessage : CqMessage
     {
     }
 
-    public CqRegularMessage(CqMessageFormat format, (byte X, byte Y, byte Z) xyz, byte[] remainingData) : base(format, CqMessageType.Regular, new[] { xyz.X, xyz.Y, xyz.Z }.Concat(remainingData).ToArray())
+    public CqRegularMessage(CqMessageFormat format, (byte X, byte Y, byte Z) xyz, byte[] remainingData) : base(format, CqMessageType.Regular, [xyz.X, xyz.Y, xyz.Z, .. remainingData])
     {
     }
 

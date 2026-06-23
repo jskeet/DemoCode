@@ -9,8 +9,11 @@ public class KeepAliveMessage(MessageMode mode = MessageMode.FileRequest) : UCNe
     {
     }
 
+    // TODO: validate that the body is empty, maybe?
+#pragma warning disable IDE0060 // Remove unused parameter
     internal static KeepAliveMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body) =>
         new(mode);
+#pragma warning restore IDE0060 // Remove unused parameter
 
-    public override string ToString() => $"KeepAlive";
+    public override string ToString() => "KeepAlive";
 }

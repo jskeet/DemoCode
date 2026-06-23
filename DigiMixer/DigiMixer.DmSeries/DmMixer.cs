@@ -10,34 +10,22 @@ public static class DmMixer
         new DmMixerApi(logger, host, port, options);
 }
 
-internal class DmMixerApi : IMixerApi
+internal class DmMixerApi(ILogger logger, string host, int port, MixerApiOptions? options) : IMixerApi
 {
     // If we don't receive a keep-alive message for this long, report a problem.
     private static readonly TimeSpan KeepAliveTimeout = TimeSpan.FromSeconds(5);
 
     private readonly DelegatingReceiver receiver = new();
-    private readonly ILogger logger;
-    private readonly string host;
-    private readonly int port;
-    private readonly MixerApiOptions options;
+    private readonly MixerApiOptions options = options ?? MixerApiOptions.Default;
 
     private CancellationTokenSource? cts;
     private DmClient? controlClient;
     private DmMeterClient? meterClient;
 
-    private DateTimeOffset lastKeepAliveReceived;
+    private DateTimeOffset lastKeepAliveReceived = DateTimeOffset.UtcNow;
     private readonly LinkedList<FullDataListener> temporaryListeners = new();
 
     private Task<DmMessage>? fullDataTask;
-
-    public DmMixerApi(ILogger logger, string host, int port, MixerApiOptions? options)
-    {
-        this.logger = logger;
-        this.host = host;
-        this.port = port;
-        this.options = options ?? MixerApiOptions.Default;
-        lastKeepAliveReceived = DateTimeOffset.UtcNow;
-    }
 
     public TimeSpan KeepAliveInterval { get; } = TimeSpan.FromSeconds(1);
     public IFaderScale FaderScale => DmConversions.FaderScale;

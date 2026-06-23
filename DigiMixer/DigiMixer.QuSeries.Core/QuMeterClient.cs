@@ -7,7 +7,7 @@ namespace DigiMixer.QuSeries.Core;
 public class QuMeterClient : UdpControllerBase, IDisposable
 {
     // TODO: Check this is correct for all clients.
-    private static readonly byte[] KeepAlive = new byte[] { 0x7f, 0x25, 0, 0 };
+    private static readonly byte[] KeepAlive = [0x7f, 0x25, 0, 0];
 
     public ushort LocalUdpPort { get; }
     public event EventHandler<QuGeneralMessage>? MessageReceived;

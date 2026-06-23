@@ -6,24 +6,18 @@ namespace DigiMixer.CqSeries.Core;
 /// <summary>
 /// A raw, uninterpreted (other than format and type) CQ message.
 /// </summary>
-public sealed class CqRawMessage : IMixerMessage<CqRawMessage>
+public sealed class CqRawMessage(CqMessageFormat format, CqMessageType type, byte[] data) : IMixerMessage<CqRawMessage>
 {
     private const byte VariableLengthPrefix = 0x7f;
     private const byte FixedLengthPrefix = 0xf7;
 
-    public CqMessageFormat Format { get; }
-    public CqMessageType Type { get; }
+    public CqMessageFormat Format => format;
+    public CqMessageType Type => type;
 
-    private ReadOnlyMemory<byte> data;
+    // TODO: Avoid the parameter and field having the same name.
+    private readonly ReadOnlyMemory<byte> data = data ?? throw new ArgumentNullException(nameof(data));
 
     public ReadOnlySpan<byte> Data => data.Span;
-
-    public CqRawMessage(CqMessageFormat format, CqMessageType type, byte[] data)
-    {
-        Format = format;
-        Type = type;
-        this.data = data ?? throw new ArgumentNullException(nameof(data));
-    }
 
     /// <summary>
     /// Length of the total message, including header.

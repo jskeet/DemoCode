@@ -7,19 +7,13 @@ namespace DigiMixer.CqSeries;
 /// <summary>
 /// Base class for type-specific messages. These wrap <see cref="CqRawMessage"/>.
 /// </summary>
-public abstract class CqMessage
+public abstract class CqMessage(CqRawMessage rawMessage)
 {
-    public CqRawMessage RawMessage { get; }
-
+    public CqRawMessage RawMessage => rawMessage;
     public ReadOnlySpan<byte> Data => RawMessage.Data;
     public CqMessageType Type => RawMessage.Type;
 
     public override string ToString() => $"Type={Type}; Length={Data.Length}";
-
-    protected CqMessage(CqRawMessage rawMessage)
-    {
-        RawMessage = rawMessage;
-    }
 
     protected CqMessage(CqMessageFormat format, CqMessageType type, byte[] data) : this(new CqRawMessage(format, type, data))
     {

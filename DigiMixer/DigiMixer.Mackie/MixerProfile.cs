@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.Mackie.Core;
+using System.Collections.Immutable;
 
 namespace DigiMixer.Mackie;
 
@@ -8,8 +9,8 @@ internal abstract class MixerProfile
     private const int ReturnChannelOffset = 50;
     private const int FxChannelOffset = 70;
 
-    private readonly Lazy<IReadOnlyList<MackieInputChannel>> inputChannels;
-    private readonly Lazy<IReadOnlyList<MackieOutputChannel>> outputChannels;
+    private readonly Lazy<ImmutableArray<MackieInputChannel>> inputChannels;
+    private readonly Lazy<ImmutableArray<MackieOutputChannel>> outputChannels;
 
     protected abstract int InputChannelCount { get; }
     protected abstract int ReturnChannelCount { get; }
@@ -20,8 +21,8 @@ internal abstract class MixerProfile
 
     protected MixerProfile()
     {
-        inputChannels = new Lazy<IReadOnlyList<MackieInputChannel>>(GetInputChannels, LazyThreadSafetyMode.PublicationOnly);
-        outputChannels = new Lazy<IReadOnlyList<MackieOutputChannel>>(GetOutputChannels, LazyThreadSafetyMode.PublicationOnly);
+        inputChannels = new(GetInputChannels, LazyThreadSafetyMode.PublicationOnly);
+        outputChannels = new(GetOutputChannels, LazyThreadSafetyMode.PublicationOnly);
     }
 
     internal static MixerProfile GetProfile(MackieMessage handshakeMessage)
@@ -46,12 +47,12 @@ internal abstract class MixerProfile
     /// </summary>
     internal abstract string GetModelName(MackieMessage modelInfo);
 
-    private IReadOnlyList<MackieInputChannel> GetInputChannels()
+    private ImmutableArray<MackieInputChannel> GetInputChannels()
     {
         var inputs = Enumerable.Range(1, InputChannelCount).Select(Input);
         var returns = Enumerable.Range(1, ReturnChannelCount).Select(Return);
         var fx = Enumerable.Range(1, FxChannelCount).Select(Fx);
-        return inputs.Concat(returns).Concat(fx).ToList().AsReadOnly();
+        return [..inputs.Concat(returns).Concat(fx)];
 
         MackieInputChannel Input(int index)
         {
@@ -95,13 +96,13 @@ internal abstract class MixerProfile
         }
     }
 
-    private IReadOnlyList<MackieOutputChannel> GetOutputChannels()
+    private ImmutableArray<MackieOutputChannel> GetOutputChannels()
     {
         var aux = Enumerable.Range(1, AuxChannelCount).Select(Aux);
         var fx = Enumerable.Range(1, FxChannelCount).Select(Fx);
         var mainLeft = new MackieOutputChannel(OutputGroup.Main, 1, ChannelId.MainOutputLeft, MainLeftMeterAddress, MainMuteAddress, null, MainFaderAddress, MainNameIndex);
         var mainRight = new MackieOutputChannel(OutputGroup.Main, 2, ChannelId.MainOutputRight, MainRightMeterAddress, null, null, null, null);
-        return aux.Concat(fx).Append(mainLeft).Append(mainRight).ToList().AsReadOnly();
+        return [..aux.Concat(fx).Append(mainLeft).Append(mainRight)];
 
         MackieOutputChannel Aux(int index)
         {

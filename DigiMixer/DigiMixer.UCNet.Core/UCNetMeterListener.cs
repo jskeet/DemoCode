@@ -4,16 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.UCNet.Core;
 
-public class UCNetMeterListener : UdpControllerBase, IDisposable
+public class UCNetMeterListener(ILogger logger, ushort port) : UdpControllerBase(logger, port), IDisposable
 {
-    public ushort LocalPort { get; }
+    public ushort LocalPort { get; } = port;
 
     public event EventHandler<Meter16Message>? MessageReceived;
-
-    public UCNetMeterListener(ILogger logger, ushort port) : base(logger, port)
-    {
-        LocalPort = port;
-    }
 
     public UCNetMeterListener(ILogger logger) : this(logger, FindAvailableUdpPort())
     {

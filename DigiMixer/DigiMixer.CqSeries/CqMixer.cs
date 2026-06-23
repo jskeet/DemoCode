@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.CqSeries.Core;
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
 using System.Net;
 
 namespace DigiMixer.CqSeries;
@@ -16,9 +17,9 @@ public class CqMixer
 
 internal class CqMixerApi : IMixerApi
 {
-    private static readonly CqKeepAliveMessage KeepAliveMessage = new CqKeepAliveMessage();
-    private static IEnumerable<ChannelId> InputChannels { get; } = Enumerable.Range(1, 24).Select(ChannelId.Input).ToList();
-    private static IEnumerable<ChannelId> OutputChannels { get; } = Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight).ToList();
+    private static readonly CqKeepAliveMessage KeepAliveMessage = new();
+    private static ImmutableArray<ChannelId> InputChannels { get; } = [.. Enumerable.Range(1, 24).Select(ChannelId.Input)];
+    private static ImmutableArray<ChannelId> OutputChannels { get; } = [.. Enumerable.Range(1, 6).Select(ChannelId.Output).Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight)];
 
     private readonly DelegatingReceiver receiver = new();
     private readonly ILogger logger;

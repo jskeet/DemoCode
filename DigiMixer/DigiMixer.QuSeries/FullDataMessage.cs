@@ -51,10 +51,12 @@ internal sealed class FullDataMessage
     private readonly QuGeneralMessage message;
 
     // TODO: Try to detect these. (Would need a Qu-16 or similar to validate...)
+#pragma warning disable CA1822 // Mark members as static - we want to be able to actually get them from this message longer term...
     public int InputCount => 32;
     public int MonoMixChannels => 4;
     public int StereoMixChannels => 6;
     public int StereoGroupChannels => 8;
+#pragma warning restore CA1822 // Mark members as static
 
     internal FullDataMessage(QuGeneralMessage message)
     {
@@ -94,15 +96,16 @@ internal sealed class FullDataMessage
     public FaderLevel MixFaderLevel(int mix) => GetFaderLevel(MixChannelData(mix));
     public FaderLevel GroupFaderLevel(int group) => GetFaderLevel(GroupChannelData(group));
 
-    private FaderLevel GetFaderLevel(ReadOnlySpan<byte> channelData) =>
+    private static FaderLevel GetFaderLevel(ReadOnlySpan<byte> channelData) =>
         RawToFaderLevel(MemoryMarshal.Cast<byte, ushort>(channelData.Slice(0x7e, 2))[0]);
 
-    private string? GetName(ReadOnlySpan<byte> channelData)
+    private static string? GetName(ReadOnlySpan<byte> channelData)
     {
         string name = Encoding.ASCII.GetString(channelData.Slice(0x9c, 6)).TrimEnd('\0');
         return name == "" ? null : name;
     }
-    private bool Muted(ReadOnlySpan<byte> channelData) => channelData[0x88] == 1;
+
+    private static bool Muted(ReadOnlySpan<byte> channelData) => channelData[0x88] == 1;
 
     private ReadOnlySpan<byte> InputChannelData(int channel) => ChannelData(channel - 1);
     private ReadOnlySpan<byte> MixChannelData(int mix) => mix <= MonoMixChannels ? ChannelData(mix + 38) : ChannelData((mix - 1) / 2 + 41);

@@ -4,37 +4,27 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Text;
 
 namespace DigiMixer.Mackie;
 
-public class MackieMixerApi : IMixerApi
+public sealed class MackieMixerApi(ILogger? logger, string host, int port = 50001, MixerApiOptions? options = null) : IMixerApi
 {
     private delegate void ChannelValueAction(MackieMessageBody body, int chunk);
 
     private readonly DelegatingReceiver receiver = new();
-    private readonly ILogger logger;
-    private readonly string host;
-    private readonly int port;
-    private readonly MixerApiOptions options;
+    private readonly ILogger logger = logger ?? NullLogger.Instance;
+    private readonly MixerApiOptions options = options ?? MixerApiOptions.Default;
 
     private readonly ConcurrentDictionary<int, ChannelValueAction> channelValueActions = new();
     private readonly ConcurrentDictionary<int, Action<string>> channelNameActions = new();
 
-    private ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> pendingChannelDataTasks = new();
+    private readonly ConcurrentDictionary<PendingChannelDataTask, PendingChannelDataTask> pendingChannelDataTasks = new();
 
-    private MixerProfile mixerProfile;
+    private MixerProfile mixerProfile = NullProfile.Instance;
 
     private MackieController? controller;
-
-    public MackieMixerApi(ILogger? logger, string host, int port = 50001, MixerApiOptions? options = null)
-    {
-        this.logger = logger ?? NullLogger.Instance;
-        this.host = host;
-        this.port = port;
-        this.options = options ?? MixerApiOptions.Default;
-        mixerProfile = NullProfile.Instance;
-    }
 
     public async Task Connect(CancellationToken cancellationToken)
     {
@@ -55,7 +45,7 @@ public class MackieMixerApi : IMixerApi
         PopulateChannelValueActions();
         PopulateChannelNameActions();
 
-        await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
+        await controller.SendRequest(MackieCommand.GeneralInfo, [0, 0, 0, 2], cancellationToken);
 
         var meterAddresses = mixerProfile.InputChannels.Select(ch => ch.MeterAddress).Concat(mixerProfile.OutputChannels.Select(ch => ch.MeterAddress)).ToList();
         var meterLayout = new byte[meterAddresses.Count * 4 + 4];
@@ -91,10 +81,10 @@ public class MackieMixerApi : IMixerApi
         var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackieMessageBody.Empty);
         string? firmwareVersion = GetMixerFirmwareVersion(versionInfo);
 
-        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, mixerProfile.ModelNameInfoRequest }));
+        var modelInfo = await SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody([0, 0, 0, mixerProfile.ModelNameInfoRequest]));
         string modelName = mixerProfile.GetModelName(modelInfo);
 
-        var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody(new byte[] { 0, 0, 0, 3 }));
+        var generalInfo = await SendRequest(MackieCommand.GeneralInfo, new MackieMessageBody([0, 0, 0, 3]));
         string mixerName = GetMixerName(generalInfo);
 
         receiver?.ReceiveMixerInfo(new MixerInfo(modelName, mixerName, firmwareVersion));
@@ -128,7 +118,7 @@ public class MackieMixerApi : IMixerApi
     }
 
     private async Task RequestChannelData(CancellationToken cancellationToken = default) =>
-        await SendRequest(MackieCommand.ChannelInfoControl, new MackieMessageBody(new byte[] { 0, 0, 0, 6 }), cancellationToken).ConfigureAwait(false);
+        await SendRequest(MackieCommand.ChannelInfoControl, new MackieMessageBody([0, 0, 0, 6]), cancellationToken).ConfigureAwait(false);
 
     // TODO: Check this.
     public TimeSpan KeepAliveInterval => TimeSpan.FromSeconds(3);
@@ -350,7 +340,7 @@ public class MackieMixerApi : IMixerApi
             }
         }
 
-        string? EmptyToNull(string text) => text == "" ? null : text;
+        static string? EmptyToNull(string text) => text == "" ? null : text;
     }
 
     private void MaybeCompleteChannelInfo(MackieMessage message)
@@ -375,8 +365,8 @@ public class MackieMixerApi : IMixerApi
         controller.MapBroadcastAction(HandleBroadcastMessage);
         // TODO: Ideally we'd provide the MAC address instead of zeroes here... but getting the right
         // address is fiddly at best. Better to provide zeroes than a wrong one.
-        controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0, 0, 0, 0, 0, 0 });
-        controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
+        controller.MapCommand(MackieCommand.ClientHandshake, _ => [0x10, 0x40, 0, 0, 0, 0, 0, 0]);
+        controller.MapCommand(MackieCommand.GeneralInfo, _ => [0, 0, 0, 2, 0, 0, 0x40, 0]);
         controller.MapCommandAction(MackieCommand.ChannelInfoControl, MaybeCompleteChannelInfo);
         controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data[..4]));
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
@@ -434,6 +424,6 @@ public class MackieMixerApi : IMixerApi
         public void SetStereoLink(ChannelId channelId, bool stereo) =>
             stereoLinks[channelId] = stereo;
 
-        public IEnumerable<ChannelId> GetStereoLinks() => stereoLinks.Where(pair => pair.Value).Select(pair => pair.Key).ToList();
+        public ImmutableArray<ChannelId> GetStereoLinks() => [..stereoLinks.Where(pair => pair.Value).Select(pair => pair.Key)];
     }
 }

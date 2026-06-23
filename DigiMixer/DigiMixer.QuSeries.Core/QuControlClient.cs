@@ -3,13 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DigiMixer.QuSeries.Core;
 
-public sealed class QuControlClient : TcpMessageProcessingControllerBase<QuControlMessage>
+public sealed class QuControlClient(ILogger logger, string host, int port) : TcpMessageProcessingControllerBase<QuControlMessage>(logger, host, port)
 {
     public event EventHandler<QuControlMessage>? MessageReceived;
-
-    public QuControlClient(ILogger logger, string host, int port) : base(logger, host, port)
-    {
-    }
 
     protected override Task ProcessMessage(QuControlMessage message, CancellationToken cancellationToken)
     {

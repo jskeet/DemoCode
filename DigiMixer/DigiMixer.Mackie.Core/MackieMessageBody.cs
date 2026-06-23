@@ -11,7 +11,7 @@ public sealed class MackieMessageBody
     /// <summary>
     /// An empty message body.
     /// </summary>
-    public static MackieMessageBody Empty { get; } = new MackieMessageBody(new byte[0]);
+    public static MackieMessageBody Empty { get; } = new MackieMessageBody([]);
 
     /// <summary>
     /// Just a clear way of expressing a lack of message body, for
@@ -20,7 +20,7 @@ public sealed class MackieMessageBody
     /// </summary>
     public static MackieMessageBody? Null { get; } = null;
 
-    private byte[] data;
+    private readonly byte[] data;
     public ReadOnlySpan<byte> Data => data.AsSpan();
     public int Length => Data.Length;
 
@@ -67,7 +67,7 @@ public sealed class MackieMessageBody
     /// Creates a message body with the given data, assumed to be in network order.
     /// The data is cloned on construction.
     /// </summary>
-    public MackieMessageBody(byte[] data) : this(data.ToArray(), true)
+    public MackieMessageBody(byte[] data) : this([.. data], true)
     {
         if (data.Length % 4 != 0)
         {
@@ -120,7 +120,7 @@ public sealed class MackieMessageBody
         {
             if (i != 0)
             {
-                builder.Append(" ");
+                builder.Append(' ');
             }
             builder.AppendFormat(" {0:x2} {1:x2} {2:x2} {3:x2}", data[i], data[i + 1], data[i + 2], data[i + 3]);
         }

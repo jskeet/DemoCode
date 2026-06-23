@@ -3,12 +3,8 @@
 /// <summary>
 /// An exception thrown to indicate an error response to a request message.
 /// </summary>
-public class MackieResponseException : Exception
+public class MackieResponseException(MackieMessage errorMessage)
+    : Exception("Received error response to request")
 {
-    public MackieMessage ErrorMessage { get; }
-
-    public MackieResponseException(MackieMessage errorMessage) : base("Received error response to request")
-    {
-        ErrorMessage = errorMessage;
-    }
+    public MackieMessage ErrorMessage { get; } = errorMessage;
 }

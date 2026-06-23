@@ -7,7 +7,7 @@ namespace DigiMixer.SqSeries;
 /// </summary>
 public class SqSimpleRequestMessage : SqMessage
 {
-    internal SqSimpleRequestMessage(SqMessageType type) : base(type, Array.Empty<byte>())
+    internal SqSimpleRequestMessage(SqMessageType type) : base(type, [])
     {
     }
 
