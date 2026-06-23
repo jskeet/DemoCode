@@ -1,5 +1,7 @@
 ﻿namespace DigiMixer.AppCore;
 
+#nullable disable warnings
+
 /// <summary>
 /// Snapshot of mixer status, with respect to configuration mappings.
 /// </summary>

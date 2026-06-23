@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<Nullable>disable</Nullable>
-	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\IconPlatform\IconPlatform.Model\IconPlatform.Model.csproj" />
 		<ProjectReference Include="..\..\WpfUtil\JonSkeet.CoreAppUtil\JonSkeet.CoreAppUtil.csproj" />

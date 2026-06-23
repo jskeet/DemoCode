@@ -16,7 +16,7 @@ internal class XTouchDigiMixerControlledChannel
     private readonly int sensitivity;
     private readonly ILogger logger;
     private readonly InputChannelViewModel mixerChannel;
-    private readonly FaderViewModel fader;
+    private readonly FaderViewModel? fader;
 
     // Knob/button index (1-based)
     private readonly int controllerIndex;
@@ -62,11 +62,12 @@ internal class XTouchDigiMixerControlledChannel
 
     private void HandleChannelLevelChanged()
     {
-        if (controllerIndex < 9 && knobEnabled)
+        if (!knobEnabled || fader is null || controllerIndex >= 9)
         {
-            xtouchController.SetKnobRingState(
-                controllerIndex, KnobRingStyle.Fan, fader.FaderLevel * 11 / fader.MaxFaderLevel);
+            return;
         }
+        xtouchController.SetKnobRingState(
+            controllerIndex, KnobRingStyle.Fan, fader.FaderLevel * 11 / fader.MaxFaderLevel);
     }
 
     private void HandleChannelMutedChanged() =>
@@ -74,7 +75,7 @@ internal class XTouchDigiMixerControlledChannel
 
     internal void HandleKnobTurned(int value)
     {
-        if (!knobEnabled)
+        if (!knobEnabled || fader is null)
         {
             return;
         }

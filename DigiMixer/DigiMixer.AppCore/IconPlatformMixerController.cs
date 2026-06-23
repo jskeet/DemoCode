@@ -25,7 +25,7 @@ internal class IconPlatformMixerController : IAsyncDisposable
 
         if (controlMain)
         {
-            channelMappings.Add(new ChannelMapping(9, mixerVm.OutputChannels.FirstOrDefault(o => o.ChannelId.IsMainOutput)));
+            channelMappings.Add(new ChannelMapping(9, mixerVm.OutputChannels.First(o => o.ChannelId.IsMainOutput)));
         }
 
         foreach (var mapping in channelMappings)
@@ -83,7 +83,7 @@ internal class IconPlatformMixerController : IAsyncDisposable
         return nowConnected;
     }
 
-    private void HandleButtonChanged(object sender, ButtonEventArgs e)
+    private void HandleButtonChanged(object? sender, ButtonEventArgs e)
     {
         if (e.Button == ButtonType.Mute && e.Down)
         {
@@ -95,7 +95,7 @@ internal class IconPlatformMixerController : IAsyncDisposable
         }
     }
 
-    private void ChangeChannelVolume(object sender, FaderEventArgs e)
+    private void ChangeChannelVolume(object? sender, FaderEventArgs e)
     {
         if (GetMappingOrNull(e.Channel)?.Fader is FaderViewModel fader)
         {
@@ -104,7 +104,7 @@ internal class IconPlatformMixerController : IAsyncDisposable
     }
 
     // TODO: Maybe make this more efficient...
-    private ChannelMapping GetMappingOrNull(int platformChannel) =>
+    private ChannelMapping? GetMappingOrNull(int platformChannel) =>
         channelMappings.FirstOrDefault(mapping => mapping.PlatformChannel == platformChannel);
 
     public ValueTask DisposeAsync() => platformController.DisposeAsync();
@@ -119,7 +119,7 @@ internal class IconPlatformMixerController : IAsyncDisposable
         public FaderViewModel Fader { get; }
 
         public ChannelMapping(int platformChannel, InputChannelViewModel mixerChannel) =>
-            (PlatformChannel, MixerChannel, Fader) = (platformChannel, mixerChannel, mixerChannel.Faders.FirstOrDefault(fader => fader.OutputChannelId.IsMainOutput));
+            (PlatformChannel, MixerChannel, Fader) = (platformChannel, mixerChannel, mixerChannel.Faders.First(fader => fader.OutputChannelId.IsMainOutput));
 
         public ChannelMapping(int platformChannel, OutputChannelViewModel mixerChannel) =>
             (PlatformChannel, MixerChannel, Fader) = (platformChannel, mixerChannel, mixerChannel.OverallFader);

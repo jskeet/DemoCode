@@ -9,9 +9,9 @@ namespace DigiMixer.AppCore;
 
 public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModelBase where T : ChannelBase
 {
-    private T channel;
+    private T? channel;
     [RelatedProperties(nameof(DisplayName), nameof(Output), nameof(StereoOutput), nameof(Muted), nameof(HasMute), nameof(HasMeters))]
-    private T Channel
+    private T? Channel
     {
         get => channel;
         set
@@ -152,7 +152,7 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
 
     protected abstract IEnumerable<T> GetChannels(Mixer mixer);
 
-    private void HandleChannelPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void HandleChannelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {

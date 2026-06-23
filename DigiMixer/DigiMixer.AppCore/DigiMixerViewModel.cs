@@ -93,13 +93,13 @@ public sealed class DigiMixerViewModel : ViewModelBase, IDisposable
     private readonly ILogger logger;
 
     internal DigiMixerConfig Config { get; }
-    private Mixer mixer;
+    private Mixer? mixer;
     private bool disposed;
 
     public StatusViewModel Status { get; } = new StatusViewModel("Mixer");
     public int MaxFaderLevelValue => mixer?.FaderScale.MaxValue ?? 1_000_000;
 
-    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config, MixerApiOptions options = null)
+    public DigiMixerViewModel(ILogger logger, DigiMixerConfig config, MixerApiOptions? options = null)
     {
         Config = config;
         this.logger = logger;

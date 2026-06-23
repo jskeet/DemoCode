@@ -7,9 +7,9 @@ namespace DigiMixer.AppCore;
 
 public sealed class PeripheralController : IAsyncDisposable
 {
-    private readonly XTouchDigiMixerController xtouchDigiMixerController;
-    private readonly IconPlatformMixerController platformMMixerController;
-    private readonly IconPlatformMixerController platformXMixerController;
+    private readonly XTouchDigiMixerController? xtouchDigiMixerController;
+    private readonly IconPlatformMixerController? platformMMixerController;
+    private readonly IconPlatformMixerController? platformXMixerController;
     private readonly ILogger logger;
 
     private bool disposed;
@@ -19,8 +19,8 @@ public sealed class PeripheralController : IAsyncDisposable
     public StatusViewModel PlatformXStatus { get; }
 
     private PeripheralController(ILogger logger,
-        XTouchDigiMixerController xtouchDigiMixerController,
-        IconPlatformMixerController platformMMixerController, IconPlatformMixerController platformXMixerController)
+        XTouchDigiMixerController? xtouchDigiMixerController,
+        IconPlatformMixerController? platformMMixerController, IconPlatformMixerController? platformXMixerController)
     {
         this.logger = logger;
         this.xtouchDigiMixerController = xtouchDigiMixerController;
@@ -94,7 +94,7 @@ public sealed class PeripheralController : IAsyncDisposable
         await MaybeCheckStatus(platformMMixerController?.CheckConnectionAsync(), PlatformMStatus);
         await MaybeCheckStatus(platformXMixerController?.CheckConnectionAsync(), PlatformXStatus);
 
-        static async Task MaybeCheckStatus(Task<bool> task, StatusViewModel status)
+        static async Task MaybeCheckStatus(Task<bool>? task, StatusViewModel status)
         {
             if (task is null)
             {

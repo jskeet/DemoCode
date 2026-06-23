@@ -22,9 +22,9 @@ namespace DigiMixer.AppCore;
 /// </summary>
 public class FaderViewModel : ViewModelBase
 {
-    private IFader fader;
+    private IFader? fader;
     [RelatedProperties(nameof(FaderLevel), nameof(MaxFaderLevel))]
-    private IFader Fader
+    private IFader? Fader
     {
         get => fader;
         set
@@ -51,7 +51,7 @@ public class FaderViewModel : ViewModelBase
     public int MaxFaderLevel => fader?.Scale.MaxValue ?? 1_000_000;
 
     // The config-based IDs.
-    public string InputId { get; }
+    public string? InputId { get; }
     public string OutputId { get; }
 
     // The DigiMixer-based IDs.
@@ -63,7 +63,7 @@ public class FaderViewModel : ViewModelBase
     /// </summary>
     public string FaderLevelPercentage => $"{FaderLevel * 100 / MaxFaderLevel}%";
 
-    internal FaderViewModel(ChannelId? inputChannelId, ChannelId outputChannelId, string inputId, string outputId, ChannelAppearance channelAppearance)
+    internal FaderViewModel(ChannelId? inputChannelId, ChannelId outputChannelId, string? inputId, string outputId, ChannelAppearance channelAppearance)
     {
         InputChannelId = inputChannelId;
         OutputChannelId = outputChannelId;
@@ -85,7 +85,7 @@ public class FaderViewModel : ViewModelBase
         }
     }
 
-    private void HandleFaderPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void HandleFaderPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(IFader.FaderLevel))
         {

@@ -8,11 +8,14 @@ using DigiMixer.QuSeries;
 using DigiMixer.TfSeries;
 using DigiMixer.UCNet;
 using DigiMixer.UiHttp;
+using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.ComponentModel;
 
 namespace DigiMixer.AppCore;
+
+#nullable disable warnings
 
 /// <summary>
 /// Configuration for the mixer.
@@ -35,7 +38,7 @@ public class DigiMixerConfig
     public bool Enabled { get; set; } = true;
 
     [Description("IP address of the mixer.")]
-    public string Address { get; set; }
+    public string? Address { get; set; }
     [Description("TCP port of the mixer.")]
     public int? Port { get; set; }
 
@@ -62,7 +65,7 @@ public class DigiMixerConfig
     /// Name of the X-Touch Mini device as a MIDI port.
     /// </summary>
     [Description("The MIDI port name for the X-Touch Mini device to integrate with, if any")]
-    public string XTouchMiniDevice { get; set; }
+    public string? XTouchMiniDevice { get; set; }
 
     [DefaultValue(5)]
     [Description("The sensitivity of the X-Touch Mini rotary encoders for volume control.")]
@@ -80,7 +83,7 @@ public class DigiMixerConfig
     /// </summary>
     [JsonProperty("IconM+Device")]
     [Description("The MIDI port name for the iCON Platform M+ device to integrate with, if any")]
-    public string IconMPlusDevice { get; set; }
+    public string? IconMPlusDevice { get; set; }
 
     /// <summary>
     /// Name of the iCON Platform X+ device as a MIDI port.
@@ -100,7 +103,9 @@ public class DigiMixerConfig
     [Description("Configuration for each output channel to be used. (Any irrelevant channels do not need to be configured.) The main output channel is expected to be the first entry in this list.")]
     public List<ChannelMapping> OutputChannels { get; set; } = [];
 
-    public IMixerApi CreateMixerApi(ILogger logger, MixerApiOptions options = null)
+#nullable restore warnings
+
+    public IMixerApi CreateMixerApi(ILogger logger, MixerApiOptions? options = null)
     {
         if (Fake || !Enabled)
         {
@@ -109,18 +114,18 @@ public class DigiMixerConfig
         return HardwareType switch
         {
             MixerHardwareType.Fake => new FakeMixerApi(this),
-            MixerHardwareType.XAir => XAir.CreateMixerApi(logger, Address, Port ?? 10024, options),
-            MixerHardwareType.X32 => X32.CreateMixerApi(logger, Address, Port ?? 10023, options),
-            MixerHardwareType.SoundcraftUi => new UiHttpMixerApi(logger, Address, Port ?? 80, options),
-            MixerHardwareType.AllenHeathQu => QuMixer.CreateMixerApi(logger, Address, Port ?? 51326, options),
+            MixerHardwareType.XAir => XAir.CreateMixerApi(logger, Address.OrThrow(), Port ?? 10024, options),
+            MixerHardwareType.X32 => X32.CreateMixerApi(logger, Address.OrThrow(), Port ?? 10023, options),
+            MixerHardwareType.SoundcraftUi => new UiHttpMixerApi(logger, Address.OrThrow(), Port ?? 80, options),
+            MixerHardwareType.AllenHeathQu => QuMixer.CreateMixerApi(logger, Address.OrThrow(), Port ?? 51326, options),
             // We don't provide inbound port customization, but it would be easy to do if we ever needed to.
-            MixerHardwareType.RcfM18 => Rcf.CreateMixerApi(logger, Address, Port ?? 8000, options: options),
-            MixerHardwareType.MackieDL => new MackieMixerApi(logger, Address, Port ?? 50001, options),
-            MixerHardwareType.StudioLive => StudioLive.CreateMixerApi(logger, Address, Port ?? 53000, options),
-            MixerHardwareType.AllenHeathCq => CqMixer.CreateMixerApi(logger, Address, Port ?? 51326, options),
-            MixerHardwareType.YamahaDm => DmMixer.CreateMixerApi(logger, Address, Port ?? 50368, options),
-            MixerHardwareType.YamahaTf => TfMixer.CreateMixerApi(logger, Address, Port ?? 50368, options),
-            MixerHardwareType.BehringerWing => WingMixer.CreateMixerApi(logger, Address, Port ?? 2222, options),
+            MixerHardwareType.RcfM18 => Rcf.CreateMixerApi(logger, Address.OrThrow(), Port ?? 8000, options: options),
+            MixerHardwareType.MackieDL => new MackieMixerApi(logger, Address.OrThrow(), Port ?? 50001, options),
+            MixerHardwareType.StudioLive => StudioLive.CreateMixerApi(logger, Address.OrThrow(), Port ?? 53000, options),
+            MixerHardwareType.AllenHeathCq => CqMixer.CreateMixerApi(logger, Address.OrThrow(), Port ?? 51326, options),
+            MixerHardwareType.YamahaDm => DmMixer.CreateMixerApi(logger, Address.OrThrow(), Port ?? 50368, options),
+            MixerHardwareType.YamahaTf => TfMixer.CreateMixerApi(logger, Address.OrThrow(), Port ?? 50368, options),
+            MixerHardwareType.BehringerWing => WingMixer.CreateMixerApi(logger, Address.OrThrow(), Port ?? 2222, options),
             _ => throw new InvalidOperationException($"Unknown mixer type: {HardwareType}")
         };
     }

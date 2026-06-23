@@ -3,6 +3,8 @@ using System.ComponentModel;
 
 namespace DigiMixer.AppCore;
 
+#nullable disable warnings
+
 /// <summary>
 /// A mapping between an configuration channel ID (text-based, user-configurable)
 /// and a DigiMixer channel ID (largely opaque integer), with an optional display name.
@@ -27,13 +29,13 @@ public class ChannelMapping
     /// An optional display name.
     /// </summary>
     [Description("Optional display name for the channel. When this isn't specified, the ID is displayed.")]
-    public string DisplayName { get; set; }
+    public string? DisplayName { get; set; }
 
     /// <summary>
     /// The background colour to use (or leave empty to use the default).
     /// </summary>
     [Description("The background colour to use for the channel. Leave this empty to use a default colour.")]
-    public string Color { get; set; }
+    public string? Color { get; set; }
 
     /// <summary>
     /// Whether the channel should be shown by default to start with.
@@ -45,7 +47,7 @@ public class ChannelMapping
     /// Optional short name to use for constrained UIs (e.g. digital scribble strips).
     /// </summary>
     [Description("Optional short name to use for constrained UIs(e.g.digital scribble strips).")]
-    public string ShortName { get; set; }
+    public string? ShortName { get; set; }
 
     /// <summary>
     /// The effective display name, which is <see cref="DisplayName"/> with a fallback to <see cref="Id"/>.
