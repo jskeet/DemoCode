@@ -1,18 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <UseWPF>true</UseWPF>
-    <ImplicitUsings>true</ImplicitUsings>
     <ApplicationIcon>DigiMixer.ico</ApplicationIcon>
+	<Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\WpfUtil\JonSkeet.WpfLogging\JonSkeet.WpfLogging.csproj" />
     <ProjectReference Include="..\DigiMixer.Controls\DigiMixer.Controls.csproj" />
   </ItemGroup>
-
 </Project>

@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWpf>True</UseWpf>
@@ -10,5 +9,4 @@
   <ItemGroup>
     <ProjectReference Include="..\JonSkeet.CoreAppUtil\JonSkeet.CoreAppUtil.csproj" />
   </ItemGroup>
-
 </Project>

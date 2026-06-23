@@ -5,6 +5,8 @@
   </Configurations>
   <Folder Name="/Properties/">
     <File Path="../Directory.Packages.props" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
   </Folder>
   <Folder Name="/Protocols/">
     <File Path="Protocols/ah-sq.md" />

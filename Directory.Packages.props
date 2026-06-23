@@ -10,7 +10,8 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
     <PackageVersion Include="JonSkeet.MiscUtil" Version="0.2.0" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+	<PackageVersion Include="JonSkeet.RoslynAnalyzers" Version="1.0.0-beta.6" />	  
+	<PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="NodaTime" Version="3.3.2" />
     <PackageVersion Include="NodaTime.Serialization.JsonNet" Version="3.2.1" />
     <PackageVersion Include="NUnit" Version="4.4.0" />

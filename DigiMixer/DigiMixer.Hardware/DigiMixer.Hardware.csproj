@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <!-- 
     - The DigiMixer.Hardware project is a single project containing the source code from
     - all the individual mixer implementations. The intention is that higher level projects
@@ -7,13 +6,6 @@
     - and still use all the mixer implementations. This allows the inclusion of far fewer
     - DigiMixer projects in other solutions.
     -->
-  
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="SharpZipLib" />
@@ -44,5 +36,4 @@
 	<Compile Include="..\DigiMixer.Yamaha\*.cs" />
     <Compile Include="..\DigiMixer.Yamaha.Core\*.cs" />
   </ItemGroup>
-
 </Project>
