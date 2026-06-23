@@ -4,6 +4,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Immutable;
 
 namespace DigiMixer.Ssc;
 
@@ -22,20 +23,20 @@ public sealed class SscMessage
     /// If the property does not exist or does not have a string value, this is null.
     /// </summary>
     public string? Id { get; }
-    public IReadOnlyList<SscProperty> Properties { get; }
-    public IReadOnlyList<SscError> Errors { get; }
+    public ImmutableArray<SscProperty> Properties { get; }
+    public ImmutableArray<SscError> Errors { get; }
 
     /// <summary>
     /// Creates a message with the given properties.
     /// </summary>
-    public SscMessage(params SscProperty[] properties) : this(properties, true, nameof(properties))
+    public SscMessage(params SscProperty[] properties) : this(properties, nameof(properties))
     {
     }
 
     /// <summary>
     /// Creates a message with the given properties.
     /// </summary>
-    public SscMessage(IEnumerable<SscProperty> properties) : this(properties, true, nameof(properties))
+    public SscMessage(IEnumerable<SscProperty> properties) : this(properties, nameof(properties))
     {
     }
 
@@ -50,7 +51,7 @@ public sealed class SscMessage
     /// Creates a message with the given addresses, where the value for each address is null.
     /// </summary>
     public SscMessage(IEnumerable<string> addresses)
-        : this(addresses.Select(addr => new SscProperty(addr, null)), true, nameof(addresses))
+        : this(addresses.Select(addr => new SscProperty(addr, null)), nameof(addresses))
     {
     }
 
@@ -78,13 +79,13 @@ public sealed class SscMessage
         var newProperties = id is null
             ? propertiesWithoutId
             : propertiesWithoutId.Append(new SscProperty(SscAddresses.Osc.Xid, id));
-        return new SscMessage(newProperties, clone: true, addressValidationParameterName: null);
+        return new SscMessage([.. newProperties], addressValidationParameterName: null);
     }
 
-    private SscMessage(IEnumerable<SscProperty> properties, bool clone, string? addressValidationParameterName)
+    private SscMessage(IEnumerable<SscProperty> properties, string? addressValidationParameterName)
     {
-        Properties = clone ? properties.ToList().AsReadOnly() : (IReadOnlyList<SscProperty>) properties;
-        Errors = DeriveErrors().ToList().AsReadOnly();
+        Properties = properties is ImmutableArray<SscProperty> immutable ? immutable : [.. properties];
+        Errors = [.. DeriveErrors()];
         Id = Properties.FirstOrDefault(prop => prop.Address == SscAddresses.Osc.Xid)?.Value as string;
 
         if (addressValidationParameterName is not null)
@@ -137,7 +138,7 @@ public sealed class SscMessage
         JObject obj = JsonConvert.DeserializeObject<JObject>(json, deserializationSettings)
             ?? throw new ArgumentException("JSON must contain an object", nameof(json));
         PopulateProperties(obj, "");
-        return new SscMessage(properties.AsReadOnly(), clone: false, null);
+        return new SscMessage([.. properties], null);
 
         void PopulateProperties(JObject node, string address)
         {

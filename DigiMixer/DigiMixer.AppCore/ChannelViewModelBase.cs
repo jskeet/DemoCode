@@ -2,6 +2,7 @@
 using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using System.Collections.Immutable;
 using System.ComponentModel;
 
 namespace DigiMixer.AppCore;
@@ -71,7 +72,7 @@ public abstract class ChannelViewModelBase<T> : ViewModelBase, IChannelViewModel
         set => Channel?.SetMuted(value);
     }
 
-    public IReadOnlyList<FaderViewModel> Faders { get; protected set; } = [];
+    public ImmutableArray<FaderViewModel> Faders { get; protected set; } = [];
 
     private readonly PeakBuffer peakBuffer;
     private readonly PeakBuffer stereoPeakBuffer;

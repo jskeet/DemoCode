@@ -1,16 +1,15 @@
 ﻿using DigiMixer.Core;
-using JonSkeet.CoreAppUtil;
 using NodaTime;
+using System.Collections.Immutable;
 
 namespace DigiMixer.AppCore;
 
 public class InputChannelViewModel(ChannelMapping mapping, double? feedbackMutingThreshold, Duration? feedbackMutingDuration)
     : ChannelViewModelBase<InputChannel>(ChannelId.Input(mapping.Channel), mapping, feedbackMutingThreshold, feedbackMutingDuration)
 {
-    internal void SetFaders(IReadOnlyList<OutputChannelViewModel> outputChannels)
+    internal void SetFaders(ImmutableArray<OutputChannelViewModel> outputChannels)
     {
-        Faders = outputChannels
-            .ToReadOnlyList(output => new FaderViewModel(ChannelId, output.ChannelId, Id, output.Id, output.Appearance));
+        Faders = [.. outputChannels.Select(output => new FaderViewModel(ChannelId, output.ChannelId, Id, output.Id, output.Appearance))];
     }
 
     protected override IEnumerable<InputChannel> GetChannels(Mixer mixer) => mixer.InputChannels;

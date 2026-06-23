@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.Core;
+﻿using System.Collections.Immutable;
+
+namespace DigiMixer.Core;
 
 /// <summary>
 /// A configuration for <see cref="Mixer"/>, in terms of input/output channels.
@@ -13,15 +15,15 @@ public sealed class MixerChannelConfiguration(
     /// <summary>
     /// The input channels for the mixer.
     /// </summary>
-    public IReadOnlyList<ChannelId> InputChannels { get; } = inputChannels.ToList().AsReadOnly();
+    public ImmutableArray<ChannelId> InputChannels { get; } = [.. inputChannels];
 
     /// <summary>
     /// The output channels for the mixer.
     /// </summary>
-    public IReadOnlyList<ChannelId> OutputChannels { get; } = outputChannels.ToList().AsReadOnly();
+    public ImmutableArray<ChannelId> OutputChannels { get; } = [.. outputChannels];
 
     /// <summary>
     /// The stereo pairings of input or output channels.
     /// </summary>
-    public IReadOnlyList<StereoPair> StereoPairs { get; } = stereoPairs.ToList().AsReadOnly();
+    public ImmutableArray<StereoPair> StereoPairs { get; } = [.. stereoPairs];
 }

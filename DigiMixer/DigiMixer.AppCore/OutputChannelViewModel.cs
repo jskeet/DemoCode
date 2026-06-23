@@ -17,9 +17,8 @@ public class OutputChannelViewModel(ChannelMapping mapping) :
 
     internal void SetFaders(IEnumerable<InputChannelViewModel> inputChannels)
     {
-        Faders = new[] { new FaderViewModel(inputChannelId: null, ChannelId, inputId: null, Id, ChannelAppearance.CreateVisibleWhite()) }
-            .Concat(inputChannels.Select(input => new FaderViewModel(input.ChannelId, ChannelId, input.Id, Id, input.Appearance)))
-            .ToReadOnlyList();
+        Faders = [.. new[] { new FaderViewModel(inputChannelId: null, ChannelId, inputId: null, Id, ChannelAppearance.CreateVisibleWhite()) }
+            .Concat(inputChannels.Select(input => new FaderViewModel(input.ChannelId, ChannelId, input.Id, Id, input.Appearance)))];
     }
 
     protected override IEnumerable<OutputChannel> GetChannels(Mixer mixer) => mixer.OutputChannels;
@@ -27,14 +26,14 @@ public class OutputChannelViewModel(ChannelMapping mapping) :
     // Hack for Behringer Wing. See DigiMixerViewModel constructor for details.
     public void RemoveOverallOutputFader()
     {
-        var firstFader = Faders.Count == 0 ? null : Faders[0];
+        var firstFader = Faders.Length == 0 ? null : Faders[0];
         if (firstFader is null)
         {
             return;
         }
         if (firstFader.InputChannelId is null)
         {
-            Faders = Faders.Skip(1).ToReadOnlyList();
+            Faders = [.. Faders.Skip(1)];
         }
     }
 }

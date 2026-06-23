@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.Core;
+﻿using System.Collections.Immutable;
+
+namespace DigiMixer.Core;
 
 // FIXME: Expected thread safety? Cancellation tokens?
 
@@ -35,7 +37,7 @@ public interface IMixerApi : IDisposable
     /// can be used to specify which channels are of interest.
     /// </summary>
     /// <param name="channelIds">The channels to request data for.</param>
-    Task RequestAllData(IReadOnlyList<ChannelId> channelIds);
+    Task RequestAllData(ImmutableArray<ChannelId> channelIds);
 
     /// <summary>
     /// Sets the fader level for the given input/output channel combination.

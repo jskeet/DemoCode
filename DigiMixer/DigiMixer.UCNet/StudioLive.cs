@@ -3,6 +3,7 @@ using DigiMixer.UCNet.Core;
 using DigiMixer.UCNet.Core.Messages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System.Collections.Immutable;
 
 namespace DigiMixer.UCNet;
 
@@ -345,7 +346,7 @@ public static class StudioLive
         public void RegisterReceiver(IMixerReceiver receiver) =>
             this.receiver.RegisterReceiver(receiver);
 
-        public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) =>
+        public Task RequestAllData(ImmutableArray<ChannelId> channelIds) =>
             SendMessage(JsonMessage.FromObject(new SubscribeBody { ClientIdentifier = clientIdentifier }));
 
         // TODO: Check this.

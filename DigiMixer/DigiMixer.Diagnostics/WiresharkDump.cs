@@ -1,6 +1,5 @@
 ﻿using DigiMixer.Core;
 using PcapngFile;
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Net;
 using System.Net.Sockets;
@@ -9,11 +8,11 @@ namespace DigiMixer.Diagnostics;
 
 public class WiresharkDump
 {
-    private readonly IReadOnlyList<BlockBase> blocks;
+    private readonly ImmutableArray<BlockBase> blocks;
 
     public IEnumerable<IPV4Packet> IPV4Packets => blocks.Select(IPV4Packet.TryConvert).OfType<IPV4Packet>();
 
-    private WiresharkDump(IReadOnlyList<BlockBase> blocks)
+    private WiresharkDump(ImmutableArray<BlockBase> blocks)
     {
         this.blocks = blocks;
     }
@@ -22,10 +21,10 @@ public class WiresharkDump
     {
         using var reader = new Reader(filename);
         var blocks = reader.AllBlocks.ToList();
-        return new WiresharkDump(blocks);
+        return new WiresharkDump([.. blocks]);
     }
 
-    public async Task<ImmutableList<AnnotatedMessage<TMessage>>> ProcessMessages<TMessage>(string mixerIpAddress, string clientIpAddress) where TMessage : class, IMixerMessage<TMessage>
+    public async Task<ImmutableArray<AnnotatedMessage<TMessage>>> ProcessMessages<TMessage>(string mixerIpAddress, string clientIpAddress) where TMessage : class, IMixerMessage<TMessage>
     {
         // Currently we assume a single client, a single mixer, and a single stream of messages between the two.
         IPAddress clientAddr = IPAddress.Parse(clientIpAddress);

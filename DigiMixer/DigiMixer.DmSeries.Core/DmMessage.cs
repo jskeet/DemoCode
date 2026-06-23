@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DigiMixer.DmSeries.Core;
 
-public class DmMessage(string type, uint flags, ImmutableList<DmSegment> segments) : IMixerMessage<DmMessage>
+public class DmMessage(string type, uint flags, ImmutableArray<DmSegment> segments) : IMixerMessage<DmMessage>
 {
     public string Type => type;
 
@@ -21,7 +21,7 @@ public class DmMessage(string type, uint flags, ImmutableList<DmSegment> segment
 
     public uint Flags => flags;
 
-    public IReadOnlyList<DmSegment> Segments => segments;
+    public ImmutableArray<DmSegment> Segments => segments;
 
     public static DmMessage? TryParse(ReadOnlySpan<byte> data)
     {
@@ -86,5 +86,5 @@ public class DmMessage(string type, uint flags, ImmutableList<DmSegment> segment
         }
     }
 
-    public override string ToString() => $"{Type,-4}: Flags={Flags:x8}; Segments={Segments.Count}";
+    public override string ToString() => $"{Type,-4}: Flags={Flags:x8}; Segments={Segments.Length}";
 }

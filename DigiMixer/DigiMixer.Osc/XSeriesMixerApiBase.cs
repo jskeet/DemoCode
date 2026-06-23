@@ -5,6 +5,7 @@
 using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using OscCore;
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace DigiMixer.Osc;
@@ -21,7 +22,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
     {
     }
 
-    public override sealed async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public override sealed async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         var stopwatch = Stopwatch.StartNew();
         await Client.SendAsync(new OscMessage(XInfoAddress));

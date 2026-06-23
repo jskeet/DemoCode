@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Net.Sockets;
 using System.Text;
 
@@ -161,7 +162,7 @@ public sealed class UiHttpMixerApi : IMixerApi
         }
     }
 
-    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         currentMixerInfo = MixerInfo.Empty;
         // Note: this call *does* need to send a message to receivingClient

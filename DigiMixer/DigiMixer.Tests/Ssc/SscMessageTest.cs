@@ -62,7 +62,7 @@ public class SscMessageTest
         using (Assert.EnterMultipleScope())
         {
             Assert.That(noId.Id, Is.Null);
-            Assert.That(noId.Properties, Has.Count.EqualTo(1));
+            Assert.That(noId.Properties, Has.Length.EqualTo(1));
         }
     }
 

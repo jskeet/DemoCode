@@ -69,7 +69,7 @@ internal class CqMixerApi : IMixerApi
 
     public void RegisterReceiver(IMixerReceiver receiver) => this.receiver.RegisterReceiver(receiver);
 
-    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         await SendMessage(new CqVersionRequestMessage());
         await SendMessage(new CqFullDataRequestMessage());

@@ -76,7 +76,7 @@ public sealed class MackieMixerApi(ILogger? logger, string host, int port = 5000
     public void RegisterReceiver(IMixerReceiver receiver) =>
         this.receiver.RegisterReceiver(receiver);
 
-    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         var versionInfo = await SendRequest(MackieCommand.FirmwareInfo, MackieMessageBody.Empty);
         string? firmwareVersion = GetMixerFirmwareVersion(versionInfo);
@@ -192,7 +192,7 @@ public sealed class MackieMixerApi(ILogger? logger, string host, int port = 5000
     {
         var body = message.Body;
 
-        int meterCount = mixerProfile.InputChannels.Count + mixerProfile.OutputChannels.Count;
+        int meterCount = mixerProfile.InputChannels.Length + mixerProfile.OutputChannels.Length;
 
         // 2 chunks of header, then one meter per channel.
         if (body.ChunkCount != meterCount + 2)

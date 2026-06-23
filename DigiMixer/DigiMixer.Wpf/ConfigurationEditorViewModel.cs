@@ -4,6 +4,7 @@ using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Collections.Immutable;
 using System.Windows.Input;
 using MHT = DigiMixer.AppCore.DigiMixerConfig.MixerHardwareType;
 
@@ -180,8 +181,8 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
             Dialogs.ShowErrorDialog("Unable to load MIDI devices", "Unable to load the names of all MIDI devices. Please check your devices.");
             return;
         }
-        var common = inputs.Intersect(outputs).ToList();
-        if (common.Count == 0)
+        var common = inputs.Intersect(outputs).ToImmutableArray();
+        if (common.Length == 0)
         {
             Dialogs.ShowWarningDialog("No suitable MIDI devices found",
                 "There were no MIDI devices with the same input and output names. Please check your devices.");

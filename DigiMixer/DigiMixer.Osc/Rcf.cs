@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using OscCore;
+using System.Collections.Immutable;
 
 namespace DigiMixer.Osc;
 
@@ -55,7 +56,7 @@ public static class Rcf
         {
         }
 
-        public override async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+        public override async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
         {
             foreach (var address in RequestAllInfoAddresses)
             {

@@ -2,6 +2,7 @@
 using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using System.Collections.Immutable;
 using System.Windows.Input;
 
 namespace DigiMixer.AppCore;
@@ -16,46 +17,46 @@ public sealed class DigiMixerViewModel : ViewModelBase, IDisposable
     /// <summary>
     /// Input channels with associated output faders.
     /// </summary>
-    public IReadOnlyList<InputChannelViewModel> InputChannels { get; }
+    public ImmutableArray<InputChannelViewModel> InputChannels { get; }
 
     /// <summary>
     /// Output channels with all associated faders (input channels and overall)
     /// </summary>
-    public IReadOnlyList<OutputChannelViewModel> OutputChannels { get; }
+    public ImmutableArray<OutputChannelViewModel> OutputChannels { get; }
 
     /// <summary>
     /// Output channels with a single fader each (just the overall output).
     /// </summary>
-    public IReadOnlyList<OutputChannelViewModel> OverallOutputChannels { get; }
+    public ImmutableArray<OutputChannelViewModel> OverallOutputChannels { get; }
 
     /// <summary>
     /// Input channels with no associated faders.
     /// </summary>
-    public IReadOnlyList<InputChannelViewModel> InputsWithNoFaders { get; }
+    public ImmutableArray<InputChannelViewModel> InputsWithNoFaders { get; }
 
     /// <summary>
     /// A channel group of inputs, with a fader per visible output.
     /// This is shown as in the "group by input" configuration.
     /// </summary>
-    public ChannelGroupViewModel InputsGroup { get; }
+    public ChannelGroupViewModel<InputChannelViewModel> InputsGroup { get; }
 
     /// <summary>
     /// A channel group of outputs, with a main fader and a fader per visible input.
     /// This is shown as in the "group by output" configuration.
     /// </summary>
-    public ChannelGroupViewModel OutputsWithInputsGroup { get; }
+    public ChannelGroupViewModel<OutputChannelViewModel> OutputsWithInputsGroup { get; }
 
     /// <summary>
     /// A channel group of just outputs with main faders.
     /// This is shown as in the "group by input" configuration.
     /// </summary>
-    public ChannelGroupViewModel OverallOutputsGroup { get; }
+    public ChannelGroupViewModel<OutputChannelViewModel> OverallOutputsGroup { get; }
 
     /// <summary>
     /// A channel group of just inputs, with no faders (so just mute buttons and meters).
     /// This is shown as in the "group by output" configuration.
     /// </summary>
-    public ChannelGroupViewModel InputsMuteAndMeterGroup { get; }
+    public ChannelGroupViewModel<InputChannelViewModel> InputsMuteAndMeterGroup { get; }
 
     private bool groupByInput = true;
     /// <summary>
@@ -107,10 +108,10 @@ public sealed class DigiMixerViewModel : ViewModelBase, IDisposable
 
         // We build up the input/output channels in two passes, as they need to refer to each other.
         Duration feedbackMutingDuration = Duration.FromMilliseconds(config.FeedbackMutingMillis);
-        InputChannels = config.InputChannels.ToReadOnlyList(mapping => new InputChannelViewModel(mapping, config.FeedbackMutingThreshold, feedbackMutingDuration));
-        OutputChannels = config.OutputChannels.ToReadOnlyList(mapping => new OutputChannelViewModel(mapping));
-        OverallOutputChannels = config.OutputChannels.ToReadOnlyList(mapping => new OutputChannelViewModel(mapping));
-        InputsWithNoFaders = config.InputChannels.ToReadOnlyList(mapping => new InputChannelViewModel(mapping, null, null));
+        InputChannels = [.. config.InputChannels.Select(mapping => new InputChannelViewModel(mapping, config.FeedbackMutingThreshold, feedbackMutingDuration))];
+        OutputChannels = [.. config.OutputChannels.Select(mapping => new OutputChannelViewModel(mapping))];
+        OverallOutputChannels = [.. config.OutputChannels.Select(mapping => new OutputChannelViewModel(mapping))];
+        InputsWithNoFaders = [.. config.InputChannels.Select(mapping => new InputChannelViewModel(mapping, null, null))];
 
         foreach (var inputChannel in InputChannels)
         {
@@ -144,14 +145,14 @@ public sealed class DigiMixerViewModel : ViewModelBase, IDisposable
                 }
             }
             // Remove the whole "overall output" element when grouping by output.
-            OverallOutputChannels = OverallOutputChannels.Where(c => !c.ChannelId.IsMainOutput).ToReadOnlyList();
+            OverallOutputChannels = [.. OverallOutputChannels.Where(c => !c.ChannelId.IsMainOutput)];
         }
         // END OF HACK
 
-        InputsGroup = new ChannelGroupViewModel("Inputs", InputChannels, true);
-        OutputsWithInputsGroup = new ChannelGroupViewModel("Outputs", OutputChannels, false);
-        OverallOutputsGroup = new ChannelGroupViewModel("Outputs", OverallOutputChannels, true);
-        InputsMuteAndMeterGroup = new ChannelGroupViewModel("Inputs", InputsWithNoFaders, false);
+        InputsGroup = new("Inputs", InputChannels, true);
+        OutputsWithInputsGroup = new("Outputs", OutputChannels, false);
+        OverallOutputsGroup = new("Outputs", OverallOutputChannels, true);
+        InputsMuteAndMeterGroup = new("Inputs", InputsWithNoFaders, false);
 
         Task mixerCreationTask = CreateMixer();
         mixerCreationTask.ContinueWith(task => logger.LogError("Mixer creation task failed"), TaskContinuationOptions.NotOnRanToCompletion);
@@ -277,7 +278,7 @@ public sealed class DigiMixerViewModel : ViewModelBase, IDisposable
             mixer.MixerInfo?.Model ?? "(Unknown)", mixer.Connected ? "Yes" : "No", unmutedChannels.Count);
         foreach (var channel in unmutedChannels)
         {
-            var firstFader = channel.Faders.Count == 0 ? null : channel.Faders[0];
+            var firstFader = channel.Faders.Length == 0 ? null : channel.Faders[0];
             statusLogger.LogTrace("  {name}: {db}", channel.DisplayName, firstFader?.FaderLevelDb.ToString("0.##"));
         }
     }

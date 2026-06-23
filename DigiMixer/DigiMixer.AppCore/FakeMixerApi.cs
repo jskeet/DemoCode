@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Collections.Immutable;
 
 namespace DigiMixer.AppCore;
 
@@ -43,7 +44,7 @@ internal sealed class FakeMixerApi : IMixerApi
         receiver.ReceiveMixerInfo(new MixerInfo("Fake", "Fake Mixer", "1.0.0"));
     }
 
-    public Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         // TODO: Call Receive methods for channels.
         return Task.CompletedTask;

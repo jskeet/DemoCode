@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.QuSeries.Core;
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -68,7 +69,7 @@ internal class QuMixerApi : IMixerApi
 
     public void RegisterReceiver(IMixerReceiver receiver) => this.receiver.RegisterReceiver(receiver);
 
-    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         await SendMessage(QuMessages.RequestNetworkInformation);
         await SendMessage(QuMessages.RequestVersionInformation);

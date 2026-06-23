@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Collections.Immutable;
 using System.ComponentModel;
 
 namespace DigiMixer;
@@ -11,13 +12,13 @@ public class InputChannel : ChannelBase, INotifyPropertyChanged
 {
     internal InputChannel(Mixer mixer, MonoOrStereoPairChannelId channelIdPair, IEnumerable<OutputChannel> outputChannels) : base(mixer, channelIdPair)
     {
-        OutputMappings = outputChannels.Select(output => new InputOutputMapping(mixer, this, output)).ToList().AsReadOnly();
+        OutputMappings = [..outputChannels.Select(output => new InputOutputMapping(mixer, this, output))];
     }
 
     /// <summary>
     /// The input/output mappings for this input channel, each of which has a separate fader level.
     /// </summary>
-    public IReadOnlyList<InputOutputMapping> OutputMappings { get; }
+    public ImmutableArray<InputOutputMapping> OutputMappings { get; }
 
     public override string ToString() => ChannelIdPair.ToString();
 }

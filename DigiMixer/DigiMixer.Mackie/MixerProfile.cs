@@ -144,8 +144,8 @@ internal abstract class MixerProfile
 
     internal int? GetFaderAddress(ChannelId outputId) => GetOutputChannel(outputId)?.FaderAddress;
 
-    internal IReadOnlyList<MackieInputChannel> InputChannels => inputChannels.Value;
-    internal IReadOnlyList<MackieOutputChannel> OutputChannels => outputChannels.Value;
+    internal ImmutableArray<MackieInputChannel> InputChannels => inputChannels.Value;
+    internal ImmutableArray<MackieOutputChannel> OutputChannels => outputChannels.Value;
 
     /// <summary>
     /// The start of the values for input channel 1.

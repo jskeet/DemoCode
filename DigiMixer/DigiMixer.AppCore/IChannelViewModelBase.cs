@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Collections.Immutable;
 using System.ComponentModel;
 
 namespace DigiMixer.AppCore;
@@ -18,5 +19,5 @@ public interface IChannelViewModelBase : INotifyPropertyChanged
     MeterLevel PeakOutput { get; }
     MeterLevel StereoPeakOutput { get; }
     bool Muted { get; set; }
-    IReadOnlyList<FaderViewModel> Faders { get; }
+    ImmutableArray<FaderViewModel> Faders { get; }
 }

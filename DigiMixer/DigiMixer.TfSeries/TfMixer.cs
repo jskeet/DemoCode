@@ -2,6 +2,7 @@
 using DigiMixer.Yamaha;
 using DigiMixer.Yamaha.Core;
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
 
 namespace DigiMixer.TfSeries;
 
@@ -66,7 +67,7 @@ internal class TfMixerApi(ILogger logger, string host, int port, MixerApiOptions
         throw new NotImplementedException();
     }
 
-    public Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         throw new NotImplementedException();
     }

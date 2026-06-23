@@ -1,4 +1,6 @@
-﻿namespace DigiMixer.Core;
+﻿using System.Collections.Immutable;
+
+namespace DigiMixer.Core;
 
 /// <summary>
 /// Implementation of <see cref="IMixerApi"/> which delegates all
@@ -31,7 +33,7 @@ public sealed class AutoReceiveMixerApi(IMixerApi target) : IMixerApi
         target.RegisterReceiver(receiver);
     }
 
-    public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) =>
+    public Task RequestAllData(ImmutableArray<ChannelId> channelIds) =>
         target.RequestAllData(channelIds);
 
     public Task SendKeepAlive() => target.SendKeepAlive();

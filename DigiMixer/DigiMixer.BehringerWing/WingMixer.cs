@@ -203,7 +203,7 @@ internal class WingMixerApi : IMixerApi
     }
 
     // This requests more than we really need - really *everything* - but it's fine.
-    public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) => RequestAllData(cts?.Token ?? default);
+    public Task RequestAllData(ImmutableArray<ChannelId> channelIds) => RequestAllData(cts?.Token ?? default);
 
     private async Task RequestAllData(CancellationToken cancellationToken)
     {

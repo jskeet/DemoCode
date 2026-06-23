@@ -6,6 +6,7 @@ using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using OscCore;
+using System.Collections.Immutable;
 
 namespace DigiMixer.Osc;
 
@@ -77,7 +78,7 @@ internal abstract class OscMixerApiBase : IMixerApi
     public void RegisterReceiver(IMixerReceiver receiver) =>
         this.receiver.RegisterReceiver(receiver);
 
-    public abstract Task RequestAllData(IReadOnlyList<ChannelId> channelIds);
+    public abstract Task RequestAllData(ImmutableArray<ChannelId> channelIds);
 
     public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) =>
         Client.SendAsync(new OscMessage(GetFaderAddress(inputId, outputId), FromFaderLevel(level)));

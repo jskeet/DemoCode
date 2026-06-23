@@ -1,5 +1,6 @@
 ﻿using DigiMixer.Core;
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -12,8 +13,8 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
     private readonly ILogger logger;
 
     public MixerChannelConfiguration ChannelConfiguration { get; }
-    public IReadOnlyList<InputChannel> InputChannels { get; }
-    public IReadOnlyList<OutputChannel> OutputChannels { get; }
+    public ImmutableArray<InputChannel> InputChannels { get; }
+    public ImmutableArray<OutputChannel> OutputChannels { get; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
     // Mutable state...
@@ -50,14 +51,8 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
 
         ChannelConfiguration = config;
         Connected = true;
-        OutputChannels = ChannelConfiguration.GetPossiblyPairedOutputs()
-            .Select(output => new OutputChannel(this, output))
-            .ToList()
-            .AsReadOnly();
-        InputChannels = ChannelConfiguration.GetPossiblyPairedInputs()
-            .Select(input => new InputChannel(this, input, OutputChannels))
-            .ToList()
-            .AsReadOnly();
+        OutputChannels = [.. ChannelConfiguration.GetPossiblyPairedOutputs().Select(output => new OutputChannel(this, output))];
+        InputChannels = [.. ChannelConfiguration.GetPossiblyPairedInputs().Select(input => new InputChannel(this, input, OutputChannels))];
 
         var receiver = new MixerReceiver(this);
         initialApi.RegisterReceiver(receiver);
@@ -76,7 +71,7 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
                 await api.Connect(cts.Token);
                 api.RegisterReceiver(receiver);
                 // TODO: Should this have a cancellation token, as it's part of connection?
-                await api.RequestAllData(ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels).ToList().AsReadOnly());
+                await api.RequestAllData([..ChannelConfiguration.InputChannels.Concat(ChannelConfiguration.OutputChannels)]);
                 dispose = false;
             }
             finally
@@ -101,7 +96,7 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
             await api.Connect(cts.Token);
             var config = await api.DetectConfiguration(cts.Token);
             var mixer = new Mixer(logger, apiFactory, api, config, timing);
-            mixer.RequestAllData(config.InputChannels.Concat(config.OutputChannels).ToList().AsReadOnly());
+            mixer.RequestAllData([..config.InputChannels.Concat(config.OutputChannels)]);
             success = true;
             return mixer;
         }
@@ -123,7 +118,7 @@ public sealed partial class Mixer : IDisposable, INotifyPropertyChanged
     internal void SetMuted(ChannelId channelId, bool muted) =>
         LogErrors(api.SetMuted(channelId, muted));
 
-    internal void RequestAllData(ReadOnlyCollection<ChannelId> channels) =>
+    internal void RequestAllData(ImmutableArray<ChannelId> channels) =>
         LogErrors(api.RequestAllData(channels));
 
     private async Task StartKeepAliveTask()

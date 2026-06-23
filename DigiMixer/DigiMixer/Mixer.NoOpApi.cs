@@ -1,4 +1,5 @@
 ﻿using DigiMixer.Core;
+using System.Collections.Immutable;
 
 namespace DigiMixer;
 
@@ -23,7 +24,7 @@ public partial class Mixer
         {
         }
 
-        public Task RequestAllData(IReadOnlyList<ChannelId> channelIds) => Task.CompletedTask;
+        public Task RequestAllData(ImmutableArray<ChannelId> channelIds) => Task.CompletedTask;
 
         public Task SetFaderLevel(ChannelId inputId, ChannelId outputId, FaderLevel level) => Task.CompletedTask;
 

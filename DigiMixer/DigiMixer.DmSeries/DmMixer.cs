@@ -1,6 +1,7 @@
 ﻿using DigiMixer.Core;
 using DigiMixer.DmSeries.Core;
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
 
 namespace DigiMixer.DmSeries;
 
@@ -92,7 +93,7 @@ internal class DmMixerApi(ILogger logger, string host, int port, MixerApiOptions
 
     public void RegisterReceiver(IMixerReceiver receiver) => this.receiver.RegisterReceiver(receiver);
 
-    public async Task RequestAllData(IReadOnlyList<ChannelId> channelIds)
+    public async Task RequestAllData(ImmutableArray<ChannelId> channelIds)
     {
         if (fullDataTask is null)
         {
