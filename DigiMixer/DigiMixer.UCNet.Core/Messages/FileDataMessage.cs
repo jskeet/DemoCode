@@ -2,22 +2,14 @@
 
 namespace DigiMixer.UCNet.Core.Messages;
 
-public class FileDataMessage : UCNetMessage
+public class FileDataMessage(ushort id, uint totalSize, ushort offset, byte[] data, MessageMode mode = MessageMode.FileRequest)
+    : UCNetMessage(mode)
 {
-    public ushort Id { get; }
-    public ushort Offset { get; }
-    public uint TotalSize { get; }
+    public ushort Id => id;
+    public ushort Offset => offset;
+    public uint TotalSize => totalSize;
 
-    private readonly byte[] data;
     public ReadOnlySpan<byte> Data => data;
-
-    public FileDataMessage(ushort id, uint totalSize, ushort offset, byte[] data, MessageMode mode = MessageMode.FileRequest) : base(mode)
-    {
-        Id = id;
-        TotalSize = totalSize;
-        Offset = offset;
-        this.data = data;
-    }
 
     public override MessageType Type => MessageType.FileData;
 

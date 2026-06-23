@@ -2,20 +2,11 @@
 
 namespace DigiMixer.UCNet.Core.Messages;
 
-public class ChunkMessage : UCNetMessage
+public class ChunkMessage(uint totalSize, uint offset, byte[] data, MessageMode mode) : UCNetMessage(mode)
 {
-    private readonly byte[] data;
-
     public ReadOnlySpan<byte> Data => data;
-    public uint Offset { get; }
-    public uint TotalSize { get; }
-
-    public ChunkMessage(uint totalSize, uint offset, byte[] data, MessageMode mode) : base(mode)
-    {
-        TotalSize = totalSize;
-        Offset = offset;
-        this.data = data;
-    }
+    public uint Offset => offset;
+    public uint TotalSize => totalSize;
 
     public override MessageType Type => MessageType.Chunk;
 

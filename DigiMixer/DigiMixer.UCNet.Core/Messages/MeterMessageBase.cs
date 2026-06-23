@@ -4,11 +4,9 @@ using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
-public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
+public abstract class MeterMessageBase<T>(string meterType, byte[] data, byte[] rowMappingData, MessageMode mode) : UCNetMessage(mode) where T : struct
 {
-    public string MeterType { get; }
-    private readonly byte[] data;
-    private readonly byte[] rowMappingData;
+    public string MeterType { get; } = meterType;
 
     public ReadOnlySpan<byte> Data => data;
     public ReadOnlySpan<byte> RowMappingData => rowMappingData;
@@ -17,13 +15,6 @@ public abstract class MeterMessageBase<T> : UCNetMessage where T : struct
     public IEnumerable<MeterMessageRow<ushort>> Rows =>
         Enumerable.Range(0, RowCount)
             .Select(index => new MeterMessageRow<ushort>(rowMappingData, index, x => BinaryPrimitives.ReadUInt16LittleEndian(Data[(x * 2)..])));
-
-    protected MeterMessageBase(string meterType, byte[] data, byte[] rowMappingData, MessageMode mode) : base(mode)
-    {
-        this.MeterType = meterType;
-        this.data = data;
-        this.rowMappingData = rowMappingData;
-    }
 
     protected abstract int ValueSize { get; }
     protected abstract T ReadValue(int index);

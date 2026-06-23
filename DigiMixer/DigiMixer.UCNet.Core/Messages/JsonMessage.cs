@@ -26,7 +26,7 @@ public class JsonMessage : UCNetMessage
     }
 
     public static JsonMessage FromJson(string json, MessageMode mode = MessageMode.FileRequest) =>
-        new JsonMessage(json, mode);
+        new(json, mode);
 
     public static JsonMessage FromObject(object body, MessageMode mode = MessageMode.FileRequest) =>
         FromJson(JsonConvert.SerializeObject(body), mode);

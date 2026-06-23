@@ -24,9 +24,7 @@ public static class X32
         private const string AuxInputChannelLinkAddressPrefix = "/config/auxlink/";
         private const string BusChannelLinkAddressPrefix = "/config/buslink/";
 
-        private static readonly string[] outputMappingAddresses = Enumerable.Range(1, 16)
-            .Select(GetOutputMappingAddress)
-            .ToArray();
+        private static readonly string[] outputMappingAddresses = [.. Enumerable.Range(1, 16).Select(GetOutputMappingAddress)];
 
         private static IEnumerable<string> InputChannelLinkAddresses => Enumerable.Range(1, 16)
             .Select(x => $"{InputChannelLinkAddressPrefix}{x * 2 - 1}-{x * 2}");
@@ -42,7 +40,7 @@ public static class X32
         // 0 = Unknown
         // 1-16 = Output channels 1-16
         // 100/101 = Main L/R
-        private int[] mainOutputToChannelId;
+        private readonly int[] mainOutputToChannelId;
 
         internal X32OscMixerApi(ILogger logger, string host, int port, MixerApiOptions? options) : base(logger, host, port, options)
         {
@@ -60,15 +58,10 @@ public static class X32
 
         public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
-            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken,
-                InputChannelLinkAddresses
-                    .Concat(AuxInputChannelLinkAddresses)
-                    .Concat(BusChannelLinkAddresses)
-                    .ToArray());
-            if (result is null)
-            {
-                throw new InvalidOperationException("Detection timed out");
-            }
+            var result = await InfoReceiver.RequestAndWait(Client,
+                [.. InputChannelLinkAddresses, .. AuxInputChannelLinkAddresses, .. BusChannelLinkAddresses],
+                cancellationToken)
+                ?? throw new InvalidOperationException("Detection timed out");
             var inputs = Enumerable.Range(1, 40).Select(ChannelId.Input);
             var outputs = Enumerable.Range(1, 16).Select(ChannelId.Output)
                 .Append(ChannelId.MainOutputLeft).Append(ChannelId.MainOutputRight);
@@ -93,12 +86,12 @@ public static class X32
 
         protected override async Task RequestAdditionalData()
         {
-            var result = await InfoReceiver.RequestAndWait(Client, CreateCancellationToken(), outputMappingAddresses);
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
+            var result = await InfoReceiver.RequestAndWait(Client, outputMappingAddresses, cancellationToken);
             if (result is null)
             {
                 Logger.LogTrace("Fetching output mapping failed");
             }
-            CancellationToken CreateCancellationToken() => new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
         }
 
         protected override void ReceiveInputMeters(OscMessage message)

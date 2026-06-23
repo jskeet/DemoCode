@@ -2,16 +2,10 @@
 
 namespace DigiMixer.UCNet.Core.Messages;
 
-public class ParameterStringMessage : UCNetMessage
+public class ParameterStringMessage(string key, string value, MessageMode mode = MessageMode.FileRequest) : UCNetMessage(mode)
 {
-    public string Key { get; }
-    public string Value { get; }
-
-    public ParameterStringMessage(string key, string value, MessageMode mode = MessageMode.FileRequest) : base(mode)
-    {
-        Key = key;
-        Value = value;
-    }
+    public string Key { get; } = key;
+    public string Value { get; } = value;
 
     protected override int BodyLength => Encoding.UTF8.GetByteCount(Key) + 3 + Encoding.UTF8.GetByteCount(Value);
 

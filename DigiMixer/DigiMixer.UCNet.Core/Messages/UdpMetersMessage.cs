@@ -2,14 +2,9 @@
 
 namespace DigiMixer.UCNet.Core.Messages;
 
-public class UdpMetersMessage : UCNetMessage
+public class UdpMetersMessage(int meterPort, MessageMode mode = MessageMode.UdpMeters) : UCNetMessage(mode)
 {
-    public int MeterPort { get; }
-
-    public UdpMetersMessage(int meterPort, MessageMode mode = MessageMode.UdpMeters) : base(mode)
-    {
-        MeterPort = meterPort;
-    }
+    public int MeterPort => meterPort;
 
     public override MessageType Type => MessageType.UdpMeters;
 
@@ -18,7 +13,7 @@ public class UdpMetersMessage : UCNetMessage
     protected override void WriteBody(Span<byte> span) => BinaryPrimitives.WriteUInt16LittleEndian(span, (ushort) MeterPort);
 
     internal static UdpMetersMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body) =>
-        new UdpMetersMessage(BinaryPrimitives.ReadUInt16LittleEndian(body), mode);
+        new(BinaryPrimitives.ReadUInt16LittleEndian(body), mode);
 
     public override string ToString() => $"UdpMeters: Port={MeterPort}";
 }

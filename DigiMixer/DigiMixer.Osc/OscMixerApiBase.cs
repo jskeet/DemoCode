@@ -117,7 +117,7 @@ internal abstract class OscMixerApiBase : IMixerApi
 
     private float FromFaderLevel(FaderLevel level) => level.Value / (float) FaderScale.MaxValue;
 
-    private FaderLevel ToFaderLevel(float value) => new FaderLevel((int) (value * FaderScale.MaxValue));
+    private FaderLevel ToFaderLevel(float value) => new((int) (value * FaderScale.MaxValue));
 
     private Dictionary<string, Action<OscMessage>> BuildReceiverMap()
     {

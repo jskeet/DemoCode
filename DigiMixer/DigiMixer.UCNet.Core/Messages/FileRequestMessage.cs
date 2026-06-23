@@ -3,20 +3,11 @@ using System.Text;
 
 namespace DigiMixer.UCNet.Core.Messages;
 
-public class FileRequestMessage : UCNetMessage
+public class FileRequestMessage(string path, ushort requestId, MessageMode mode = MessageMode.FileRequest)
+    : UCNetMessage(mode)
 {
-    private readonly string path;
     // The size of the path in bytes.
-    private readonly int byteCount;
-
-    private readonly ushort requestId;
-
-    public FileRequestMessage(string path, ushort requestId, MessageMode mode = MessageMode.FileRequest) : base(mode)
-    {
-        this.path = path;
-        this.requestId = requestId;
-        byteCount = Encoding.UTF8.GetByteCount(path);
-    }
+    private readonly int byteCount = Encoding.UTF8.GetByteCount(path);
 
     // 2 bytes for 0x01 0x00 before, then 0x00 0x00 at the end
     protected override int BodyLength => byteCount + 4;

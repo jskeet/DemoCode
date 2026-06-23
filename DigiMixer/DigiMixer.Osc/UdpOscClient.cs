@@ -8,17 +8,14 @@ using OscCore;
 
 namespace DigiMixer.Osc;
 
-internal sealed class UdpOscClient : UdpControllerBase, IOscClient
+/// <summary>
+/// Constructs a UDP client which connects to <paramref name="host"/> on
+/// <paramref name="remotePort"/>, with an optionally specified local port.
+/// </summary>
+internal sealed class UdpOscClient(ILogger logger, string host, int remotePort, int? localPort = null)
+    : UdpControllerBase(logger, host, remotePort, localPort), IOscClient
 {
     public event EventHandler<OscPacket>? PacketReceived;
-
-    /// <summary>
-    /// Constructs a UDP client which connects to <paramref name="host"/> on
-    /// <paramref name="remotePort"/>, with an optionally specified local port.
-    /// </summary>
-    public UdpOscClient(ILogger logger, string host, int remotePort, int? localPort = null) : base(logger, host, remotePort, localPort)
-    {
-    }
 
     public Task SendAsync(OscPacket packet)
     {

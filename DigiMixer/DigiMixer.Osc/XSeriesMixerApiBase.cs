@@ -31,9 +31,10 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
             var muteAddress = GetMuteAddress(channelId);
             var nameAddress = GetNameAddress(channelId);
             var faderAddress = channelId.IsOutput ? GetFaderAddress(channelId) : null;
-            var result = await InfoReceiver.RequestAndWait(Client, CreateCancellationToken(),
-                channelId.IsOutput ? new[] { muteAddress, nameAddress, GetFaderAddress(channelId) }
-                : new[] { muteAddress, nameAddress });
+            string[] addresses = channelId.IsOutput
+                ? [muteAddress, nameAddress, GetFaderAddress(channelId)]
+                : [muteAddress, nameAddress];
+            var result = await InfoReceiver.RequestAndWait(Client, addresses, CreateCancellationToken());
             if (result is null)
             {
                 Logger.LogTrace("Fetching name/mute info for {channel} timed out", channelId);
@@ -43,7 +44,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
         foreach (var input in channelIds.Where(c => c.IsInput))
         {
             var addresses = channelIds.Where(c => c.IsOutput).Select(output => GetFaderAddress(input, output)).ToArray();
-            var result = await InfoReceiver.RequestAndWait(Client, CreateCancellationToken(), addresses);
+            var result = await InfoReceiver.RequestAndWait(Client, addresses, CreateCancellationToken());
             if (result is null)
             {
                 Logger.LogTrace("Fetching fader input/output info for {channel} timed out", input);
@@ -54,7 +55,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
         Logger.LogTrace("Requested all data in {ms}ms", stopwatch.ElapsedMilliseconds);
 
         // In reality we get through all of these in about 50ms, but let's allow for a glitchy connection.
-        CancellationToken CreateCancellationToken() => new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
+        static CancellationToken CreateCancellationToken() => new CancellationTokenSource(TimeSpan.FromMilliseconds(250)).Token;
     }
 
     protected virtual Task RequestAdditionalData() => Task.CompletedTask;
@@ -80,7 +81,7 @@ internal abstract class XSeriesMixerApiBase : OscMixerApiBase
 
     public override sealed async Task<bool> CheckConnection(CancellationToken cancellationToken)
     {
-        var result = await InfoReceiver.RequestAndWait(Client, cancellationToken, XInfoAddress);
+        var result = await InfoReceiver.RequestAndWait(Client, [XInfoAddress], cancellationToken);
         return result is not null;
     }
 

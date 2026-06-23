@@ -1,11 +1,7 @@
 ﻿namespace DigiMixer.UCNet.Core.Messages;
 
-public class KeepAliveMessage : UCNetMessage
+public class KeepAliveMessage(MessageMode mode = MessageMode.FileRequest) : UCNetMessage(mode)
 {
-    public KeepAliveMessage(MessageMode mode = MessageMode.FileRequest) : base(mode)
-    {
-    }
-
     protected override int BodyLength => 0;
     public override MessageType Type => MessageType.KeepAlive;
 
@@ -14,7 +10,7 @@ public class KeepAliveMessage : UCNetMessage
     }
 
     internal static KeepAliveMessage FromRawBody(MessageMode mode, ReadOnlySpan<byte> body) =>
-        new KeepAliveMessage(mode);
+        new(mode);
 
     public override string ToString() => $"KeepAlive";
 }

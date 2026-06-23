@@ -42,14 +42,10 @@ public static class XAir
 
         public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
-            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken,
-                XInfoAddress,
-                InputChannelLinkAddress,
-                BusChannelLinkAddress);
-            if (result is null)
-            {
-                throw new InvalidOperationException("Detection timed out");
-            }
+            var result = await InfoReceiver.RequestAndWait(Client,
+                [XInfoAddress, InputChannelLinkAddress, BusChannelLinkAddress],
+                cancellationToken)
+                ?? throw new InvalidOperationException("Detection timed out");
             var inputLinks = result[InputChannelLinkAddress].Select(x => x is 1).ToList();
             var outputLinks = result[BusChannelLinkAddress].Select(x => x is 1).ToList();
             var model = (string) result[XInfoAddress][2];
@@ -74,7 +70,7 @@ public static class XAir
                 .Append(new StereoPair(ChannelId.MainOutputLeft, ChannelId.MainOutputRight, StereoFlags.None));
             return new MixerChannelConfiguration(inputs, outputs, stereoPairs);
 
-            IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, Func<int, ChannelId> factory)
+            static IEnumerable<StereoPair> CreateStereoPairs(int max, List<bool> pairs, Func<int, ChannelId> factory)
             {
                 var count = Math.Min(max, pairs.Count * 2);
                 for (int i = 1; i <= count - 1; i += 2)

@@ -12,7 +12,7 @@ internal interface IOscClient : IDisposable
     event EventHandler<OscPacket> PacketReceived;
     void Start();
 
-    public class Fake : IOscClient
+    public sealed class Fake : IOscClient
     {
         internal static Fake Instance { get; } = new Fake();
         private Fake() { }

@@ -37,13 +37,13 @@ public static class Rcf
 
         private MixerInfo currentInfo = MixerInfo.Empty;
 
-        private static readonly string[] RequestAllInfoAddresses = Enumerable.Range(1, 13)
-            .Append(22)
-            .Select(i => $"/{i:00}/99/up_{i:000}")
-            .Append(FirmwareAddress)
-            .Append(TargetIdAddress)
-            .Append(SerialNumberAddress)
-            .ToArray();
+        private static readonly string[] RequestAllInfoAddresses =
+        [
+            .. Enumerable.Range(1, 13).Append(22).Select(i => $"/{i:00}/99/up_{i:000}"),
+            FirmwareAddress,
+            TargetIdAddress,
+            SerialNumberAddress,
+        ];
 
         internal RcfOscMixerApi(ILogger logger, string host, int outboundPort, int inboundPort, MixerApiOptions? options) :
             base(logger, logger => new UdpOscClient(logger, host, outboundPort, inboundPort), options)
@@ -81,11 +81,8 @@ public static class Rcf
         public override async Task<MixerChannelConfiguration> DetectConfiguration(CancellationToken cancellationToken)
         {
             var messages = new[] { new OscMessage(StereoLinkAddress, " ") };
-            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken, messages, StereoLinkAddress);
-            if (result is null)
-            {
-                throw new InvalidOperationException("Detection timed out");
-            }
+            var result = await InfoReceiver.RequestAndWait(Client, messages, [StereoLinkAddress], cancellationToken)
+                ?? throw new InvalidOperationException("Detection timed out");
             // TODO: Is there such a thing as an output stereo pair?
             // (Sort of: we can assign Main L and Main R to arbitrary buses, but they're not known to be paired.
             // We could potentially detect that.)
@@ -127,7 +124,7 @@ public static class Rcf
 
         public override async Task<bool> CheckConnection(CancellationToken cancellationToken)
         {
-            var result = await InfoReceiver.RequestAndWait(Client, cancellationToken, new[] { new OscMessage(FirmwareAddress, 0) }, FirmwareAddress);
+            var result = await InfoReceiver.RequestAndWait(Client, [new OscMessage(FirmwareAddress, 0)], [FirmwareAddress], cancellationToken);
             return result is not null;
         }
 
@@ -184,7 +181,7 @@ public static class Rcf
                 Receiver.ReceiveMeterLevels(levels);
             };
 
-            static MeterLevel ToMeterLevel(float value) => new MeterLevel(value);
+            static MeterLevel ToMeterLevel(float value) => new(value);
         }
 
         // Addresses

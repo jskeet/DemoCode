@@ -14,7 +14,7 @@ namespace DigiMixer.UCNet.Core;
 
 public abstract class UCNetMessage : IMixerMessage<UCNetMessage>
 {
-    private static readonly byte[] MagicNumber = { 0x55, 0x43, 0x00, 0x01 };
+    private static readonly byte[] MagicNumber = [0x55, 0x43, 0x00, 0x01];
 
     // TODO: Give this a better name (and maybe use an enum)
     public MessageMode Mode { get; }

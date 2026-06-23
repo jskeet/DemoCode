@@ -1,14 +1,7 @@
 ﻿namespace DigiMixer.UCNet.Core.Messages;
 
-public class ParameterStringListMessage : UCNetMessage
+public class ParameterStringListMessage(byte[] data, MessageMode mode = MessageMode.FileRequest) : UCNetMessage(mode)
 {
-    private readonly byte[] data;
-
-    public ParameterStringListMessage(byte[] data, MessageMode mode = MessageMode.FileRequest) : base(mode)
-    {
-        this.data = data;
-    }
-
     public override MessageType Type => MessageType.ParameterStringList;
 
     protected override int BodyLength => data.Length;
