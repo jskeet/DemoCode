@@ -21,10 +21,10 @@ public class Watcher(string Address, string Port) : Tool
     {
         var controller = new MackieController(NullLogger.Instance, address, port);
 
-        controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
-        controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
-        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ClientHandshake, _ => [0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c]);
+        controller.MapCommand(MackieCommand.GeneralInfo, _ => [0, 0, 0, 2, 0, 0, 0x40, 0]);
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data[..4]));
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data[..4]));
         controller.MapCommandAction(MackieCommand.ChannelValues, HandleChannelValues);
         await controller.Connect(default);
         controller.Start();
@@ -33,17 +33,17 @@ public class Watcher(string Address, string Port) : Tool
         CancellationToken cancellationToken = default;
         await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
-        await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
+        await controller.SendRequest(MackieCommand.GeneralInfo, [0, 0, 0, 2], cancellationToken);
 
         while (!token.IsCancellationRequested)
         {
-            await Task.Delay(2000);
+            await Task.Delay(2000, cancellationToken);
             await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         }
 
         controller.Dispose();
 
-        void HandleChannelValues(MackieMessage message)
+        static void HandleChannelValues(MackieMessage message)
         {
             var body = message.Body;
             if (body.Length < 8)

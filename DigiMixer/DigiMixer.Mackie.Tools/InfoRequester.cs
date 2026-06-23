@@ -20,9 +20,9 @@ public class InfoRequester(string Address, string Port, string File, string Info
         controller.MessageSent += (sender, message) => RecordMessage(message, true);
         controller.MessageReceived += (sender, message) => RecordMessage(message, false);
 
-        controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
-        controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ClientHandshake, _ => [0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c]);
+        controller.MapCommand(MackieCommand.GeneralInfo, _ => [0, 0, 0, 2, 0, 0, 0x40, 0]);
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data[..4]));
         await controller.Connect(default);
         controller.Start();
 
@@ -35,7 +35,7 @@ public class InfoRequester(string Address, string Port, string File, string Info
         {
             try
             {
-                await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, item }, cancellationToken);
+                await controller.SendRequest(MackieCommand.GeneralInfo, [0, 0, 0, item], cancellationToken);
             }
             catch (MackieResponseException)
             {
@@ -63,7 +63,7 @@ public class InfoRequester(string Address, string Port, string File, string Info
                 var data = Formatting.ToHex(message.Body.Data);
                 if (data.Length > 47)
                 {
-                    data = data.Substring(0, 47) + "...";
+                    data = string.Concat(data.AsSpan(0, 47), "...");
                 }
                 Console.WriteLine($"{DateTime.UtcNow:HH:mm:ss.ffffff} {padding} {message.Sequence} {message.Type} {message.Command}: {dataLength}: {data}");
             }

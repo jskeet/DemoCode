@@ -33,9 +33,9 @@ public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
     {
         var controller = new MackieController(NullLogger.Instance, address, port);
 
-        controller.MapCommand(MackieCommand.ClientHandshake, _ => new byte[] { 0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c });
-        controller.MapCommand(MackieCommand.GeneralInfo, _ => new byte[] { 0, 0, 0, 2, 0, 0, 0x40, 0 });
-        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data.Slice(0, 4)));
+        controller.MapCommand(MackieCommand.ClientHandshake, _ => [0x10, 0x40, 0xf0, 0x1d, 0xbc, 0xa2, 0x88, 0x1c]);
+        controller.MapCommand(MackieCommand.GeneralInfo, _ => [0, 0, 0, 2, 0, 0, 0x40, 0]);
+        controller.MapCommand(MackieCommand.ChannelInfoControl, message => new MackieMessageBody(message.Body.Data[..4]));
         controller.MapBroadcastAction(HandleBroadcastMessage);
         await controller.Connect(default);
         controller.Start();
@@ -44,7 +44,7 @@ public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
         CancellationToken cancellationToken = default;
         await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         await controller.SendRequest(MackieCommand.ClientHandshake, MackieMessageBody.Empty, cancellationToken);
-        await controller.SendRequest(MackieCommand.GeneralInfo, new byte[] { 0, 0, 0, 2 }, cancellationToken);
+        await controller.SendRequest(MackieCommand.GeneralInfo, [0, 0, 0, 2], cancellationToken);
 
         var layout = new byte[(meterCount + 1) * 4];
         layout[3] = 1;
@@ -55,18 +55,18 @@ public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
 
         await controller.SendRequest(MackieCommand.MeterLayout, layout, cancellationToken);
         await controller.SendRequest(MackieCommand.BroadcastControl,
-            new byte[] { 0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01 },
+            [0x00, 0x00, 0x00, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x5a, 0x00, 0x01],
             cancellationToken);
 
         while (!token.IsCancellationRequested)
         {
-            await Task.Delay(2000);
+            await Task.Delay(2000, cancellationToken);
             await controller.SendRequest(MackieCommand.KeepAlive, MackieMessageBody.Empty, cancellationToken);
         }
 
         controller.Dispose();
 
-        void HandleBroadcastMessage(MackieMessage message)
+        static void HandleBroadcastMessage(MackieMessage message)
         {
             var body = message.Body;
 
@@ -95,7 +95,7 @@ public class MeterDisplay(string Address, string Port, string MeterCount) : Tool
         int cadence = 8;
         while (start < values.Length)
         {
-            StringBuilder line = new StringBuilder();
+            StringBuilder line = new();
             line.Append($"{start + 1,-5}");
             for (int i = 0; i < cadence && start + i < values.Length; i++)
             {
