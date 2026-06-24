@@ -43,7 +43,7 @@ internal class XTouchDigiMixerControlledChannel
         Notifications.Subscribe(mixerChannel, nameof(InputChannelViewModel.Muted), (sender, args) => HandleChannelMutedChanged());
         if (knobEnabled)
         {
-            Notifications.Subscribe(fader, nameof(FaderViewModel.FaderLevel), (sender, args) => HandleChannelLevelChanged());
+            Notifications.Subscribe(fader!, nameof(FaderViewModel.FaderLevel), (sender, args) => HandleChannelLevelChanged());
         }
     }
 
