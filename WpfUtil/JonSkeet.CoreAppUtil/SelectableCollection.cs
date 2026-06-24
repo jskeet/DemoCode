@@ -35,11 +35,11 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
         SelectedIndex = Count - 1;
     }
 
-    private T selectedItem;
+    private T? selectedItem;
     /// <summary>
     /// The selected item in the collection, or null if no item is selected.
     /// </summary>
-    public T SelectedItem
+    public T? SelectedItem
     {
         get => selectedItem;
         set

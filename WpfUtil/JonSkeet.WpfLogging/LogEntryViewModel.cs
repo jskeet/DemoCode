@@ -16,7 +16,7 @@ public sealed class LogEntryViewModel
     internal LogEntry Entry { get; }
 
     public string CategoryName => Entry.CategoryName;
-    public string ToolTip { get; }
+    public string? ToolTip { get; }
     public string Timestamp { get; }
     public string LevelText => FormatLevel(Entry.Level);
     public LogLevel Level => Entry.Level;

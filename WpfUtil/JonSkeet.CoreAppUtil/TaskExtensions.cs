@@ -12,7 +12,7 @@ public static class TaskExtensions
     /// Ignores the input. This is handy for "fire and forget" calls where we
     /// really don't want to await the task.
     /// </summary>
-    public static void Ignore(this Task task, ILogger logger = null)
+    public static void Ignore(this Task task, ILogger? logger = null)
     {
         task.ContinueWith(t => logger?.LogError(t.Exception, "Ignored error"), TaskContinuationOptions.OnlyOnFaulted);
     }

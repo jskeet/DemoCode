@@ -22,13 +22,13 @@ public static class Dialogs
     /// Returns the user's download folder, or null if it can't be determined.
     /// </summary>
     /// <returns></returns>
-    public static string GetDownloadsFolder()
+    public static string? GetDownloadsFolder()
     {
         Guid guid = new("{374DE290-123F-4565-9164-39C4925E467B}");
         int result = SHGetKnownFolderPath(guid, dwFlags: 0, hToken: IntPtr.Zero, out IntPtr outPath);
         if (result >= 0)
         {
-            string path = Marshal.PtrToStringUni(outPath);
+            string? path = Marshal.PtrToStringUni(outPath);
             Marshal.FreeCoTaskMem(outPath);
             return path;
         }
@@ -48,7 +48,7 @@ public static class Dialogs
     /// "PowerPoint files|*.ppt;*.pptx|Image files|*.jpg;*.png</param>
     /// <param name="file">The initial file name to suggest, if any.</param>
     /// <returns>The chosen filename, or null if the user cancelled.</returns>
-    public static string ShowSaveFileDialog(string initialDirectory, string filter, string file = "")
+    public static string? ShowSaveFileDialog(string initialDirectory, string filter, string file = "")
     {
         var dialog = new SaveFileDialog
         {
@@ -105,7 +105,7 @@ public static class Dialogs
     /// "PowerPoint files|*.ppt;*.pptx|Image files|*.jpg;*.png"</param>
     /// <param name="file">The initial file name to suggest, if any.</param>
     /// <returns>The chosen filename, or null if the user cancelled.</returns>
-    public static string ShowOpenFileDialog(string initialDirectory, string filter, string file = "")
+    public static string? ShowOpenFileDialog(string initialDirectory, string filter, string file = "")
     {
         var dialog = new OpenFileDialog
         {
@@ -128,7 +128,7 @@ public static class Dialogs
     /// "PowerPoint files|*.ppt;*.pptx|Image files|*.jpg;*.png"</param>
     /// <param name="file">The initial file name to suggest, if any.</param>
     /// <returns>The chosen filenames, or null if the user cancelled.</returns>
-    public static string[] ShowOpenMultipleFilesDialog(string initialDirectory, string filter, string file = "")
+    public static string[]? ShowOpenMultipleFilesDialog(string initialDirectory, string filter, string file = "")
     {
         var dialog = new OpenFileDialog
         {

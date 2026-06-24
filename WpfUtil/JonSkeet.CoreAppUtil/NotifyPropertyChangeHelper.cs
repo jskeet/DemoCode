@@ -14,7 +14,7 @@ public static class NotifyPropertyChangedHelper
     /// </summary>
     /// <param name="value">The handler to add.</param>
     /// <returns>true if there were previously no handlers, but now there's at least one; false otherwise.</returns>
-    public static bool AddHandler(ref PropertyChangedEventHandler field, PropertyChangedEventHandler value)
+    public static bool AddHandler(ref PropertyChangedEventHandler? field, PropertyChangedEventHandler? value)
     {
         if (value is null)
         {
@@ -32,7 +32,7 @@ public static class NotifyPropertyChangedHelper
     /// </summary>
     /// <param name="value">The handler to add.</param>
     /// <returns>true if there were previously no handlers, but now there's at least one; false otherwise.</returns>
-    public static bool RemoveHandler(ref PropertyChangedEventHandler field, PropertyChangedEventHandler value)
+    public static bool RemoveHandler(ref PropertyChangedEventHandler? field, PropertyChangedEventHandler? value)
     {
         if (value is null || field is null)
         {

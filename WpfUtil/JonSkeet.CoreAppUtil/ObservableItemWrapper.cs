@@ -5,14 +5,12 @@
 /// to be modified directly e.g. in a textbox. (I'm surprised this is actually
 /// needed, but it *seems* to be.)
 /// </summary>
-public class ObservableItemWrapper<T> : ViewModelBase
+public class ObservableItemWrapper<T>(T value) : ViewModelBase
 {
-    private T value;
+    private T value = value;
     public T Value
     {
         get => this.@value;
         set => SetProperty(ref this.@value, value);
     }
-
-    public ObservableItemWrapper(T value) => Value = value;
 }

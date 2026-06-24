@@ -3,7 +3,6 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWpf>True</UseWpf>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
-    <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>

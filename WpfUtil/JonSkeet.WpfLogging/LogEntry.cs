@@ -16,10 +16,10 @@ public class LogEntry
     public string CategoryName { get; }
     public Instant Timestamp { get; }
     public string Message { get; }
-    public Exception Exception { get; }
+    public Exception? Exception { get; }
     public LogLevel Level { get; }
 
-    internal LogEntry(string categoryName, Instant timestamp, string message, LogLevel level, Exception exception) =>
+    internal LogEntry(string categoryName, Instant timestamp, string message, LogLevel level, Exception? exception) =>
         (CategoryName, Timestamp, Message, Level, Exception) = (categoryName, timestamp, message, level, exception);
 
     internal string ToFileFormat()

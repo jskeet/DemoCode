@@ -15,7 +15,7 @@ public static class Disposables
         public void Dispose() => action();
     }
 
-    public static void DisposeWithCatch(this IDisposable disposable, ILogger logger)
+    public static void DisposeWithCatch(this IDisposable? disposable, ILogger logger)
     {
         try
         {
@@ -23,11 +23,11 @@ public static class Disposables
         }
         catch (Exception e)
         {
-            logger?.LogError(e, "Error while disposing object of type '{type}'", disposable.GetType().Name);
+            logger?.LogError(e, "Error while disposing object of type '{type}'", disposable?.GetType().Name);
         }
     }
 
-    public static async ValueTask DisposeAsyncWithCatch(this IAsyncDisposable disposable, ILogger logger)
+    public static async ValueTask DisposeAsyncWithCatch(this IAsyncDisposable? disposable, ILogger logger)
     {
         try
         {
@@ -35,7 +35,7 @@ public static class Disposables
         }
         catch (Exception e)
         {
-            logger?.LogError(e, "Error while disposing object of type '{type}'", disposable.GetType().Name);
+            logger?.LogError(e, "Error while disposing object of type '{type}'", disposable?.GetType().Name);
         }
     }
 
@@ -67,7 +67,7 @@ public static class Disposables
         catch (Exception e)
         {
             var method = action.Method;
-            logger?.LogError(e, "Error while executing disposal action '{method}'", $"{method.DeclaringType.Name}.{method.Name}");
+            logger?.LogError(e, "Error while executing disposal action '{method}'", $"{method.DeclaringType?.Name}.{method.Name}");
         }
     }
 
@@ -79,7 +79,7 @@ public static class Disposables
         }
     }
 
-    public static async ValueTask DisposeAllAsyncWithCatch(IEnumerable<IAsyncDisposable> disposables, ILogger logger)
+    public static async ValueTask DisposeAllAsyncWithCatch(IEnumerable<IAsyncDisposable?> disposables, ILogger logger)
     {
         foreach (var disposable in disposables)
         {

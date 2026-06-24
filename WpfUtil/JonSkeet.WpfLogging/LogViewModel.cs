@@ -4,10 +4,8 @@
 
 using JonSkeet.CoreAppUtil;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace JonSkeet.WpfLogging;
 
@@ -41,6 +39,7 @@ public class LogViewModel : ViewModelBase
         PopulateLogEntries();
     }
 
+    [MemberNotNull(nameof(LogEntries))]
     private void PopulateLogEntries()
     {
         // Changing the source is simpler than trying to handle the bulk update.
@@ -55,7 +54,7 @@ public class LogViewModel : ViewModelBase
         RaisePropertyChanged(nameof(LogEntries));
     }
 
-    private void MaybeAddLogEntry(object sender, LogEntry entry)
+    private void MaybeAddLogEntry(object? sender, LogEntry entry)
     {
         if (ShouldShowEntry(entry))
         {
@@ -83,7 +82,7 @@ public class LogViewModel : ViewModelBase
         }
     }
 
-    private bool ShouldShowEntry(LogEntry entry) => entry.Level >= FilterLevel;
+    private bool ShouldShowEntry(LogEntry? entry) => entry is not null && entry.Level >= FilterLevel;
 
     public void Clear()
     {

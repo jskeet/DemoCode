@@ -30,9 +30,9 @@ public static class JsonUtilities
         DateParseHandling = DateParseHandling.None
     }.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 
-    public static T LoadJson<T>(string file) => Parse<T>(File.ReadAllText(file));
+    public static T LoadJson<T>(string file) where T : class => Parse<T>(File.ReadAllText(file));
 
-    public static async Task<T> LoadJsonAsync<T>(string file) => Parse<T>(await File.ReadAllTextAsync(file));
+    public static async Task<T> LoadJsonAsync<T>(string file) where T : class => Parse<T>(await File.ReadAllTextAsync(file));
 
     public static string SaveJson(string file, object model)
     {
@@ -48,27 +48,27 @@ public static class JsonUtilities
         return json;
     }
 
-    public static string ToJsonOrNull(object model) => model is null ? null : ToJson(model, Formatting.Indented);
+    public static string? ToJsonOrNull(object? model) => model is null ? null : ToJson(model, Formatting.Indented);
 
     public static string ToJson(object model) => ToJson(model, Formatting.Indented);
 
     public static string ToJson(object model, Formatting formatting) => JsonConvert.SerializeObject(model, formatting, serializationSettings);
 
-    public static T Parse<T>(string json) => JsonConvert.DeserializeObject<T>(json, deserializationSettings);
+    public static T Parse<T>(string json) where T : class => JsonConvert.DeserializeObject<T>(json, deserializationSettings).OrThrow();
 
-    public static T Clone<T>(T model) => Parse<T>(ToJson(model));
+    public static T Clone<T>(T model) where T : class => Parse<T>(ToJson(model)).OrThrow();
 
     /// <summary>
     /// Parse the given file, indicating whether it is valid with a strict interpretation (no unknown members)
     /// or whether it required more lenient settings.
     /// </summary>
-    public static bool TryParseFileStrict<T>(string file, ILogger logger, out T model, out JsonException parseFailure)
+    public static bool TryParseFileStrict<T>(string file, ILogger logger, out T model, out JsonException? parseFailure) where T : class
     {
         var json = File.ReadAllText(file);
         return TryParseJsonStrict(json, logger, out model, out parseFailure);
     }
 
-    public static bool TryParseJsonStrict<T>(string json, ILogger logger, out T model, out JsonException parseFailure)
+    public static bool TryParseJsonStrict<T>(string json, ILogger logger, out T model, out JsonException? parseFailure) where T : class
     {
         var settings = new JsonSerializerSettings(deserializationSettings)
         {
@@ -76,7 +76,7 @@ public static class JsonUtilities
         };
         try
         {
-            model = JsonConvert.DeserializeObject<T>(json, settings);
+            model = JsonConvert.DeserializeObject<T>(json, settings).OrThrow();
             parseFailure = null;
             return true;
         }

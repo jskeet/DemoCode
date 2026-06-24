@@ -74,7 +74,7 @@ public static class ObservableCollections
     /// <param name="source">The collection to remove from</param>
     /// <param name="item">The item to remove, if found.</param>
     /// <returns>The new item to select, or <paramref name="item"/> if it wasn't found, or null if the collection is now empty.</returns>
-    public static T RemoveSelected<T>(this ObservableCollection<T> source, T item) where T : class
+    public static T? RemoveSelected<T>(this ObservableCollection<T> source, T item) where T : class
     {
         var index = source.IndexOf(item);
         if (index == -1)
@@ -88,7 +88,7 @@ public static class ObservableCollections
             : null;
     }
 
-    public static void MoveSelectedItemUp<TElement>(this ObservableCollection<TElement> collection, TElement selectedItem, Action<TElement> selector) where TElement : class
+    public static void MoveSelectedItemUp<TElement>(this ObservableCollection<TElement> collection, TElement selectedItem, Action<TElement?> selector) where TElement : class
     {
         if (selectedItem is null)
         {
@@ -106,7 +106,7 @@ public static class ObservableCollections
         selector(selectedItem);
     }
 
-    public static void MoveSelectedItemDown<TElement>(this ObservableCollection<TElement> collection, TElement selectedItem, Action<TElement> selector) where TElement : class
+    public static void MoveSelectedItemDown<TElement>(this ObservableCollection<TElement> collection, TElement selectedItem, Action<TElement?> selector) where TElement : class
     {
         if (selectedItem is null)
         {

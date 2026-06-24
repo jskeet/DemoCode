@@ -9,9 +9,9 @@ namespace JonSkeet.CoreAppUtil;
 
 public static class Notifications
 {
-    public static IDisposable Subscribe(INotifyPropertyChanged source, string property, Action<object, object> handler)
+    public static IDisposable Subscribe(INotifyPropertyChanged source, string property, Action<object?, object?> handler)
     {
-        PropertyInfo propertyInfo = source.GetType().GetProperty(property);
+        PropertyInfo propertyInfo = source.GetType().GetProperty(property).OrThrow("No such property");
         return Subscribe(source, (sender, args) =>
         {
             if (args.PropertyName == property)
@@ -27,9 +27,9 @@ public static class Notifications
         return Disposables.ForAction(() => source.PropertyChanged -= handler);
     }
 
-    public static void MaybeSubscribe(INotifyPropertyChanged source, PropertyChangedEventHandler handler) =>
+    public static void MaybeSubscribe(INotifyPropertyChanged? source, PropertyChangedEventHandler handler) =>
         source?.PropertyChanged += handler;
 
-    public static void MaybeUnsubscribe(INotifyPropertyChanged source, PropertyChangedEventHandler handler) =>
+    public static void MaybeUnsubscribe(INotifyPropertyChanged? source, PropertyChangedEventHandler handler) =>
         source?.PropertyChanged -= handler;
 }

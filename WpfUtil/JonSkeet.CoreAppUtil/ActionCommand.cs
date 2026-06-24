@@ -20,24 +20,24 @@ public interface ILabeledCommand : ICommand
 /// </summary>
 public class ActionCommand : ILabeledCommand
 {
-    private readonly Func<object, Task> action;
-    private readonly Func<object, bool> canExecute;
+    private readonly Func<object?, Task> action;
+    private readonly Func<object?, bool> canExecute;
 
     public string Label { get; }
 
-    public event EventHandler CanExecuteChanged;
+    public event EventHandler? CanExecuteChanged;
 
-    private ActionCommand(Func<object, Task> action, Func<object, bool> canExecute, string label)
+    private ActionCommand(Func<object?, Task> action, Func<object?, bool> canExecute, string label)
     {
         this.action = action;
         this.canExecute = canExecute;
         Label = label;
     }
 
-    public static ActionCommand FromAction<TParam>(Func<TParam, Task> action) =>
-        new(p => action((TParam) p), _ => true, "Unlabeled");
+    public static ActionCommand FromAction<TParam>(Func<TParam?, Task> action) where TParam : class =>
+        new(p => action((TParam?) p), _ => true, "Unlabeled");
 
-    public static ActionCommand FromAction<TParam>(Action<TParam> action) =>
+    public static ActionCommand FromAction<TParam>(Action<TParam?> action) where TParam : class =>
         FromAction<TParam>(p => { action(p); return Task.CompletedTask; });
 
     public static ActionCommand FromAction(Func<Task> action) =>
@@ -46,9 +46,9 @@ public class ActionCommand : ILabeledCommand
     public static ActionCommand FromAction(Action action) =>
         FromAction<object>(_ => action());
 
-    public bool CanExecute(object parameter) => canExecute(parameter);
+    public bool CanExecute(object? parameter) => canExecute(parameter);
 
-    public async void Execute(object parameter) => await action(parameter);
+    public async void Execute(object? parameter) => await action(parameter);
 
     public ActionCommand WithCanExecute(bool canExecute) => new(action, _ => canExecute, Label);
 
@@ -61,7 +61,7 @@ public class ActionCommand : ILabeledCommand
         {
             throw new ArgumentException($"Property {source.GetType().Name}.{name} is not Boolean.");
         }
-        var command = new ActionCommand(action, _ => (bool) property.GetValue(source), Label);
+        var command = new ActionCommand(action, _ => (bool) property.GetValue(source)!, Label);
         Notifications.Subscribe(source, name, (_, _) => command.CanExecuteChanged?.Invoke(command, EventArgs.Empty));
         return command;
     }

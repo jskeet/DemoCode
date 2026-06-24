@@ -11,7 +11,7 @@ namespace JonSkeet.WpfUtil;
 /// </summary>
 public static class WpfExtensions
 {
-    public static T GetVisualTreeDescendant<T>(this DependencyObject source) where T : class
+    public static T? GetVisualTreeDescendant<T>(this DependencyObject source) where T : class
     {
         if (source is null)
         {
@@ -66,7 +66,8 @@ public static class WpfExtensions
             return false;
         }
         // Sometimes we need to update the layout in order to get the container.
-        if (listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) is not UIElement container)
+        UIElement? container = listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) as UIElement;
+        if (container is null)
         {
             listBox.UpdateLayout();
             container = listBox.ItemContainerGenerator?.ContainerFromItem(selectedItem) as UIElement;

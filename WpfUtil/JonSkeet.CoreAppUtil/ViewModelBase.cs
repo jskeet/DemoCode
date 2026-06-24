@@ -17,11 +17,11 @@ public abstract class ViewModelBase : INotifyPropertyChanged
     private static readonly ConcurrentDictionary<Type, Dictionary<string, string[]>> relatedPropertiesByTypeThenName = new();
     private static readonly ConcurrentDictionary<Type, Dictionary<string, MethodInfo>> reactionMethodByTypeThenName = new();
 
-    private PropertyChangedEventHandler propertyChanged;
+    private PropertyChangedEventHandler? propertyChanged;
 
     // Implement the event subscription manually so ViewModels can subscribe and unsubscribe
     // from events raised by their models.
-    public event PropertyChangedEventHandler PropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged
     {
         add
         {
@@ -60,7 +60,7 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         RaisePropertyChanged(name, propertiesSoFar: null);
     }
 
-    private void RaisePropertyChanged(string name, LinkedList<string> propertiesSoFar)
+    private void RaisePropertyChanged(string name, LinkedList<string>? propertiesSoFar)
     {
         propertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         if (GetReactionMethod(name) is MethodInfo method)
@@ -96,13 +96,13 @@ public abstract class ViewModelBase : INotifyPropertyChanged
     /// Returns an array of related property names, to raise a property changed event on each of them.
     /// These can contain cycles, and the change event will only be raised once. Return null for no properties.
     /// </summary>
-    private string[] GetRelatedProperties(string name)
+    private string[]? GetRelatedProperties(string name)
     {
         var relatedPropertiesByName = relatedPropertiesByTypeThenName.GetOrAdd(GetType(), CreateRelatedPropertiesMap);
         return relatedPropertiesByName.GetValueOrDefault(name);
     }
 
-    private MethodInfo GetReactionMethod(string name)
+    private MethodInfo? GetReactionMethod(string name)
     {
         var reactionMethodByName = reactionMethodByTypeThenName.GetOrAdd(GetType(), CreateActionsMap);
         return reactionMethodByName.GetValueOrDefault(name);
@@ -112,14 +112,14 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         GetAllProperties(type)
             .Select(prop => (prop, attr: prop.GetCustomAttribute<RelatedPropertiesAttribute>()))
             .Where(pair => pair.attr is not null)
-            .ToDictionary(pair => pair.prop.Name, pair => pair.attr.PropertyNames);
+            .ToDictionary(pair => pair.prop.Name, pair => pair.attr!.PropertyNames);
 
     private Dictionary<string, MethodInfo> CreateActionsMap(Type type)
     {
         return GetAllProperties(type)
             .Select(prop => (prop, attr: prop.GetCustomAttribute<ReactionMethodAttribute>()))
             .Where(pair => pair.attr is not null)
-            .ToDictionary(pair => pair.prop.Name, pair => GetMethod(pair.attr.MethodName));
+            .ToDictionary(pair => pair.prop.Name, pair => GetMethod(pair.attr!.MethodName));
 
         MethodInfo GetMethod(string name)
         {
@@ -152,7 +152,7 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         }
     }
 
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string name = null)
+    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
         {
@@ -163,7 +163,7 @@ public abstract class ViewModelBase : INotifyPropertyChanged
         return true;
     }
 
-    protected bool SetProperty<T>(T currentValue, T newValue, Action<T> setter, [CallerMemberName] string name = null)
+    protected bool SetProperty<T>(T currentValue, T newValue, Action<T> setter, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(currentValue, newValue))
         {
@@ -199,7 +199,7 @@ public abstract class ViewModelBase<TModel>(TModel model) : ViewModelBase
         }
     }
 
-    protected virtual void OnPropertyModelChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void OnPropertyModelChanged(object? sender, PropertyChangedEventArgs e)
     {
     }
 }

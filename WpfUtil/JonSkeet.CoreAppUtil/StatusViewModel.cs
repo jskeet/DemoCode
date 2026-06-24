@@ -9,15 +9,15 @@ namespace JonSkeet.CoreAppUtil;
 /// </summary>
 public class StatusViewModel(string prefix) : ViewModelBase
 {
-    private string text;
-    public string Text
+    private string? text;
+    public string? Text
     {
         get => text;
         private set => SetProperty(ref text, value);
     }
 
-    private string statusText;
-    public string StatusText
+    private string? statusText;
+    public string? StatusText
     {
         get => statusText;
         private set => SetProperty(ref statusText, value);

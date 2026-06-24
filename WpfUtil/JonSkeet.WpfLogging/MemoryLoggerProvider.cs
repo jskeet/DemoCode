@@ -30,7 +30,7 @@ public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
     private readonly Dispatcher dispatcher;
     private readonly LoggingConfig config;
 
-    public event EventHandler<LogEntry> LogEntryLogged;
+    public event EventHandler<LogEntry>? LogEntryLogged;
 
     public MemoryLoggerProvider(IClock clock, LoggingConfig config)
     {
@@ -122,7 +122,7 @@ public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
 
     private static string DeriveLogName()
     {
-        string path = Environment.ProcessPath;
+        string? path = Environment.ProcessPath;
         return path is null ? "Unknown" : Path.GetFileNameWithoutExtension(path);
     }
 
@@ -147,14 +147,14 @@ public sealed class MemoryLoggerProvider : ILoggerProvider, ILoggerFactory
         internal LoggerImpl(MemoryLoggerProvider log, string categoryName, LogLevel level) =>
             (this.log, this.categoryName, this.level) = (log, categoryName, level);
 
-        public IDisposable BeginScope<TState>(TState state) => NoOpDisposable.Instance;
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => NoOpDisposable.Instance;
 
         // Explicitly disable ASP.NET Core per-request logging, due to it overwhelming things.
         // TODO: Do this in the logging configuration...
         public bool IsEnabled(LogLevel logLevel) => categoryName != "Microsoft.AspNetCore.Hosting.Diagnostics"
             && logLevel >= level;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {
