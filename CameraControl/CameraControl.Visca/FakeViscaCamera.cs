@@ -54,7 +54,7 @@ public sealed class FakeViscaCamera : IDisposable
     }
 
     public ViscaController CreateController(TimeSpan? commandTimeout, ILogger? logger) =>
-        new ViscaController(new FakeViscaClient(this), commandTimeout ?? ViscaController.DefaultTimeout, logger);
+        new(new FakeViscaClient(this), commandTimeout ?? ViscaController.DefaultTimeout, logger);
 
     public static FakeViscaCamera Start()
     {
@@ -121,7 +121,7 @@ public sealed class FakeViscaCamera : IDisposable
         }
 
         // We only allow one command to execute at a time per controller. That makes life a lot simpler.
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim semaphore = new(1);
 
         async Task<ViscaMessage> IViscaClient.SendAsync(ViscaMessage message, CancellationToken cancellationToken)
         {

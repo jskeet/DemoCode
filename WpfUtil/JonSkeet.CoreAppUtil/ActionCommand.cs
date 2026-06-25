@@ -34,6 +34,12 @@ public class ActionCommand : ILabeledCommand
         Label = label;
     }
 
+    public static ActionCommand FromValueTypeAction<TParam>(Func<TParam, Task> action) where TParam : struct =>
+        new(p => action((TParam) p.OrThrow()), _ => true, "Unlabeled");
+
+    public static ActionCommand FromValueTypeAction<TParam>(Action<TParam> action) where TParam : struct =>
+        FromValueTypeAction<TParam>(p => { action(p); return Task.CompletedTask; });
+
     public static ActionCommand FromAction<TParam>(Func<TParam?, Task> action) where TParam : class =>
         new(p => action((TParam?) p), _ => true, "Unlabeled");
 

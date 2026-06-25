@@ -10,12 +10,12 @@ namespace CameraControl.Visca;
 
 public sealed class ViscaController : IDisposable
 {
-    private static readonly ViscaMessage PowerOnMessage = new ViscaMessage(ViscaMessageType.Command, 0x81, 0x01, 0x04, 0x00, 0x02, 0xff);
-    private static readonly ViscaMessage PowerOffMessage = new ViscaMessage(ViscaMessageType.Command, 0x81, 0x01, 0x04, 0x00, 0x03, 0xff);
-    private static readonly ViscaMessage GetPowerStatusMessage = new ViscaMessage(ViscaMessageType.Inquiry, 0x81, 0x09, 0x04, 0x00, 0xff);
-    private static readonly ViscaMessage GetZoomMessage = new ViscaMessage(ViscaMessageType.Inquiry, 0x81, 0x09, 0x04, 0x47, 0xff);
-    private static readonly ViscaMessage GetPanTiltMessage = new ViscaMessage(ViscaMessageType.Inquiry, 0x81, 0x09, 0x06, 0x12, 0xff);
-    private static readonly ViscaMessage GoHomeMessage = new ViscaMessage(ViscaMessageType.Command, 0x81, 0x01, 0x06, 0x04, 0xff);
+    private static readonly ViscaMessage PowerOnMessage = new(ViscaMessageType.Command, 0x81, 0x01, 0x04, 0x00, 0x02, 0xff);
+    private static readonly ViscaMessage PowerOffMessage = new(ViscaMessageType.Command, 0x81, 0x01, 0x04, 0x00, 0x03, 0xff);
+    private static readonly ViscaMessage GetPowerStatusMessage = new(ViscaMessageType.Inquiry, 0x81, 0x09, 0x04, 0x00, 0xff);
+    private static readonly ViscaMessage GetZoomMessage = new(ViscaMessageType.Inquiry, 0x81, 0x09, 0x04, 0x47, 0xff);
+    private static readonly ViscaMessage GetPanTiltMessage = new(ViscaMessageType.Inquiry, 0x81, 0x09, 0x06, 0x12, 0xff);
+    private static readonly ViscaMessage GoHomeMessage = new(ViscaMessageType.Command, 0x81, 0x01, 0x06, 0x04, 0xff);
 
     private static readonly ViscaPayload SetZoomTemplate = ViscaPayload.FromBytes(0x81, 0x01, 0x04, 0x47, 0, 0, 0, 0, 0xff);
     private static readonly ViscaPayload ContinuousPanTiltTemplate = ViscaPayload.FromBytes(0x81, 0x01, 0x06, 0x1, 0, 0, 0, 0, 0xff);

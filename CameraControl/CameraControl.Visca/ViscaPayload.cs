@@ -35,7 +35,7 @@ internal readonly struct ViscaPayload
         FromSpan(Preconditions.CheckNotNull(bytes));
 
     internal ViscaPayload WithPreformatting() =>
-        new ViscaPayload(head, tail, Length, ToString());
+        new(head, tail, Length, ToString());
 
     internal static ViscaPayload FromSpan(ReadOnlySpan<byte> bytes)
     {
@@ -150,5 +150,5 @@ internal readonly struct ViscaPayload
     /// <summary>
     /// Convenience method (for chaining) to create a message with a type of Command from this payload.
     /// </summary>
-    internal ViscaMessage ToCommandMessage() => new ViscaMessage(ViscaMessageType.Command, null, this);
+    internal ViscaMessage ToCommandMessage() => new(ViscaMessageType.Command, null, this);
 }

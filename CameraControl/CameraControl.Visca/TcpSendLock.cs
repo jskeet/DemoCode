@@ -10,7 +10,7 @@ namespace CameraControl.Visca;
 public class TcpSendLock
 {
     private readonly TimeSpan? postSendDelay;
-    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+    private readonly SemaphoreSlim semaphore = new(1);
 
     /// <summary>
     /// Creates a new send lock which can be shared by multiple clients.
