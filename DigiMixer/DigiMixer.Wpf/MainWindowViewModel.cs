@@ -4,6 +4,7 @@ using JonSkeet.CoreAppUtil;
 using JonSkeet.WpfLogging;
 using JonSkeet.WpfUtil;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 
 namespace DigiMixer.Wpf;
@@ -17,18 +18,18 @@ public sealed class MainWindowViewModel : ViewModelBase, IAsyncDisposable
 
     private DigiMixerAppConfig config;
 
-    private MixerControlPanelViewModel mixer;
-    public MixerControlPanelViewModel MixerControlPanelVM
+    private MixerControlPanelViewModel? mixer;
+    public MixerControlPanelViewModel? MixerControlPanelVM
     {
         get => mixer;
         private set => SetProperty(ref mixer, value);
     }
 
-    private PeripheralController peripheralController;
-    public PeripheralController PeripheralController
+    private PeripheralController? peripheralController;
+    public PeripheralController? PeripheralController
     {
         get => peripheralController;
-        private set => SetProperty(ref peripheralController, value);
+        private set => SetProperty(ref peripheralController!, value);
     }
 
     public ICommand ShowLogCommand { get; }
@@ -58,7 +59,7 @@ public sealed class MainWindowViewModel : ViewModelBase, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        MixerControlPanelVM.Mixer.DisposeWithCatch(logger);
+        MixerControlPanelVM?.Mixer.DisposeWithCatch(logger);
         await PeripheralController.DisposeAsyncWithCatch(logger);
     }
 

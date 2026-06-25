@@ -7,10 +7,10 @@ namespace DigiMixer.PeripheralConsole;
 // with very small modifications.
 internal sealed class SingleThreadSynchronizationContext : SynchronizationContext
 {
-    private readonly BlockingCollection<KeyValuePair<SendOrPostCallback, object>> m_queue = [];
+    private readonly BlockingCollection<KeyValuePair<SendOrPostCallback, object?>> m_queue = [];
 
-    public override void Post(SendOrPostCallback d, object state) =>
-        m_queue.Add(new KeyValuePair<SendOrPostCallback, object>(d, state));
+    public override void Post(SendOrPostCallback d, object? state) =>
+        m_queue.Add(new(d, state));
 
     public void RunOnCurrentThread()
     {

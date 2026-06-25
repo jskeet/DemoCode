@@ -10,7 +10,7 @@
         <StackPanel Orientation="Vertical">
             <Border BorderBrush="LightGray" BorderThickness="1" Margin="3,5,3,0">
                 <ListBox ItemsSource="{Binding Mappings}"
-                            SelectedItem="{Binding SelectedMapping}" DisplayMemberPath="EffectiveDisplayName"
+                            SelectedItem="{Binding Mappings.SelectedItem}" DisplayMemberPath="EffectiveDisplayName"
                             MinHeight="50" MaxHeight="205" Margin="5" PreviewKeyDown="HandleKeyDown" x:Name="mappingList" />
             </Border>
             <DockPanel Width="260" Margin="0,5,0,0">
@@ -18,7 +18,7 @@
                 <TextBlock Margin="5,0,0,0" DockPanel.Dock="Right" HorizontalAlignment="Left" TextWrapping="Wrap">Use Ctrl-Up and Ctrl-Down to move the selected item, or Ctrl-Del to delete it.</TextBlock>
             </DockPanel>
         </StackPanel>
-        <GroupBox Header="Channel mapping" DataContext="{Binding SelectedMapping}">
+        <GroupBox Header="Channel mapping" DataContext="{Binding Mappings.SelectedItem}">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />

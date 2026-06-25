@@ -1,33 +1,21 @@
 ﻿using DigiMixer.AppCore;
 using JonSkeet.CoreAppUtil;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace DigiMixer.Wpf;
 
-public class ChannelListViewModel : ViewModelBase, IReorderableList
+public class ChannelListViewModel : ViewModelBase
 {
     private readonly string idPrefix;
-    public ObservableCollection<ChannelMappingViewModel> Mappings { get; } = [];
+    public SelectableCollection<ChannelMappingViewModel> Mappings { get; } = [];
 
     public ICommand AddChannelCommand { get; }
-
-    private ChannelMappingViewModel selectedMapping;
-    public ChannelMappingViewModel SelectedMapping
-    {
-        get => selectedMapping;
-        set => SetProperty(ref selectedMapping, value);
-    }
 
     public ChannelListViewModel(string idPrefix)
     {
         AddChannelCommand = ActionCommand.FromAction(AddChannel);
         this.idPrefix = idPrefix;
     }
-
-    public void DeleteSelectedItem() => SelectedMapping = Mappings.RemoveSelected(SelectedMapping);
-    public void MoveSelectedItemUp() => Mappings.MoveSelectedItemUp(SelectedMapping, value => SelectedMapping = value);
-    public void MoveSelectedItemDown() => Mappings.MoveSelectedItemDown(SelectedMapping, value => SelectedMapping = value);
 
     private void AddChannel()
     {
@@ -51,7 +39,6 @@ public class ChannelListViewModel : ViewModelBase, IReorderableList
             Channel = channel,
             InitiallyVisible = true
         });
-        Mappings.Add(mapping);
-        SelectedMapping = mapping;
+        Mappings.AddAndSelect(mapping);
     }
 }

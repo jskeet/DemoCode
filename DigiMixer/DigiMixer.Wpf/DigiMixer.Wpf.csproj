@@ -6,7 +6,6 @@
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>DigiMixer.ico</ApplicationIcon>
-	<Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

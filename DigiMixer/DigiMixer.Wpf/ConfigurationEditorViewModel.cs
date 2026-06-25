@@ -30,7 +30,7 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         ("Fake", MHT.Fake)
     ];
 
-    public string Address
+    public string? Address
     {
         get => Model.Mixer.Address;
         set => SetProperty(Address, value, x => Model.Mixer.Address = x);
@@ -54,13 +54,13 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         set => SetProperty(XTouchMainVolumeEnabled, value, x => Model.Mixer.XTouchMainVolumeEnabled = x);
     }
 
-    public string XTouchMiniDevice
+    public string? XTouchMiniDevice
     {
         get => Model.Mixer.XTouchMiniDevice;
         set => SetProperty(XTouchMiniDevice, value, x => Model.Mixer.XTouchMiniDevice = x);
     }
 
-    public string IconMPlusDevice
+    public string? IconMPlusDevice
     {
         get => Model.Mixer.IconMPlusDevice;
         set => SetProperty(IconMPlusDevice, value, x => Model.Mixer.IconMPlusDevice = x);
@@ -166,8 +166,12 @@ public class ConfigurationEditorViewModel : ViewModelBase<DigiMixerAppConfig>
         }
     }
 
-    private void PickMidiDevice(string target)
+    private void PickMidiDevice(string? target)
     {
+        if (target is null)
+        {
+            return;
+        }
         List<string> inputs;
         List<string> outputs;
         try

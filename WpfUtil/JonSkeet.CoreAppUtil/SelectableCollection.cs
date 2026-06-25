@@ -106,9 +106,41 @@ public class SelectableCollection<T> : ObservableCollection<T>, IReorderableList
         base.ClearItems();
     }
 
-    public void DeleteSelectedItem() => SelectedIndex = this.RemoveSelectedIndex(SelectedIndex);
-    public void MoveSelectedItemUp() => this.MoveSelectedIndexUp(SelectedIndex, value => SelectedIndex = value);
-    public void MoveSelectedItemDown() => this.MoveSelectedIndexDown(SelectedIndex, value => SelectedIndex = value);
+    public void DeleteSelectedItem()
+    {
+        if (SelectedIndex < 0 || SelectedIndex >= Count)
+        {
+            return;
+        }
+        RemoveAt(SelectedIndex);
+        SelectedIndex = Count == 0 ? -1 : Math.Min(SelectedIndex, Count - 1);
+    }
+
+    public void MoveSelectedItemUp()
+    {
+        int index = SelectedIndex;
+        if (index == -1 || index == 0)
+        {
+            return;
+        }
+
+        SelectedIndex = -1;
+        Move(index, index - 1);
+        SelectedIndex = index - 1;
+    }
+
+    public void MoveSelectedItemDown()
+    {
+        int index = SelectedIndex;
+        if (index == -1 || index == Count - 1)
+        {
+            return;
+        }
+
+        SelectedIndex = -1;
+        Move(index, index + 1);
+        SelectedIndex = index + 1;
+    }
 
     /// <summary>
     /// Selects the first item, if the collection is non-empty.

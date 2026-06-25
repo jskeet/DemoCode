@@ -9,8 +9,9 @@ namespace DigiMixer.Wpf;
 public partial class App : Application
 {
     public static new App Current => (App) Application.Current;
-    public MemoryLoggerProvider Log { get; private set; }
-    private MainWindowViewModel viewModel;
+    private MemoryLoggerProvider? log;
+    public MemoryLoggerProvider Log => log.OrThrow();
+    private MainWindowViewModel? viewModel;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -20,7 +21,7 @@ public partial class App : Application
         FileLocations.MaybeCreateInitialConfig();
 
         var config = JsonUtilities.LoadJson<DigiMixerAppConfig>(FileLocations.ConfigFile);
-        Log = new MemoryLoggerProvider(SystemClock.Instance, config.Logging);
+        log = new MemoryLoggerProvider(SystemClock.Instance, config.Logging);
         Log.CreateLogger("App").LogInformation("DigiMixer version: {version}", Versions.AppVersion);
 
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
@@ -72,5 +73,5 @@ public partial class App : Application
         base.OnExit(e);
     }
 
-    private void SaveLog() => Log.SaveToDirectory(FileLocations.LoggingDirectory, "log");
+    private void SaveLog() => Log?.SaveToDirectory(FileLocations.LoggingDirectory, "log");
 }

@@ -37,7 +37,7 @@ internal class FileLocations
                             AppDataDirectory
                         }
             };
-            var process = Process.Start(psi);
+            var process = Process.Start(psi).OrThrow();
             process.WaitForExit();
             success = process.ExitCode == 0;
         }

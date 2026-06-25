@@ -16,5 +16,5 @@ public partial class ChannelListControl : UserControl
     }
 
     // TODO: Add keyboard shortcut (ctrl-ins?) for "add".
-    private void HandleKeyDown(object sender, KeyEventArgs e) => ViewModel.MaybeHandleKeyboard(mappingList, e);
+    private void HandleKeyDown(object sender, KeyEventArgs e) => ViewModel.Mappings.MaybeHandleKeyboard(mappingList, e);
 }

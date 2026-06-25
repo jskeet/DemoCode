@@ -8,7 +8,7 @@ public class ChannelMappingViewModel(ChannelMapping model) : ViewModelBase<Chann
     public string EffectiveDisplayName => Model.EffectiveDisplayName;
 
     [RelatedProperties(nameof(EffectiveDisplayName))]
-    public string Name
+    public string? Name
     {
         get => Model.DisplayName;
         set => SetProperty(Name, value, x => Model.DisplayName = x);
