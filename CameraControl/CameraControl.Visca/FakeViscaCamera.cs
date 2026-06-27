@@ -240,7 +240,7 @@ public sealed class FakeViscaCamera : IDisposable
             };
             return Done;
 
-            int ConvertSign(byte b) => b switch
+            static int ConvertSign(byte b) => b switch
             {
                 1 => -1,
                 2 => 1,
@@ -275,7 +275,7 @@ public sealed class FakeViscaCamera : IDisposable
             }
         }
 
-        private short MoveTowardsTarget(short current, short target, byte maxChange) =>
+        private static short MoveTowardsTarget(short current, short target, byte maxChange) =>
             current < target
             ? Math.Min((short) (current + maxChange), target)
             : Math.Max((short) (current - maxChange), target);

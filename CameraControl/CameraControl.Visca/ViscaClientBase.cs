@@ -20,13 +20,6 @@ internal abstract class ViscaClientBase : IViscaClient
     private int? sequenceNumber;
 
     /// <summary>
-    /// Resets internal state owned by the base class - typically sequence numbers, when they're being used.
-    /// </summary>
-    protected void ResetState()
-    {
-    }
-
-    /// <summary>
     /// Sends a single message to the VISCA endpoint.
     /// </summary>
     /// <param name="message">The message to send to the endpoint.</param>

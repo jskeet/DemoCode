@@ -44,7 +44,7 @@ internal readonly record struct ViscaMessage(ViscaMessageType? Type, int? Sequen
             buffer[5] = (byte) (seq >> 16);
             buffer[6] = (byte) (seq >> 8);
             buffer[7] = (byte) seq;
-            buffer = buffer.Slice(8);
+            buffer = buffer[8..];
         }
         Payload.WriteTo(buffer);
     }
@@ -60,7 +60,7 @@ internal readonly record struct ViscaMessage(ViscaMessageType? Type, int? Sequen
     internal static ViscaMessage? ParseRaw(ReadOnlySpan<byte> data)
     {
         int index = data.IndexOf((byte) 0xff);
-        return index == -1 ? null : new ViscaMessage(ViscaPayload.FromSpan(data.Slice(0, index + 1)));
+        return index == -1 ? null : new ViscaMessage(ViscaPayload.FromSpan(data[..(index + 1)]));
     }
 
     internal static ViscaMessage? ParseEncapsulated(ReadOnlySpan<byte> data)

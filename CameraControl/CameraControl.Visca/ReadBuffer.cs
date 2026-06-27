@@ -33,7 +33,7 @@ internal class ReadBuffer
     {
         while (true)
         {
-            if (ViscaMessage.Parse(buffer.AsSpan().Slice(0, size), format) is ViscaMessage message)
+            if (ViscaMessage.Parse(buffer.AsSpan()[..size], format) is ViscaMessage message)
             {
                 Consume(message.Length);
                 return message;
@@ -44,15 +44,13 @@ internal class ReadBuffer
             }
             // The cancellation token in ReadAsync isn't always used, apparently - so we also close the stream
             // if we're cancelled. (We reconnect on any exception anyway, so it shouldn't be a problem to close it.)
-            using (var registration = cancellationToken.Register(() => stream.Close()))
+            using var registration = cancellationToken.Register(() => stream.Close());
+            int bytesRead = await stream.ReadAsync(buffer.AsMemory(size, buffer.Length - size), cancellationToken).ConfigureAwait(false);
+            if (bytesRead == 0)
             {
-                int bytesRead = await stream.ReadAsync(buffer, size, buffer.Length - size, cancellationToken).ConfigureAwait(false);
-                if (bytesRead == 0)
-                {
-                    throw new ViscaProtocolException("Reached end of VISCA stream");
-                }
-                size += bytesRead;
+                throw new ViscaProtocolException("Reached end of VISCA stream");
             }
+            size += bytesRead;
         }
 
         void Consume(int count)

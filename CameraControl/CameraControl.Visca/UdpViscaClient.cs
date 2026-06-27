@@ -31,7 +31,7 @@ internal sealed class UdpViscaClient : ViscaClientBase
     protected async override Task<ViscaMessage> ReceiveMessageAsync(CancellationToken cancellationToken)
     {
         int bytesRead = await client!.Client.ReceiveAsync(readBuffer, SocketFlags.None, cancellationToken);
-        if (ViscaMessage.Parse(readBuffer.AsSpan().Slice(0, bytesRead), Format) is not ViscaMessage message)
+        if (ViscaMessage.Parse(readBuffer.AsSpan()[..bytesRead], Format) is not ViscaMessage message)
         {
             throw new ViscaProtocolException("UDP packet did not include end of VISCA packet");
         }
