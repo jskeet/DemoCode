@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="DigiMixer.Controls.ChannelStrip"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:appcore="clr-namespace:DigiMixer.AppCore;assembly=DigiMixer.AppCore"
              xmlns:local="clr-namespace:DigiMixer.Controls"
-             mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance appcore:IChannelViewModelBase}"             
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance appcore:IChannelViewModelBase}"
              BorderThickness="2" HorizontalContentAlignment="Left"
              Margin="5" Padding="3">
     <UserControl.Resources>
@@ -42,7 +42,7 @@
                 <ProgressBar Foreground="{StaticResource ChannelMeterPeak}" Orientation="Vertical" Maximum="1" Value="{Binding StereoPeakOutput.Value, Mode=OneWay}"  />
                 <ProgressBar Foreground="{StaticResource ChannelMeterCurrent}" Background="Transparent" Orientation="Vertical" Maximum="1" Value="{Binding StereoOutput.Value, Mode=OneWay}" />
             </Grid>
-            
+
             <ItemsControl ItemsSource="{Binding Faders}" Margin="3,3,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

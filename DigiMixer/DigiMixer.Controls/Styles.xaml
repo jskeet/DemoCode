@@ -6,7 +6,7 @@
     <Brush x:Key="ChannelMeterPeak">Green</Brush>
     <Brush x:Key="ChannelBorderMuted">DarkRed</Brush>
     <Brush x:Key="ChannelBorderUnmuted">LightGreen</Brush>
-    
+
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
     <utils:BooleanToBrushConverter x:Key="ChannelBorderConverter" TrueBrush="{StaticResource ChannelBorderMuted}" FalseBrush="{StaticResource ChannelBorderUnmuted}" />
     <utils:ConfigurableBooleanToVisibilityConverter x:Key="FalseIsHiddenVisibilityConverter" FalseVisibility="Hidden"/>

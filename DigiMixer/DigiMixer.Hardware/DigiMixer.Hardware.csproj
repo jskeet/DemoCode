@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <!-- 
+  <!--
     - The DigiMixer.Hardware project is a single project containing the source code from
     - all the individual mixer implementations. The intention is that higher level projects
     - (notably DigiMixer.AppCore) can add a project dependency just on DigiMixer.Hardware,

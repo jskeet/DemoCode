@@ -23,7 +23,7 @@ public readonly struct MeterLevel(double value) : IEquatable<MeterLevel>, ICompa
     /// - -50dB to -30dB  => 100 to 200
     /// - -75dB to -50dB  => 0 to 100
     /// Anything lower than -75dB ends up with a value of 0.
-    /// 
+    ///
     /// The value of 0-600 is then scaled to 0-1.
     /// </summary>
     public static MeterLevel FromDb(double db)

@@ -1,12 +1,12 @@
 ﻿<StatusBarItem x:Class="JonSkeet.WpfUtil.StatusItem"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-               xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:coreapputil="clr-namespace:JonSkeet.CoreAppUtil;assembly=JonSkeet.CoreAppUtil"
                xmlns:local="clr-namespace:JonSkeet.WpfUtil"
                x:Name="StatusItemContent"
-               mc:Ignorable="d" 
+               mc:Ignorable="d"
                d:DataContext="{d:DesignInstance coreapputil:StatusViewModel}"
                d:DesignHeight="450" d:DesignWidth="800"
                Content="{Binding Text}"
@@ -20,7 +20,7 @@
                         <BeginStoryboard Name="Error_storyboard">
                             <BeginStoryboard.Storyboard>
                                 <Storyboard>
-                                    <ColorAnimationUsingKeyFrames 
+                                    <ColorAnimationUsingKeyFrames
                                                     Storyboard.TargetProperty="(Background).(Color)"
                                                     AutoReverse="True"
                                                     RepeatBehavior="Forever"
@@ -28,7 +28,7 @@
                                         <DiscreteColorKeyFrame Value="Red" KeyTime="00:00:0" />
                                         <DiscreteColorKeyFrame Value="Black" KeyTime="00:00:0.55" />
                                     </ColorAnimationUsingKeyFrames>
-                                    <ColorAnimationUsingKeyFrames 
+                                    <ColorAnimationUsingKeyFrames
                                                     Storyboard.TargetProperty="(Foreground).(Color)"
                                                     AutoReverse="True"
                                                     RepeatBehavior="Forever"
@@ -48,7 +48,7 @@
                     </DataTrigger.Setters>
                     <DataTrigger.EnterActions>
                         <StopStoryboard BeginStoryboardName="Error_storyboard"/>
-                    </DataTrigger.EnterActions>                    
+                    </DataTrigger.EnterActions>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Type}" Value="{x:Static coreapputil:StatusType.Normal}">
                     <Setter Property="Background" Value="Transparent"/>
@@ -59,6 +59,5 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        
     </StatusBarItem.Style>
 </StatusBarItem>

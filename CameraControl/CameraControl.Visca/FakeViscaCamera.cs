@@ -9,7 +9,7 @@ namespace CameraControl.Visca;
 /// <summary>
 /// A VISCA client (to be used with <see cref="ViscaController"/>) that is purely fake,
 /// always responding with success messages (unless bad input is detected), and faking the ability
-/// to pan, tilt and zoom within the same limits as PTZOptics PT30X-NDI cameras. 
+/// to pan, tilt and zoom within the same limits as PTZOptics PT30X-NDI cameras.
 /// </summary>
 /// <remarks>
 /// Starting the camera creates a new background thread. Disposing of it stops this thread. Note

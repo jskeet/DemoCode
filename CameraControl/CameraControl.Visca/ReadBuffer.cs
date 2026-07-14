@@ -5,7 +5,7 @@
 namespace CameraControl.Visca;
 
 /// <summary>
-/// A read buffer for VISCA packets. 
+/// A read buffer for VISCA packets.
 /// </summary>
 internal class ReadBuffer
 {
