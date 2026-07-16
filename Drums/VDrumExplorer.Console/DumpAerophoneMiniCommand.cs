@@ -4,15 +4,12 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model;
-using VDrumExplorer.Model.Schema.Json;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -21,13 +18,13 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("dump-aerophone-mini")
         {
             Description = "Requests known Aerophone Mini segments from the device, and dumps it to a file as hex",
-            Handler = new DumpAerophoneMiniCommand(),
+            Action = new DumpAerophoneMiniCommand(),
         }
         .AddRequiredOption<string>("--file", "File to write to");
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
-            using var writer = File.CreateText(context.ParseResult.ValueForOption<string>("file"));
+            using var writer = File.CreateText(parseResult.GetRequiredValue<string>("file"));
             int chunkSize = 128;
             TimeSpan timeout = TimeSpan.FromMilliseconds(200);
 

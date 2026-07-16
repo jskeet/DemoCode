@@ -4,15 +4,12 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model;
-using VDrumExplorer.Model.Schema.Json;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -21,17 +18,17 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("dump-all-data")
         {
             Description = "Requests all data from the device, and dumps it to a file as hex",
-            Handler = new DumpAllDataCommand(),
+            Action = new DumpAllDataCommand(),
         }
         .AddRequiredOption<string>("--file", "File to write to")
         .AddOptionalOption("--chunkSize", "Size of chunk", 0x4000)
         .AddOptionalOption("--timeout", "Idle timeout (ms)", 200);
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
-            using var writer = File.CreateText(context.ParseResult.ValueForOption<string>("file"));
-            int chunkSize = context.ParseResult.ValueForOption<int>("chunkSize");
-            TimeSpan timeout = TimeSpan.FromMilliseconds(context.ParseResult.ValueForOption<int>("timeout"));
+            using var writer = File.CreateText(parseResult.GetRequiredValue<string>("file"));
+            int chunkSize = parseResult.GetRequiredValue<int>("chunkSize");
+            TimeSpan timeout = TimeSpan.FromMilliseconds(parseResult.GetRequiredValue<int>("timeout"));
 
             var address = ModuleAddress.FromDisplayValue(0);
             int messagesReceived = 0;

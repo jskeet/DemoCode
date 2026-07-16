@@ -5,8 +5,7 @@
 #if NETCOREAPP3_1_OR_GREATER
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Threading.Tasks;
 using VDrumExplorer.Model.Data;
 using VDrumExplorer.Model.Data.Fields;
@@ -21,15 +20,15 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("dump-device-segment")
         {
             Description = "Loads a segment from a device, and dumps the raw bytes of the data in hex ",
-            Handler = new DumpDeviceSegmentCommand(),
+            Action = new DumpDeviceSegmentCommand(),
         }
         .AddRequiredOption<string>("--path", "Path to the logical container")
         .AddOptionalOption<bool>("--interpret", "Whether or not to interpret the data", false);
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, DeviceController device)
         {
-            var path = context.ParseResult.ValueForOption<string>("path");
-            bool interpret = context.ParseResult.ValueForOption<bool>("interpret");
+            var path = parseResult.GetRequiredValue<string>("path");
+            bool interpret = parseResult.GetRequiredValue<bool>("interpret");
             var root = device.Schema.LogicalRoot.ResolveNode(path);
 
             var container = (FieldContainer) root.Container;

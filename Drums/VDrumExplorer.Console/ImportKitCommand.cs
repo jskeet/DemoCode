@@ -4,8 +4,6 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -20,15 +18,15 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("import-kit")
         {
             Description = "Imports a kit from a device, saving it as a file",
-            Handler = new ImportKitCommand(),
+            Action = new ImportKitCommand(),
         }
         .AddRequiredOption<int>("--kit", "Kit number to import")
         .AddRequiredOption<string>("--file", "File to save");
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, DeviceController device)
         {
-            var kitNumber = context.ParseResult.ValueForOption<int>("kit");
-            var file = context.ParseResult.ValueForOption<string>("file");
+            var kitNumber = parseResult.GetRequiredValue<int>("kit");
+            var file = parseResult.GetRequiredValue<string>("file");
 
             try
             {

@@ -7,26 +7,24 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
-using System.Threading.Tasks;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Data.Logical;
 
 namespace VDrumExplorer.Console
 {
-    internal sealed class ShowKitCommand : ICommandHandler
+    internal sealed class ShowKitCommand : SynchronousCommandLineAction
     {
         internal static Command Command { get; } = new Command("show-kit")
         {
             Description = "Shows the data of a kit, as JSON",
-            Handler = new ShowKitCommand(),
+            Action = new ShowKitCommand(),
         }
         .AddRequiredOption<string>("--file", "File to load");
 
-        public Task<int> InvokeAsync(InvocationContext context)
+        public override int Invoke(ParseResult parseResult)
         {
-            var console = context.Console.Out;
-            var file = context.ParseResult.ValueForOption<string>("file");
+            var console = parseResult.InvocationConfiguration.Output;
+            var file = parseResult.GetRequiredValue<string>("file");
 
             object loaded;
             try
@@ -36,19 +34,19 @@ namespace VDrumExplorer.Console
             catch (Exception ex)
             {
                 console.WriteLine($"Error loading {file}: {ex}");
-                return Task.FromResult(1);
+                return 1;
             }
 
             if (!(loaded is Kit kit))
             {
                 console.WriteLine($"File did not parse as a kit file");
-                return Task.FromResult(1);
+                return 1;
             }
 
             var dataNode = new DataTreeNode(kit.Data, kit.KitRoot);
             var json = ConvertToJson(dataNode);
             console.WriteLine(json.ToString(Formatting.Indented));
-            return Task.FromResult(0);
+            return 0;
         }
 
         private static JObject ConvertToJson(DataTreeNode container)

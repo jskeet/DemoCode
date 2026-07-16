@@ -11,7 +11,7 @@
     <ProjectReference Include="..\VDrumExplorer.Midi.ManagedMidi\VDrumExplorer.Midi.ManagedMidi.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Model\VDrumExplorer.Model.csproj" />
     <ProjectReference Include="..\VDrumExplorer.Proto\VDrumExplorer.Proto.csproj" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
+    <PackageReference Include="System.CommandLine" Version="2.0.10" />
     <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' == 'net472'" />
   </ItemGroup>
 

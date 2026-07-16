@@ -4,8 +4,7 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Threading.Tasks;
 using VDrumExplorer.Model.Midi;
 
@@ -29,17 +28,17 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("turn-pages-note")
         {
             Description = "Performs page turning when the specified note is played (e.g. an AUX pad)",
-            Handler = new TurnPagesViaMidiCommand(),
+            Action = new TurnPagesViaMidiCommand(),
         }
         .AddOptionalOption("--channel", "MIDI channel", 10)
         .AddOptionalOption("--note", "MIDI note to listen for", 32)
         .AddOptionalOption("--keys", "SendKeys key string", "{RIGHT}");
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
-            var channel = context.ParseResult.ValueForOption<int>("channel");
-            var keys = context.ParseResult.ValueForOption<string>("keys");
-            var midiNote = context.ParseResult.ValueForOption<int>("note");
+            var channel = parseResult.GetRequiredValue<int>("channel");
+            var keys = parseResult.GetRequiredValue<string>("keys");
+            var midiNote = parseResult.GetRequiredValue<int>("note");
 
             var noteOn = (byte) (0x90 | (channel - 1));
 

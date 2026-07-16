@@ -2,11 +2,11 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.CommandLine;
+using System.IO;
 using System.Threading.Tasks;
-using VDrumExplorer.Model.Midi;
 using VDrumExplorer.Model.Device;
+using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
@@ -15,14 +15,14 @@ namespace VDrumExplorer.Console
     /// </summary>
     internal abstract class DeviceCommandBase : ClientCommandBase
     {
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
             using (var device = new DeviceController(client, new ConsoleLogger(console)))
             {
-                return await InvokeAsync(context, console, device);
+                return await InvokeAsync(parseResult, console, device);
             }
         }
 
-        protected abstract Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device);
+        protected abstract Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, DeviceController device);
     }
 }

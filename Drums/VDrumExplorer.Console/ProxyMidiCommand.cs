@@ -5,31 +5,31 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
-    internal sealed class ProxyMidiCommand : ICommandHandler
+    internal sealed class ProxyMidiCommand : AsynchronousCommandLineAction
     {
         internal static Command Command { get; } = new Command("proxy-midi")
         {
             Description = "Proxies MIDI notes from an input to an output",
-            Handler = new ProxyMidiCommand()
+            Action = new ProxyMidiCommand()
         }
         .AddRequiredOption<string>("--input", "Input MIDI name")
         .AddRequiredOption<string>("--output", "Output MIDI name")
         .AddOptionalOption("--inputChannel", "Input channel to map", -1)
         .AddOptionalOption("--outputChannel", "Output channel to map", -1);
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        public async override Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
-            var console = context.Console.Out;
+            var console = parseResult.InvocationConfiguration.Output;
             var inputDevices = MidiDevices.ListInputDevices();
 
-            string inputName = context.ParseResult.ValueForOption<string>("input");
+            string inputName = parseResult.GetRequiredValue<string>("input");
             var inputDevice = inputDevices.FirstOrDefault(d => d.Name == inputName);
             if (inputDevice is null)
             {
@@ -38,7 +38,7 @@ namespace VDrumExplorer.Console
             }
 
             var outputDevices = MidiDevices.ListOutputDevices();
-            string outputName = context.ParseResult.ValueForOption<string>("output");
+            string outputName = parseResult.GetRequiredValue<string>("output");
             var outputDevice = outputDevices.FirstOrDefault(d => d.Name == outputName);
             if (outputDevice is null)
             {
@@ -46,8 +46,8 @@ namespace VDrumExplorer.Console
                 return 1;
             }
 
-            int inputChannel = context.ParseResult.ValueForOption<int>("inputChannel");
-            int outputChannel = context.ParseResult.ValueForOption<int>("outputChannel");
+            int inputChannel = parseResult.GetRequiredValue<int>("inputChannel");
+            int outputChannel = parseResult.GetRequiredValue<int>("outputChannel");
 
             using var input = await MidiDevices.Manager.OpenInputAsync(inputDevice);
             using var output = await MidiDevices.Manager.OpenOutputAsync(outputDevice);

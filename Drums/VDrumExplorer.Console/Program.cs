@@ -18,29 +18,30 @@ namespace VDrumExplorer.Console
             {
                 Description = "V-Drum Explorer console interface"
             };
-            rootCommand.AddCommand(ListDevicesCommand.Command);
-            rootCommand.AddCommand(ListKitsCommand.Command);
-            rootCommand.AddCommand(ImportKitCommand.Command);
-            rootCommand.AddCommand(ShowKitCommand.Command);
-            rootCommand.AddCommand(SendMidiEventsCommand.Command);
-            rootCommand.AddCommand(ShowMidiEventsCommand.Command);
-            rootCommand.AddCommand(ShowSchemaStatsCommand.Command);
-            rootCommand.AddCommand(TurnPagesViaKitChangeCommand.Command);
-            rootCommand.AddCommand(TurnPagesViaMidiCommand.Command);
-            rootCommand.AddCommand(DumpAerophoneMiniCommand.Command);
-            rootCommand.AddCommand(DumpDataCommand.Command);
-            rootCommand.AddCommand(DumpProtoCommand.Command);
-            rootCommand.AddCommand(DumpAllDataCommand.Command);
-            rootCommand.AddCommand(ProxyMidiCommand.Command);
-            rootCommand.AddCommand(ListAerophoneStudioSets.Command);
-            rootCommand.AddCommand(CopyAerophoneStudioSets.Command);
-            rootCommand.AddCommand(ConvertToJsonCommand.Command);
+            rootCommand.Add(ListDevicesCommand.Command);
+            rootCommand.Add(ListKitsCommand.Command);
+            rootCommand.Add(ImportKitCommand.Command);
+            rootCommand.Add(ShowKitCommand.Command);
+            rootCommand.Add(SendMidiEventsCommand.Command);
+            rootCommand.Add(ShowMidiEventsCommand.Command);
+            rootCommand.Add(ShowSchemaStatsCommand.Command);
+            rootCommand.Add(TurnPagesViaKitChangeCommand.Command);
+            rootCommand.Add(TurnPagesViaMidiCommand.Command);
+            rootCommand.Add(DumpAerophoneMiniCommand.Command);
+            rootCommand.Add(DumpDataCommand.Command);
+            rootCommand.Add(DumpProtoCommand.Command);
+            rootCommand.Add(DumpAllDataCommand.Command);
+            rootCommand.Add(ProxyMidiCommand.Command);
+            rootCommand.Add(ListAerophoneStudioSets.Command);
+            rootCommand.Add(CopyAerophoneStudioSets.Command);
+            rootCommand.Add(ConvertToJsonCommand.Command);
 #if NETCOREAPP3_1_OR_GREATER
-            rootCommand.AddCommand(CheckInstrumentDefaultsCommand.Command);
-            rootCommand.AddCommand(CheckMfxDefaultsCommand.Command);
-            rootCommand.AddCommand(DumpDeviceSegmentCommand.Command);
+            rootCommand.Add(CheckInstrumentDefaultsCommand.Command);
+            rootCommand.Add(CheckMfxDefaultsCommand.Command);
+            rootCommand.Add(DumpDeviceSegmentCommand.Command);
 #endif
-            return rootCommand.InvokeAsync(args);
+            ParseResult parseResult = rootCommand.Parse(args);
+            return parseResult.InvokeAsync();
         }
     }
 }

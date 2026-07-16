@@ -4,15 +4,15 @@
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.CommandLine.IO;
+using System.IO;
 
 namespace VDrumExplorer.Console
 {
     internal sealed class ConsoleLogger : ILogger
     {
-        private readonly IStandardStreamWriter writer;
+        private readonly TextWriter writer;
 
-        internal ConsoleLogger(IStandardStreamWriter writer) =>
+        internal ConsoleLogger(TextWriter writer) =>
             this.writer = writer;
 
         public IDisposable BeginScope<TState>(TState state) => NoOpDisposable.Instance;

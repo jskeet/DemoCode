@@ -2,8 +2,10 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
+using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Midi;
@@ -14,11 +16,11 @@ namespace VDrumExplorer.Console
     /// Base class for commands which need a connected device, but as a raw RolandMidiClient.
     /// The client is automatically disposed, then detected at the end of the command.
     /// </summary>
-    internal abstract class ClientCommandBase : ICommandHandler
+    internal abstract class ClientCommandBase : AsynchronousCommandLineAction
     {
-        public async Task<int> InvokeAsync(InvocationContext context)
+        public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken)
         {
-            var console = context.Console.Out;
+            var console = parseResult.InvocationConfiguration.Output;
             var client = await MidiDevices.DetectSingleRolandMidiClientAsync(new ConsoleLogger(console), ModuleSchema.KnownSchemas.Keys);
             if (client == null)
             {
@@ -26,10 +28,10 @@ namespace VDrumExplorer.Console
             }
             using (client)
             {
-                return await InvokeAsync(context, console, client);
+                return await InvokeAsync(parseResult, console, client);
             }
         }
 
-        protected abstract Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client);
+        protected abstract Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client);
     }
 }

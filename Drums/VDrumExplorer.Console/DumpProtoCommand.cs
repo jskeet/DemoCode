@@ -6,26 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.IO;
 using System.Threading.Tasks;
 using VDrumExplorer.Proto;
 
 namespace VDrumExplorer.Console
 {
-    internal sealed class DumpProtoCommand : ICommandHandler
+    internal sealed class DumpProtoCommand : SynchronousCommandLineAction
     {
         internal static Command Command { get; } = new Command("dump-proto")
         {
             Description = "Loads a V-Drum Explorer file, and writes it to the console (primarily for diffing)",
-            Handler = new DumpProtoCommand()
+            Action = new DumpProtoCommand()
         }
         .AddRequiredOption<string>("--file", "File to load");
 
-        public Task<int> InvokeAsync(InvocationContext context)
+        public override int Invoke(ParseResult parseResult)
         {
-            var console = context.Console.Out;
-            var file = context.ParseResult.ValueForOption<string>("file");
+            var console = parseResult.InvocationConfiguration.Output;
+            var file = parseResult.GetRequiredValue<string>("file");
             DrumFile proto;
             using (var stream = File.OpenRead(file))
             {
@@ -43,7 +42,7 @@ namespace VDrumExplorer.Console
                     DumpModuleAudio(proto.ModuleAudio);
                     break;
             }
-            return Task.FromResult(0);
+            return 0;
 
 
             void DumpModule(Module module)

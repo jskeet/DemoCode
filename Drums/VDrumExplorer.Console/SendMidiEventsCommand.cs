@@ -5,27 +5,27 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
-    internal sealed class SendMidiEventsCommand : ICommandHandler
+    internal sealed class SendMidiEventsCommand : AsynchronousCommandLineAction
     {
         internal static Command Command { get; } = new Command("send-midi-events")
         {
             Description = "Sends MIDI events specified in hex",
-            Handler = new SendMidiEventsCommand(),
+            Action = new SendMidiEventsCommand(),
         }
         .AddRequiredOption<string>("--device", "MIDI input device to send to");
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        public async override Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default)
         {
-            var consoleOut = context.Console.Out;
+            var consoleOut = parseResult.InvocationConfiguration.Output;
             var outputDevices = MidiDevices.ListOutputDevices();
-            string requestedDeviceName = context.ParseResult.ValueForOption<string>("device");
+            string requestedDeviceName = parseResult.GetRequiredValue<string>("device");
             var device = outputDevices.FirstOrDefault(d => d.Name == requestedDeviceName);
             if (device is null)
             {

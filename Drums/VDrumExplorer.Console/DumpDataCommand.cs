@@ -4,8 +4,7 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,17 +19,17 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("dump-data")
         {
             Description = "Requests data from the device, and dumps it to the console as hex",
-            Handler = new DumpDataCommand(),
+            Action = new DumpDataCommand(),
         }
         .AddRequiredOption<string>("--address", "Address to request (hex display format)")
         .AddRequiredOption<string>("--size", "Size of data to request (hex display format)")
         .AddOptionalOption<int>("--timeout", "Time in seconds(default to 10)", 10);
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
-            var address = ModuleAddress.FromDisplayValue(HexInt32.Parse(context.ParseResult.ValueForOption<string>("address")).Value);
-            var size = HexInt32.Parse(context.ParseResult.ValueForOption<string>("size")).Value;
-            var timeout = context.ParseResult.ValueForOption<int>("timeout");
+            var address = ModuleAddress.FromDisplayValue(HexInt32.Parse(parseResult.GetRequiredValue<string>("address")).Value);
+            var size = HexInt32.Parse(parseResult.GetRequiredValue<string>("size")).Value;
+            var timeout = parseResult.GetRequiredValue<int>("timeout");
 
             // Wait up to 10 seconds to receive all the requested data...
             int sizeReceived = 0;

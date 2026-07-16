@@ -5,27 +5,27 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Model.Midi;
 
 namespace VDrumExplorer.Console
 {
-    internal sealed class ShowMidiEventsCommand : ICommandHandler
+    internal sealed class ShowMidiEventsCommand : AsynchronousCommandLineAction
     {
         internal static Command Command { get; } = new Command("show-midi-events")
         {
             Description = "Displays MIDI events as they're received",
-            Handler = new ShowMidiEventsCommand(),
+            Action = new ShowMidiEventsCommand(),
         }
         .AddRequiredOption<string>("--device", "MIDI input device to listen to");
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        public override async Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken)
         {
-            var console = context.Console.Out;
+            var console = parseResult.InvocationConfiguration.Output;
             var inputDevices = MidiDevices.ListInputDevices();
-            string requestedDeviceName = context.ParseResult.ValueForOption<string>("device");
+            string requestedDeviceName = parseResult.GetRequiredValue<string>("device");
             var device = inputDevices.FirstOrDefault(d => d.Name == requestedDeviceName);
             if (device is null)
             {

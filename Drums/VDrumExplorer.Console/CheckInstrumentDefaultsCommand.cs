@@ -4,8 +4,7 @@
 #if NETCOREAPP3_1_OR_GREATER
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,13 +23,13 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("check-instrument-defaults")
         {
             Description = "Checks the default settings (including vedit) from every instrument",
-            Handler = new CheckInstrumentDefaultsCommand(),
+            Action = new CheckInstrumentDefaultsCommand(),
         }
         .AddRequiredOption<int>("--kit", "Kit number to interact with");
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, DeviceController device)
         {
-            var kit = context.ParseResult.ValueForOption<int>("kit");
+            var kit = parseResult.GetRequiredValue<int>("kit");
             var triggerRoot = device.Schema.GetTriggerRoot(kit, trigger: 1);
             var deviceData = ModuleData.FromLogicalRootNode(triggerRoot);
             var modelData = ModuleData.FromLogicalRootNode(triggerRoot);

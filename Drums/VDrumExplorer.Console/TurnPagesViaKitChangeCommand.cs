@@ -4,8 +4,7 @@
 
 using System;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using VDrumExplorer.Model.Data.Logical;
@@ -34,20 +33,20 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("turn-pages-kit")
         {
             Description = "Performs page turning when the kit changes (e.g. via foot switch)",
-            Handler = new TurnPagesViaKitChangeCommand(),
+            Action = new TurnPagesViaKitChangeCommand(),
         }
         .AddOptionalOption("--channel", "MIDI channel", 10)
         .AddOptionalOption("--keys", "SendKeys key string", "{RIGHT}")
         .AddOptionalOption("--kit", "Target kit to adopt (and the following one)", 99);
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
             using (var device = new DeviceController(client, new ConsoleLogger(console)))
             {
                 var schema = device.Schema;
-                var channel = context.ParseResult.ValueForOption<int>("channel");
-                var keys = context.ParseResult.ValueForOption<string>("keys");
-                var targetKit = context.ParseResult.ValueForOption<int>("kit");
+                var channel = parseResult.GetRequiredValue<int>("channel");
+                var keys = parseResult.GetRequiredValue<string>("keys");
+                var targetKit = parseResult.GetRequiredValue<int>("kit");
                 if (targetKit < 1 || targetKit + 1 > schema.Kits)
                 {
                     console.WriteLine($"Kit {targetKit} is out of range for {schema.Identifier.Name} for this command.");

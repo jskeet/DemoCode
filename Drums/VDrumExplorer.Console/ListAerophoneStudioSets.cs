@@ -3,8 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +20,10 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("list-aerophone-studio-sets")
         {
             Description = "Selects each Aerophone preset and displays it to the console",
-            Handler = new ListAerophoneStudioSets()
+            Action = new ListAerophoneStudioSets()
         };
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, RolandMidiClient client)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, RolandMidiClient client)
         {
             var schema = ModuleSchema.KnownSchemas[ModuleIdentifier.AE10].Value;
             var instrumentField = schema.PhysicalRoot.ResolveField("TemporaryStudioSet/Part[1]/Instrument");

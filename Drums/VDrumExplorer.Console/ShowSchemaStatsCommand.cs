@@ -3,13 +3,9 @@
 // as found in the LICENSE.txt file.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using VDrumExplorer.Model;
 using VDrumExplorer.Model.Schema.Fields;
 using VDrumExplorer.Model.Schema.Physical;
@@ -20,23 +16,24 @@ namespace VDrumExplorer.Console
     /// Command to show diagnostic stats about schemas - total number of field
     /// containers, overlays etc.
     /// </summary>
-    internal sealed class ShowSchemaStatsCommand : ICommandHandler
+    internal sealed class ShowSchemaStatsCommand : SynchronousCommandLineAction
     {
         internal static Command Command { get; } = new Command("show-schema-stats")
         {
             Description = "Shows statistics about a module schema",
-            Handler = new ShowSchemaStatsCommand(),
+            Action = new ShowSchemaStatsCommand()
         }
-        .AddRequiredOption<string>("--schema", "Name of schema to show, e.g. TD-27, or 'all'");
+        .AddRequiredOption<string>("--schema", "Name of schema to show, e.g. TD-27, or 'all'")
+            ;
 
-        public Task<int> InvokeAsync(InvocationContext context)
+        public override int Invoke(ParseResult parseResult)
         {
-            var schemas = GetSchemasToDisplay(context);
+            var schemas = GetSchemasToDisplay(parseResult);
             if (schemas.Length == 0)
             {
-                return Task.FromResult(1);
+                return 1;
             }
-            var console = context.Console.Out;
+            var console = parseResult.InvocationConfiguration.Output;
             foreach (var schema in schemas)
             {
                 var allContainers = schema.PhysicalRoot.DescendantsAndSelf();
@@ -59,13 +56,13 @@ namespace VDrumExplorer.Console
                 console.WriteLine();
             }
 
-            return Task.FromResult(0);
+            return 0;
         }
 
-        private ModuleSchema[] GetSchemasToDisplay(InvocationContext context)
+        private ModuleSchema[] GetSchemasToDisplay(ParseResult parseResult)
         {
-            var console = context.Console.Out;
-            var schemaName = context.ParseResult.ValueForOption<string>("schema");
+            var console = parseResult.InvocationConfiguration.Output;
+            var schemaName = parseResult.GetRequiredValue<string>("schema");
             if (schemaName == "all")
             {
                 return ModuleSchema.KnownSchemas.Values.Select(v => v.Value).ToArray();

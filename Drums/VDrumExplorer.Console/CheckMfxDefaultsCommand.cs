@@ -6,8 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,17 +22,17 @@ namespace VDrumExplorer.Console
         internal static Command Command { get; } = new Command("check-mfx-defaults")
         {
             Description = "Checks the default settings for each MFX option",
-            Handler = new CheckMfxDefaultsCommand(),
+            Action = new CheckMfxDefaultsCommand(),
         }
         .AddRequiredOption<string>("--path", "Path to logical node containing MFX (e.g. '/Kits/Kit[100]/MultiFX[1]')")
         .AddOptionalOption("--switch", "Field name for switch", "Type")
         .AddOptionalOption("--parameters", "Field name for parameters", "Parameters");
 
-        protected override async Task<int> InvokeAsync(InvocationContext context, IStandardStreamWriter console, DeviceController device)
+        protected override async Task<int> InvokeAsync(ParseResult parseResult, TextWriter console, DeviceController device)
         {
-            var path = context.ParseResult.ValueForOption<string>("path");
-            var switchFieldName = context.ParseResult.ValueForOption<string>("switch");
-            var parametersFieldName = context.ParseResult.ValueForOption<string>("parameters");
+            var path = parseResult.GetRequiredValue<string>("path");
+            var switchFieldName = parseResult.GetRequiredValue<string>("switch");
+            var parametersFieldName = parseResult.GetRequiredValue<string>("parameters");
 
             var mfxNode = device.Schema.LogicalRoot.ResolveNode(path);
             var mfxContainer = mfxNode.Container;
