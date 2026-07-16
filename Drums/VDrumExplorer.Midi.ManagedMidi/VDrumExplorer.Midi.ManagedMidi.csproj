@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VDrumExplorer.Model\VDrumExplorer.Model.csproj" />
-    <PackageReference Include="managed-midi" Version="1.10.1" />
+    <PackageReference Include="ManagedMidi" Version="1.0.0-alpha.1" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
 	<PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.10" />

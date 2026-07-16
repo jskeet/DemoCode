@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using VDrumExplorer.Model.Midi;
+using MM = ManagedMidi;
 
 namespace VDrumExplorer.Midi.ManagedMidi
 {
@@ -12,9 +13,9 @@ namespace VDrumExplorer.Midi.ManagedMidi
     internal class MidiOutput : IMidiOutput
     {
         private bool disposed = false;
-        private readonly Commons.Music.Midi.IMidiOutput managedOutput;
+        private readonly MM.IMidiOutput managedOutput;
 
-        internal MidiOutput(Commons.Music.Midi.IMidiOutput managedOutput)
+        internal MidiOutput(MM.IMidiOutput managedOutput)
         {
             this.managedOutput = managedOutput;
         }

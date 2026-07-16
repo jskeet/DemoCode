@@ -2,10 +2,11 @@
 // Use of this source code is governed by the Apache License 2.0,
 // as found in the LICENSE.txt file.
 
-using Commons.Music.Midi;
+using ManagedMidi;
 using System;
 using System.Linq;
 using VDrumExplorer.Model.Midi;
+using MM = ManagedMidi;
 
 namespace VDrumExplorer.Midi.ManagedMidi
 {
@@ -15,11 +16,11 @@ namespace VDrumExplorer.Midi.ManagedMidi
     internal class MidiInput : Model.Midi.IMidiInput
     {
         private bool disposed = false;
-        private readonly Commons.Music.Midi.IMidiInput managedInput;
+        private readonly MM.IMidiInput managedInput;
 
         public event EventHandler<Model.Midi.MidiMessage>? MessageReceived;
 
-        internal MidiInput(Commons.Music.Midi.IMidiInput managedInput)
+        internal MidiInput(MM.IMidiInput managedInput)
         {
             this.managedInput = managedInput;
             managedInput.MessageReceived += OnMessageReceived;
