@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VDrumExplorer.Model\VDrumExplorer.Model.csproj" />
-    <PackageReference Include="Google.Protobuf" Version="3.22.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.35.1" />
   </ItemGroup>
 
 </Project>

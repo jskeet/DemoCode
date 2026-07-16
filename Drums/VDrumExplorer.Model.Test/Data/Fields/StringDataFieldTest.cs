@@ -3,6 +3,7 @@
 // as found in the LICENSE.txt file.
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Text;
 using VDrumExplorer.Model.Data;

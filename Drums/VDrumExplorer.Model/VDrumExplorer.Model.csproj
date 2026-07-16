@@ -7,9 +7,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-	<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.5" />    
+	<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.10" />    
     
     <ProjectReference Include="..\VDrumExplorer.Utility\VDrumExplorer.Utility.csproj" />
 
