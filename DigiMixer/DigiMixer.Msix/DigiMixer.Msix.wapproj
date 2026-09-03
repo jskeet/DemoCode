@@ -26,7 +26,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);NU1702</NoWarn>
-    <PackageCertificateThumbprint>FEC82D391C88621984104DD6C9366268AE5C3514</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>0A1305B0D3FE232C44C49E8F6597F68AC58F97D2</PackageCertificateThumbprint>
     <EntryPointProjectUniqueName>..\DigiMixer.Wpf\DigiMixer.Wpf.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
   <ItemGroup>

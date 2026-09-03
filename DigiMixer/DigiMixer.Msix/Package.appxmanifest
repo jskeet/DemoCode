@@ -8,7 +8,7 @@
 
   <Identity
     Name="DigiMixer"
-    Publisher="CN=Jonathan Skeet, O=Jonathan Skeet, S=Reading, C=GB"
+    Publisher="CN=Jonathan Skeet, O=Jonathan Skeet, S=Berkshire, C=GB"
     Version="0.1.0.0" />
 
   <Properties>
